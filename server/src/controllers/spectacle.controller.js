@@ -1,0 +1,26 @@
+import asyncHandler from "express-async-handler";import Spectacle from "../models/Spectacle.js";import Patient from "../models/Patient.js";import Branch from "../models/Branch.js";import Consultation from "../models/Consultation.js";import InventoryItem from "../models/InventoryItem.js";import InventoryTransaction from "../models/InventoryTransaction.js";
+const branch=async org=>Branch.findOne({organizationId:org,status:"active"}).sort({createdAt:1});
+const number=async()=>`SP-${Date.now().toString().slice(-8)}`;
+export const latestConsultation=asyncHandler(async(req,res)=>{const c=await Consultation.findOne({patientId:req.params.patientId,organizationId:req.user.organizationId}).sort({consultationDate:-1,createdAt:-1}).populate("optometristId","firstName lastName role").lean();res.json({success:true,data:c})});
+export const getSpectacle=asyncHandler(async(req,res)=>{const s=await Spectacle.findOne({_id:req.params.id,organizationId:req.user.organizationId}).populate("patientId","patientNumber firstName middleName lastName phone").lean();if(!s){res.status(404);throw new Error("Spectacle job not found")}s.extrasTotal=(s.extras||[]).reduce((a,x)=>a+Number(x.price||0),0);s.total=Math.max(0,Number(s.frame?.price||0)+Number(s.lens?.price||0)+s.extrasTotal-Number(s.discount||0));res.json({success:true,data:s})});
+export const getPatientSpectacles=asyncHandler(async(req,res)=>{const list=await Spectacle.find({patientId:req.params.patientId,organizationId:req.user.organizationId}).sort({createdAt:-1}).lean();res.json({success:true,data:list})});
+export const createSpectacle=asyncHandler(async(req,res)=>{const p=await Patient.findOne({_id:req.body.patientId,organizationId:req.user.organizationId,status:"active"});if(!p){res.status(404);throw new Error("Patient not found")}const b=await branch(req.user.organizationId);if(!b){res.status(400);throw new Error("An active practice branch is required")}let c=null;if(req.body.consultationId)c=await Consultation.findOne({_id:req.body.consultationId,organizationId:req.user.organizationId});let frameItem=null,lensItem=null;
+  if(req.body.frameItemId){frameItem=await InventoryItem.findOne({_id:req.body.frameItemId,organizationId:req.user.organizationId,category:"frame",status:"active"});if(!frameItem){res.status(400);throw new Error("Selected frame is not available");}}
+  if(req.body.lensItemId){lensItem=await InventoryItem.findOne({_id:req.body.lensItemId,organizationId:req.user.organizationId,category:"lens",status:"active"});if(!lensItem){res.status(400);throw new Error("Selected lens is not available");}}
+  const initialStatus=req.body.status||"draft";
+  const s=await Spectacle.create({...req.body,organizationId:req.user.organizationId,branchId:b._id,patientId:p._id,consultationId:c?c._id:null,frameItemId:frameItem?frameItem._id:null,lensItemId:lensItem?lensItem._id:null,jobNumber:await number(),createdBy:req.user._id,status:initialStatus,frame:frameItem?{code:frameItem.code,description:frameItem.description||[frameItem.brand,frameItem.model].filter(Boolean).join(" "),price:frameItem.sellingPrice,ownFrame:false}:req.body.frame,lens:lensItem?{code:lensItem.code,description:lensItem.description,supplier:lensItem.supplier,price:lensItem.sellingPrice}:req.body.lens});
+  res.status(201).json({success:true,message:"Spectacle job created successfully",data:s})});
+export const updateSpectacle=asyncHandler(async(req,res)=>{const s=await Spectacle.findOne({_id:req.params.id,organizationId:req.user.organizationId});if(!s){res.status(404);throw new Error("Spectacle job not found")}const allowed=["draft","ordered","not_ready","ready","notified","collected","cancelled"];if(req.body.status&&!allowed.includes(req.body.status)){res.status(400);throw new Error("Invalid spectacle status")}const previousStatus=s.status;
+  if(req.body.status==="ordered" && previousStatus!=="ordered"){
+    for(const itemId of [s.frameItemId,s.lensItemId]){
+      if(!itemId) continue;
+      const item=await InventoryItem.findOne({_id:itemId,organizationId:req.user.organizationId});
+      if(!item){res.status(400);throw new Error("Linked inventory item no longer exists");}
+      if(item.stock<1){res.status(400);throw new Error(`Insufficient stock for ${item.code}`);}
+      const before=item.stock;item.stock-=1;item.updatedBy=req.user._id;await item.save();
+      await InventoryTransaction.create({organizationId:req.user.organizationId,branchId:s.branchId,itemId:item._id,spectacleId:s._id,type:"sale",quantity:-1,beforeStock:before,afterStock:item.stock,reason:"Spectacle job ordered",reference:s.jobNumber,createdBy:req.user._id});
+    }
+    s.lensOrderDate=new Date();
+  }
+  Object.assign(s,req.body);if(req.body.status==="ready")s.jobReadyAt=new Date();if(req.body.status==="notified"){s.lastNotifiedAt=new Date();s.notificationCount+=1}if(req.body.status==="collected")s.collectedAt=new Date();await s.save();res.json({success:true,message:"Spectacle job updated",data:s})});
+export const dispensingList=asyncHandler(async(req,res)=>{const q={organizationId:req.user.organizationId};if(req.query.status)q.status=req.query.status;const list=await Spectacle.find(q).populate("patientId","patientNumber firstName middleName lastName phone").sort({updatedAt:-1}).limit(250).lean();res.json({success:true,data:list})});

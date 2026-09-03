@@ -1,0 +1,4 @@
+import mongoose from "mongoose";
+const paymentSchema=new mongoose.Schema({organizationId:{type:mongoose.Schema.Types.ObjectId,ref:"Organization",required:true,index:true},branchId:{type:mongoose.Schema.Types.ObjectId,ref:"Branch",required:true},patientId:{type:mongoose.Schema.Types.ObjectId,ref:"Patient",required:true},invoiceId:{type:mongoose.Schema.Types.ObjectId,ref:"Invoice",required:true},receiptNumber:{type:String,required:true,unique:true},paymentDate:{type:Date,default:Date.now},method:{type:String,enum:["cash","card","upi","bank_transfer","insurance","other"],required:true},amount:{type:Number,required:true,min:0.01},reference:String,notes:String,createdBy:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}},{timestamps:true});
+paymentSchema.index({organizationId:1,invoiceId:1,paymentDate:-1});
+export default mongoose.model("Payment",paymentSchema);

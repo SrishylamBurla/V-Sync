@@ -1,0 +1,3 @@
+import mongoose from "mongoose";
+const schema=new mongoose.Schema({organizationId:{type:mongoose.Schema.Types.ObjectId,ref:"Organization",required:true,index:true},branchId:{type:mongoose.Schema.Types.ObjectId,ref:"Branch",required:true},patientId:{type:mongoose.Schema.Types.ObjectId,ref:"Patient"},channel:{type:String,enum:["email","sms"],required:true},to:{type:String,required:true},subject:String,body:{type:String,required:true},status:{type:String,enum:["queued","sent","failed"],default:"queued"},provider:String,providerMessageId:String,error:String,sentAt:Date,createdBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"}},{timestamps:true});
+export default mongoose.model("MessageLog",schema);

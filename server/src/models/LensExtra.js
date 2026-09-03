@@ -1,0 +1,4 @@
+import mongoose from "mongoose";
+const schema=new mongoose.Schema({organizationId:{type:mongoose.Schema.Types.ObjectId,ref:"Organization",required:true,index:true},branchId:{type:mongoose.Schema.Types.ObjectId,ref:"Branch",required:true},code:{type:String,required:true,trim:true},type:{type:String,enum:["tint","coating","hardening","other"],default:"other"},description:{type:String,trim:true,required:true},supplierId:{type:mongoose.Schema.Types.ObjectId,ref:"Supplier",default:null},costPrice:{type:Number,default:0,min:0},sellingPrice:{type:Number,default:0,min:0},status:{type:String,enum:["active","inactive"],default:"active"},notes:{type:String,default:""},createdBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"},updatedBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"}},{timestamps:true});
+schema.index({organizationId:1,code:1},{unique:true});
+export default mongoose.model("LensExtra",schema);

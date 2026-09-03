@@ -1,0 +1,4 @@
+import mongoose from "mongoose";
+const schema=new mongoose.Schema({organizationId:{type:mongoose.Schema.Types.ObjectId,ref:"Organization",required:true,index:true},branchId:{type:mongoose.Schema.Types.ObjectId,ref:"Branch",required:true},code:{type:String,trim:true,required:true},name:{type:String,trim:true,required:true},contactPerson:{type:String,trim:true,default:""},phone:{type:String,trim:true,default:""},email:{type:String,trim:true,default:""},address:{type:String,trim:true,default:""},accountNumber:{type:String,trim:true,default:""},notes:{type:String,default:""},status:{type:String,enum:["active","inactive"],default:"active"},createdBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"},updatedBy:{type:mongoose.Schema.Types.ObjectId,ref:"User"}},{timestamps:true});
+schema.index({organizationId:1,code:1},{unique:true});
+export default mongoose.model("Supplier",schema);

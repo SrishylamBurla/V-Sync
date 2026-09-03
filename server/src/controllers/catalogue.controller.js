@@ -1,0 +1,20 @@
+import asyncHandler from "express-async-handler";
+import Branch from "../models/Branch.js";
+import Supplier from "../models/Supplier.js";
+import LensCode from "../models/LensCode.js";
+import LensExtra from "../models/LensExtra.js";
+import ContactLensCode from "../models/ContactLensCode.js";
+const branch=async org=>Branch.findOne({organizationId:org,status:"active"}).sort({createdAt:1});
+const clean=v=>typeof v==="string"?v.trim():v;
+const createOne=Model=>asyncHandler(async(req,res)=>{const b=await branch(req.user.organizationId);if(!b){res.status(400);throw new Error("An active practice branch is required");}const data={...req.body,organizationId:req.user.organizationId,branchId:b._id,createdBy:req.user._id};const item=await Model.create(data);res.status(201).json({success:true,data:item});});
+const updateOne=Model=>asyncHandler(async(req,res)=>{const item=await Model.findOne({_id:req.params.id,organizationId:req.user.organizationId});if(!item){res.status(404);throw new Error("Catalogue record not found");}Object.assign(item,req.body,{updatedBy:req.user._id});await item.save();res.json({success:true,data:item});});
+export const listSuppliers=asyncHandler(async(req,res)=>res.json({success:true,data:await Supplier.find({organizationId:req.user.organizationId}).sort({name:1}).lean()}));
+export const createSupplier=createOne(Supplier); export const updateSupplier=updateOne(Supplier);
+export const listLensCodes=asyncHandler(async(req,res)=>res.json({success:true,data:await LensCode.find({organizationId:req.user.organizationId}).populate("supplierId","name code").sort({code:1}).lean()}));
+export const createLensCode=createOne(LensCode); export const updateLensCode=updateOne(LensCode);
+export const listLensExtras=asyncHandler(async(req,res)=>res.json({success:true,data:await LensExtra.find({organizationId:req.user.organizationId}).populate("supplierId","name code").sort({type:1,code:1}).lean()}));
+export const createLensExtra=createOne(LensExtra); export const updateLensExtra=updateOne(LensExtra);
+
+export const listContactLensCodes=asyncHandler(async(req,res)=>res.json({success:true,data:await ContactLensCode.find({organizationId:req.user.organizationId}).populate("supplierId","name code").sort({brand:1,model:1,code:1}).lean()}));
+export const createContactLensCode=createOne(ContactLensCode);
+export const updateContactLensCode=updateOne(ContactLensCode);

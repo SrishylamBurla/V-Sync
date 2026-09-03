@@ -1,0 +1,11 @@
+import express from "express";
+import { protect } from "../middleware/auth.middleware.js";
+import { requirePermission } from "../middleware/permission.middleware.js";
+import { PERMISSIONS } from "../config/permissions.js";
+import { getOverview, getOperational, getInventory } from "../controllers/report.controller.js";
+const router=express.Router();
+router.use(protect,requirePermission(PERMISSIONS.REPORT_VIEW));
+router.get("/overview",getOverview);
+router.get("/operational",getOperational);
+router.get("/inventory",getInventory);
+export default router;

@@ -1,0 +1,15 @@
+import express from "express";
+import {protect} from "../middleware/auth.middleware.js";
+import {requirePermission} from "../middleware/permission.middleware.js";
+import {PERMISSIONS} from "../config/permissions.js";
+import {listLetters,getLetter,createLetter,updateLetter,listImages,createImage,deleteImage} from "../controllers/communications.controller.js";
+const router=express.Router();
+router.use(protect,requirePermission(PERMISSIONS.PATIENT_VIEW));
+router.get("/letters",listLetters);
+router.get("/letters/:id",getLetter);
+router.post("/letters",requirePermission(PERMISSIONS.PATIENT_UPDATE),createLetter);
+router.put("/letters/:id",requirePermission(PERMISSIONS.PATIENT_UPDATE),updateLetter);
+router.get("/images",listImages);
+router.post("/images",requirePermission(PERMISSIONS.PATIENT_UPDATE),createImage);
+router.delete("/images/:id",requirePermission(PERMISSIONS.PATIENT_UPDATE),deleteImage);
+export default router;

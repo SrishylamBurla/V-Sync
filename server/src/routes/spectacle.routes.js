@@ -1,0 +1,2 @@
+import express from "express";import {protect} from "../middleware/auth.middleware.js";import {getSpectacle,getPatientSpectacles,latestConsultation,createSpectacle,updateSpectacle,dispensingList} from "../controllers/spectacle.controller.js";
+const r=express.Router();r.use(protect);r.get("/dispensing",dispensingList);r.get("/patient/:patientId/latest-consultation",latestConsultation);r.get("/patient/:patientId",getPatientSpectacles);r.get("/:id",getSpectacle);r.post("/",createSpectacle);r.put("/:id",updateSpectacle);export default r;

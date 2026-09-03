@@ -1,0 +1,10 @@
+import express from "express";
+import {protect} from "../middleware/auth.middleware.js";
+import {requirePermission} from "../middleware/permission.middleware.js";
+import {PERMISSIONS} from "../config/permissions.js";
+import {listSuppliers,createSupplier,updateSupplier,listLensCodes,createLensCode,updateLensCode,listLensExtras,createLensExtra,updateLensExtra} from "../controllers/catalogue.controller.js";
+const router=express.Router();router.use(protect);
+router.get("/suppliers",requirePermission(PERMISSIONS.INVENTORY_VIEW),listSuppliers);router.post("/suppliers",requirePermission(PERMISSIONS.INVENTORY_CREATE),createSupplier);router.put("/suppliers/:id",requirePermission(PERMISSIONS.INVENTORY_UPDATE),updateSupplier);
+router.get("/lens-codes",requirePermission(PERMISSIONS.INVENTORY_VIEW),listLensCodes);router.post("/lens-codes",requirePermission(PERMISSIONS.INVENTORY_CREATE),createLensCode);router.put("/lens-codes/:id",requirePermission(PERMISSIONS.INVENTORY_UPDATE),updateLensCode);
+router.get("/lens-extras",requirePermission(PERMISSIONS.INVENTORY_VIEW),listLensExtras);router.post("/lens-extras",requirePermission(PERMISSIONS.INVENTORY_CREATE),createLensExtra);router.put("/lens-extras/:id",requirePermission(PERMISSIONS.INVENTORY_UPDATE),updateLensExtra);
+export default router;
