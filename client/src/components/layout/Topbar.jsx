@@ -170,11 +170,11 @@ export default function Topbar() {
           className="flex shrink-0 items-center gap-2.5"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-[11px] font-black tracking-tight text-white shadow-sm">
-            VO
+            VS
           </div>
           <div className="hidden min-w-0 sm:block">
             <div className="text-[15px] font-bold leading-none tracking-tight text-slate-950">
-              VividOpt
+              V-Sync
             </div>
             <div className="mt-1 text-[8px] font-semibold uppercase tracking-[0.22em] text-slate-400">
               Practice Management
