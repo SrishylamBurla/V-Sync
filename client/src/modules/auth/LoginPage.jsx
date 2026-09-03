@@ -38,7 +38,7 @@ export default function LoginPage() {
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#071018]"><Eye size={22} /></div>
                 <div>
-                  <div className="text-lg font-bold tracking-tight">VividOpt</div>
+                  <div className="text-lg font-bold tracking-tight">V-Sync</div>
                   <div className="text-[9px] uppercase tracking-[.24em] text-white/40">Practice Management</div>
                 </div>
               </div>
@@ -54,13 +54,13 @@ export default function LoginPage() {
           <section className="p-6 text-slate-900 sm:p-10 lg:p-12 xl:p-14">
             <div className="mb-10 lg:hidden">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white"><Eye size={21} /></div>
-              <h1 className="mt-5 text-2xl font-bold">VividOpt</h1>
+              <h1 className="mt-5 text-2xl font-bold">V-Sync</h1>
               <p className="mt-2 text-sm text-slate-500">Practice management workspace</p>
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[.18em] text-slate-400">Welcome back</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Sign in</h2>
-              <p className="mt-2 text-sm text-slate-500">Use your VividOpt account. Your role determines what you can access.</p>
+              <p className="mt-2 text-sm text-slate-500">Use your V-Sync account. Your role determines what you can access.</p>
             </div>
             {error && <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
             <form onSubmit={handleSubmit} className="mt-8">

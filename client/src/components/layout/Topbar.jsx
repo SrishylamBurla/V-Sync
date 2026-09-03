@@ -173,7 +173,7 @@ export default function Topbar() {
             VS
           </div>
           <div className="hidden min-w-0 sm:block">
-            <div className="text-[15px] font-bold leading-none tracking-tight text-slate-950">
+            <div className="text-[20px] font-bold leading-none tracking-tight text-slate-950">
               V-Sync
             </div>
             <div className="mt-1 text-[8px] font-semibold uppercase tracking-[0.22em] text-slate-400">
