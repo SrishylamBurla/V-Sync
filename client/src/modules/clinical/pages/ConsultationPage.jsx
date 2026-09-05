@@ -44,6 +44,7 @@ const initialForm = () => ({
   otherTests: [],
   previousRx: emptyRx(),
   subjectiveRx: emptyRx(),
+  subjectiveRxExtras: [],
   givenRx: emptyRx(),
   pd: { right: "", left: "", total: "" },
   recallDue: "",
@@ -115,6 +116,81 @@ export default function ConsultationPage() {
     }));
     setSaved(false);
   };
+  const addSubjectiveRxTable = () => {
+    setForm((current) => {
+      const extras = current.subjectiveRxExtras || [];
+
+      if (extras.length >= 3) {
+        return current;
+      }
+
+      return {
+        ...current,
+        subjectiveRxExtras: [
+          ...extras,
+          {
+            id: `${Date.now()}-${extras.length}`,
+            rx: emptyRx(),
+          },
+        ],
+      };
+    });
+
+    setSaved(false);
+  };
+
+  const removeSubjectiveRxTable = (id) => {
+    setForm((current) => ({
+      ...current,
+      subjectiveRxExtras: (current.subjectiveRxExtras || []).filter(
+        (item) => item.id !== id,
+      ),
+    }));
+
+    setSaved(false);
+  };
+
+  const updateSubjectiveRxExtra = (id, eye, field, value) => {
+    setForm((current) => ({
+      ...current,
+      subjectiveRxExtras: (current.subjectiveRxExtras || []).map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              rx: {
+                ...item.rx,
+                [eye]: {
+                  ...item.rx[eye],
+                  [field]: value,
+                },
+              },
+            }
+          : item,
+      ),
+    }));
+
+    setSaved(false);
+  };
+
+  const updateSubjectiveRxExtraNote = (id, value) => {
+    setForm((current) => ({
+      ...current,
+      subjectiveRxExtras: (current.subjectiveRxExtras || []).map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              rx: {
+                ...item.rx,
+                note: value,
+              },
+            }
+          : item,
+      ),
+    }));
+
+    setSaved(false);
+  };
+
   const addOtherTest = () =>
     setForm((current) => ({
       ...current,
@@ -397,18 +473,60 @@ export default function ConsultationPage() {
                       }))
                     }
                   />
-                  <RxCard
-                    title="Subjective Rx"
-                    rx={form.subjectiveRx}
-                    rxType="subjective"
-                    updateRx={updateRx}
-                    updateRxNote={(type, value) =>
-                      setForm((current) => ({
-                        ...current,
-                        [type]: { ...current[type], note: value },
-                      }))
-                    }
-                  />
+                  <section className="space-y-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Subjective Rx
+                        </h3>
+                        <p className="mt-0.5 text-xs text-slate-400">
+                          Add additional subjective prescriptions when required.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={addSubjectiveRxTable}
+                        disabled={(form.subjectiveRxExtras || []).length >= 3}
+                        className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40 sm:self-auto"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        Add another
+                      </button>
+                    </div>
+
+                    <RxCard
+                      title="Subjective Rx 1"
+                      rx={form.subjectiveRx}
+                      rxType="subjective"
+                      updateRx={updateRx}
+                      updateRxNote={(type, value) =>
+                        setForm((current) => ({
+                          ...current,
+                          [type]: { ...current[type], note: value },
+                        }))
+                      }
+                    />
+
+                    {(form.subjectiveRxExtras || []).map((item, index) => (
+                      <RxCard
+                        key={item.id}
+                        title={`Subjective Rx ${index + 2}`}
+                        rx={item.rx}
+                        rxType={`subjective-${index + 2}`}
+                        updateRx={(_, eye, field, value) =>
+                          updateSubjectiveRxExtra(item.id, eye, field, value)
+                        }
+                        updateRxNote={(_, value) =>
+                          updateSubjectiveRxExtraNote(item.id, value)
+                        }
+                        removable
+                        onRemove={() => removeSubjectiveRxTable(item.id)}
+                      />
+                    ))}
+                  </section>
+
+
                   <RxCard
                     title="Given Rx"
                     rx={form.givenRx}
@@ -673,7 +791,15 @@ function ClinicalField({
     </div>
   );
 }
-function RxCard({ title, rx, rxType, updateRx, updateRxNote }) {
+function RxCard({
+  title,
+  rx,
+  rxType,
+  updateRx,
+  updateRxNote,
+  removable = false,
+  onRemove,
+}) {
   const fields = [
     ["sphere", "Sphere"],
     ["cylinder", "Cylinder"],
@@ -701,9 +827,21 @@ function RxCard({ title, rx, rxType, updateRx, updateRxNote }) {
               : "Stored for clinical reference."}
           </p>
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">
-          {rxType}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">
+            {rxType}
+          </span>
+
+          {removable && (
+            <button
+              type="button"
+              onClick={onRemove}
+              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+            >
+              Remove
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="p-4">
