@@ -29,7 +29,240 @@ import ReportsPage from "./modules/reports/pages/ReportsPage";
 import SettingsPage from "./modules/settings/pages/SettingsPage";
 import FinancialManagementPage from "./modules/finance/pages/FinancialManagementPage";
 import CataloguePage from "./modules/catalogue/pages/CataloguePage";
+import StaffListPage from "./modules/staff/pages/StaffListPage";
+import AddStaffPage from "./modules/staff/pages/AddStaffPage";
+import BranchListPage from "./modules/branches/pages/BranchListPage";
+import AddBranchPage from "./modules/branches/pages/AddBranchPage";
+import BranchDetailsPage from "./modules/branches/pages/BranchDetailsPage";
 
-const ALL=["super_admin","organization_admin","branch_manager","optometrist","doctor","sales_executive","cashier","inventory_manager","lab_technician","receptionist"];
-const ADMIN=["super_admin","organization_admin","branch_manager"];
-export default function App(){return <Routes><Route path="/login" element={<LoginPage/>}/><Route element={<ProtectedRoute/>}><Route element={<AppLayout/>}><Route path="/dashboard" element={<DashboardPage/>}/><Route element={<RoleRoute roles={ALL}/>}><Route path="/patients" element={<PatientListPage/>}/><Route path="/patients/new" element={<AddPatientPage/>}/><Route path="/patients/:patientId" element={<PatientDetailsPage/>}/><Route path="/appointments" element={<AppointmentsPage/>}/><Route path="/appointments/book" element={<BookAppointmentPage/>}/><Route path="/appointments/:id" element={<AppointmentDetailsPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","optometrist","doctor"]}/>}><Route path="/patients/:patientId/consultations/new" element={<ConsultationPage/>}/><Route path="/clinical" element={<ModuleDocumentPage type="clinical"/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","sales_executive","optometrist","doctor","receptionist","lab_technician"]}/>}><Route path="/dispensing" element={<DispensingPage/>}/><Route path="/dispensing/:id" element={<DispensingDetailsPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","sales_executive","optometrist","doctor"]}/>}><Route path="/optical" element={<ModuleDocumentPage type="optical"/>}/><Route path="/optical/spectacles/new/:patientId" element={<NewSpectaclePage/>}/><Route path="/optical/spectacles/:id" element={<SpectacleDetailsPage/>}/><Route path="/optical/contact-lenses" element={<ContactLensPage/>}/><Route path="/optical/contact-lenses/new" element={<NewContactLensPage/>}/><Route path="/optical/contact-lenses/:id" element={<ContactLensDetailsPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","inventory_manager"]}/>}><Route path="/inventory" element={<InventoryPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","lab_technician"]}/>}><Route path="/lab" element={<ModuleDocumentPage type="lab"/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","cashier"]}/>}><Route path="/billing" element={<BillingPage/>}/><Route path="/billing/:id" element={<InvoiceDetailsPage/>}/><Route path="/reports" element={<ReportsPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","optometrist","doctor","receptionist"]}/>}><Route path="/recall" element={<RecallPage/>}/><Route path="/communications" element={<CommunicationsPage/>}/><Route path="/newsletters" element={<MarketingPage/>}/></Route><Route element={<RoleRoute roles={ADMIN}/>}><Route path="/staff" element={<ModuleDocumentPage type="staff"/>}/><Route path="/settings" element={<SettingsPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","cashier"]}/>}><Route path="/finance" element={<FinancialManagementPage/>}/></Route><Route element={<RoleRoute roles={["super_admin","organization_admin","branch_manager","inventory_manager","sales_executive","optometrist","doctor"]}/>}><Route path="/catalogue" element={<CataloguePage/>}/></Route></Route></Route><Route path="/" element={<Navigate to="/dashboard" replace/>}/><Route path="*" element={<Navigate to="/dashboard" replace/>}/></Routes>}
+const ALL = [
+  "super_admin",
+  "organization_admin",
+  "branch_manager",
+  "optometrist",
+  "doctor",
+  "sales_executive",
+  "cashier",
+  "inventory_manager",
+  "lab_technician",
+  "receptionist",
+];
+const ADMIN = ["super_admin", "organization_admin", "branch_manager"];
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<RoleRoute roles={ALL} />}>
+            <Route path="/patients" element={<PatientListPage />} />
+            <Route path="/patients/new" element={<AddPatientPage />} />
+            <Route
+              path="/patients/:patientId"
+              element={<PatientDetailsPage />}
+            />
+            <Route path="/appointments" element={<AppointmentsPage />} />
+            <Route
+              path="/appointments/book"
+              element={<BookAppointmentPage />}
+            />
+            <Route
+              path="/appointments/:id"
+              element={<AppointmentDetailsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "optometrist",
+                  "doctor",
+                ]}
+              />
+            }
+          >
+            <Route
+              path="/patients/:patientId/consultations/new"
+              element={<ConsultationPage />}
+            />
+            <Route
+              path="/clinical"
+              element={<ModuleDocumentPage type="clinical" />}
+            />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "sales_executive",
+                  "optometrist",
+                  "doctor",
+                  "receptionist",
+                  "lab_technician",
+                ]}
+              />
+            }
+          >
+            <Route path="/dispensing" element={<DispensingPage />} />
+            <Route path="/dispensing/:id" element={<DispensingDetailsPage />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "sales_executive",
+                  "optometrist",
+                  "doctor",
+                ]}
+              />
+            }
+          >
+            <Route
+              path="/optical"
+              element={<ModuleDocumentPage type="optical" />}
+            />
+            <Route
+              path="/optical/spectacles/new/:patientId"
+              element={<NewSpectaclePage />}
+            />
+            <Route
+              path="/optical/spectacles/:id"
+              element={<SpectacleDetailsPage />}
+            />
+            <Route
+              path="/optical/contact-lenses"
+              element={<ContactLensPage />}
+            />
+            <Route
+              path="/optical/contact-lenses/new"
+              element={<NewContactLensPage />}
+            />
+            <Route
+              path="/optical/contact-lenses/:id"
+              element={<ContactLensDetailsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "inventory_manager",
+                ]}
+              />
+            }
+          >
+            <Route path="/inventory" element={<InventoryPage />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "lab_technician",
+                ]}
+              />
+            }
+          >
+            <Route path="/lab" element={<ModuleDocumentPage type="lab" />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "cashier",
+                ]}
+              />
+            }
+          >
+            <Route path="/billing" element={<BillingPage />} />
+            <Route path="/billing/:id" element={<InvoiceDetailsPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "optometrist",
+                  "doctor",
+                  "receptionist",
+                ]}
+              />
+            }
+          >
+            <Route path="/recall" element={<RecallPage />} />
+            <Route path="/communications" element={<CommunicationsPage />} />
+            <Route path="/newsletters" element={<MarketingPage />} />
+          </Route>
+          <Route element={<RoleRoute roles={ADMIN} />}>
+            <Route path="/branches" element={<BranchListPage />} />
+            <Route path="/branches/new" element={<AddBranchPage />} />
+
+             <Route
+    path="/branches/:id"
+    element={<BranchDetailsPage />}
+  />
+            <Route path="/staff" element={<StaffListPage />} />
+
+            <Route path="/staff/new" element={<AddStaffPage />} />
+
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "cashier",
+                ]}
+              />
+            }
+          >
+            <Route path="/finance" element={<FinancialManagementPage />} />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                roles={[
+                  "super_admin",
+                  "organization_admin",
+                  "branch_manager",
+                  "inventory_manager",
+                  "sales_executive",
+                  "optometrist",
+                  "doctor",
+                ]}
+              />
+            }
+          >
+            <Route path="/catalogue" element={<CataloguePage />} />
+          </Route>
+        </Route>
+      </Route>
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
+}

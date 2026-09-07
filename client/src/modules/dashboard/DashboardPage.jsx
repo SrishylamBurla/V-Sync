@@ -1097,7 +1097,7 @@ function PatientSnapshotModal({
                         ["Address", p?.address || "—"],
                         ["City", p?.city || "—"],
                         ["State", p?.state || "—"],
-                        ["Postcode", p?.postcode || p?.postalCode || "—"],
+                        ["Postcode", p?.pincode || p?.pincode || "—"],
                         ["Source", p?.source || "—"],
                         ["Notes", p?.notes || "—"],
                       ].map(([label, value]) => (

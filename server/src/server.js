@@ -8,6 +8,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import branchRoutes from "./routes/branch.routes.js";
+import staffRoutes from "./routes/staff.routes.js" 
 import patientRoutes from "./routes/patient.routes.js";
 import consultationRoutes from "./routes/consultation.routes.js";
 import appointmentRoutes from "./routes/appointment.routes.js";
@@ -71,6 +72,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/branches", branchRoutes);
+app.use("/api/v1/staff", staffRoutes)
 app.use("/api/v1/patients", patientRoutes);
 app.use("/api/v1/consultations", consultationRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
