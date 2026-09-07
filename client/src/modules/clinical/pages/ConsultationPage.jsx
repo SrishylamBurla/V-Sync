@@ -21,11 +21,11 @@ import {
 } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { getPatient } from "../../patients/patient.api"
+import { getPatient } from "../../patients/patient.api";
 import {
   createConsultation,
   getPatientConsultations,
-} from "../consultation.api"
+} from "../consultation.api";
 
 /* =========================================================
    HELPERS
@@ -44,7 +44,6 @@ const formatDate = (value) => {
   if (!value) return "—";
 
   const parsed = new Date(value);
-
   if (Number.isNaN(parsed.getTime())) return "—";
 
   return parsed.toLocaleDateString("en-IN", {
@@ -54,23 +53,26 @@ const formatDate = (value) => {
   });
 };
 
+const dateInputValue = (value = new Date()) => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "";
+  const local = new Date(parsed.getTime() - parsed.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+};
+
 const calculateAge = (dateOfBirth) => {
   if (!dateOfBirth) return null;
 
   const birth = new Date(dateOfBirth);
-
   if (Number.isNaN(birth.getTime())) return null;
 
   const today = new Date();
-
   let age = today.getFullYear() - birth.getFullYear();
-
   const monthDifference = today.getMonth() - birth.getMonth();
 
   if (
     monthDifference < 0 ||
-    (monthDifference === 0 &&
-      today.getDate() < birth.getDate())
+    (monthDifference === 0 && today.getDate() < birth.getDate())
   ) {
     age--;
   }
@@ -79,14 +81,15 @@ const calculateAge = (dateOfBirth) => {
 };
 
 const emptyEye = () => ({
-  va: "",
   sphere: "",
   cylinder: "",
   axis: "",
   add: "",
+  inter: "",
+  hPrism: "",
+  vPrism: "",
+  va: "",
   nearVa: "",
-  prism: "",
-  base: "",
 });
 
 const emptySlitLampEye = () => ({
@@ -108,35 +111,60 @@ const emptyFundusEye = () => ({
   other: "",
 });
 
+const emptyDispensingLens = (eye) => ({
+  eye,
+  lensCode: "",
+  lensDescription: "",
+  lensSize: "",
+  segSize: "",
+  segHeight: "",
+  ocHeight: "",
+  horizontalDecentration: "",
+  verticalDecentration: "",
+  baseCurve: "",
+  lensSupplier: "",
+  supplierOrderDate: "",
+  lensPrice: "",
+});
+
 const consultationTypes = [
   {
     value: "comprehensive",
     label: "Comprehensive",
     description:
-      "Complete eye examination, refraction and clinical assessment.",
+      "Full eye examination with history, refraction, ocular examination, diagnosis and advice.",
     icon: Eye,
   },
   {
     value: "short_consult",
     label: "Short Consult",
     description:
-      "Quick consultation for routine or focused patient visits.",
+      "Quick focused consultation with an open clinical box and refraction slots.",
     icon: ClipboardPlus,
   },
 ];
 
 const specializedTypes = [
   {
+    value: "contact_lenses",
+    label: "Contact Lenses",
+    shortLabel: "CL",
+    icon: Glasses,
+    description: "Contact lens assessment and fitting.",
+  },
+  {
     value: "binocular_vision",
     label: "Binocular Vision",
+    shortLabel: "BV",
+    icon: Eye,
+    description: "Binocular vision and accommodation assessment.",
   },
   {
     value: "low_vision",
     label: "Low Vision",
-  },
-  {
-    value: "contact_lenses",
-    label: "Contact Lenses",
+    shortLabel: "LV",
+    icon: Eye,
+    description: "Low vision assessment and management.",
   },
 ];
 
@@ -154,12 +182,24 @@ const testTypes = [
   "Other",
 ];
 
+const adviceOptions = [
+  ["distanceWork", "Distance work"],
+  ["nearWork", "Near work"],
+  ["screenBreaks", "20-20-20 screen breaks"],
+  ["hygiene", "Eye hygiene"],
+  ["sunProtection", "UV protection"],
+  ["followUp", "Follow-up advised"],
+  ["spectacleWear", "Spectacle wear"],
+  ["contactLensCare", "Contact lens care"],
+];
+
 const initialForm = {
   consultationType: "comprehensive",
+  consultationDate: dateInputValue(),
 
   symptoms: "",
-  medicalHistory: "",
   ocularHistory: "",
+  systemicHistory: "",
   familyHistory: "",
   allergies: "",
   medications: "",
@@ -184,22 +224,18 @@ const initialForm = {
       right: emptyEye(),
       left: emptyEye(),
     },
-
     objective: {
       right: emptyEye(),
       left: emptyEye(),
     },
-
     subjective: {
       right: emptyEye(),
       left: emptyEye(),
     },
-
     final: {
       right: emptyEye(),
       left: emptyEye(),
     },
-
     pd: {
       right: "",
       left: "",
@@ -256,8 +292,6 @@ const initialForm = {
 
   diagnosis: [],
 
-  diagnosisNotes: "",
-
   advice: {
     distanceWork: false,
     nearWork: false,
@@ -270,40 +304,47 @@ const initialForm = {
     custom: "",
   },
 
-  prescription: {
-    type: "spectacle",
-    note: "",
-  },
-
   dispensing: {
     spectacleRequired: false,
-    frame: "",
-    lensType: "",
-    material: "",
-    coating: "",
-    pd: "",
-    fittingHeight: "",
+    frameCode: "",
+    frameDescription: "",
     frameSize: "",
-    remarks: "",
+    depth: "",
+    ed: "",
+    frameType: "",
+    other: "",
+    fitting: "",
+    toReorder: "",
+    frameDiscount: "",
+    overallDiscount: "",
+    gst: "",
+    billNo: "",
+    lensRows: [
+      emptyDispensingLens("R"),
+      emptyDispensingLens("L"),
+    ],
   },
 
-  therapeutics: {
-    medication: "",
-    dosage: "",
-    frequency: "",
-    duration: "",
-    instructions: "",
-  },
+  therapeutics: [
+    {
+      medication: "",
+      dosage: "",
+      frequency: "",
+      duration: "",
+      instructions: "",
+    },
+  ],
 
   recall: {
     enabled: false,
     date: "",
-    type: "",
+    type: "Routine Review",
     message: "",
   },
 
-  notes: "",
-  internalNotes: "",
+  shortConsult: {
+    openBox: "",
+  },
 };
 
 export default function ConsultationPage() {
@@ -311,51 +352,31 @@ export default function ConsultationPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // Supports both /patients/:patientId/consultations/new and /consultations/new?patientId=...
+  // Supports:
+  // /patients/:patientId/consultations/new
+  // /consultations/new?patientId=...
   const patientId = routePatientId || searchParams.get("patientId") || "";
 
   const [patient, setPatient] = useState(null);
   const [previousConsultations, setPreviousConsultations] = useState([]);
-
   const [loadingPatient, setLoadingPatient] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const [consultationStarted, setConsultationStarted] =
-    useState(false);
-
+  const [consultationStarted, setConsultationStarted] = useState(false);
+  const [showTypeSelector, setShowTypeSelector] = useState(true);
   const [dirty, setDirty] = useState(false);
-
-  const [showTypeSelector, setShowTypeSelector] =
-    useState(true);
+  const [draftSaved, setDraftSaved] = useState(false);
 
   const [form, setForm] = useState(initialForm);
 
-  const [expandedSections, setExpandedSections] = useState({
-    patient: true,
-    symptoms: true,
-    visualAcuity: true,
-    refraction: true,
-    binocularVision: false,
-    tests: true,
-    slitLamp: true,
-    fundus: true,
-    diagnosis: true,
-    advice: true,
-    prescription: true,
-    dispensing: true,
-    therapeutics: true,
-    recall: true,
-    notes: true,
-  });
-
-  /* =========================================================
-     LOAD PATIENT
-  ========================================================= */
+  const [addonModal, setAddonModal] = useState(null);
+  const [billingMessage, setBillingMessage] = useState("");
 
   useEffect(() => {
+    let mounted = true;
+
     const loadPatient = async () => {
       if (!patientId) {
         setError("No patient was selected.");
@@ -368,7 +389,6 @@ export default function ConsultationPage() {
         setError("");
 
         const response = await getPatient(patientId);
-
         const patientData =
           response?.data?.patient ||
           response?.data ||
@@ -379,43 +399,54 @@ export default function ConsultationPage() {
           throw new Error("Patient record not found.");
         }
 
+        if (!mounted) return;
+
         setPatient(patientData);
 
         try {
           const consultationsResponse =
             await getPatientConsultations(patientId);
 
-          const rows = Array.isArray(
-            consultationsResponse?.data
-          )
+          const rows = Array.isArray(consultationsResponse?.data)
             ? consultationsResponse.data
-            : Array.isArray(
-                consultationsResponse?.data?.consultations
-              )
+            : Array.isArray(consultationsResponse?.data?.consultations)
               ? consultationsResponse.data.consultations
               : [];
 
-          setPreviousConsultations(rows);
+          if (mounted) setPreviousConsultations(rows);
         } catch {
-          setPreviousConsultations([]);
+          if (mounted) setPreviousConsultations([]);
         }
       } catch (err) {
+        if (!mounted) return;
+
         setError(
           err?.response?.data?.message ||
             err?.message ||
             "Unable to load patient record."
         );
       } finally {
-        setLoadingPatient(false);
+        if (mounted) setLoadingPatient(false);
       }
     };
 
     loadPatient();
+
+    return () => {
+      mounted = false;
+    };
   }, [patientId]);
 
-  /* =========================================================
-     DERIVED DATA
-  ========================================================= */
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (!dirty || saving) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [dirty, saving]);
 
   const age = useMemo(
     () => calculateAge(patient?.dateOfBirth),
@@ -426,16 +457,27 @@ export default function ConsultationPage() {
     () =>
       consultationTypes.find(
         (item) => item.value === form.consultationType
-      ),
+      ) || consultationTypes[0],
     [form.consultationType]
   );
 
-  const isComprehensive =
-    form.consultationType === "comprehensive";
+  const isComprehensive = form.consultationType === "comprehensive";
+  const isShortConsult = form.consultationType === "short_consult";
 
-  /* =========================================================
-     FORM HELPERS
-  ========================================================= */
+  const lensTotal = useMemo(() => {
+    return form.dispensing.lensRows.reduce(
+      (sum, row) => sum + (Number(row.lensPrice) || 0),
+      0
+    );
+  }, [form.dispensing.lensRows]);
+
+  const frameValue = Number(form.dispensing.toReorder) || 0;
+  const frameDiscount = Number(form.dispensing.frameDiscount) || 0;
+  const overallDiscount = Number(form.dispensing.overallDiscount) || 0;
+  const grandTotal = Math.max(
+    0,
+    frameValue + lensTotal - frameDiscount - overallDiscount
+  );
 
   const updateForm = (key, value) => {
     setDirty(true);
@@ -456,12 +498,7 @@ export default function ConsultationPage() {
     }));
   };
 
-  const updateDeep = (
-    section,
-    subsection,
-    key,
-    value
-  ) => {
+  const updateDeep = (section, subsection, key, value) => {
     setDirty(true);
     setForm((current) => ({
       ...current,
@@ -475,12 +512,8 @@ export default function ConsultationPage() {
     }));
   };
 
-  const updateEyeField = (
-    section,
-    eye,
-    field,
-    value
-  ) => {
+  const updateEyeField = (section, eye, field, value) => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       [section]: {
@@ -493,16 +526,27 @@ export default function ConsultationPage() {
     }));
   };
 
-  const toggleSection = (section) => {
-    setExpandedSections((current) => ({
+  const updateRefractionField = (
+    prescriptionType,
+    eye,
+    field,
+    value
+  ) => {
+    setDirty(true);
+    setForm((current) => ({
       ...current,
-      [section]: !current[section],
+      refraction: {
+        ...current.refraction,
+        [prescriptionType]: {
+          ...current.refraction[prescriptionType],
+          [eye]: {
+            ...current.refraction[prescriptionType][eye],
+            [field]: value,
+          },
+        },
+      },
     }));
   };
-
-  /* =========================================================
-     CONSULTATION TYPE
-  ========================================================= */
 
   const startConsultation = (type) => {
     setForm((current) => ({
@@ -513,17 +557,15 @@ export default function ConsultationPage() {
     setConsultationStarted(true);
     setShowTypeSelector(false);
     setError("");
+    setDirty(false);
   };
 
   const changeConsultationType = () => {
     setShowTypeSelector(true);
   };
 
-  /* =========================================================
-     TESTS
-  ========================================================= */
-
   const addTest = () => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       additionalTests: [
@@ -531,27 +573,29 @@ export default function ConsultationPage() {
         {
           name: "Visual Field",
           result: "",
+          remarks: "",
         },
       ],
     }));
   };
 
   const updateTest = (index, field, value) => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
-      additionalTests: current.additionalTests.map(
-        (test, testIndex) =>
-          testIndex === index
-            ? {
-                ...test,
-                [field]: value,
-              }
-            : test
+      additionalTests: current.additionalTests.map((test, testIndex) =>
+        testIndex === index
+          ? {
+              ...test,
+              [field]: value,
+            }
+          : test
       ),
     }));
   };
 
   const removeTest = (index) => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       additionalTests: current.additionalTests.filter(
@@ -560,71 +604,160 @@ export default function ConsultationPage() {
     }));
   };
 
-  /* =========================================================
-     DIAGNOSIS
-  ========================================================= */
-
   const addDiagnosis = () => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       diagnosis: [
         ...current.diagnosis,
         {
           condition: "",
-          eye: "Both",
+          eye: "OU",
           notes: "",
         },
       ],
     }));
   };
 
-  const updateDiagnosis = (
-    index,
-    field,
-    value
-  ) => {
+  const updateDiagnosis = (index, field, value) => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
-      diagnosis: current.diagnosis.map(
-        (item, diagnosisIndex) =>
-          diagnosisIndex === index
-            ? {
-                ...item,
-                [field]: value,
-              }
-            : item
+      diagnosis: current.diagnosis.map((item, diagnosisIndex) =>
+        diagnosisIndex === index
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
       ),
     }));
   };
 
   const removeDiagnosis = (index) => {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       diagnosis: current.diagnosis.filter(
-        (_, diagnosisIndex) =>
-          diagnosisIndex !== index
+        (_, diagnosisIndex) => diagnosisIndex !== index
       ),
     }));
   };
 
-  /* =========================================================
-     ADVICE
-  ========================================================= */
+  const addTherapeutic = () => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      therapeutics: [
+        ...current.therapeutics,
+        {
+          medication: "",
+          dosage: "",
+          frequency: "",
+          duration: "",
+          instructions: "",
+        },
+      ],
+    }));
+  };
 
-  const adviceOptions = [
-    ["distanceWork", "Follow 20-20-20 rule"],
-    ["nearWork", "Maintain proper reading distance"],
-    ["screenBreaks", "Take regular screen breaks"],
-    ["hygiene", "Maintain eye hygiene"],
-    ["sunProtection", "Use UV protection"],
-    ["followUp", "Return for follow-up"],
-    ["spectacleWear", "Wear spectacles as advised"],
-    ["contactLensCare", "Follow contact lens care"],
-  ];
+  const updateTherapeutic = (index, field, value) => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      therapeutics: current.therapeutics.map((item, itemIndex) =>
+        itemIndex === index
+          ? { ...item, [field]: value }
+          : item
+      ),
+    }));
+  };
 
-  /* =========================================================
-     SAVE
-  ========================================================= */
+  const removeTherapeutic = (index) => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      therapeutics:
+        current.therapeutics.length > 1
+          ? current.therapeutics.filter(
+              (_, itemIndex) => itemIndex !== index
+            )
+          : current.therapeutics,
+    }));
+  };
+
+  const updateDispensingLens = (index, field, value) => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      dispensing: {
+        ...current.dispensing,
+        lensRows: current.dispensing.lensRows.map((row, rowIndex) =>
+          rowIndex === index
+            ? { ...row, [field]: value }
+            : row
+        ),
+      },
+    }));
+  };
+
+  const addDispensingLens = () => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      dispensing: {
+        ...current.dispensing,
+        lensRows: [
+          ...current.dispensing.lensRows,
+          emptyDispensingLens(
+            current.dispensing.lensRows.length % 2 === 0 ? "R" : "L"
+          ),
+        ],
+      },
+    }));
+  };
+
+  const removeDispensingLens = (index) => {
+    setDirty(true);
+    setForm((current) => ({
+      ...current,
+      dispensing: {
+        ...current.dispensing,
+        lensRows:
+          current.dispensing.lensRows.length > 1
+            ? current.dispensing.lensRows.filter(
+                (_, rowIndex) => rowIndex !== index
+              )
+            : current.dispensing.lensRows,
+      },
+    }));
+  };
+
+  const updateAddon = (section, key, value) => {
+    updateNested(section, key, value);
+  };
+
+  const handleSaveDraft = () => {
+    try {
+      localStorage.setItem(
+        `opticare-consultation-draft-${patientId}`,
+        JSON.stringify(form)
+      );
+      setDraftSaved(true);
+      setDirty(false);
+      setSuccess("Draft saved on this device.");
+      setTimeout(() => setSuccess(""), 2200);
+    } catch {
+      setError("Unable to save draft on this device.");
+    }
+  };
+
+  const handleCreateBill = () => {
+    setBillingMessage(
+      `Bill prepared for ₹${grandTotal.toFixed(2)}. Connect this button to your billing API when billing is enabled.`
+    );
+    setTimeout(() => setBillingMessage(""), 3500);
+  };
 
   const handleSave = async (event) => {
     event.preventDefault();
@@ -644,16 +777,7 @@ export default function ConsultationPage() {
       setError("");
       setSuccess("");
 
-      /*
-       * We send both the new structured clinical data
-       * and the existing fields expected by your current
-       * Consultation controller.
-       */
-
-      const slitLampText = formatSlitLamp(
-        form.slitLamp
-      );
-
+      const slitLampText = formatSlitLamp(form.slitLamp);
       const fundusText = formatFundus(form.fundus);
 
       const diagnosisText = form.diagnosis
@@ -675,59 +799,64 @@ export default function ConsultationPage() {
         .filter(Boolean)
         .join("\n");
 
-      const therapeuticText = [
-        form.therapeutics.medication,
-        form.therapeutics.dosage,
-        form.therapeutics.frequency,
-        form.therapeutics.duration,
-        form.therapeutics.instructions,
-      ]
+      const therapeuticText = form.therapeutics
+        .map((item) =>
+          [
+            item.medication,
+            item.dosage,
+            item.frequency,
+            item.duration,
+            item.instructions,
+          ]
+            .filter(Boolean)
+            .join(" | ")
+        )
         .filter(Boolean)
         .join("\n");
 
       const payload = {
         patientId,
+        consultationDate: form.consultationDate
+          ? new Date(`${form.consultationDate}T00:00:00`).toISOString()
+          : new Date().toISOString(),
 
         consultationType: form.consultationType,
 
-        symptoms: form.symptoms,
+        symptoms:
+          isShortConsult && form.shortConsult.openBox
+            ? form.shortConsult.openBox
+            : form.symptoms,
 
-        medication: therapeuticText,
+        medication:
+          therapeuticText || form.medications || "",
 
         allergy: form.allergies,
 
-        pupils: "",
+        pupils:
+          form.additionalTests
+            .filter((test) => test.name === "Pupillary Reflex")
+            .map((test) => test.result)
+            .filter(Boolean)
+            .join("\n") || "",
 
         ophthalmoscopy: fundusText,
-
         biomicroscopy: slitLampText,
 
-        visualField:
-          form.additionalTests
-            .filter(
-              (test) =>
-                test.name === "Visual Field"
-            )
-            .map((test) => test.result)
-            .filter(Boolean)
-            .join("\n"),
+        visualField: form.additionalTests
+          .filter((test) => test.name === "Visual Field")
+          .map((test) => test.result)
+          .filter(Boolean)
+          .join("\n"),
 
-        colourVision:
-          form.additionalTests
-            .filter(
-              (test) =>
-                test.name === "Colour Vision"
-            )
-            .map((test) => test.result)
-            .filter(Boolean)
-            .join("\n"),
+        colourVision: form.additionalTests
+          .filter((test) => test.name === "Colour Vision")
+          .map((test) => test.result)
+          .filter(Boolean)
+          .join("\n"),
 
         otherTests: form.additionalTests.filter(
           (test) =>
-            ![
-              "Visual Field",
-              "Colour Vision",
-            ].includes(test.name)
+            !["Visual Field", "Colour Vision"].includes(test.name)
         ),
 
         previousRx: {
@@ -739,13 +868,13 @@ export default function ConsultationPage() {
         subjectiveRx: {
           right: form.refraction.subjective.right,
           left: form.refraction.subjective.left,
-          note: form.prescription.note,
+          note: "",
         },
 
         givenRx: {
           right: form.refraction.final.right,
           left: form.refraction.final.left,
-          note: form.prescription.note,
+          note: "",
         },
 
         pd: form.refraction.pd,
@@ -757,78 +886,58 @@ export default function ConsultationPage() {
         recallLetter: form.recall.type || "",
 
         notes: [
-          form.medicalHistory
-            ? `Medical history: ${form.medicalHistory}`
-            : "",
           form.ocularHistory
             ? `Ocular history: ${form.ocularHistory}`
+            : "",
+          form.systemicHistory
+            ? `Systemic history: ${form.systemicHistory}`
             : "",
           form.familyHistory
             ? `Family history: ${form.familyHistory}`
             : "",
-          diagnosisText
-            ? `Diagnosis:\n${diagnosisText}`
-            : "",
-          adviceText
-            ? `Advice:\n${adviceText}`
-            : "",
-          form.notes
-            ? `Clinical notes:\n${form.notes}`
-            : "",
-          form.internalNotes
-            ? `Internal notes:\n${form.internalNotes}`
-            : "",
+          diagnosisText ? `Diagnosis:\n${diagnosisText}` : "",
+          adviceText ? `Advice:\n${adviceText}` : "",
         ]
           .filter(Boolean)
           .join("\n\n"),
 
-        /*
-         * New structured fields.
-         * These require the backend schema to accept them.
-         */
         visualAcuity: form.visualAcuity,
-
         refraction: form.refraction,
-
-        binocularVision:
-          form.binocularVision,
-
+        binocularVision: form.binocularVision,
         lowVision: form.lowVision,
-
-        contactLenses:
-          form.contactLenses,
-
+        contactLenses: form.contactLenses,
         slitLamp: form.slitLamp,
-
         fundus: form.fundus,
-
         diagnosis: form.diagnosis,
-
         advice: form.advice,
-
-        prescription: form.prescription,
-
+        prescription: {
+          type:
+            form.dispensing.spectacleRequired
+              ? "spectacle"
+              : "none",
+          note: "",
+        },
         dispensing: form.dispensing,
-
         therapeutics: form.therapeutics,
-
         recall: form.recall,
       };
 
-      const response =
-        await createConsultation(payload);
+      const response = await createConsultation(payload);
 
       if (!response) {
-        throw new Error(
-          "Consultation could not be saved."
+        throw new Error("Consultation could not be saved.");
+      }
+
+      try {
+        localStorage.removeItem(
+          `opticare-consultation-draft-${patientId}`
         );
+      } catch {
+        // Ignore local draft cleanup failures.
       }
 
       setDirty(false);
-
-      setSuccess(
-        "Consultation saved successfully."
-      );
+      setSuccess("Consultation saved successfully.");
 
       setTimeout(() => {
         navigate(`/patients/${patientId}`);
@@ -844,18 +953,22 @@ export default function ConsultationPage() {
     }
   };
 
-  /* =========================================================
-     LOADING
-  ========================================================= */
+  const safeNavigateBack = () => {
+    if (dirty && !saving) {
+      const confirmed = window.confirm(
+        "You have unsaved changes. Leave this consultation?"
+      );
+      if (!confirmed) return;
+    }
+
+    navigate(`/patients/${patientId}`);
+  };
 
   if (loadingPatient) {
     return (
-      <div className="flex min-h-[65vh] items-center justify-center">
-        <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
-          <Loader2
-            size={18}
-            className="animate-spin"
-          />
+      <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+          <Loader2 size={18} className="animate-spin text-blue-600" />
           Loading patient record...
         </div>
       </div>
@@ -864,8 +977,8 @@ export default function ConsultationPage() {
 
   if (!patient) {
     return (
-      <div className="mx-auto max-w-3xl py-16">
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+      <div className="mx-auto max-w-3xl px-4 py-16">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
           {error || "Patient record not found."}
         </div>
       </div>
@@ -873,1586 +986,971 @@ export default function ConsultationPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1500px] space-y-5 py-5 sm:py-7">
-      {/* =====================================================
-          TOP BAR
-      ====================================================== */}
+    <div className="min-h-screen bg-[#f4f8fc] text-slate-800">
+      <div className="mx-auto w-full max-w-[1600px]">
+        {/* =====================================================
+            TOP TOOLBAR
+        ====================================================== */}
+        <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
+          <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
+            <div className="flex min-w-0 items-center gap-3">
+              <button
+                type="button"
+                onClick={safeNavigateBack}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                title="Back to patient"
+              >
+                <ArrowLeft size={16} />
+              </button>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() =>
-              navigate(`/patients/${patientId}`)
-            }
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
-          >
-            <ArrowLeft size={17} />
-          </button>
-
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[.2em] text-violet-600">
-              Clinical workspace
+              <div className="min-w-0">
+                <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+                  Clinical workspace
+                </div>
+                <h1 className="truncate text-lg font-bold leading-tight text-slate-900 sm:text-xl">
+                  New Consultation
+                </h1>
+              </div>
             </div>
 
-            <h1 className="mt-0.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-              New Consultation
-            </h1>
+            <div className="flex shrink-0 items-center gap-2">
+              {dirty && consultationStarted && (
+                <span className="hidden items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-2 text-[10px] font-semibold text-amber-700 md:inline-flex">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  Unsaved
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                disabled={!consultationStarted || saving}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Save size={14} />
+                <span className="hidden sm:inline">
+                  {draftSaved ? "Draft Saved" : "Save Draft"}
+                </span>
+              </button>
+
+              <button
+                type="submit"
+                form="consultation-form"
+                disabled={!consultationStarted || saving}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4"
+              >
+                {saving ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Save size={14} />
+                )}
+                <span className="hidden sm:inline">
+                  {saving ? "Saving..." : "Save Consultation"}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {consultationStarted && dirty && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Unsaved changes
-            </span>
-          )}
-          {consultationStarted && (
-            <button
-              type="button"
-              onClick={changeConsultationType}
-              className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3.5 py-2.5 text-xs font-bold text-violet-700 hover:bg-violet-100"
-            >
-              <Stethoscope size={14} />
-              {selectedType?.label}
-              <ChevronDown size={13} />
-            </button>
-          )}
+        {/* =====================================================
+            ALERTS
+        ====================================================== */}
+        {(error || success || billingMessage) && (
+          <div className="px-3 pt-3 sm:px-5 lg:px-7">
+            {error && (
+              <div className="flex items-start justify-between gap-4 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+                <span>{error}</span>
+                <button
+                  type="button"
+                  onClick={() => setError("")}
+                  className="text-red-400 hover:text-red-700"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            )}
 
-          <button
-            type="button"
-            onClick={() =>
-              navigate(`/patients/${patientId}`)
-            }
-            className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+            {success && (
+              <div className="mt-2 flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-medium text-emerald-700">
+                <Check size={14} />
+                {success}
+              </div>
+            )}
 
-      {/* =====================================================
-          ALERTS
-      ====================================================== */}
+            {billingMessage && (
+              <div className="mt-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-medium text-blue-700">
+                {billingMessage}
+              </div>
+            )}
+          </div>
+        )}
 
-      {error && (
-        <div className="flex items-start justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          <span>{error}</span>
-
-          <button
-            type="button"
-            onClick={() => setError("")}
-            className="text-red-400 hover:text-red-700"
-          >
-            <X size={15} />
-          </button>
-        </div>
-      )}
-
-      {success && (
-        <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-          <Check size={16} />
-          {success}
-        </div>
-      )}
-
-      {/* =====================================================
-          PATIENT HEADER
-      ====================================================== */}
-
-      <PatientHeader
-        patient={patient}
-        age={age}
-      />
-
-      {/* =====================================================
-          CONSULTATION TYPE SELECTOR
-      ====================================================== */}
-
-      {showTypeSelector && (
-        <ConsultationTypeSelector
-          currentType={form.consultationType}
-          onSelect={startConsultation}
-          onClose={() => {
-            if (consultationStarted) {
-              setShowTypeSelector(false);
-            }
-          }}
-          canClose={consultationStarted}
+        {/* =====================================================
+            PATIENT HEADER
+        ====================================================== */}
+        <PatientHeader
+          patient={patient}
+          age={age}
+          previousConsultations={previousConsultations}
         />
-      )}
 
-      {/* =====================================================
-          CONSULTATION FORM
-      ====================================================== */}
-
-      {consultationStarted && (
-        <form
-          id="consultation-form"
-          onSubmit={handleSave}
-          className="space-y-4"
-        >
-          {/* PATIENT / VISIT */}
-          <ClinicalSection
-            number="01"
-            title="Patient & Visit"
-            subtitle="Patient identification and consultation details"
-            icon={UserRound}
-            open={expandedSections.patient}
-            onToggle={() =>
-              toggleSection("patient")
-            }
-          >
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <InfoField
-                label="Patient"
-                value={fullName(patient)}
-              />
-
-              <InfoField
-                label="Patient number"
-                value={patient.patientNumber}
-              />
-
-              <InfoField
-                label="Date of birth"
-                value={formatDate(
-                  patient.dateOfBirth
-                )}
-              />
-
-              <InfoField
-                label="Age"
-                value={
-                  age !== null
-                    ? `${age} years`
-                    : "Not recorded"
-                }
-              />
-
-              <InfoField
-                label="Gender"
-                value={patient.gender}
-              />
-
-              <InfoField
-                label="Phone"
-                value={patient.phone}
-              />
-
-              <InfoField
-                label="Consultation"
-                value={selectedType?.label}
-              />
-
-              <InfoField
-                label="Previous visits"
-                value={previousConsultations.length}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* SYMPTOMS */}
-          <ClinicalSection
-            number="02"
-            title="Symptoms & History"
-            subtitle="Reason for visit and relevant history"
-            icon={History}
-            open={expandedSections.symptoms}
-            onToggle={() =>
-              toggleSection("symptoms")
-            }
-          >
-            <div className="space-y-5">
-              <TextArea
-                label="Presenting symptoms / reason for visit"
-                value={form.symptoms}
-                onChange={(value) =>
-                  updateForm("symptoms", value)
-                }
-                placeholder="Describe the patient's main complaint, onset, duration and relevant symptoms..."
-                rows={4}
-              />
-
-              <div className="grid gap-5 lg:grid-cols-2">
-                <TextArea
-                  label="Medical history"
-                  value={form.medicalHistory}
-                  onChange={(value) =>
-                    updateForm(
-                      "medicalHistory",
-                      value
-                    )
-                  }
-                  placeholder="Diabetes, hypertension, systemic conditions, previous surgeries..."
-                />
-
-                <TextArea
-                  label="Ocular history"
-                  value={form.ocularHistory}
-                  onChange={(value) =>
-                    updateForm(
-                      "ocularHistory",
-                      value
-                    )
-                  }
-                  placeholder="Previous eye conditions, trauma, surgery, glaucoma, cataract..."
-                />
-
-                <TextArea
-                  label="Family history"
-                  value={form.familyHistory}
-                  onChange={(value) =>
-                    updateForm(
-                      "familyHistory",
-                      value
-                    )
-                  }
-                  placeholder="Relevant family ocular or systemic history..."
-                />
-
-                <TextArea
-                  label="Allergies"
-                  value={form.allergies}
-                  onChange={(value) =>
-                    updateForm(
-                      "allergies",
-                      value
-                    )
-                  }
-                  placeholder="Drug, food or other allergies..."
-                />
-
-                <TextArea
-                  label="Current medications"
-                  value={form.medications}
-                  onChange={(value) =>
-                    updateForm(
-                      "medications",
-                      value
-                    )
-                  }
-                  placeholder="Current medication and treatment history..."
-                />
-              </div>
-            </div>
-          </ClinicalSection>
-
-          {/* VISUAL ACUITY */}
-          <ClinicalSection
-            number="03"
-            title="Visual Acuity"
-            subtitle="Unaided, aided and pinhole visual acuity"
-            icon={Eye}
-            open={expandedSections.visualAcuity}
-            onToggle={() =>
-              toggleSection("visualAcuity")
-            }
-          >
-            <EyeTable
-              columns={[
-                "Unaided Distance",
-                "Aided Distance",
-                "Pinhole",
-                "Near",
-              ]}
-              rows={[
-                {
-                  label: "OD",
-                  values:
-                    form.visualAcuity.right,
-                  eye: "right",
-                },
-                {
-                  label: "OS",
-                  values:
-                    form.visualAcuity.left,
-                  eye: "left",
-                },
-              ]}
-              fields={[
-                "unaidedDistance",
-                "aidedDistance",
-                "pinhole",
-                "near",
-              ]}
-              onChange={(eye, field, value) =>
-                updateDeep(
-                  "visualAcuity",
-                  eye,
-                  field,
-                  value
-                )
+        {/* =====================================================
+            CONSULTATION TYPE MODAL
+        ====================================================== */}
+        {showTypeSelector && (
+          <ConsultationTypeModal
+            currentType={form.consultationType}
+            onSelect={startConsultation}
+            onClose={() => {
+              if (consultationStarted) {
+                setShowTypeSelector(false);
               }
-            />
-          </ClinicalSection>
+            }}
+            canClose={consultationStarted}
+          />
+        )}
 
-          {/* REFRACTION */}
-          <ClinicalSection
-            number="04"
-            title="Refraction"
-            subtitle="Previous, objective, subjective and final prescription"
-            icon={Glasses}
-            open={expandedSections.refraction}
-            onToggle={() =>
-              toggleSection("refraction")
-            }
+        {/* =====================================================
+            MAIN CONSULTATION
+        ====================================================== */}
+        {consultationStarted && (
+          <form
+            id="consultation-form"
+            onSubmit={handleSave}
+            className="px-3 pb-28 pt-3 sm:px-5 lg:px-7"
           >
-            <div className="space-y-7">
-              <RefractionBlock
-                title="Previous Prescription"
-                data={form.refraction.previous}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "refraction",
-                    "previous",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
+            {/* =================================================
+                VISIT CONTROL STRIP
+            ================================================== */}
+            <div className="mb-3 rounded-md border border-slate-200 bg-white shadow-sm">
+              <div className="grid items-center gap-0 lg:grid-cols-[1.1fr_1fr_1fr_1fr]">
+                <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
+                  <div className="mb-1 text-[9px] font-bold text-slate-500">
+                    Consultation Type <span className="text-red-500">*</span>
+                  </div>
 
-              <RefractionBlock
-                title="Objective Refraction"
-                data={form.refraction.objective}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "refraction",
-                    "objective",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
-
-              <RefractionBlock
-                title="Subjective Refraction"
-                data={form.refraction.subjective}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "refraction",
-                    "subjective",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
-
-              <RefractionBlock
-                title="Final / Given Prescription"
-                data={form.refraction.final}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "refraction",
-                    "final",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="mb-4 text-xs font-bold text-slate-800">
-                  Pupillary Distance
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Input
-                    label="Right PD"
-                    value={
-                      form.refraction.pd.right
-                    }
-                    onChange={(value) =>
-                      updateDeep(
-                        "refraction",
-                        "pd",
-                        "right",
-                        value
-                      )
-                    }
-                    placeholder="e.g. 31"
-                  />
-
-                  <Input
-                    label="Left PD"
-                    value={
-                      form.refraction.pd.left
-                    }
-                    onChange={(value) =>
-                      updateDeep(
-                        "refraction",
-                        "pd",
-                        "left",
-                        value
-                      )
-                    }
-                    placeholder="e.g. 31"
-                  />
-
-                  <Input
-                    label="Total PD"
-                    value={
-                      form.refraction.pd.total
-                    }
-                    onChange={(value) =>
-                      updateDeep(
-                        "refraction",
-                        "pd",
-                        "total",
-                        value
-                      )
-                    }
-                    placeholder="e.g. 62"
-                  />
-                </div>
-              </div>
-            </div>
-          </ClinicalSection>
-
-          {/* BINOCULAR VISION */}
-          {(isComprehensive ||
-            form.consultationType ===
-              "binocular_vision") && (
-            <ClinicalSection
-              number="05"
-              title="Binocular Vision"
-              subtitle="Binocular vision and accommodation assessment"
-              icon={Eye}
-              open={expandedSections.binocularVision}
-              onToggle={() =>
-                toggleSection(
-                  "binocularVision"
-                )
-              }
-            >
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <Input
-                  label="Cover Test — Distance"
-                  value={
-                    form.binocularVision
-                      .coverTestDistance
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "coverTestDistance",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Cover Test — Near"
-                  value={
-                    form.binocularVision
-                      .coverTestNear
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "coverTestNear",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="NPC"
-                  value={
-                    form.binocularVision.npc
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "npc",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Worth 4 Dot"
-                  value={
-                    form.binocularVision
-                      .worthFourDot
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "worthFourDot",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Stereopsis"
-                  value={
-                    form.binocularVision
-                      .stereopsis
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "stereopsis",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Vergence BI"
-                  value={
-                    form.binocularVision
-                      .vergenceBI
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "vergenceBI",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Vergence BO"
-                  value={
-                    form.binocularVision
-                      .vergenceBO
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "vergenceBO",
-                      value
-                    )
-                  }
-                />
-
-                <Input
-                  label="Accommodation"
-                  value={
-                    form.binocularVision
-                      .accommodation
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "accommodation",
-                      value
-                    )
-                  }
-                />
-              </div>
-
-              <div className="mt-5">
-                <TextArea
-                  label="Binocular vision findings"
-                  value={
-                    form.binocularVision
-                      .findings
-                  }
-                  onChange={(value) =>
-                    updateNested(
-                      "binocularVision",
-                      "findings",
-                      value
-                    )
-                  }
-                  rows={4}
-                />
-              </div>
-            </ClinicalSection>
-          )}
-
-          {/* ADD TEST */}
-          <ClinicalSection
-            number="06"
-            title="Additional Tests"
-            subtitle="Add and record additional clinical tests"
-            icon={Stethoscope}
-            open={expandedSections.tests}
-            onToggle={() =>
-              toggleSection("tests")
-            }
-            action={
-              <button
-                type="button"
-                onClick={addTest}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-[10px] font-bold text-white hover:bg-blue-700"
-              >
-                <Plus size={13} />
-                Add Test
-              </button>
-            }
-          >
-            {form.additionalTests.length ===
-            0 ? (
-              <EmptyState
-                icon={Stethoscope}
-                title="No additional tests"
-                description="Use Add Test to record visual field, colour vision, OCT, tonometry and other tests."
-              />
-            ) : (
-              <div className="space-y-4">
-                {form.additionalTests.map(
-                  (test, index) => (
-                    <div
-                      key={index}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                    >
-                      <div className="mb-4 flex items-center justify-between">
-                        <div className="text-xs font-bold text-slate-800">
-                          Test {index + 1}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeTest(index)
-                          }
-                          className="rounded-lg p-2 text-red-500 hover:bg-red-50"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-
-                      <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
-                        <Select
-                          label="Test"
-                          value={test.name}
-                          options={testTypes}
-                          onChange={(value) =>
-                            updateTest(
-                              index,
-                              "name",
-                              value
-                            )
-                          }
-                        />
-
-                        <TextArea
-                          label="Result / Findings"
-                          value={test.result}
-                          onChange={(value) =>
-                            updateTest(
-                              index,
-                              "result",
-                              value
-                            )
-                          }
-                          rows={3}
-                          placeholder="Enter test findings..."
-                        />
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            )}
-
-            {/* SPECIALIZED LOW VISION */}
-            {form.consultationType ===
-              "low_vision" && (
-              <div className="mt-5 rounded-2xl border border-violet-200 bg-violet-50/40 p-5">
-                <div className="mb-4 text-xs font-bold uppercase tracking-wider text-violet-700">
-                  Low Vision Assessment
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <Input
-                    label="Distance VA"
-                    value={
-                      form.lowVision
-                        .distanceVA
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "distanceVA",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Near VA"
-                    value={
-                      form.lowVision.nearVA
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "nearVA",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Contrast"
-                    value={
-                      form.lowVision.contrast
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "contrast",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Visual Field"
-                    value={
-                      form.lowVision
-                        .visualField
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "visualField",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Magnification"
-                    value={
-                      form.lowVision
-                        .magnification
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "magnification",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Assistive Device"
-                    value={
-                      form.lowVision
-                        .assistiveDevice
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "assistiveDevice",
-                        value
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <TextArea
-                    label="Low vision advice"
-                    value={
-                      form.lowVision.advice
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "lowVision",
-                        "advice",
-                        value
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* CONTACT LENS */}
-            {form.consultationType ===
-              "contact_lenses" && (
-              <div className="mt-5 rounded-2xl border border-cyan-200 bg-cyan-50/40 p-5">
-                <div className="mb-4 text-xs font-bold uppercase tracking-wider text-cyan-700">
-                  Contact Lens Assessment
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <Input
-                    label="Lens Type"
-                    value={
-                      form.contactLenses
-                        .lensType
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "lensType",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Brand"
-                    value={
-                      form.contactLenses
-                        .brand
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "brand",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Base Curve"
-                    value={
-                      form.contactLenses
-                        .baseCurve
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "baseCurve",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Diameter"
-                    value={
-                      form.contactLenses
-                        .diameter
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "diameter",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="OD Power"
-                    value={
-                      form.contactLenses
-                        .rightPower
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "rightPower",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="OS Power"
-                    value={
-                      form.contactLenses
-                        .leftPower
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "leftPower",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Replacement"
-                    value={
-                      form.contactLenses
-                        .replacement
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "replacement",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Wear Schedule"
-                    value={
-                      form.contactLenses
-                        .wearSchedule
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "wearSchedule",
-                        value
-                      )
-                    }
-                  />
-
-                  <Input
-                    label="Solution"
-                    value={
-                      form.contactLenses
-                        .solution
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "solution",
-                        value
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <TextArea
-                    label="Contact lens advice"
-                    value={
-                      form.contactLenses.advice
-                    }
-                    onChange={(value) =>
-                      updateNested(
-                        "contactLenses",
-                        "advice",
-                        value
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            )}
-          </ClinicalSection>
-
-          {/* SLIT LAMP */}
-          {isComprehensive && (
-            <ClinicalSection
-              number="07"
-              title="Slit Lamp Examination"
-              subtitle="Anterior segment examination"
-              icon={Eye}
-              open={expandedSections.slitLamp}
-              onToggle={() =>
-                toggleSection("slitLamp")
-              }
-            >
-              <SlitLampTable
-                data={form.slitLamp}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "slitLamp",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
-            </ClinicalSection>
-          )}
-
-          {/* FUNDUS */}
-          {isComprehensive && (
-            <ClinicalSection
-              number="08"
-              title="Fundus Examination"
-              subtitle="Posterior segment examination"
-              icon={Eye}
-              open={expandedSections.fundus}
-              onToggle={() =>
-                toggleSection("fundus")
-              }
-            >
-              <FundusTable
-                data={form.fundus}
-                onChange={(eye, field, value) =>
-                  updateEyeField(
-                    "fundus",
-                    eye,
-                    field,
-                    value
-                  )
-                }
-              />
-            </ClinicalSection>
-          )}
-
-          {/* DIAGNOSIS */}
-          <ClinicalSection
-            number="09"
-            title="Diagnosis"
-            subtitle="Clinical findings and diagnosis"
-            icon={HeartPulse}
-            open={expandedSections.diagnosis}
-            onToggle={() =>
-              toggleSection("diagnosis")
-            }
-            action={
-              <button
-                type="button"
-                onClick={addDiagnosis}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-[10px] font-bold text-white hover:bg-blue-700"
-              >
-                <Plus size={13} />
-                Add Diagnosis
-              </button>
-            }
-          >
-            {form.diagnosis.length ===
-            0 ? (
-              <EmptyState
-                icon={HeartPulse}
-                title="No diagnosis added"
-                description="Add one or more clinical diagnoses."
-              />
-            ) : (
-              <div className="space-y-3">
-                {form.diagnosis.map(
-                  (item, index) => (
-                    <div
-                      key={index}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                    >
-                      <div className="grid gap-4 lg:grid-cols-[1fr_180px_1fr_auto]">
-                        <Input
-                          label="Diagnosis"
-                          value={
-                            item.condition
-                          }
-                          onChange={(value) =>
-                            updateDiagnosis(
-                              index,
-                              "condition",
-                              value
-                            )
-                          }
-                          placeholder="Enter diagnosis"
-                        />
-
-                        <Select
-                          label="Eye"
-                          value={item.eye}
-                          options={[
-                            "Right",
-                            "Left",
-                            "Both",
-                            "N/A",
-                          ]}
-                          onChange={(value) =>
-                            updateDiagnosis(
-                              index,
-                              "eye",
-                              value
-                            )
-                          }
-                        />
-
-                        <Input
-                          label="Clinical note"
-                          value={item.notes}
-                          onChange={(value) =>
-                            updateDiagnosis(
-                              index,
-                              "notes",
-                              value
-                            )
-                          }
-                          placeholder="Optional"
-                        />
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeDiagnosis(
-                              index
-                            )
-                          }
-                          className="mt-5 flex h-10 w-10 items-center justify-center rounded-xl border border-red-100 bg-red-50 text-red-500 hover:bg-red-100"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            )}
-
-            <div className="mt-5">
-              <TextArea
-                label="Additional diagnosis notes"
-                value={form.diagnosisNotes}
-                onChange={(value) =>
-                  updateForm(
-                    "diagnosisNotes",
-                    value
-                  )
-                }
-                placeholder="Additional clinical interpretation..."
-                rows={4}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* ADVICE */}
-          <ClinicalSection
-            number="10"
-            title="Advice"
-            subtitle="Patient instructions and clinical advice"
-            icon={FileText}
-            open={expandedSections.advice}
-            onToggle={() =>
-              toggleSection("advice")
-            }
-          >
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {adviceOptions.map(
-                ([key, label]) => (
-                  <label
-                    key={key}
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-xs font-medium transition ${
-                      form.advice[key]
-                        ? "border-blue-200 bg-blue-50 text-blue-700"
-                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                    }`}
+                  <button
+                    type="button"
+                    onClick={changeConsultationType}
+                    className="inline-flex h-8 items-center gap-2 rounded border border-blue-300 bg-blue-50 px-3 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
                   >
-                    <input
-                      type="checkbox"
-                      checked={form.advice[key]}
-                      onChange={(event) =>
+                    <Check size={13} />
+                    {selectedType.label}
+                    <ChevronDown size={13} />
+                  </button>
+                </div>
+
+                <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-[9px] font-bold text-slate-500">
+                      Recall
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
                         updateNested(
-                          "advice",
-                          key,
-                          event.target.checked
+                          "recall",
+                          "enabled",
+                          !form.recall.enabled
                         )
                       }
-                      className="h-4 w-4 rounded border-slate-300 text-blue-600"
-                    />
-
-                    {label}
-                  </label>
-                )
-              )}
-            </div>
-
-            <div className="mt-5">
-              <TextArea
-                label="Additional advice"
-                value={form.advice.custom}
-                onChange={(value) =>
-                  updateNested(
-                    "advice",
-                    "custom",
-                    value
-                  )
-                }
-                placeholder="Enter any additional instructions for the patient..."
-                rows={4}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* PRESCRIPTION */}
-          <ClinicalSection
-            number="11"
-            title="Prescription"
-            subtitle="Final prescription and prescription notes"
-            icon={Glasses}
-            open={expandedSections.prescription}
-            onToggle={() =>
-              toggleSection("prescription")
-            }
-          >
-            <div className="grid gap-5 lg:grid-cols-[240px_1fr]">
-              <Select
-                label="Prescription type"
-                value={
-                  form.prescription.type
-                }
-                options={[
-                  "spectacle",
-                  "contact_lens",
-                  "none",
-                ]}
-                onChange={(value) =>
-                  updateNested(
-                    "prescription",
-                    "type",
-                    value
-                  )
-                }
-              />
-
-              <TextArea
-                label="Prescription note"
-                value={
-                  form.prescription.note
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "prescription",
-                    "note",
-                    value
-                  )
-                }
-                placeholder="Notes related to the prescription..."
-                rows={3}
-              />
-            </div>
-
-            <div className="mt-5 overflow-x-auto">
-              <PrescriptionSummary
-                data={form.refraction.final}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* DISPENSING */}
-          <ClinicalSection
-            number="12"
-            title="Dispensing"
-            subtitle="Spectacle and optical dispensing details"
-            icon={Glasses}
-            open={expandedSections.dispensing}
-            onToggle={() =>
-              toggleSection("dispensing")
-            }
-          >
-            <div className="mb-5">
-              <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <input
-                  type="checkbox"
-                  checked={
-                    form.dispensing
-                      .spectacleRequired
-                  }
-                  onChange={(event) =>
-                    updateNested(
-                      "dispensing",
-                      "spectacleRequired",
-                      event.target.checked
-                    )
-                  }
-                  className="h-4 w-4 rounded border-slate-300 text-blue-600"
-                />
-
-                <div>
-                  <div className="text-xs font-bold text-slate-800">
-                    Spectacle required
+                      className={`rounded px-2 py-1 text-[9px] font-bold ${
+                        form.recall.enabled
+                          ? "bg-blue-50 text-blue-700"
+                          : "border border-slate-200 bg-white text-slate-500"
+                      }`}
+                    >
+                      {form.recall.enabled ? "Enabled" : "Add Recall"}
+                    </button>
                   </div>
-                  <div className="mt-0.5 text-[10px] text-slate-500">
-                    Patient requires spectacle dispensing.
-                  </div>
-                </div>
-              </label>
-            </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              <Input
-                label="Frame"
-                value={
-                  form.dispensing.frame
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "frame",
-                    value
-                  )
-                }
-                placeholder="Frame / SKU"
-              />
+                  {form.recall.enabled && (
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <div className="relative min-w-0 flex-1">
+                        <CalendarDays
+                          size={13}
+                          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type="date"
+                          value={form.recall.date}
+                          onChange={(event) =>
+                            updateNested(
+                              "recall",
+                              "date",
+                              event.target.value
+                            )
+                          }
+                          className="h-8 w-full rounded border border-slate-200 bg-white pl-8 pr-2 text-[10px] outline-none focus:border-blue-400"
+                        />
+                      </div>
 
-              <Input
-                label="Lens type"
-                value={
-                  form.dispensing.lensType
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "lensType",
-                    value
-                  )
-                }
-                placeholder="Single vision / progressive..."
-              />
-
-              <Input
-                label="Material"
-                value={
-                  form.dispensing.material
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "material",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="Coating"
-                value={
-                  form.dispensing.coating
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "coating",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="PD"
-                value={form.dispensing.pd}
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "pd",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="Fitting height"
-                value={
-                  form.dispensing
-                    .fittingHeight
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "fittingHeight",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="Frame size"
-                value={
-                  form.dispensing.frameSize
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "frameSize",
-                    value
-                  )
-                }
-              />
-            </div>
-
-            <div className="mt-5">
-              <TextArea
-                label="Dispensing remarks"
-                value={
-                  form.dispensing.remarks
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "dispensing",
-                    "remarks",
-                    value
-                  )
-                }
-                rows={3}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* THERAPEUTICS */}
-          <ClinicalSection
-            number="13"
-            title="Therapeutics"
-            subtitle="Treatment and medication instructions"
-            icon={HeartPulse}
-            open={expandedSections.therapeutics}
-            onToggle={() =>
-              toggleSection("therapeutics")
-            }
-          >
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              <Input
-                label="Medication / treatment"
-                value={
-                  form.therapeutics
-                    .medication
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "therapeutics",
-                    "medication",
-                    value
-                  )
-                }
-                placeholder="Medication name"
-              />
-
-              <Input
-                label="Dosage"
-                value={
-                  form.therapeutics.dosage
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "therapeutics",
-                    "dosage",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="Frequency"
-                value={
-                  form.therapeutics
-                    .frequency
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "therapeutics",
-                    "frequency",
-                    value
-                  )
-                }
-              />
-
-              <Input
-                label="Duration"
-                value={
-                  form.therapeutics
-                    .duration
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "therapeutics",
-                    "duration",
-                    value
-                  )
-                }
-              />
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">
-              Therapeutic medication entry should be
-              restricted to appropriately authorized
-              clinical users according to your
-              organization workflow.
-            </div>
-
-            <div className="mt-5">
-              <TextArea
-                label="Treatment instructions"
-                value={
-                  form.therapeutics
-                    .instructions
-                }
-                onChange={(value) =>
-                  updateNested(
-                    "therapeutics",
-                    "instructions",
-                    value
-                  )
-                }
-                rows={4}
-              />
-            </div>
-          </ClinicalSection>
-
-          {/* RECALL */}
-          <ClinicalSection
-            number="14"
-            title="Recall"
-            subtitle="Follow-up and recall scheduling"
-            icon={CalendarDays}
-            open={expandedSections.recall}
-            onToggle={() =>
-              toggleSection("recall")
-            }
-          >
-            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <input
-                type="checkbox"
-                checked={form.recall.enabled}
-                onChange={(event) =>
-                  updateNested(
-                    "recall",
-                    "enabled",
-                    event.target.checked
-                  )
-                }
-                className="h-4 w-4 rounded border-slate-300 text-blue-600"
-              />
-
-              <div>
-                <div className="text-xs font-bold text-slate-800">
-                  Schedule recall
+                      <select
+                        value={form.recall.type}
+                        onChange={(event) =>
+                          updateNested(
+                            "recall",
+                            "type",
+                            event.target.value
+                          )
+                        }
+                        className="h-8 min-w-0 flex-1 rounded border border-slate-200 bg-white px-2 text-[10px] outline-none focus:border-blue-400"
+                      >
+                        <option>Routine Review</option>
+                        <option>Prescription Review</option>
+                        <option>Contact Lens Review</option>
+                        <option>Clinical Follow-up</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-0.5 text-[10px] text-slate-500">
-                  Create a follow-up date for this patient.
+                <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
+                  <Input
+                    label="Consult Date"
+                    type="date"
+                    value={form.consultationDate}
+                    onChange={(value) =>
+                      updateForm("consultationDate", value)
+                    }
+                  />
+                </div>
+
+                <div className="px-3 py-2.5">
+                  <div className="mb-1 text-[9px] font-bold text-slate-500">
+                    Optometrist
+                  </div>
+                  <div className="flex h-8 items-center justify-between rounded border border-slate-200 bg-slate-50 px-2.5 text-[10px] font-semibold text-slate-700">
+                    <span>
+                      {patient?.assignedOptometristName ||
+                        patient?.lastOptometristName ||
+                        "Current clinician"}
+                    </span>
+                    <ChevronDown size={13} className="text-slate-400" />
+                  </div>
                 </div>
               </div>
-            </label>
+            </div>
 
-            {form.recall.enabled && (
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                <Input
-                  label="Recall date"
-                  type="date"
-                  value={form.recall.date}
-                  onChange={(value) =>
-                    updateNested(
-                      "recall",
-                      "date",
-                      value
-                    )
-                  }
-                />
-
-                <Select
-                  label="Recall type"
-                  value={form.recall.type}
-                  options={[
-                    "Routine review",
-                    "Prescription review",
-                    "Contact lens review",
-                    "Clinical follow-up",
-                    "Other",
-                  ]}
-                  onChange={(value) =>
-                    updateNested(
-                      "recall",
-                      "type",
-                      value
-                    )
-                  }
-                />
-
-                <div className="sm:col-span-2">
+            {/* =================================================
+                SHORT CONSULT
+            ================================================== */}
+            {isShortConsult ? (
+              <div className="grid gap-3 lg:grid-cols-2">
+                <ClinicalPanel
+                  number="01"
+                  title="Open Box"
+                  icon={FileText}
+                >
                   <TextArea
-                    label="Recall message"
-                    value={
-                      form.recall.message
+                    label="Clinical entry"
+                    value={form.shortConsult.openBox}
+                    onChange={(value) =>
+                      updateNested(
+                        "shortConsult",
+                        "openBox",
+                        value
+                      )
                     }
+                    rows={14}
+                    placeholder="Enter the consultation findings, complaint, clinical comments or focused assessment..."
+                  />
+                </ClinicalPanel>
+
+                <ClinicalPanel
+                  number="02"
+                  title="Refraction"
+                  icon={Glasses}
+                >
+                  <RefractionTable
+                    title="Refraction"
+                    data={form.refraction.final}
+                    onChange={(eye, field, value) =>
+                      updateRefractionField(
+                        "final",
+                        eye,
+                        field,
+                        value
+                      )
+                    }
+                  />
+
+                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                    <Input
+                      label="PD Right"
+                      value={form.refraction.pd.right}
+                      onChange={(value) =>
+                        updateDeep(
+                          "refraction",
+                          "pd",
+                          "right",
+                          value
+                        )
+                      }
+                    />
+                    <Input
+                      label="PD Left"
+                      value={form.refraction.pd.left}
+                      onChange={(value) =>
+                        updateDeep(
+                          "refraction",
+                          "pd",
+                          "left",
+                          value
+                        )
+                      }
+                    />
+                    <Input
+                      label="PD Total"
+                      value={form.refraction.pd.total}
+                      onChange={(value) =>
+                        updateDeep(
+                          "refraction",
+                          "pd",
+                          "total",
+                          value
+                        )
+                      }
+                    />
+                  </div>
+                </ClinicalPanel>
+              </div>
+            ) : (
+              <>
+                {/* =================================================
+                    ROW 1
+                ================================================== */}
+                <div className="grid gap-3 lg:grid-cols-2">
+                  <ClinicalPanel
+                    number="01"
+                    title="Symptoms & History"
+                    icon={History}
+                  >
+                    <TextArea
+                      label="Presenting Symptoms"
+                      value={form.symptoms}
+                      onChange={(value) =>
+                        updateForm("symptoms", value)
+                      }
+                      rows={3}
+                      placeholder="Enter presenting symptoms..."
+                    />
+
+                    <div className="mt-3 grid gap-2 md:grid-cols-2">
+                      <TextArea
+                        label="Ocular History"
+                        value={form.ocularHistory}
+                        onChange={(value) =>
+                          updateForm("ocularHistory", value)
+                        }
+                        rows={3}
+                        placeholder="Enter ocular history..."
+                      />
+
+                      <TextArea
+                        label="Systemic History"
+                        value={form.systemicHistory}
+                        onChange={(value) =>
+                          updateForm("systemicHistory", value)
+                        }
+                        rows={3}
+                        placeholder="Enter systemic history..."
+                      />
+
+                      <TextArea
+                        label="Allergies"
+                        value={form.allergies}
+                        onChange={(value) =>
+                          updateForm("allergies", value)
+                        }
+                        rows={3}
+                        placeholder="Enter allergies..."
+                      />
+
+                      <TextArea
+                        label="Current Medications"
+                        value={form.medications}
+                        onChange={(value) =>
+                          updateForm("medications", value)
+                        }
+                        rows={3}
+                        placeholder="Enter medications..."
+                      />
+                    </div>
+                  </ClinicalPanel>
+
+                  <ClinicalPanel
+                    number="05"
+                    title="Slit Lamp Examination"
+                    icon={Eye}
+                  >
+                    <SlitLampTable
+                      data={form.slitLamp}
+                      onChange={(eye, field, value) =>
+                        updateEyeField(
+                          "slitLamp",
+                          eye,
+                          field,
+                          value
+                        )
+                      }
+                    />
+                  </ClinicalPanel>
+                </div>
+
+                {/* =================================================
+                    ROW 2
+                ================================================== */}
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <ClinicalPanel
+                    number="02"
+                    title="Refraction"
+                    icon={Glasses}
+                  >
+                    <RefractionTabs
+                      form={form}
+                      onChange={updateRefractionField}
+                      onPdChange={(side, value) =>
+                        updateNested("refraction", "pd", {
+                          ...form.refraction.pd,
+                          [side]: value,
+                        })
+                      }
+                    />
+                  </ClinicalPanel>
+
+                  <ClinicalPanel
+                    number="06"
+                    title="Fundus Examination"
+                    icon={Eye}
+                  >
+                    <FundusTable
+                      data={form.fundus}
+                      onChange={(eye, field, value) =>
+                        updateEyeField(
+                          "fundus",
+                          eye,
+                          field,
+                          value
+                        )
+                      }
+                    />
+                  </ClinicalPanel>
+                </div>
+
+                {/* =================================================
+                    ROW 3
+                ================================================== */}
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <ClinicalPanel
+                    number="03"
+                    title="Ocular Motility (EOM)"
+                    icon={Eye}
+                  >
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <Input
+                        label="Cover Test — Distance"
+                        value={
+                          form.binocularVision.coverTestDistance
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "coverTestDistance",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Cover Test — Near"
+                        value={
+                          form.binocularVision.coverTestNear
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "coverTestNear",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="NPC"
+                        value={form.binocularVision.npc}
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "npc",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Worth 4 Dot"
+                        value={
+                          form.binocularVision.worthFourDot
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "worthFourDot",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Stereopsis"
+                        value={
+                          form.binocularVision.stereopsis
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "stereopsis",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Vergence BI"
+                        value={
+                          form.binocularVision.vergenceBI
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "vergenceBI",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Vergence BO"
+                        value={
+                          form.binocularVision.vergenceBO
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "vergenceBO",
+                            value
+                          )
+                        }
+                      />
+                      <Input
+                        label="Accommodation"
+                        value={
+                          form.binocularVision.accommodation
+                        }
+                        onChange={(value) =>
+                          updateNested(
+                            "binocularVision",
+                            "accommodation",
+                            value
+                          )
+                        }
+                      />
+                    </div>
+                  </ClinicalPanel>
+
+                  <ClinicalPanel
+                    number="07"
+                    title="Diagnosis"
+                    icon={HeartPulse}
+                    action={
+                      <button
+                        type="button"
+                        onClick={addDiagnosis}
+                        className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+                      >
+                        <Plus size={12} />
+                        Add
+                      </button>
+                    }
+                  >
+                    {form.diagnosis.length === 0 ? (
+                      <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+                        No diagnosis added
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {form.diagnosis.map((item, index) => (
+                          <div
+                            key={index}
+                            className="grid gap-2 rounded border border-slate-200 bg-slate-50 p-2 md:grid-cols-[1fr_120px_1fr_30px]"
+                          >
+                            <Input
+                              label="Diagnosis"
+                              value={item.condition}
+                              onChange={(value) =>
+                                updateDiagnosis(
+                                  index,
+                                  "condition",
+                                  value
+                                )
+                              }
+                              placeholder="Search or enter diagnosis..."
+                            />
+                            <Select
+                              label="Laterality"
+                              value={item.eye}
+                              options={[
+                                "OD",
+                                "OS",
+                                "OU",
+                                "N/A",
+                              ]}
+                              onChange={(value) =>
+                                updateDiagnosis(
+                                  index,
+                                  "eye",
+                                  value
+                                )
+                              }
+                            />
+                            <Input
+                              label="Remarks"
+                              value={item.notes}
+                              onChange={(value) =>
+                                updateDiagnosis(
+                                  index,
+                                  "notes",
+                                  value
+                                )
+                              }
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeDiagnosis(index)
+                              }
+                              className="mt-5 flex h-8 w-8 items-center justify-center rounded border border-red-100 bg-white text-red-500 hover:bg-red-50"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </ClinicalPanel>
+                </div>
+
+                {/* =================================================
+                    ROW 4
+                ================================================== */}
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                  <ClinicalPanel
+                    number="04"
+                    title="Additional Tests"
+                    icon={Stethoscope}
+                    action={
+                      <button
+                        type="button"
+                        onClick={addTest}
+                        className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+                      >
+                        <Plus size={12} />
+                        Add Test
+                      </button>
+                    }
+                  >
+                    {form.additionalTests.length === 0 ? (
+                      <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+                        No additional tests
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full min-w-[650px] border-collapse text-[10px]">
+                          <thead>
+                            <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-500">
+                              <th className="border border-slate-200 px-2 py-2">
+                                Test Type
+                              </th>
+                              <th className="border border-slate-200 px-2 py-2">
+                                Result
+                              </th>
+                              <th className="border border-slate-200 px-2 py-2">
+                                Remarks
+                              </th>
+                              <th className="w-10 border border-slate-200 px-2 py-2 text-center">
+                                Action
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {form.additionalTests.map(
+                              (test, index) => (
+                                <tr key={index}>
+                                  <td className="border border-slate-200 p-1">
+                                    <select
+                                      value={test.name}
+                                      onChange={(event) =>
+                                        updateTest(
+                                          index,
+                                          "name",
+                                          event.target.value
+                                        )
+                                      }
+                                      className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[10px] outline-none focus:border-blue-400"
+                                    >
+                                      {testTypes.map((type) => (
+                                        <option
+                                          key={type}
+                                          value={type}
+                                        >
+                                          {type}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </td>
+                                  <td className="border border-slate-200 p-1">
+                                    <input
+                                      value={test.result || ""}
+                                      onChange={(event) =>
+                                        updateTest(
+                                          index,
+                                          "result",
+                                          event.target.value
+                                        )
+                                      }
+                                      className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+                                    />
+                                  </td>
+                                  <td className="border border-slate-200 p-1">
+                                    <input
+                                      value={test.remarks || ""}
+                                      onChange={(event) =>
+                                        updateTest(
+                                          index,
+                                          "remarks",
+                                          event.target.value
+                                        )
+                                      }
+                                      className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+                                    />
+                                  </td>
+                                  <td className="border border-slate-200 p-1 text-center">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        removeTest(index)
+                                      }
+                                      className="inline-flex h-8 w-8 items-center justify-center rounded text-slate-400 hover:bg-red-50 hover:text-red-500"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </ClinicalPanel>
+
+                  <ClinicalPanel
+                    number="08"
+                    title="Advise / Management Plan"
+                    icon={FileText}
+                  >
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {adviceOptions.map(([key, label]) => (
+                        <label
+                          key={key}
+                          className={`flex cursor-pointer items-center gap-2 rounded border px-2.5 py-2 text-[10px] font-medium ${
+                            form.advice[key]
+                              ? "border-blue-200 bg-blue-50 text-blue-700"
+                              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={form.advice[key]}
+                            onChange={(event) =>
+                              updateNested(
+                                "advice",
+                                key,
+                                event.target.checked
+                              )
+                            }
+                            className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600"
+                          />
+                          {label}
+                        </label>
+                      ))}
+                    </div>
+
+                    <div className="mt-2">
+                      <TextArea
+                        label="Additional Advice"
+                        value={form.advice.custom}
+                        onChange={(value) =>
+                          updateNested(
+                            "advice",
+                            "custom",
+                            value
+                          )
+                        }
+                        rows={5}
+                        placeholder="Enter advice or management plan..."
+                      />
+                    </div>
+                  </ClinicalPanel>
+                </div>
+              </>
+            )}
+
+            {/* =================================================
+                DISPENSING
+            ================================================== */}
+            <div className="mt-3">
+              <DispensingPanel
+                form={form}
+                updateNested={updateNested}
+                updateLens={updateDispensingLens}
+                addLens={addDispensingLens}
+                removeLens={removeDispensingLens}
+                frameValue={frameValue}
+                lensTotal={lensTotal}
+                grandTotal={grandTotal}
+                onCreateBill={handleCreateBill}
+              />
+            </div>
+
+            {/* =================================================
+                THERAPEUTICS + RECALL
+            ================================================== */}
+            <div className="mt-3 grid gap-3 lg:grid-cols-2">
+              <ClinicalPanel
+                number="10"
+                title="Therapeutics"
+                icon={HeartPulse}
+                action={
+                  <button
+                    type="button"
+                    onClick={addTherapeutic}
+                    className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+                  >
+                    <Plus size={12} />
+                    Add
+                  </button>
+                }
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[650px] border-collapse text-[10px]">
+                    <thead>
+                      <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-500">
+                        <th className="border border-slate-200 px-2 py-2">
+                          Medication
+                        </th>
+                        <th className="border border-slate-200 px-2 py-2">
+                          Dosage
+                        </th>
+                        <th className="border border-slate-200 px-2 py-2">
+                          Frequency
+                        </th>
+                        <th className="border border-slate-200 px-2 py-2">
+                          Duration
+                        </th>
+                        <th className="border border-slate-200 px-2 py-2">
+                          Instructions
+                        </th>
+                        <th className="w-10 border border-slate-200 px-2 py-2" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {form.therapeutics.map((item, index) => (
+                        <tr key={index}>
+                          {[
+                            ["medication", "Medication"],
+                            ["dosage", "Dosage"],
+                            ["frequency", "Frequency"],
+                            ["duration", "Duration"],
+                            ["instructions", "Instructions"],
+                          ].map(([field, placeholder]) => (
+                            <td
+                              key={field}
+                              className="border border-slate-200 p-1"
+                            >
+                              <input
+                                value={item[field] || ""}
+                                placeholder={placeholder}
+                                onChange={(event) =>
+                                  updateTherapeutic(
+                                    index,
+                                    field,
+                                    event.target.value
+                                  )
+                                }
+                                className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+                              />
+                            </td>
+                          ))}
+
+                          <td className="border border-slate-200 p-1 text-center">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeTherapeutic(index)
+                              }
+                              className="inline-flex h-8 w-8 items-center justify-center rounded text-slate-400 hover:bg-red-50 hover:text-red-500"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </ClinicalPanel>
+
+              <ClinicalPanel
+                number="11"
+                title="Recall"
+                icon={CalendarDays}
+              >
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Input
+                    label="Recall Date"
+                    type="date"
+                    value={form.recall.date}
+                    onChange={(value) =>
+                      updateNested(
+                        "recall",
+                        "date",
+                        value
+                      )
+                    }
+                  />
+
+                  <Select
+                    label="Recall Type"
+                    value={form.recall.type}
+                    options={[
+                      "Routine Review",
+                      "Prescription Review",
+                      "Contact Lens Review",
+                      "Clinical Follow-up",
+                      "Other",
+                    ]}
+                    onChange={(value) =>
+                      updateNested(
+                        "recall",
+                        "type",
+                        value
+                      )
+                    }
+                  />
+                </div>
+
+                <div className="mt-2">
+                  <TextArea
+                    label="Recall Letter / Message"
+                    value={form.recall.message}
                     onChange={(value) =>
                       updateNested(
                         "recall",
@@ -2460,108 +1958,101 @@ export default function ConsultationPage() {
                         value
                       )
                     }
-                    rows={3}
-                    placeholder="Message or instruction for the next visit..."
+                    rows={4}
+                    placeholder="Recall instruction or patient message..."
                   />
                 </div>
-              </div>
-            )}
-          </ClinicalSection>
-
-          {/* NOTES */}
-          <ClinicalSection
-            number="15"
-            title="Notes"
-            subtitle="Final clinical and internal notes"
-            icon={FileText}
-            open={expandedSections.notes}
-            onToggle={() =>
-              toggleSection("notes")
-            }
-          >
-            <div className="grid gap-5 lg:grid-cols-2">
-              <TextArea
-                label="Clinical notes"
-                value={form.notes}
-                onChange={(value) =>
-                  updateForm("notes", value)
-                }
-                placeholder="Final clinical summary..."
-                rows={6}
-              />
-
-              <TextArea
-                label="Internal notes"
-                value={form.internalNotes}
-                onChange={(value) =>
-                  updateForm(
-                    "internalNotes",
-                    value
-                  )
-                }
-                placeholder="Internal staff notes..."
-                rows={6}
-              />
+              </ClinicalPanel>
             </div>
-          </ClinicalSection>
 
-          {/* =================================================
-              SAVE FOOTER
-          ================================================= */}
-
-          <div className="sticky bottom-3 z-30 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <div className="text-xs font-bold text-slate-800">
-                  {selectedType?.label}
+            {/* =================================================
+                ADDITIONAL CONSULTS
+            ================================================== */}
+            <div className="mt-3 rounded-md border border-slate-200 bg-white shadow-sm">
+              <div className="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center">
+                <div className="mr-2 text-[11px] font-bold text-slate-700">
+                  Additional Consult
                 </div>
 
-                <div className="mt-0.5 text-[10px] text-slate-400">
-                  {fullName(patient)} ·{" "}
-                  {patient.patientNumber ||
-                    "No patient number"}
+                {specializedTypes.map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setAddonModal(item.value)}
+                      className="inline-flex h-9 items-center justify-center gap-1.5 rounded border border-blue-200 bg-white px-3 text-[10px] font-bold text-blue-600 transition hover:bg-blue-50"
+                    >
+                      <Plus size={13} />
+                      <Icon size={13} />
+                      {item.label} ({item.shortLabel})
+                    </button>
+                  );
+                })}
+
+                <div className="sm:ml-auto text-[9px] text-slate-400">
+                  Add CL / BV / LV assessment without leaving this consultation.
                 </div>
               </div>
+            </div>
 
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate(
-                      `/patients/${patientId}`
-                    )
-                  }
-                  disabled={saving}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
-                >
-                  Cancel
-                </button>
+            {/* =================================================
+                MOBILE / BOTTOM SAVE BAR
+            ================================================== */}
+            <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur lg:static lg:mt-3 lg:border lg:rounded-md lg:shadow-sm">
+              <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-1 sm:px-2">
+                <div className="hidden min-w-0 sm:block">
+                  <div className="truncate text-[10px] font-bold text-slate-700">
+                    {selectedType.label}
+                  </div>
+                  <div className="truncate text-[9px] text-slate-400">
+                    {fullName(patient)} ·{" "}
+                    {patient.patientNumber || "No patient number"}
+                    {dirty ? " · Unsaved changes" : ""}
+                  </div>
+                </div>
 
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-100 transition hover:from-violet-500 hover:to-blue-500 disabled:cursor-wait disabled:opacity-60"
-                >
-                  {saving ? (
-                    <>
-                      <Loader2
-                        size={15}
-                        className="animate-spin"
-                      />
-                      Saving consultation...
-                    </>
-                  ) : (
-                    <>
-                      <Save size={15} />
-                      Save Consultation
-                    </>
-                  )}
-                </button>
+                <div className="ml-auto flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={safeNavigateBack}
+                    disabled={saving}
+                    className="h-9 rounded border border-slate-300 bg-white px-4 text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-4 text-[10px] font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
+                  >
+                    {saving ? (
+                      <Loader2 size={13} className="animate-spin" />
+                    ) : (
+                      <Save size={13} />
+                    )}
+                    Save Consultation
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
-      )}
+          </form>
+        )}
+
+        {/* =====================================================
+            ADD-ON CONSULTATION MODAL
+        ====================================================== */}
+        {addonModal && (
+          <AddonConsultModal
+            type={addonModal}
+            form={form}
+            onClose={() => setAddonModal(null)}
+            onChange={updateAddon}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -2570,80 +2061,83 @@ export default function ConsultationPage() {
    PATIENT HEADER
 ========================================================= */
 
-function PatientHeader({ patient, age }) {
+function PatientHeader({
+  patient,
+  age,
+  previousConsultations,
+}) {
   return (
-    <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <div className="bg-gradient-to-br from-violet-50 via-white to-cyan-50 p-5 sm:p-6">
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-100">
-              {patient.firstName?.[0]}
-              {patient.lastName?.[0]}
-            </div>
-
-            <div>
-              <div className="text-[9px] font-bold uppercase tracking-[.2em] text-violet-600">
-                Selected patient
-              </div>
-
-              <h2 className="mt-1 text-xl font-bold text-slate-900">
-                {fullName(patient)}
-              </h2>
-
-              <div className="mt-1 text-xs text-slate-500">
-                {patient.patientNumber ||
-                  "No patient number"}
-                {" · "}
-                {patient.gender || "Gender not recorded"}
-              </div>
-            </div>
+    <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 lg:px-7">
+      <div className="grid items-center gap-0 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
+        <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
+            <UserRound size={22} />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <PatientMini
-              label="DOB"
-              value={formatDate(
-                patient.dateOfBirth
-              )}
-            />
-
-            <PatientMini
-              label="Age"
-              value={
-                age !== null
-                  ? `${age} yrs`
-                  : "—"
-              }
-            />
-
-            <PatientMini
-              label="Phone"
-              value={patient.phone || "—"}
-            />
-
-            <PatientMini
-              label="Status"
-              value={
-                patient.status === "inactive"
-                  ? "Inactive"
-                  : "Active"
-              }
-            />
+          <div className="min-w-0">
+            <div className="truncate text-sm font-bold text-slate-900 sm:text-base">
+              {fullName(patient) || "Unnamed Patient"}
+            </div>
+            <div className="mt-0.5 text-[10px] font-medium text-slate-500">
+              {patient.patientNumber || "Patient"}
+            </div>
           </div>
         </div>
+
+        <PatientMini
+          label="DOB"
+          value={
+            patient.dateOfBirth
+              ? `${formatDate(patient.dateOfBirth)}${
+                  age !== null ? ` (Age ${age})` : ""
+                }`
+              : "Not recorded"
+          }
+        />
+
+        <PatientMini
+          label="Gender"
+          value={patient.gender || "—"}
+        />
+
+        <PatientMini
+          label="Phone"
+          value={patient.phone || "—"}
+        />
+
+        <PatientMini
+          label="Last Consultation"
+          value={
+            patient.lastConsultationAt
+              ? formatDate(patient.lastConsultationAt)
+              : previousConsultations?.[0]?.consultationDate
+                ? formatDate(
+                    previousConsultations[0].consultationDate
+                  )
+                : "No previous visit"
+          }
+        />
+
+        <PatientMini
+          label="Branch"
+          value={
+            patient.registeredBranchName ||
+            patient.branchName ||
+            "Current branch"
+          }
+        />
       </div>
-    </article>
+    </div>
   );
 }
 
 function PatientMini({ label, value }) {
   return (
-    <div className="rounded-xl border border-white bg-white/75 px-3 py-2.5">
-      <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+    <div className="border-b border-slate-100 px-3 py-2.5 lg:border-b-0 lg:border-r last:lg:border-r-0">
+      <div className="text-[8px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </div>
-
-      <div className="mt-1 truncate text-xs font-bold text-slate-700">
+      <div className="mt-1 truncate text-[10px] font-semibold text-slate-700">
         {value || "—"}
       </div>
     </div>
@@ -2651,10 +2145,10 @@ function PatientMini({ label, value }) {
 }
 
 /* =========================================================
-   CONSULTATION TYPE SELECTOR
+   CONSULTATION TYPE MODAL
 ========================================================= */
 
-function ConsultationTypeSelector({
+function ConsultationTypeModal({
   currentType,
   onSelect,
   onClose,
@@ -2663,31 +2157,20 @@ function ConsultationTypeSelector({
   const [selected, setSelected] = useState(currentType || "comprehensive");
 
   useEffect(() => {
-    setSelected(currentType || "comprehensive");
-  }, [currentType]);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape" && canClose) {
         onClose();
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown);
   }, [canClose, onClose]);
-
-  const selectedPrimary = consultationTypes.find(
-    (item) => item.value === selected
-  );
-
-  const handleContinue = () => {
-    onSelect(selected);
-  };
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm sm:p-5"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="consultation-type-title"
@@ -2697,181 +2180,113 @@ function ConsultationTypeSelector({
         }
       }}
     >
-      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[28px] border border-white/60 bg-white shadow-2xl">
-        {/* Modal header */}
-        <div className="border-b border-slate-100 bg-gradient-to-r from-violet-50 via-white to-blue-50 px-5 py-5 sm:px-7 sm:py-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 items-start gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-violet-600 text-white shadow-lg shadow-violet-200">
-                <Stethoscope size={20} />
-              </div>
-              <div className="min-w-0">
-                <div className="text-[10px] font-bold uppercase tracking-[.2em] text-violet-600">
-                  New clinical encounter
-                </div>
-                <h2
-                  id="consultation-type-title"
-                  className="mt-1 text-lg font-bold tracking-tight text-slate-900 sm:text-xl"
-                >
-                  What type of consultation are you starting?
-                </h2>
-                <p className="mt-1 text-xs leading-5 text-slate-500 sm:text-sm">
-                  Choose the main workflow. You can still record additional
-                  examinations and clinical findings during the consultation.
-                </p>
-              </div>
+      <div className="w-full max-w-3xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+          <div>
+            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-600">
+              New Consultation
             </div>
-
-            {canClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close consultation type selector"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
-              >
-                <X size={17} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Modal body */}
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-slate-800">
-                Primary workflow
-              </p>
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                Select one to continue.
-              </p>
-            </div>
-            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-              Step 1 of 1
-            </span>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {consultationTypes.map((type) => {
-              const Icon = type.icon;
-              const isSelected = selected === type.value;
-
-              return (
-                <button
-                  key={type.value}
-                  type="button"
-                  onClick={() => setSelected(type.value)}
-                  className={`relative rounded-2xl border p-4 text-left transition-all sm:p-5 ${
-                    isSelected
-                      ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-100"
-                      : "border-slate-200 bg-white hover:border-violet-200 hover:bg-slate-50"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                        isSelected
-                          ? "bg-violet-600 text-white"
-                          : "bg-slate-100 text-slate-600"
-                      }`}
-                    >
-                      <Icon size={19} />
-                    </div>
-
-                    <span
-                      className={`flex h-6 w-6 items-center justify-center rounded-full border ${
-                        isSelected
-                          ? "border-violet-600 bg-violet-600 text-white"
-                          : "border-slate-300 bg-white text-transparent"
-                      }`}
-                    >
-                      <Check size={13} />
-                    </span>
-                  </div>
-
-                  <h3 className="mt-4 text-sm font-bold text-slate-900">
-                    {type.label}
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-5 text-slate-500">
-                    {type.description}
-                  </p>
-
-                  <div
-                    className={`mt-4 text-[10px] font-bold uppercase tracking-wider ${
-                      isSelected ? "text-violet-700" : "text-slate-400"
-                    }`}
-                  >
-                    {isSelected ? "Selected" : "Select workflow"}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <div className="flex items-center gap-2">
-              <ClipboardPlus size={15} className="text-slate-500" />
-              <p className="text-xs font-bold text-slate-800">
-                Specialized assessments
-              </p>
-            </div>
-            <p className="mt-1 text-[11px] leading-5 text-slate-500">
-              These can be documented within the encounter when clinically
-              required.
+            <h2
+              id="consultation-type-title"
+              className="mt-1 text-lg font-bold text-slate-900"
+            >
+              Select consultation type
+            </h2>
+            <p className="mt-1 max-w-xl text-[10px] leading-5 text-slate-500">
+              Start with the main workflow. Contact Lens, Binocular Vision and
+              Low Vision assessments can be added from the bottom of the page.
             </p>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {specializedTypes.map((item) => (
-                <span
-                  key={item.value}
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-600"
-                >
-                  {item.label}
-                </span>
-              ))}
-            </div>
           </div>
 
-          {selectedPrimary && (
-            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                <Check size={15} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-bold text-emerald-800">
-                  Ready to begin
-                </p>
-                <p className="truncate text-xs text-emerald-700">
-                  {selectedPrimary.label} consultation selected.
-                </p>
-              </div>
-            </div>
+          {canClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-8 w-8 items-center justify-center rounded border border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-700"
+            >
+              <X size={15} />
+            </button>
           )}
         </div>
 
-        {/* Modal footer */}
-        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-          <p className="text-[10px] leading-4 text-slate-400">
-            You can change the consultation type later from the workspace header.
-          </p>
+        <div className="grid gap-3 p-5 sm:grid-cols-2">
+          {consultationTypes.map((item) => {
+            const Icon = item.icon;
+            const active = selected === item.value;
 
-          <div className="flex w-full gap-2 sm:w-auto">
+            return (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => setSelected(item.value)}
+                className={`relative rounded-lg border p-5 text-left transition ${
+                  active
+                    ? "border-blue-500 bg-blue-50 shadow-sm"
+                    : "border-slate-200 bg-white hover:border-blue-200 hover:bg-slate-50"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                      active
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    <Icon size={19} />
+                  </div>
+
+                  <span
+                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                      active
+                        ? "border-blue-600 bg-blue-600 text-white"
+                        : "border-slate-300 text-transparent"
+                    }`}
+                  >
+                    <Check size={12} />
+                  </span>
+                </div>
+
+                <div className="mt-4 text-sm font-bold text-slate-900">
+                  {item.label}
+                </div>
+                <p className="mt-1.5 text-[10px] leading-5 text-slate-500">
+                  {item.description}
+                </p>
+
+                <div className="mt-4 text-[9px] font-bold uppercase tracking-wider text-blue-600">
+                  {item.value === "comprehensive"
+                    ? "Single page full examination"
+                    : "Open box + refraction"}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-5 py-3">
+          <div className="text-[9px] text-slate-400">
+            Additional consults can be added later.
+          </div>
+
+          <div className="flex gap-2">
             {canClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 sm:flex-none"
+                className="h-9 rounded border border-slate-300 bg-white px-4 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
               >
                 Cancel
               </button>
             )}
+
             <button
               type="button"
-              onClick={handleContinue}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-800 sm:flex-none"
+              onClick={() => onSelect(selected)}
+              className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-5 text-[10px] font-bold text-white hover:bg-blue-700"
             >
-              Start consultation
-              <ArrowLeft size={14} className="rotate-180" />
+              <Check size={13} />
+              Start Consultation
             </button>
           </div>
         </div>
@@ -2881,71 +2296,33 @@ function ConsultationTypeSelector({
 }
 
 /* =========================================================
-   CLINICAL SECTION
+   CLINICAL PANEL
 ========================================================= */
 
-function ClinicalSection({
+function ClinicalPanel({
   number,
   title,
-  subtitle,
   icon: Icon,
-  children,
-  open,
-  onToggle,
   action,
+  children,
 }) {
   return (
-    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
-        <button
-          type="button"
-          onClick={onToggle}
-          className="flex min-w-0 items-center gap-3 text-left"
-        >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-            <Icon size={16} />
-          </div>
-
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold text-violet-500">
-                {number}
-              </span>
-
-              <h2 className="text-sm font-bold text-slate-900">
-                {title}
-              </h2>
-            </div>
-
-            <p className="mt-0.5 text-[10px] leading-4 text-slate-400">
-              {subtitle}
-            </p>
-          </div>
-        </button>
-
-        <div className="flex shrink-0 items-center gap-2">
-          {action}
-
-          <button
-            type="button"
-            onClick={onToggle}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-          >
-            <ChevronDown
-              size={16}
-              className={`transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+    <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      <div className="flex min-h-[34px] items-center justify-between gap-2 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold text-blue-700">
+            {number}.
+          </span>
+          <Icon size={13} className="text-blue-600" />
+          <h2 className="text-[11px] font-bold text-blue-700">
+            {title}
+          </h2>
         </div>
-      </header>
 
-      {open && (
-        <div className="p-5 sm:p-6">
-          {children}
-        </div>
-      )}
+        {action}
+      </div>
+
+      <div className="p-3">{children}</div>
     </section>
   );
 }
@@ -2954,168 +2331,181 @@ function ClinicalSection({
    REFRACTION
 ========================================================= */
 
-function RefractionBlock({
-  title,
-  data,
-  onChange,
-}) {
-  const fields = [
-    ["sphere", "Sphere"],
-    ["cylinder", "Cylinder"],
-    ["axis", "Axis"],
-    ["va", "Distance VA"],
-    ["add", "ADD"],
-    ["nearVa", "Near VA"],
-    ["prism", "Prism"],
-    ["base", "Base"],
+function RefractionTabs({ form, onChange, onPdChange }) {
+  const [active, setActive] = useState("previous");
+
+  const tabs = [
+    ["previous", "Previous Rx"],
+    ["objective", "Objective (Auto)"],
+    ["subjective", "Subjective"],
+    ["final", "Final Rx"],
   ];
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between">
-        <div className="text-xs font-bold text-slate-800">
-          {title}
-        </div>
-
-        <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-          OD / OS
-        </div>
+      <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+        {tabs.map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setActive(value)}
+            className={`h-8 rounded border text-[10px] font-bold transition ${
+              active === value
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200">
-        <table className="w-full min-w-[900px]">
-          <thead>
-            <tr className="border-b border-slate-200 bg-slate-50">
-              <th className="w-20 px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-400">
-                Eye
-              </th>
+      <div className="mt-2 overflow-x-auto">
+        <RefractionTable
+          title={tabs.find(([value]) => value === active)?.[1]}
+          data={form.refraction[active]}
+          onChange={(eye, field, value) =>
+            onChange(active, eye, field, value)
+          }
+        />
+      </div>
 
-              {fields.map(([, label]) => (
-                <th
-                  key={label}
-                  className="px-2 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-slate-400"
-                >
-                  {label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {[
-              ["right", "OD"],
-              ["left", "OS"],
-            ].map(([eye, label]) => (
-              <tr
-                key={eye}
-                className="border-b border-slate-100 last:border-0"
-              >
-                <th
-                  className={`px-4 py-3 text-left text-xs font-bold ${
-                    eye === "right"
-                      ? "bg-blue-50 text-blue-800"
-                      : "bg-rose-50 text-rose-800"
-                  }`}
-                >
-                  {label}
-                </th>
-
-                {fields.map(
-                  ([field]) => (
-                    <td
-                      key={field}
-                      className="px-2 py-2"
-                    >
-                      <input
-                        value={
-                          data?.[eye]?.[
-                            field
-                          ] || ""
-                        }
-                        onChange={(event) =>
-                          onChange(
-                            eye,
-                            field,
-                            event.target.value
-                          )
-                        }
-                        className="h-9 w-full min-w-[90px] rounded-lg border border-slate-200 bg-white px-2 text-center text-xs font-medium text-slate-700 outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-50"
-                      />
-                    </td>
-                  )
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="mt-2 grid gap-2 sm:grid-cols-3">
+        <Input
+          label="PD Right"
+          value={form.refraction.pd.right}
+          onChange={(value) => onPdChange("right", value)}
+        />
+        <Input
+          label="PD Left"
+          value={form.refraction.pd.left}
+          onChange={(value) => onPdChange("left", value)}
+        />
+        <Input
+          label="PD Total"
+          value={form.refraction.pd.total}
+          onChange={(value) => onPdChange("total", value)}
+        />
       </div>
     </div>
   );
 }
 
-/* =========================================================
-   VISUAL ACUITY TABLE
-========================================================= */
+function RefractionTable({ data, onChange }) {
+  const fields = [
+    ["sphere", "Sphere"],
+    ["cylinder", "Cyl"],
+    ["axis", "Axis"],
+    ["add", "Add"],
+    ["inter", "Inter"],
+    ["hPrism", "H Prism"],
+    ["vPrism", "V Prism"],
+  ];
 
-function EyeTable({
-  columns,
-  rows,
-  fields,
-  onChange,
-}) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
-      <table className="w-full min-w-[760px]">
-        <thead>
-          <tr className="border-b border-slate-200 bg-slate-50">
-            <th className="w-20 px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Eye
+    <table className="w-full min-w-[760px] border-collapse text-[10px]">
+      <thead>
+        <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-600">
+          <th className="w-20 border border-slate-200 px-2 py-2">
+            Eye
+          </th>
+          {fields.map(([, label]) => (
+            <th
+              key={label}
+              className="border border-slate-200 px-1.5 py-2 text-center"
+            >
+              {label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+
+      <tbody>
+        {[
+          ["right", "Right (OD)"],
+          ["left", "Left (OS)"],
+        ].map(([eye, label]) => (
+          <tr key={eye}>
+            <th className="border border-slate-200 bg-white px-2 py-1.5 text-left text-[10px] font-semibold text-slate-700">
+              {label}
             </th>
 
-            {columns.map((column) => (
-              <th
-                key={column}
-                className="px-2 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-slate-400"
+            {fields.map(([field]) => (
+              <td
+                key={field}
+                className="border border-slate-200 p-1"
               >
-                {column}
-              </th>
+                <input
+                  value={data?.[eye]?.[field] || ""}
+                  onChange={(event) =>
+                    onChange(
+                      eye,
+                      field,
+                      event.target.value
+                    )
+                  }
+                  className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-center text-[10px] outline-none focus:border-blue-400"
+                />
+              </td>
             ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+/* =========================================================
+   SLIT LAMP
+========================================================= */
+
+function SlitLampTable({ data, onChange }) {
+  const fields = [
+    ["lids", "Lids"],
+    ["conjunctiva", "Conjunctiva"],
+    ["cornea", "Cornea"],
+    ["anteriorChamber", "Anterior Chamber"],
+    ["iris", "Iris"],
+    ["lens", "Lens"],
+    ["other", "Other"],
+  ];
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[580px] border-collapse text-[10px]">
+        <thead>
+          <tr className="bg-slate-50">
+            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[9px] font-bold text-slate-600">
+              Parameter
+            </th>
+            <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+              Right (OD)
+            </th>
+            <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+              Left (OS)
+            </th>
           </tr>
         </thead>
 
         <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.eye}
-              className="border-b border-slate-100 last:border-0"
-            >
-              <th
-                className={`px-4 py-3 text-left text-xs font-bold ${
-                  row.eye === "right"
-                    ? "bg-blue-50 text-blue-800"
-                    : "bg-rose-50 text-rose-800"
-                }`}
-              >
-                {row.label}
+          {fields.map(([field, label]) => (
+            <tr key={field}>
+              <th className="border border-slate-200 bg-white px-2 py-1.5 text-left font-semibold text-slate-600">
+                {label}
               </th>
 
-              {fields.map((field) => (
-                <td
-                  key={field}
-                  className="px-2 py-2"
-                >
+              {["right", "left"].map((eye) => (
+                <td key={eye} className="border border-slate-200 p-1">
                   <input
-                    value={
-                      row.values?.[field] || ""
-                    }
+                    value={data?.[eye]?.[field] || ""}
                     onChange={(event) =>
                       onChange(
-                        row.eye,
+                        eye,
                         field,
                         event.target.value
                       )
                     }
-                    className="h-9 w-full min-w-[130px] rounded-lg border border-slate-200 bg-white px-2 text-center text-xs font-medium text-slate-700 outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-50"
+                    className="h-7 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
                   />
                 </td>
               ))}
@@ -3128,99 +2518,10 @@ function EyeTable({
 }
 
 /* =========================================================
-   SLIT LAMP
-========================================================= */
-
-function SlitLampTable({
-  data,
-  onChange,
-}) {
-  const fields = [
-    ["lids", "Lids"],
-    ["conjunctiva", "Conjunctiva"],
-    ["cornea", "Cornea"],
-    ["anteriorChamber", "Anterior Chamber"],
-    ["iris", "Iris"],
-    ["lens", "Lens"],
-    ["other", "Other"],
-  ];
-
-  return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
-      <table className="w-full min-w-[900px]">
-        <thead>
-          <tr className="border-b border-slate-200 bg-slate-50">
-            <th className="w-48 px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Examination
-            </th>
-
-            <th className="px-4 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-blue-600">
-              OD
-            </th>
-
-            <th className="px-4 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-rose-600">
-              OS
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {fields.map(([field, label]) => (
-            <tr
-              key={field}
-              className="border-b border-slate-100 last:border-0"
-            >
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
-                {label}
-              </th>
-
-              <td className="px-3 py-2">
-                <input
-                  value={
-                    data.right?.[field] || ""
-                  }
-                  onChange={(event) =>
-                    onChange(
-                      "right",
-                      field,
-                      event.target.value
-                    )
-                  }
-                  className="h-10 w-full rounded-lg border border-slate-200 px-3 text-xs outline-none focus:border-blue-300"
-                />
-              </td>
-
-              <td className="px-3 py-2">
-                <input
-                  value={
-                    data.left?.[field] || ""
-                  }
-                  onChange={(event) =>
-                    onChange(
-                      "left",
-                      field,
-                      event.target.value
-                    )
-                  }
-                  className="h-10 w-full rounded-lg border border-slate-200 px-3 text-xs outline-none focus:border-blue-300"
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-/* =========================================================
    FUNDUS
 ========================================================= */
 
-function FundusTable({
-  data,
-  onChange,
-}) {
+function FundusTable({ data, onChange }) {
   const fields = [
     ["disc", "Disc"],
     ["cdRatio", "C/D Ratio"],
@@ -3231,65 +2532,44 @@ function FundusTable({
   ];
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
-      <table className="w-full min-w-[900px]">
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[580px] border-collapse text-[10px]">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50">
-            <th className="w-48 px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-400">
-              Examination
+          <tr className="bg-slate-50">
+            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[9px] font-bold text-slate-600">
+              Parameter
             </th>
-
-            <th className="px-4 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-blue-600">
-              OD
+            <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+              Right (OD)
             </th>
-
-            <th className="px-4 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-rose-600">
-              OS
+            <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+              Left (OS)
             </th>
           </tr>
         </thead>
 
         <tbody>
           {fields.map(([field, label]) => (
-            <tr
-              key={field}
-              className="border-b border-slate-100 last:border-0"
-            >
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600">
+            <tr key={field}>
+              <th className="border border-slate-200 bg-white px-2 py-1.5 text-left font-semibold text-slate-600">
                 {label}
               </th>
 
-              <td className="px-3 py-2">
-                <input
-                  value={
-                    data.right?.[field] || ""
-                  }
-                  onChange={(event) =>
-                    onChange(
-                      "right",
-                      field,
-                      event.target.value
-                    )
-                  }
-                  className="h-10 w-full rounded-lg border border-slate-200 px-3 text-xs outline-none focus:border-blue-300"
-                />
-              </td>
-
-              <td className="px-3 py-2">
-                <input
-                  value={
-                    data.left?.[field] || ""
-                  }
-                  onChange={(event) =>
-                    onChange(
-                      "left",
-                      field,
-                      event.target.value
-                    )
-                  }
-                  className="h-10 w-full rounded-lg border border-slate-200 px-3 text-xs outline-none focus:border-blue-300"
-                />
-              </td>
+              {["right", "left"].map((eye) => (
+                <td key={eye} className="border border-slate-200 p-1">
+                  <input
+                    value={data?.[eye]?.[field] || ""}
+                    onChange={(event) =>
+                      onChange(
+                        eye,
+                        field,
+                        event.target.value
+                      )
+                    }
+                    className="h-7 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+                  />
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -3299,72 +2579,877 @@ function FundusTable({
 }
 
 /* =========================================================
-   PRESCRIPTION SUMMARY
+   DISPENSING
 ========================================================= */
 
-function PrescriptionSummary({ data }) {
-  const fields = [
-    ["sphere", "Sphere"],
-    ["cylinder", "Cylinder"],
-    ["axis", "Axis"],
-    ["va", "VA"],
-    ["add", "ADD"],
-    ["nearVa", "Near VA"],
-    ["prism", "Prism"],
-    ["base", "Base"],
-  ];
+function DispensingPanel({
+  form,
+  updateNested,
+  updateLens,
+  addLens,
+  removeLens,
+  frameValue,
+  lensTotal,
+  grandTotal,
+  onCreateBill,
+}) {
+  return (
+    <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      <div className="flex min-h-[34px] items-center justify-between border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold text-blue-700">
+            09.
+          </span>
+          <Glasses size={13} className="text-blue-600" />
+          <h2 className="text-[11px] font-bold text-blue-700">
+            Dispensing (Spectacles)
+          </h2>
+        </div>
+
+        <label className="flex items-center gap-2 text-[9px] font-semibold text-slate-600">
+          <input
+            type="checkbox"
+            checked={form.dispensing.spectacleRequired}
+            onChange={(event) =>
+              updateNested(
+                "dispensing",
+                "spectacleRequired",
+                event.target.checked
+              )
+            }
+            className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600"
+          />
+          Spectacle Required
+        </label>
+      </div>
+
+      <div className="p-3">
+        {/* FRAME DETAILS — mirrors the supplied dispensing layout */}
+        <div className="grid gap-2 lg:grid-cols-[1fr_2.2fr_1fr_1fr]">
+          <Input
+            label="Frame Code"
+            value={form.dispensing.frameCode}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "frameCode",
+                value
+              )
+            }
+          />
+
+          <Input
+            label="Description"
+            value={form.dispensing.frameDescription}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "frameDescription",
+                value
+              )
+            }
+          />
+
+          <MoneyInput
+            label="To Reorder"
+            value={form.dispensing.toReorder}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "toReorder",
+                value
+              )
+            }
+          />
+
+          <MoneyInput
+            label="Fr Discount"
+            value={form.dispensing.frameDiscount}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "frameDiscount",
+                value
+              )
+            }
+          />
+        </div>
+
+        <div className="mt-2 grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7">
+          <Input
+            label="Frame Size"
+            value={form.dispensing.frameSize}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "frameSize",
+                value
+              )
+            }
+          />
+
+          <Input
+            label="Depth"
+            value={form.dispensing.depth}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "depth",
+                value
+              )
+            }
+          />
+
+          <Input
+            label="ED"
+            value={form.dispensing.ed}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "ed",
+                value
+              )
+            }
+          />
+
+          <Select
+            label="Type"
+            value={form.dispensing.frameType}
+            options={["MM", "Plastic", "Metal", "Acetate", "Other"]}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "frameType",
+                value
+              )
+            }
+          />
+
+          <Input
+            label="Other"
+            value={form.dispensing.other}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "other",
+                value
+              )
+            }
+          />
+
+          <MoneyInput
+            label="Fitting ₹"
+            value={form.dispensing.fitting}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "fitting",
+                value
+              )
+            }
+          />
+
+          <MoneyInput
+            label="Frame Discount"
+            value={form.dispensing.overallDiscount}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "overallDiscount",
+                value
+              )
+            }
+          />
+        </div>
+
+        {/* LENS ORDER TABLE */}
+        <div className="mt-3 overflow-x-auto rounded border border-slate-200">
+          <table className="w-full min-w-[1350px] border-collapse text-[9px]">
+            <thead>
+              <tr className="bg-slate-50 text-center font-bold text-slate-600">
+                <th className="border border-slate-200 px-2 py-2">
+                  Eye
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Lens Code
+                </th>
+                <th className="min-w-[180px] border border-slate-200 px-2 py-2">
+                  Lens Description
+                  <br />
+                  <span className="font-normal">
+                    (S = Stock, G = Grind)
+                  </span>
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Lens Size
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Seg Size
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Seg Ht
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  OC Ht
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Hor
+                  <br />
+                  Decen
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Ver
+                  <br />
+                  Decen
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  BC
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Lens Sup
+                </th>
+                <th className="min-w-[120px] border border-slate-200 px-2 py-2">
+                  Supplier
+                  <br />
+                  Order Date
+                </th>
+                <th className="border border-slate-200 px-2 py-2">
+                  Lens Price
+                </th>
+                <th className="w-9 border border-slate-200 px-2 py-2">
+                  Action
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {form.dispensing.lensRows.map((row, index) => (
+                <tr key={`${row.eye}-${index}`}>
+                  <td className="border border-slate-200 bg-slate-50 px-2 py-1.5 text-center font-bold text-slate-700">
+                    {row.eye}
+                  </td>
+
+                  <td className="border border-slate-200 p-1">
+                    <select
+                      value={row.lensCode}
+                      onChange={(event) =>
+                        updateLens(
+                          index,
+                          "lensCode",
+                          event.target.value
+                        )
+                      }
+                      className="h-8 w-full rounded border border-slate-200 bg-white px-1.5 text-[9px] outline-none focus:border-blue-400"
+                    >
+                      <option value="">Select</option>
+                      <option value="SVTRAN">SVTRAN</option>
+                      <option value="SV">SV</option>
+                      <option value="PROG">PROG</option>
+                      <option value="BIF">BIF</option>
+                      <option value="CL">CL</option>
+                    </select>
+                  </td>
+
+                  <td className="border border-slate-200 p-1">
+                    <input
+                      value={row.lensDescription}
+                      onChange={(event) =>
+                        updateLens(
+                          index,
+                          "lensDescription",
+                          event.target.value
+                        )
+                      }
+                      className="h-8 w-full rounded border border-slate-200 px-2 text-[9px] text-blue-600 outline-none focus:border-blue-400"
+                      placeholder="Lens description"
+                    />
+                  </td>
+
+                  {[
+                    ["lensSize", "75"],
+                    ["segSize", ""],
+                    ["segHeight", ""],
+                    ["ocHeight", ""],
+                    ["horizontalDecentration", ""],
+                    ["verticalDecentration", ""],
+                    ["baseCurve", ""],
+                  ].map(([field, placeholder]) => (
+                    <td
+                      key={field}
+                      className="border border-slate-200 p-1"
+                    >
+                      <input
+                        value={row[field] || ""}
+                        onChange={(event) =>
+                          updateLens(
+                            index,
+                            field,
+                            event.target.value
+                          )
+                        }
+                        placeholder={placeholder}
+                        className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[9px] outline-none focus:border-blue-400"
+                      />
+                    </td>
+                  ))}
+
+                  <td className="border border-slate-200 p-1">
+                    <input
+                      value={row.lensSupplier}
+                      onChange={(event) =>
+                        updateLens(
+                          index,
+                          "lensSupplier",
+                          event.target.value
+                        )
+                      }
+                      placeholder="ESS"
+                      className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[9px] outline-none focus:border-blue-400"
+                    />
+                  </td>
+
+                  <td className="border border-slate-200 p-1">
+                    <input
+                      type="date"
+                      value={row.supplierOrderDate}
+                      onChange={(event) =>
+                        updateLens(
+                          index,
+                          "supplierOrderDate",
+                          event.target.value
+                        )
+                      }
+                      className="h-8 w-full rounded border border-slate-200 px-1.5 text-[9px] outline-none focus:border-blue-400"
+                    />
+                  </td>
+
+                  <td className="border border-slate-200 p-1">
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-400">
+                        ₹
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={row.lensPrice}
+                        onChange={(event) =>
+                          updateLens(
+                            index,
+                            "lensPrice",
+                            event.target.value
+                          )
+                        }
+                        className="h-8 w-full rounded border border-slate-200 pl-5 pr-1.5 text-right text-[9px] outline-none focus:border-blue-400"
+                      />
+                    </div>
+                  </td>
+
+                  <td className="border border-slate-200 p-1 text-center">
+                    <button
+                      type="button"
+                      onClick={() => removeLens(index)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded text-slate-400 hover:bg-red-50 hover:text-red-500"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={addLens}
+            className="inline-flex h-8 items-center gap-1.5 rounded border border-blue-200 bg-white px-3 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+          >
+            <Plus size={12} />
+            Add Lens Row
+          </button>
+
+          <div className="grid w-full gap-2 sm:w-auto sm:grid-cols-4">
+            <MoneySummary label="Frame" value={frameValue} />
+            <MoneySummary label="Lenses" value={lensTotal} />
+            <MoneySummary
+              label="Total"
+              value={grandTotal}
+              emphasized
+            />
+            <div className="rounded border border-slate-200 bg-slate-50 px-3 py-1.5">
+              <div className="text-[8px] font-bold uppercase text-slate-400">
+                GST
+              </div>
+              <input
+                value={form.dispensing.gst}
+                onChange={(event) =>
+                  updateNested(
+                    "dispensing",
+                    "gst",
+                    event.target.value
+                  )
+                }
+                placeholder="GST"
+                className="mt-0.5 h-6 w-full bg-transparent text-right text-[10px] font-bold outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-2 flex flex-wrap items-center justify-end gap-2">
+          <Input
+            label="Bill No"
+            value={form.dispensing.billNo}
+            onChange={(value) =>
+              updateNested(
+                "dispensing",
+                "billNo",
+                value
+              )
+            }
+          />
+
+          <button
+            type="button"
+            onClick={onCreateBill}
+            className="mt-4 inline-flex h-8 items-center gap-1.5 rounded border border-slate-300 bg-white px-4 text-[9px] font-bold text-slate-700 hover:bg-slate-50"
+          >
+            Create Bill
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MoneySummary({
+  label,
+  value,
+  emphasized = false,
+}) {
+  return (
+    <div
+      className={`rounded border px-3 py-1.5 ${
+        emphasized
+          ? "border-blue-200 bg-blue-50"
+          : "border-slate-200 bg-slate-50"
+      }`}
+    >
+      <div className="text-[8px] font-bold uppercase text-slate-400">
+        {label}
+      </div>
+      <div
+        className={`mt-0.5 text-right text-[11px] font-bold ${
+          emphasized ? "text-blue-700" : "text-slate-700"
+        }`}
+      >
+        ₹ {Number(value || 0).toFixed(2)}
+      </div>
+    </div>
+  );
+}
+
+function MoneyInput({
+  label,
+  value,
+  onChange,
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
+        {label}
+      </span>
+      <div className="relative">
+        <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">
+          ₹
+        </span>
+        <input
+          type="number"
+          min="0"
+          value={value || ""}
+          onChange={(event) => onChange(event.target.value)}
+          className="h-8 w-full rounded border border-slate-200 bg-white pl-6 pr-2 text-[10px] outline-none focus:border-blue-400"
+        />
+      </div>
+    </label>
+  );
+}
+
+/* =========================================================
+   ADD-ON CONSULT MODAL
+========================================================= */
+
+function AddonConsultModal({
+  type,
+  form,
+  onClose,
+  onChange,
+}) {
+  const item = specializedTypes.find(
+    (entry) => entry.value === type
+  );
+
+  if (!item) return null;
+
+  const Icon = item.icon;
 
   return (
-    <table className="w-full min-w-[850px]">
-      <thead>
-        <tr className="border-b border-slate-200 bg-slate-50">
-          <th className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-wider text-slate-400">
-            Eye
-          </th>
+    <div
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="w-full max-w-3xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <Icon size={17} />
+            </div>
+            <div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-blue-600">
+                Additional Consult
+              </div>
+              <h2 className="text-base font-bold text-slate-900">
+                {item.label}
+              </h2>
+            </div>
+          </div>
 
-          {fields.map(([, label]) => (
-            <th
-              key={label}
-              className="px-2 py-3 text-center text-[9px] font-bold uppercase tracking-wider text-slate-400"
-            >
-              {label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-
-      <tbody>
-        {[
-          ["right", "OD"],
-          ["left", "OS"],
-        ].map(([eye, label]) => (
-          <tr
-            key={eye}
-            className="border-b border-slate-100 last:border-0"
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded border border-slate-200 text-slate-400 hover:bg-slate-50"
           >
-            <th
-              className={`px-4 py-3 text-left text-xs font-bold ${
-                eye === "right"
-                  ? "bg-blue-50 text-blue-800"
-                  : "bg-rose-50 text-rose-800"
-              }`}
-            >
-              {label}
-            </th>
+            <X size={15} />
+          </button>
+        </div>
 
-            {fields.map(([field]) => (
-              <td
-                key={field}
-                className="px-2 py-3 text-center font-mono text-xs text-slate-700"
-              >
-                {data?.[eye]?.[field] ||
-                  "—"}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        <div className="max-h-[72vh] overflow-y-auto p-5">
+          {type === "contact_lenses" && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Input
+                label="Lens Type"
+                value={form.contactLenses.lensType}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "lensType",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Brand"
+                value={form.contactLenses.brand}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "brand",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Base Curve"
+                value={form.contactLenses.baseCurve}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "baseCurve",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Diameter"
+                value={form.contactLenses.diameter}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "diameter",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="OD Power"
+                value={form.contactLenses.rightPower}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "rightPower",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="OS Power"
+                value={form.contactLenses.leftPower}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "leftPower",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Replacement"
+                value={form.contactLenses.replacement}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "replacement",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Wear Schedule"
+                value={form.contactLenses.wearSchedule}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "wearSchedule",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Solution"
+                value={form.contactLenses.solution}
+                onChange={(value) =>
+                  onChange(
+                    "contactLenses",
+                    "solution",
+                    value
+                  )
+                }
+              />
+              <div className="sm:col-span-2 lg:col-span-3">
+                <TextArea
+                  label="Advice"
+                  value={form.contactLenses.advice}
+                  onChange={(value) =>
+                    onChange(
+                      "contactLenses",
+                      "advice",
+                      value
+                    )
+                  }
+                  rows={4}
+                />
+              </div>
+            </div>
+          )}
+
+          {type === "binocular_vision" && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Input
+                label="Cover Test — Distance"
+                value={
+                  form.binocularVision.coverTestDistance
+                }
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "coverTestDistance",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Cover Test — Near"
+                value={form.binocularVision.coverTestNear}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "coverTestNear",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="NPC"
+                value={form.binocularVision.npc}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "npc",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Worth 4 Dot"
+                value={form.binocularVision.worthFourDot}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "worthFourDot",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Stereopsis"
+                value={form.binocularVision.stereopsis}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "stereopsis",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Vergence BI"
+                value={form.binocularVision.vergenceBI}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "vergenceBI",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Vergence BO"
+                value={form.binocularVision.vergenceBO}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "vergenceBO",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Accommodation"
+                value={form.binocularVision.accommodation}
+                onChange={(value) =>
+                  onChange(
+                    "binocularVision",
+                    "accommodation",
+                    value
+                  )
+                }
+              />
+              <div className="sm:col-span-2 lg:col-span-3">
+                <TextArea
+                  label="Findings"
+                  value={form.binocularVision.findings}
+                  onChange={(value) =>
+                    onChange(
+                      "binocularVision",
+                      "findings",
+                      value
+                    )
+                  }
+                  rows={4}
+                />
+              </div>
+            </div>
+          )}
+
+          {type === "low_vision" && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Input
+                label="Distance VA"
+                value={form.lowVision.distanceVA}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "distanceVA",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Near VA"
+                value={form.lowVision.nearVA}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "nearVA",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Contrast"
+                value={form.lowVision.contrast}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "contrast",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Visual Field"
+                value={form.lowVision.visualField}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "visualField",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Magnification"
+                value={form.lowVision.magnification}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "magnification",
+                    value
+                  )
+                }
+              />
+              <Input
+                label="Assistive Device"
+                value={form.lowVision.assistiveDevice}
+                onChange={(value) =>
+                  onChange(
+                    "lowVision",
+                    "assistiveDevice",
+                    value
+                  )
+                }
+              />
+              <div className="sm:col-span-2 lg:col-span-3">
+                <TextArea
+                  label="Advice"
+                  value={form.lowVision.advice}
+                  onChange={(value) =>
+                    onChange(
+                      "lowVision",
+                      "advice",
+                      value
+                    )
+                  }
+                  rows={4}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-9 rounded border border-slate-300 bg-white px-4 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -3380,19 +3465,17 @@ function Input({
   type = "text",
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
+    <label className="block min-w-0">
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
         {label}
       </span>
 
       <input
         type={type}
         value={value || ""}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+        className="h-8 w-full rounded border border-slate-200 bg-white px-2.5 text-[10px] text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
       />
     </label>
   );
@@ -3406,19 +3489,17 @@ function TextArea({
   rows = 4,
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
+    <label className="block min-w-0">
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
         {label}
       </span>
 
       <textarea
         rows={rows}
         value={value || ""}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+        className="w-full resize-y rounded border border-slate-200 bg-white px-2.5 py-2 text-[10px] leading-5 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
       />
     </label>
   );
@@ -3431,20 +3512,17 @@ function Select({
   options = [],
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-[9px] font-bold uppercase tracking-wider text-slate-400">
+    <label className="block min-w-0">
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
         {label}
       </span>
 
       <select
         value={value || ""}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
-        className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs text-slate-700 outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+        onChange={(event) => onChange(event.target.value)}
+        className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[10px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
       >
         <option value="">Select...</option>
-
         {options.map((option) => (
           <option
             key={
@@ -3468,54 +3546,12 @@ function Select({
   );
 }
 
-function InfoField({ label, value }) {
-  return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 px-3.5 py-3">
-      <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
-        {label}
-      </div>
-
-      <div className="mt-1 truncate text-xs font-semibold text-slate-700">
-        {value || "—"}
-      </div>
-    </div>
-  );
-}
-
 /* =========================================================
-   EMPTY STATE
-========================================================= */
-
-function EmptyState({
-  icon: Icon,
-  title,
-  description,
-}) {
-  return (
-    <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-center">
-      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm">
-        <Icon size={17} />
-      </div>
-
-      <div className="mt-3 text-xs font-bold text-slate-600">
-        {title}
-      </div>
-
-      <p className="mx-auto mt-1 max-w-md text-[10px] leading-5 text-slate-400">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-/* =========================================================
-   SERIALIZATION HELPERS
+   SERIALIZATION
 ========================================================= */
 
 function formatSlitLamp(slitLamp) {
   if (!slitLamp) return "";
-
-  const sections = [];
 
   const fields = [
     ["lids", "Lids"],
@@ -3527,28 +3563,21 @@ function formatSlitLamp(slitLamp) {
     ["other", "Other"],
   ];
 
-  fields.forEach(([field, label]) => {
-    const right =
-      slitLamp.right?.[field];
-    const left =
-      slitLamp.left?.[field];
+  return fields
+    .map(([field, label]) => {
+      const right = slitLamp.right?.[field];
+      const left = slitLamp.left?.[field];
 
-    if (right || left) {
-      sections.push(
-        `${label}: OD ${right || "—"} | OS ${
-          left || "—"
-        }`
-      );
-    }
-  });
+      if (!right && !left) return "";
 
-  return sections.join("\n");
+      return `${label}: OD ${right || "—"} | OS ${left || "—"}`;
+    })
+    .filter(Boolean)
+    .join("\n");
 }
 
 function formatFundus(fundus) {
   if (!fundus) return "";
-
-  const sections = [];
 
   const fields = [
     ["disc", "Disc"],
@@ -3559,20 +3588,15 @@ function formatFundus(fundus) {
     ["other", "Other"],
   ];
 
-  fields.forEach(([field, label]) => {
-    const right =
-      fundus.right?.[field];
-    const left =
-      fundus.left?.[field];
+  return fields
+    .map(([field, label]) => {
+      const right = fundus.right?.[field];
+      const left = fundus.left?.[field];
 
-    if (right || left) {
-      sections.push(
-        `${label}: OD ${right || "—"} | OS ${
-          left || "—"
-        }`
-      );
-    }
-  });
+      if (!right && !left) return "";
 
-  return sections.join("\n");
+      return `${label}: OD ${right || "—"} | OS ${left || "—"}`;
+    })
+    .filter(Boolean)
+    .join("\n");
 }
