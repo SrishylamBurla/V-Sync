@@ -15,6 +15,7 @@ import {
   CreditCard,
   RotateCcw,
   Activity,
+  Building2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -80,6 +81,21 @@ const nav = [
     label: "Reports",
     path: "/reports",
     roles: ["super_admin", "organization_admin", "branch_manager", "cashier"],
+  },
+  {
+    label: "Organizations",
+    path: "/admin/organizations",
+    roles: ["super_admin"],
+  },
+  {
+    label: "Organization",
+    path: "/settings/organization",
+    roles: ["organization_admin"],
+  },
+  {
+    label: "Branches",
+    path: "/branches",
+    roles: ["super_admin", "organization_admin", "branch_manager"],
   },
   {
     label: "Staff",
@@ -202,11 +218,18 @@ export default function Topbar() {
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5">
           <div className="hidden border-r border-slate-200 pr-4 text-right xl:block">
-            <div className="max-w-[170px] truncate text-[11px] font-semibold text-slate-700">
-              {organization?.name || "VividOpt Practice"}
+            <div className="max-w-[190px] truncate text-[11px] font-semibold text-slate-700">
+              {user?.role === "super_admin"
+                ? "Platform Administration"
+                : organization?.name || "VividOpt Practice"}
             </div>
-            <div className="mt-0.5 text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              Single branch
+            <div className="mt-0.5 flex items-center justify-end gap-1.5 text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+              <Building2 size={10} />
+              {user?.role === "super_admin"
+                ? "All organizations"
+                : user?.defaultBranchId
+                  ? "Default branch"
+                  : "Organization"}
             </div>
           </div>
 
@@ -259,6 +282,42 @@ export default function Topbar() {
                     {roleLabel(user?.role)}
                   </div>
                 </div>
+
+                {user?.role === "super_admin" && (
+                  <NavLink
+                    to="/admin/organizations"
+                    onClick={closeMenus}
+                    className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+                  >
+                    <Building2 size={14} />
+                    Organizations
+                  </NavLink>
+                )}
+
+                {user?.role === "organization_admin" && (
+                  <NavLink
+                    to="/settings/organization"
+                    onClick={closeMenus}
+                    className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+                  >
+                    <Building2 size={14} />
+                    Organization Settings
+                  </NavLink>
+                )}
+
+                {["super_admin", "organization_admin", "branch_manager"].includes(
+                  user?.role
+                ) && (
+                  <NavLink
+                    to="/branches"
+                    onClick={closeMenus}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+                  >
+                    <Building2 size={14} />
+                    Branches
+                  </NavLink>
+                )}
+
                 <button
                   type="button"
                   onClick={logout}
