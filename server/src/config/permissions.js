@@ -1,15 +1,16 @@
 export const PERMISSIONS = {
   // Organization
   ORGANIZATION_VIEW: "organization.view",
+  ORGANIZATION_CREATE: "organization.create",
   ORGANIZATION_UPDATE: "organization.update",
 
-  // Branches
+  // Branch
   BRANCH_VIEW: "branch.view",
   BRANCH_CREATE: "branch.create",
   BRANCH_UPDATE: "branch.update",
   BRANCH_DELETE: "branch.delete",
 
-  // Users
+  // Users / Staff
   USER_VIEW: "user.view",
   USER_CREATE: "user.create",
   USER_UPDATE: "user.update",
@@ -31,7 +32,7 @@ export const PERMISSIONS = {
   CLINICAL_CREATE: "clinical.create",
   CLINICAL_UPDATE: "clinical.update",
 
-  // Prescriptions
+  // Prescription
   PRESCRIPTION_VIEW: "prescription.view",
   PRESCRIPTION_CREATE: "prescription.create",
   PRESCRIPTION_UPDATE: "prescription.update",
@@ -41,7 +42,6 @@ export const PERMISSIONS = {
   PRODUCT_CREATE: "product.create",
   PRODUCT_UPDATE: "product.update",
 
-  // Orders
   ORDER_VIEW: "order.view",
   ORDER_CREATE: "order.create",
   ORDER_UPDATE: "order.update",
@@ -55,6 +55,7 @@ export const PERMISSIONS = {
   BILLING_VIEW: "billing.view",
   BILLING_CREATE: "billing.create",
   BILLING_UPDATE: "billing.update",
+
   PAYMENT_CREATE: "payment.create",
   REFUND_CREATE: "refund.create",
 
@@ -66,7 +67,7 @@ export const PERMISSIONS = {
   // Reports
   REPORT_VIEW: "report.view",
 
-  // Communications
+  // Communication
   COMMUNICATION_VIEW: "communication.view",
   COMMUNICATION_CREATE: "communication.create",
 

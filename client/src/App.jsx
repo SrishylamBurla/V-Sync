@@ -34,6 +34,13 @@ import AddStaffPage from "./modules/staff/pages/AddStaffPage";
 import BranchListPage from "./modules/branches/pages/BranchListPage";
 import AddBranchPage from "./modules/branches/pages/AddBranchPage";
 import BranchDetailsPage from "./modules/branches/pages/BranchDetailsPage";
+import StaffDetailsPage from "./modules/staff/pages/StaffDetailsPage";
+import EditStaffPage from "./modules/staff/pages/EditStaffPage";
+import OrganizationSettingsPage from "./modules/organization/pages/organizationSettingsPage";
+import AdminOrganizationDetailsPage from "./modules/organization/pages/adminOrganizationDetailsPage";
+import AdminOrganizationsPage from "./modules/organization/pages/adminOrganizationPage";
+import AddOrganizationPage from "./modules/organization/pages/addOrganizationPage";
+import EditOrganizationPage from "./modules/organization/pages/EditOrganizationPage";
 
 const ALL = [
   "super_admin",
@@ -214,18 +221,43 @@ export default function App() {
             <Route path="/communications" element={<CommunicationsPage />} />
             <Route path="/newsletters" element={<MarketingPage />} />
           </Route>
+
+          <Route element={<RoleRoute roles={["super_admin"]} />}>
+            <Route
+              path="/admin/organizations"
+              element={<AdminOrganizationsPage />}
+            />
+
+            <Route
+              path="/admin/organizations/new"
+              element={<AddOrganizationPage />}
+            />
+
+            <Route
+              path="/admin/organizations/:id"
+              element={<AdminOrganizationDetailsPage />}
+            />
+
+            <Route
+              path="/admin/organizations/:id/edit"
+              element={<EditOrganizationPage />}
+            />
+          </Route>
+
           <Route element={<RoleRoute roles={ADMIN} />}>
             <Route path="/branches" element={<BranchListPage />} />
             <Route path="/branches/new" element={<AddBranchPage />} />
 
-             <Route
-    path="/branches/:id"
-    element={<BranchDetailsPage />}
-  />
+            <Route path="/branches/:id" element={<BranchDetailsPage />} />
             <Route path="/staff" element={<StaffListPage />} />
 
             <Route path="/staff/new" element={<AddStaffPage />} />
-
+            <Route path="/staff/:id" element={<StaffDetailsPage />} />
+            <Route path="/staff/:id/edit" element={<EditStaffPage />} />
+            <Route
+              path="/settings/organization"
+              element={<OrganizationSettingsPage />}
+            />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
           <Route

@@ -1,21 +1,111 @@
 import { PERMISSIONS } from "./permissions.js";
 
 export const ROLE_PERMISSIONS = {
+  // ============================================================
+  // SUPER ADMIN
+  // ============================================================
+
   super_admin: Object.values(PERMISSIONS),
 
-  organization_admin: Object.values(PERMISSIONS),
+  // ============================================================
+  // ORGANIZATION ADMIN
+  // ============================================================
+
+  organization_admin: [
+    // Organization
+    PERMISSIONS.ORGANIZATION_VIEW,
+    PERMISSIONS.ORGANIZATION_UPDATE,
+
+    // Branches
+    PERMISSIONS.BRANCH_VIEW,
+    PERMISSIONS.BRANCH_CREATE,
+    PERMISSIONS.BRANCH_UPDATE,
+    PERMISSIONS.BRANCH_DELETE,
+
+    // Staff
+    PERMISSIONS.USER_VIEW,
+    PERMISSIONS.USER_CREATE,
+    PERMISSIONS.USER_UPDATE,
+    PERMISSIONS.USER_DELETE,
+
+    // Patients
+    PERMISSIONS.PATIENT_VIEW,
+    PERMISSIONS.PATIENT_CREATE,
+    PERMISSIONS.PATIENT_UPDATE,
+    PERMISSIONS.PATIENT_DELETE,
+
+    // Appointments
+    PERMISSIONS.APPOINTMENT_VIEW,
+    PERMISSIONS.APPOINTMENT_CREATE,
+    PERMISSIONS.APPOINTMENT_UPDATE,
+
+    // Clinical
+    PERMISSIONS.CLINICAL_VIEW,
+    PERMISSIONS.CLINICAL_CREATE,
+    PERMISSIONS.CLINICAL_UPDATE,
+
+    // Prescriptions
+    PERMISSIONS.PRESCRIPTION_VIEW,
+    PERMISSIONS.PRESCRIPTION_CREATE,
+    PERMISSIONS.PRESCRIPTION_UPDATE,
+
+    // Optical
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+
+    PERMISSIONS.ORDER_VIEW,
+    PERMISSIONS.ORDER_CREATE,
+    PERMISSIONS.ORDER_UPDATE,
+
+    // Inventory
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_CREATE,
+    PERMISSIONS.INVENTORY_UPDATE,
+
+    // Billing
+    PERMISSIONS.BILLING_VIEW,
+    PERMISSIONS.BILLING_CREATE,
+    PERMISSIONS.BILLING_UPDATE,
+
+    PERMISSIONS.PAYMENT_CREATE,
+    PERMISSIONS.REFUND_CREATE,
+
+    // Recall
+    PERMISSIONS.RECALL_VIEW,
+    PERMISSIONS.RECALL_CREATE,
+    PERMISSIONS.RECALL_UPDATE,
+
+    // Communication
+    PERMISSIONS.COMMUNICATION_VIEW,
+    PERMISSIONS.COMMUNICATION_CREATE,
+
+    // Reports
+    PERMISSIONS.REPORT_VIEW,
+
+    // Audit
+    PERMISSIONS.AUDIT_VIEW,
+  ],
+
+  // ============================================================
+  // BRANCH MANAGER
+  // ============================================================
 
   branch_manager: [
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,
+
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.ORGANIZATION_VIEW,
 
     PERMISSIONS.BRANCH_VIEW,
 
     PERMISSIONS.USER_VIEW,
+    PERMISSIONS.USER_CREATE,
+    PERMISSIONS.USER_UPDATE,
 
     PERMISSIONS.APPOINTMENT_VIEW,
     PERMISSIONS.APPOINTMENT_CREATE,
@@ -44,16 +134,23 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.BILLING_VIEW,
     PERMISSIONS.BILLING_CREATE,
     PERMISSIONS.BILLING_UPDATE,
+
     PERMISSIONS.PAYMENT_CREATE,
     PERMISSIONS.REFUND_CREATE,
   ],
+
+  // ============================================================
+  // OPTOMETRIST
+  // ============================================================
 
   optometrist: [
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,
+
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.APPOINTMENT_VIEW,
     PERMISSIONS.APPOINTMENT_CREATE,
     PERMISSIONS.APPOINTMENT_UPDATE,
@@ -71,15 +168,22 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.PRESCRIPTION_UPDATE,
 
     PERMISSIONS.ORDER_VIEW,
+
     PERMISSIONS.BILLING_VIEW,
   ],
+
+  // ============================================================
+  // DOCTOR
+  // ============================================================
 
   doctor: [
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,
+
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.APPOINTMENT_VIEW,
     PERMISSIONS.APPOINTMENT_CREATE,
     PERMISSIONS.APPOINTMENT_UPDATE,
@@ -95,12 +199,18 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.PRESCRIPTION_VIEW,
     PERMISSIONS.PRESCRIPTION_CREATE,
     PERMISSIONS.PRESCRIPTION_UPDATE,
+
     PERMISSIONS.BILLING_VIEW,
   ],
+
+  // ============================================================
+  // SALES EXECUTIVE
+  // ============================================================
 
   sales_executive: [
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.APPOINTMENT_VIEW,
     PERMISSIONS.APPOINTMENT_CREATE,
     PERMISSIONS.APPOINTMENT_UPDATE,
@@ -114,12 +224,18 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.ORDER_VIEW,
     PERMISSIONS.ORDER_CREATE,
     PERMISSIONS.ORDER_UPDATE,
+
     PERMISSIONS.BILLING_VIEW,
   ],
+
+  // ============================================================
+  // CASHIER
+  // ============================================================
 
   cashier: [
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.APPOINTMENT_VIEW,
 
     PERMISSIONS.PATIENT_VIEW,
@@ -130,11 +246,16 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.BILLING_VIEW,
     PERMISSIONS.BILLING_CREATE,
     PERMISSIONS.BILLING_UPDATE,
+
     PERMISSIONS.PAYMENT_CREATE,
     PERMISSIONS.REFUND_CREATE,
 
     PERMISSIONS.REPORT_VIEW,
   ],
+
+  // ============================================================
+  // INVENTORY MANAGER
+  // ============================================================
 
   inventory_manager: [
     PERMISSIONS.APPOINTMENT_VIEW,
@@ -148,6 +269,10 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.INVENTORY_UPDATE,
   ],
 
+  // ============================================================
+  // LAB TECHNICIAN
+  // ============================================================
+
   lab_technician: [
     PERMISSIONS.APPOINTMENT_VIEW,
 
@@ -155,12 +280,18 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.INVENTORY_VIEW,
   ],
 
+  // ============================================================
+  // RECEPTIONIST
+  // ============================================================
+
   receptionist: [
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,
+
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
+
     PERMISSIONS.APPOINTMENT_VIEW,
     PERMISSIONS.APPOINTMENT_CREATE,
     PERMISSIONS.APPOINTMENT_UPDATE,

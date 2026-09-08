@@ -7,8 +7,10 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.routes.js";
+import organizationRoutes from "./routes/organization.routes.js";
+import adminOrganizationRoutes from "./routes/adminOrganization.routes.js"
 import branchRoutes from "./routes/branch.routes.js";
-import staffRoutes from "./routes/staff.routes.js" 
+import staffRoutes from "./routes/staff.routes.js";
 import patientRoutes from "./routes/patient.routes.js";
 import consultationRoutes from "./routes/consultation.routes.js";
 import appointmentRoutes from "./routes/appointment.routes.js";
@@ -71,8 +73,10 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/organizations", organizationRoutes);
+app.use("/api/v1/admin/organizations", adminOrganizationRoutes);
 app.use("/api/v1/branches", branchRoutes);
-app.use("/api/v1/staff", staffRoutes)
+app.use("/api/v1/staff", staffRoutes);
 app.use("/api/v1/patients", patientRoutes);
 app.use("/api/v1/consultations", consultationRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
