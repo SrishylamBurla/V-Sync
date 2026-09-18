@@ -130,6 +130,7 @@ function Dropdown({ label, items, pathname }) {
           "relative",
           "inline-flex",
           "h-11",
+          "shrink-0",
           "items-center",
           "justify-center",
           "gap-1.5",
@@ -138,20 +139,37 @@ function Dropdown({ label, items, pathname }) {
           "font-medium",
           "leading-none",
           "whitespace-nowrap",
+          "font-sans",
           "transition-colors",
           "duration-150",
           active ? "text-slate-950" : "text-slate-500 hover:text-slate-900",
         ].join(" ")}
+        style={{
+          fontSize: "13px",
+          fontWeight: 500,
+          lineHeight: 1,
+          fontFamily: "inherit",
+        }}
       >
-        <span className="text-[13px] font-medium">{label}</span>
+        <span
+          className="text-[13px] font-medium leading-none"
+          style={{
+            fontSize: "13px",
+            fontWeight: 500,
+            lineHeight: 1,
+          }}
+        >
+          {label}
+        </span>
 
         <ChevronDown
-          size={14}
+          size={13}
           strokeWidth={1.8}
           className="
             shrink-0
+            translate-y-0
             transition-transform
-            duration-200
+            duration-150
             group-hover:rotate-180
           "
         />
@@ -204,6 +222,7 @@ function Dropdown({ label, items, pathname }) {
                 "px-3",
                 "text-[13px]",
                 "font-medium",
+                "leading-none",
                 "transition-colors",
                 "duration-150",
                 activeItem
@@ -338,7 +357,6 @@ export default function Topbar() {
               type="button"
               onClick={() => {
                 setProfileOpen((value) => !value);
-                setOpenMenu(null);
               }}
               className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition hover:bg-slate-50"
               aria-expanded={profileOpen}
@@ -411,7 +429,7 @@ export default function Topbar() {
       </div>
 
       <div className="hidden border-t border-slate-100 lg:block">
-        <nav className="mx-auto flex h-11 w-full max-w-[1500px] items-center px-3 sm:px-5 lg:px-7">
+        <nav className="mx-auto flex h-11 w-full max-w-[1500px] items-center overflow-visible px-3 sm:px-5 lg:px-7">
           {nav.map((item) => (
             <TopNavLink key={item.to} to={item.to}>
               {item.label}
@@ -439,7 +457,6 @@ export default function Topbar() {
               />
             </>
           )}
-
 
           <div className="ml-auto flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
             <MoreHorizontal size={14} />

@@ -1,2 +1,80 @@
-import express from "express";import {protect} from "../middleware/auth.middleware.js";import {getSpectacle,getPatientSpectacles,latestConsultation,createSpectacle,updateSpectacle,dispensingList} from "../controllers/spectacle.controller.js";
-const r=express.Router();r.use(protect);r.get("/dispensing",dispensingList);r.get("/patient/:patientId/latest-consultation",latestConsultation);r.get("/patient/:patientId",getPatientSpectacles);r.get("/:id",getSpectacle);r.post("/",createSpectacle);r.put("/:id",updateSpectacle);export default r;
+import express from "express";
+
+import { protect } from "../middleware/auth.middleware.js";
+
+import {
+  getSpectacle,
+  getPatientSpectacles,
+  latestConsultation,
+  createSpectacle,
+  updateSpectacle,
+  updateSpectacleStatus,
+  dispensingList,
+} from "../controllers/spectacle.controller.js";
+
+const router = express.Router();
+
+router.use(protect);
+
+/*
+|--------------------------------------------------------------------------
+| Dispensing / workflow
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/dispensing",
+  dispensingList,
+);
+
+router.get(
+  "/patient/:patientId/latest-consultation",
+  latestConsultation,
+);
+
+router.get(
+  "/patient/:patientId",
+  getPatientSpectacles,
+);
+
+/*
+|--------------------------------------------------------------------------
+| Individual spectacle
+|--------------------------------------------------------------------------
+*/
+
+router.get(
+  "/:id",
+  getSpectacle,
+);
+
+router.post(
+  "/",
+  createSpectacle,
+);
+
+router.put(
+  "/:id",
+  updateSpectacle,
+);
+
+/*
+|--------------------------------------------------------------------------
+| Status workflow
+|--------------------------------------------------------------------------
+|
+| draft
+|   → ordered
+|   → not_ready
+|   → ready
+|   → notified
+|   → collected
+|
+*/
+
+router.patch(
+  "/:id/status",
+  updateSpectacleStatus,
+);
+
+export default router;

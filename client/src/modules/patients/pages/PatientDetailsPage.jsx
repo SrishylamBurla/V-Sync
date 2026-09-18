@@ -3,6 +3,9 @@ import {
   ArrowLeft,
   CalendarDays,
   ClipboardPlus,
+  ContactRound,
+  Glasses,
+  Eye,
   FileText,
   Upload,
   Download,
@@ -118,6 +121,7 @@ export default function PatientDetailsPage() {
   const [editForm, setEditForm] = useState(initialEdit);
 
   const [selectedConsultation, setSelectedConsultation] = useState(null);
+  const [serviceModal, setServiceModal] = useState(null);
 
   const [documentOpen, setDocumentOpen] = useState(false);
 
@@ -907,6 +911,12 @@ export default function PatientDetailsPage() {
                 </table>
               </div>
             </DocSection>
+
+            {/* Optical dispensing, contact lens dispensing and additional consultation
+                are intentionally handled from the Clinical Summary action cards in
+                the patient sidebar. Keeping them out of the main document prevents
+                duplicate workflows and keeps Patient Details focused. */}
+
           </section>
 
           {/* ===================================================
@@ -986,15 +996,42 @@ export default function PatientDetailsPage() {
                 />
               </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(`/patients/${patientId}/consultations/new`)
-                }
-                className="mt-4 w-full rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100 hover:bg-blue-50"
-              >
-                Start new consultation
-              </button>
+              <div className="mt-4 space-y-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(`/patients/${patientId}/consultations/new`)
+                  }
+                  className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100 transition hover:bg-blue-50"
+                >
+                  <span className="flex items-center gap-2">
+                    <ClipboardPlus size={14} />
+                    Start new consultation
+                  </span>
+                  <span className="text-[10px] text-blue-400">Clinical</span>
+                </button>
+
+                <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+                  <ServiceActionButton
+                    icon={Glasses}
+                    label="Optical Dispensing"
+                    description="Spectacle job"
+                    onClick={() => setServiceModal("optical")}
+                  />
+                  <ServiceActionButton
+                    icon={ContactRound}
+                    label="Contact Lens Dispensing"
+                    description="Lens order & fitting"
+                    onClick={() => setServiceModal("contact") }
+                  />
+                  <ServiceActionButton
+                    icon={Eye}
+                    label="Additional Consultation"
+                    description="CL · BV · LV"
+                    onClick={() => setServiceModal("additional")}
+                  />
+                </div>
+              </div>
             </div>
           </aside>
         </div>
@@ -1035,6 +1072,15 @@ export default function PatientDetailsPage() {
           consultation={selectedConsultation}
           loading={loadingConsultation}
           onClose={() => setSelectedConsultation(null)}
+        />
+      )}
+
+      {serviceModal && (
+        <PatientServiceModal
+          type={serviceModal}
+          patient={patient}
+          latestConsultation={latestConsultation}
+          onClose={() => setServiceModal(null)}
         />
       )}
 
@@ -1226,6 +1272,421 @@ function EditPatientModal({ form, setForm, saving, onClose, onSubmit }) {
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// PATIENT SERVICE ACTION BUTTON
+// ============================================================
+
+function ServiceActionButton({ icon: Icon, label, description, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex w-full items-center gap-3 rounded-xl border border-blue-100 bg-white px-3 py-3 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/70"
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition group-hover:bg-blue-100">
+        <Icon size={16} />
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-[10px] font-semibold text-slate-800">
+          {label}
+        </span>
+        <span className="mt-0.5 block truncate text-[9px] leading-4 text-slate-400">
+          {description}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+// ============================================================
+// PATIENT SERVICE MODAL
+// ============================================================
+
+function PatientServiceModal({ type, patient, latestConsultation, onClose }) {
+  const [contactStep, setContactStep] = useState("consultation");
+
+  const patientDisplayName = fullName(patient) || "Patient";
+  const right = latestConsultation?.givenRx?.right || {};
+  const left = latestConsultation?.givenRx?.left || {};
+
+  const title =
+    type === "optical"
+      ? "Optical Dispensing"
+      : type === "contact"
+        ? "Contact Lens Dispensing"
+        : "Additional Consultation";
+
+  const subtitle =
+    type === "optical"
+      ? "Spectacle dispensing record"
+      : type === "contact"
+        ? "Contact lens order, fitting and follow-up"
+        : "Additional clinical assessments for this patient";
+
+  return (
+    <div
+      className="fixed inset-0 z-[140] flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm sm:p-5"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+    >
+      <div className="flex max-h-[94vh] w-full max-w-[1180px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 px-4 py-3 text-white sm:px-5">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              {type === "optical" ? (
+                <Glasses size={16} />
+              ) : type === "contact" ? (
+                <ContactRound size={16} />
+              ) : (
+                <Eye size={16} />
+              )}
+              <h2 className="truncate text-sm font-bold">{title}</h2>
+            </div>
+            <p className="mt-0.5 truncate text-[9px] text-slate-300">
+              {patientDisplayName} · {patient?.patientNumber || "No patient number"} · {subtitle}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            <X size={15} />
+          </button>
+        </header>
+
+        <div className="min-h-0 overflow-y-auto bg-slate-50 p-3 sm:p-5">
+          {type === "optical" && (
+            <OpticalDispensingModalContent
+              patient={patient}
+              consultation={latestConsultation}
+              right={right}
+              left={left}
+            />
+          )}
+
+          {type === "contact" && (
+            <ContactLensDispensingModalContent
+              patient={patient}
+              consultation={latestConsultation}
+              step={contactStep}
+              setStep={setContactStep}
+            />
+          )}
+
+          {type === "additional" && <AdditionalConsultModalContent />}
+        </div>
+
+        <footer className="flex shrink-0 items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-5">
+          <div className="text-[9px] leading-4 text-slate-400">
+            Patient record · {patient?.patientNumber || "No reference"}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-8 rounded-lg bg-slate-950 px-4 text-[10px] font-bold text-white transition hover:bg-slate-800"
+          >
+            Close
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, value = "", placeholder = "", className = "" }) {
+  return (
+    <label className={`block ${className}`}>
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">
+        {label}
+      </span>
+      <input
+        defaultValue={value || ""}
+        placeholder={placeholder}
+        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[10px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+      />
+    </label>
+  );
+}
+
+function SectionTitle({ number, title, action }) {
+  return (
+    <div className="flex items-center justify-between border-b border-slate-200 bg-white px-3 py-2">
+      <div className="flex items-center gap-2">
+        {number && <span className="text-[9px] font-bold text-blue-600">{number}.</span>}
+        <span className="text-[10px] font-bold uppercase tracking-[.12em] text-slate-700">
+          {title}
+        </span>
+      </div>
+      {action}
+    </div>
+  );
+}
+
+function OpticalDispensingModalContent({ patient, consultation, right, left }) {
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 sm:grid-cols-4">
+        <Field label="Job No" placeholder="SP-000359" />
+        <Field label="Job Date" value={new Date().toISOString().slice(0, 10)} />
+        <Field label="Spec Due" />
+        <Field label="Job Type" value="New Spectacle" />
+        <Field label="Dispenser" />
+        <Field label="Rx Date" value={consultation?.consultationDate?.slice?.(0, 10)} />
+        <Field label="Sale By" />
+        <Field label="Status" value="Draft" />
+        <Field label="PD Right" value={consultation?.pd?.right} />
+        <Field label="PD Left" value={consultation?.pd?.left} />
+        <Field label="Use" value="Distance / Near" className="sm:col-span-2" />
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <SectionTitle number="01" title="Prescription" action={<span className="text-[8px] text-slate-400">Latest given Rx</span>} />
+        <div className="overflow-x-auto p-3">
+          <table className="w-full min-w-[720px] border-collapse text-[9px]">
+            <thead>
+              <tr className="bg-slate-50 text-slate-500">
+                {['Eye','Sphere','Cyl','Axis','Add','Inter','H Prism','V Prism'].map((head) => (
+                  <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <RxDispensingRow eye="Right" values={right} />
+              <RxDispensingRow eye="Left" values={left} />
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <SectionTitle number="02" title="Frame" />
+        <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Field label="Frame Code" placeholder="OPT000007" />
+          <Field label="Frame Description" placeholder="Gucci, 111, Silver, 48-18, 140" className="lg:col-span-2" />
+          <Field label="To Reorder ₹" placeholder="220.00" />
+          <Field label="Frame Size" placeholder="48-18" />
+          <Field label="Depth" />
+          <Field label="ED" />
+          <Field label="Type" value="MM" />
+          <Field label="Other" />
+          <Field label="Fitting ₹" />
+          <Field label="Frame Discount ₹" />
+          <Field label="Frame Price ₹" />
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <SectionTitle number="03" title="Lenses" action={<span className="text-[8px] text-slate-400">Right / Left lens details</span>} />
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1180px] border-collapse text-[9px]">
+            <thead>
+              <tr className="bg-slate-50 text-slate-500">
+                {['Eye','Lens Code','Lens Description','Lens Size','Seg Size','Seg Ht','OC Ht','Hor Decen','Ver Decen','BC','Lens Sup','Order Date','Lens Price ₹'].map((head) => (
+                  <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {['Right','Left'].map((eye) => (
+                <tr key={eye}>
+                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>
+                  <td className="border border-slate-200 p-1"><input defaultValue="SVTRAN" className="h-7 w-full min-w-[75px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+                  <td className="border border-slate-200 p-1"><input defaultValue="S SV Transitions Stock 75mm" className="h-7 w-full min-w-[170px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+                  {['75','','','','','','',''].map((value, i) => <td key={i} className="border border-slate-200 p-1"><input defaultValue={value} className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>)}
+                  <td className="border border-slate-200 p-1"><input defaultValue="ESS" className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+                  <td className="border border-slate-200 p-1"><input defaultValue="" className="h-7 w-full min-w-[85px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+                  <td className="border border-slate-200 p-1"><input defaultValue="50.00" className="h-7 w-full min-w-[65px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-[1.6fr_1fr]">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <SectionTitle number="04" title="Extras & Laboratory" />
+          <div className="grid gap-2 p-3 sm:grid-cols-2">
+            <Field label="Extra 1" placeholder="Tinting / coating" />
+            <Field label="Extra 2" />
+            <Field label="Extra 3" />
+            <Field label="Others" />
+            <Field label="Lab to Apply" />
+            <Field label="Lab to Fit" />
+            <Field label="Discount Reason" />
+            <Field label="Overall Discount ₹" />
+            <label className="sm:col-span-2"><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Lab Instructions</span><textarea rows="4" defaultValue="" className="w-full resize-none rounded-md border border-slate-200 bg-white p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <SectionTitle number="05" title="Financial Summary" />
+          <div className="space-y-1.5 p-3 text-[10px]">
+            {[["Frame", "₹ 220.00"],["Lenses", "₹ 100.00"],["Extras", "₹ 0.00"],["Discount", "₹ 0.00"],["GST", "₹ 57.60"]].map(([label, value]) => <div key={label} className="flex items-center justify-between text-slate-500"><span>{label}</span><span className="font-semibold text-slate-700">{value}</span></div>)}
+            <div className="my-2 border-t border-dashed border-slate-200" />
+            <div className="flex items-center justify-between text-sm font-bold text-slate-950"><span>Total</span><span>₹ 377.60</span></div>
+            <Field label="Billing No" placeholder="BILL0002524" className="pt-2" />
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <SectionTitle number="06" title="Job Workflow" />
+        <div className="grid gap-2 p-3 sm:grid-cols-5">
+          {['Ordered','In Production','Job Ready','Notified','Collected'].map((status, index) => (
+            <div key={status} className={`rounded-lg border p-2.5 ${index === 0 ? 'border-blue-200 bg-blue-50' : 'border-slate-200 bg-white'}`}>
+              <div className="text-[9px] font-bold text-slate-700">{status}</div>
+              <div className="mt-1 text-[8px] text-slate-400">{index === 0 ? 'Current step' : 'Pending'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RxDispensingRow({ eye, values }) {
+  const fields = ['sphere','cylinder','axis','add','inter','prism','base'];
+  return (
+    <tr>
+      <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>
+      {fields.map((field) => <td key={field} className="border border-slate-200 px-2 py-2 text-center font-mono text-slate-700">{values?.[field] || '—'}</td>)}
+    </tr>
+  );
+}
+
+function ContactLensDispensingModalContent({ patient, consultation, step, setStep }) {
+  const steps = [
+    ['consultation', '01', 'Additional Consultation'],
+    ['order', '02', 'Contact Lens Order'],
+    ['fit', '03', 'Trial & Fitting'],
+    ['followup', '04', 'Review & Collection'],
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 sm:grid-cols-4">
+        <Field label="Patient" value={fullName(patient)} />
+        <Field label="Patient No" value={patient?.patientNumber} />
+        <Field label="Order Date" value={new Date().toISOString().slice(0, 10)} />
+        <Field label="Status" value="Draft" />
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white p-2">
+        <div className="flex min-w-[680px] items-center gap-1">
+          {steps.map(([key, number, label], index) => (
+            <button key={key} type="button" onClick={() => setStep(key)} className={`flex flex-1 items-center gap-2 rounded-lg px-3 py-2 text-left transition ${step === key ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>
+              <span className="text-[8px] font-bold">{number}</span>
+              <span className="text-[9px] font-bold">{label}</span>
+              {index < steps.length - 1 && <span className="ml-auto text-slate-300">›</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {step === 'consultation' && (
+        <div className="space-y-3">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <SectionTitle number="01" title="Additional Consultation — Contact Lens" />
+            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
+              <Field label="Consult Type" value="Contact Lens Assessment" />
+              <Field label="Reason" placeholder="New fit / Review" />
+              <Field label="Dominant Eye" />
+              <Field label="Previous Lens" />
+              <Field label="Unaided VA OD" />
+              <Field label="Unaided VA OS" />
+              <Field label="Keratometry OD" />
+              <Field label="Keratometry OS" />
+            </div>
+            <div className="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-2">
+              <label><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Assessment</span><textarea rows="4" className="w-full resize-none rounded-md border border-slate-200 p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
+              <label><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Advice / Care</span><textarea rows="4" className="w-full resize-none rounded-md border border-slate-200 p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === 'order' && (
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <SectionTitle number="02" title="Contact Lens Order" />
+          <div className="overflow-x-auto p-3">
+            <table className="w-full min-w-[900px] border-collapse text-[9px]">
+              <thead><tr className="bg-slate-50 text-slate-500">{['Eye','Lens Type','Brand','Base Curve','Diameter','Sphere','Cylinder','Axis','Add','Supplier','Order Date','Price ₹'].map((head) => <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>)}</tr></thead>
+              <tbody>{['Right','Left'].map((eye) => <tr key={eye}><td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>{['Soft','Acuvue','8.6','14.2','+1.00','','','','','Supplier','', '1200'].map((value, i) => <td key={i} className="border border-slate-200 p-1"><input defaultValue={value} className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>)}</tr>)}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {step === 'fit' && (
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <SectionTitle number="03" title="Trial & Fitting" />
+          <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Field label="Trial Lens OD" /><Field label="Trial Lens OS" /><Field label="Movement OD" /><Field label="Movement OS" /><Field label="Centration OD" /><Field label="Centration OS" /><Field label="Comfort OD" /><Field label="Comfort OS" />
+          </div>
+          <div className="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-2"><Field label="Fit Assessment" /><Field label="Final Lens Recommendation" /></div>
+        </div>
+      )}
+
+      {step === 'followup' && (
+        <div className="space-y-3">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <SectionTitle number="04" title="Review & Collection" />
+            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4"><Field label="Review Date" /><Field label="Collection Date" /><Field label="Notified Date" /><Field label="Billing No" /></div>
+          </div>
+          <AdditionalConsultMini />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AdditionalConsultMini() {
+  return (
+    <div className="overflow-hidden rounded-xl border border-blue-100 bg-white">
+      <SectionTitle number="05" title="Additional Consultations" />
+      <div className="grid gap-2 p-3 sm:grid-cols-3">
+        {['Contact Lens Review','Binocular Vision','Low Vision'].map((item) => (
+          <button key={item} type="button" className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-200 hover:bg-blue-50">
+            <div className="text-[10px] font-bold text-slate-700">{item}</div>
+            <div className="mt-0.5 text-[8px] text-slate-400">Open assessment</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AdditionalConsultModalContent() {
+  const items = [
+    ['Contact Lens Consultation','Assessment, keratometry, trial lens and fitting.'],
+    ['Binocular Vision','Accommodation, vergence and binocular assessment.'],
+    ['Low Vision','Functional vision assessment and management plan.'],
+  ];
+  return (
+    <div className="space-y-3">
+      <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+        <div className="text-[9px] font-bold uppercase tracking-[.14em] text-blue-600">Additional consultation</div>
+        <h3 className="mt-1 text-base font-bold text-slate-900">Choose the assessment workflow</h3>
+        <p className="mt-1 text-[10px] leading-5 text-slate-500">Each assessment stays attached to the patient record and can be completed independently from the main consultation.</p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {items.map(([title, description], index) => (
+          <div key={title} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-[9px] font-bold text-white">0{index + 1}</div>
+            <h4 className="mt-3 text-xs font-bold text-slate-800">{title}</h4>
+            <p className="mt-1 text-[9px] leading-5 text-slate-400">{description}</p>
+            <button type="button" className="mt-4 h-8 w-full rounded-lg border border-slate-200 bg-white text-[9px] font-bold text-slate-600 hover:bg-slate-50">Open assessment</button>
+          </div>
+        ))}
       </div>
     </div>
   );
