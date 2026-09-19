@@ -5,6 +5,7 @@ import {
   ClipboardPlus,
   ContactRound,
   Glasses,
+  PackageCheck,
   Eye,
   FileText,
   Upload,
@@ -912,11 +913,36 @@ export default function PatientDetailsPage() {
               </div>
             </DocSection>
 
-            {/* Optical dispensing, contact lens dispensing and additional consultation
-                are intentionally handled from the Clinical Summary action cards in
-                the patient sidebar. Keeping them out of the main document prevents
-                duplicate workflows and keeps Patient Details focused. */}
-
+            {/* =================================================
+                CARE PATHWAYS
+            ================================================== */}
+            <DocSection title="Care pathways">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                <p className="text-xs leading-5 text-slate-500">
+                  Clinical examinations and optical dispensing are separate workflows. Start the appropriate workflow below; each opens its own dedicated page.
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  <ServiceActionButton
+                    icon={Glasses}
+                    label="New Spectacle Job"
+                    description="Create an optical order from the latest prescription"
+                    onClick={() => navigate(`/optical/spectacles/new/${patientId}`)}
+                  />
+                  <ServiceActionButton
+                    icon={ContactRound}
+                    label="Contact Lens Dispensing"
+                    description="Open contact lens order and fitting"
+                    onClick={() => navigate(`/optical/contact-lenses/new?patientId=${patientId}`)}
+                  />
+                  <ServiceActionButton
+                    icon={Eye}
+                    label="Additional Consultation"
+                    description="Start a focused clinical assessment"
+                    onClick={() => setServiceModal("additional")}
+                  />
+                </div>
+              </div>
+            </DocSection>
           </section>
 
           {/* ===================================================
@@ -1016,13 +1042,13 @@ export default function PatientDetailsPage() {
                     icon={Glasses}
                     label="Optical Dispensing"
                     description="Spectacle job"
-                    onClick={() => setServiceModal("optical")}
+                    onClick={() => navigate(`/optical/spectacles/new/${patientId}`)}
                   />
                   <ServiceActionButton
                     icon={ContactRound}
                     label="Contact Lens Dispensing"
                     description="Lens order & fitting"
-                    onClick={() => setServiceModal("contact") }
+                    onClick={() => navigate(`/optical/contact-lenses/new?patientId=${patientId}`)}
                   />
                   <ServiceActionButton
                     icon={Eye}
@@ -1292,10 +1318,10 @@ function ServiceActionButton({ icon: Icon, label, description, onClick }) {
         <Icon size={16} />
       </span>
       <span className="min-w-0">
-        <span className="block truncate text-[10px] font-semibold text-slate-800">
+        <span className="block truncate text-[11px] font-bold text-slate-800">
           {label}
         </span>
-        <span className="mt-0.5 block truncate text-[9px] leading-4 text-slate-400">
+        <span className="mt-0.5 block truncate text-[9px] text-slate-400">
           {description}
         </span>
       </span>
@@ -1381,11 +1407,11 @@ function PatientServiceModal({ type, patient, latestConsultation, onClose }) {
             />
           )}
 
-          {type === "additional" && <AdditionalConsultModalContent />}
+          {type === "additional" && <AdditionalConsultModalContent patientId={patient?._id || patient?.id} />}
         </div>
 
         <footer className="flex shrink-0 items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-5">
-          <div className="text-[9px] leading-4 text-slate-400">
+          <div className="text-[9px] text-slate-400">
             Patient record · {patient?.patientNumber || "No reference"}
           </div>
           <button
@@ -1431,79 +1457,202 @@ function SectionTitle({ number, title, action }) {
 }
 
 function OpticalDispensingModalContent({ patient, consultation, right, left }) {
+  const [form, setForm] = useState(() => ({
+    jobNo: "",
+    jobDate: new Date().toISOString().slice(0, 10),
+    specDue: "",
+    jobType: "New Spectacle",
+    status: "Draft",
+    dispenser: "",
+    saleBy: "",
+    saleByFs: "",
+    rxDate: consultation?.consultationDate
+      ? new Date(consultation.consultationDate).toISOString().slice(0, 10)
+      : "",
+    pd: consultation?.pd?.total || "",
+    monoRight: "",
+    monoLeft: "",
+    use: "Near",
+    frameCode: "",
+    frameDescription: "",
+    toReorder: "",
+    frameSize: "",
+    depth: "",
+    ed: "",
+    frameType: "MM",
+    frameOther: "",
+    fitting: "",
+    frameDiscount: "",
+    framePrice: "",
+    lensRows: [
+      { eye: "Right", code: "", description: "", size: "", segSize: "", segHt: "", ocHt: "", horDecen: "", verDecen: "", bc: "", lensSup: "", orderDate: "", price: "" },
+      { eye: "Left", code: "", description: "", size: "", segSize: "", segHt: "", ocHt: "", horDecen: "", verDecen: "", bc: "", lensSup: "", orderDate: "", price: "" },
+    ],
+    extra1: "",
+    extra1Price: "",
+    extra2: "",
+    extra2Price: "",
+    extra3: "",
+    extra3Price: "",
+    others: "",
+    labInstructions: "",
+    labApply1: "",
+    labApply2: "",
+    labApply3: "",
+    labFit: "",
+    discountReason: "",
+    overallDiscount: "",
+    lensDiscount: "",
+    billingNo: "",
+    gst: "",
+    total: "",
+    followUpDate: "",
+    notes: "",
+  }));
+
+  const setField = (key, value) => {
+    setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const setLensField = (index, key, value) => {
+    setForm((current) => ({
+      ...current,
+      lensRows: current.lensRows.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, [key]: value } : row,
+      ),
+    }));
+  };
+
+  const num = (value) => Number(value || 0);
+  const lensTotal = form.lensRows.reduce((sum, row) => sum + num(row.price), 0);
+  const extrasTotal =
+    num(form.extra1Price) + num(form.extra2Price) + num(form.extra3Price);
+  const calculatedSubtotal =
+    num(form.framePrice) + lensTotal + extrasTotal;
+  const calculatedTotal = Math.max(
+    0,
+    calculatedSubtotal -
+      num(form.frameDiscount) -
+      num(form.overallDiscount) -
+      num(form.lensDiscount),
+  );
+  const displayedTotal = form.total === "" ? calculatedTotal : num(form.total);
+
+  const money = (value) => `₹${num(value).toFixed(2)}`;
+
+  const rxFields = [
+    ["sphere", "Sphere"],
+    ["cylinder", "Cyl"],
+    ["axis", "Axis"],
+    ["add", "Add"],
+    ["inter", "Inter"],
+    ["prism", "H Prism"],
+    ["base", "V Prism"],
+  ];
+
+  const lensHeaders = [
+    ["code", "Lens Code"],
+    ["description", "Lens Description"],
+    ["size", "Lens Size"],
+    ["segSize", "Seg Size"],
+    ["segHt", "Seg Ht"],
+    ["ocHt", "OC Ht"],
+    ["horDecen", "Hor Decen"],
+    ["verDecen", "Ver Decen"],
+    ["bc", "BC"],
+    ["lensSup", "Lens Sup"],
+    ["orderDate", "Supplier Order Date"],
+    ["price", "Lens Price $"],
+  ];
+
   return (
-    <div className="space-y-3">
-      <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 sm:grid-cols-4">
-        <Field label="Job No" placeholder="SP-000359" />
-        <Field label="Job Date" value={new Date().toISOString().slice(0, 10)} />
-        <Field label="Spec Due" />
-        <Field label="Job Type" value="New Spectacle" />
-        <Field label="Dispenser" />
-        <Field label="Rx Date" value={consultation?.consultationDate?.slice?.(0, 10)} />
-        <Field label="Sale By" />
-        <Field label="Status" value="Draft" />
-        <Field label="PD Right" value={consultation?.pd?.right} />
-        <Field label="PD Left" value={consultation?.pd?.left} />
-        <Field label="Use" value="Distance / Near" className="sm:col-span-2" />
-      </div>
+    <div className="space-y-3 text-slate-800">
+      {/* JOB HEADER */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <SectionTitle number="01" title="Spectacle details" action={<span className="text-[8px] font-semibold text-slate-400">Production dispensing record</span>} />
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <SectionTitle number="01" title="Prescription" action={<span className="text-[8px] text-slate-400">Latest given Rx</span>} />
-        <div className="overflow-x-auto p-3">
-          <table className="w-full min-w-[720px] border-collapse text-[9px]">
-            <thead>
-              <tr className="bg-slate-50 text-slate-500">
-                {['Eye','Sphere','Cyl','Axis','Add','Inter','H Prism','V Prism'].map((head) => (
-                  <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <RxDispensingRow eye="Right" values={right} />
-              <RxDispensingRow eye="Left" values={left} />
-            </tbody>
-          </table>
+        <div className="grid gap-px bg-slate-200 md:grid-cols-12">
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Job Date" value={form.jobDate} onChange={(v) => setField("jobDate", v)} type="date" />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Spec Due" value={form.specDue} onChange={(v) => setField("specDue", v)} type="date" />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Job No" value={form.jobNo} onChange={(v) => setField("jobNo", v)} placeholder="SP-000359" />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Job Type" value={form.jobType} onChange={(v) => setField("jobType", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Status" value={form.status} onChange={(v) => setField("status", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Dispenser" value={form.dispenser} onChange={(v) => setField("dispenser", v)} />
+          </div>
+
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Rx Date" value={form.rxDate} onChange={(v) => setField("rxDate", v)} type="date" />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Sale by" value={form.saleBy} onChange={(v) => setField("saleBy", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="by FS" value={form.saleByFs} onChange={(v) => setField("saleByFs", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="PD" value={form.pd} onChange={(v) => setField("pd", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-1">
+            <DispenseField label="Mono R" value={form.monoRight} onChange={(v) => setField("monoRight", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-1">
+            <DispenseField label="Mono L" value={form.monoLeft} onChange={(v) => setField("monoLeft", v)} />
+          </div>
+          <div className="bg-white p-2 md:col-span-2">
+            <DispenseField label="Use" value={form.use} onChange={(v) => setField("use", v)} />
+          </div>
+        </div>
+
+        <div className="border-t border-slate-200 bg-slate-50/70 px-3 py-2">
+          <div className="mb-1.5 text-[8px] font-bold uppercase tracking-[0.14em] text-slate-400">
+            Patient
+          </div>
+          <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px]">
+            <span><b className="text-slate-400">Name:</b> {fullName(patient) || "—"}</span>
+            <span><b className="text-slate-400">Patient No:</b> {patient?.patientNumber || "—"}</span>
+            <span><b className="text-slate-400">Phone:</b> {patient?.phone || "—"}</span>
+          </div>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <SectionTitle number="02" title="Frame" />
-        <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Field label="Frame Code" placeholder="OPT000007" />
-          <Field label="Frame Description" placeholder="Gucci, 111, Silver, 48-18, 140" className="lg:col-span-2" />
-          <Field label="To Reorder ₹" placeholder="220.00" />
-          <Field label="Frame Size" placeholder="48-18" />
-          <Field label="Depth" />
-          <Field label="ED" />
-          <Field label="Type" value="MM" />
-          <Field label="Other" />
-          <Field label="Fitting ₹" />
-          <Field label="Frame Discount ₹" />
-          <Field label="Frame Price ₹" />
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <SectionTitle number="03" title="Lenses" action={<span className="text-[8px] text-slate-400">Right / Left lens details</span>} />
+      {/* PRESCRIPTION */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <SectionTitle number="02" title="Rx" action={<span className="text-[8px] font-semibold text-blue-600">Latest given prescription</span>} />
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1180px] border-collapse text-[9px]">
+          <table className="w-full min-w-[780px] border-collapse text-[9px]">
             <thead>
-              <tr className="bg-slate-50 text-slate-500">
-                {['Eye','Lens Code','Lens Description','Lens Size','Seg Size','Seg Ht','OC Ht','Hor Decen','Ver Decen','BC','Lens Sup','Order Date','Lens Price ₹'].map((head) => (
-                  <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>
+              <tr className="bg-slate-50">
+                <th className="w-20 border border-slate-200 px-2 py-2 text-left font-bold text-slate-500">Eye</th>
+                {rxFields.map(([, label]) => (
+                  <th key={label} className="border border-slate-200 px-2 py-2 text-center font-bold text-slate-500">
+                    {label}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {['Right','Left'].map((eye) => (
-                <tr key={eye}>
-                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>
-                  <td className="border border-slate-200 p-1"><input defaultValue="SVTRAN" className="h-7 w-full min-w-[75px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
-                  <td className="border border-slate-200 p-1"><input defaultValue="S SV Transitions Stock 75mm" className="h-7 w-full min-w-[170px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
-                  {['75','','','','','','',''].map((value, i) => <td key={i} className="border border-slate-200 p-1"><input defaultValue={value} className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>)}
-                  <td className="border border-slate-200 p-1"><input defaultValue="ESS" className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
-                  <td className="border border-slate-200 p-1"><input defaultValue="" className="h-7 w-full min-w-[85px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
-                  <td className="border border-slate-200 p-1"><input defaultValue="50.00" className="h-7 w-full min-w-[65px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>
+              {[
+                ["Right", right],
+                ["Left", left],
+              ].map(([eyeName, values]) => (
+                <tr key={eyeName}>
+                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eyeName}</td>
+                  {rxFields.map(([key]) => (
+                    <td key={key} className="border border-slate-200 px-2 py-2 text-center font-mono font-semibold text-slate-700">
+                      {values?.[key] || "—"}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -1511,45 +1660,223 @@ function OpticalDispensingModalContent({ patient, consultation, right, left }) {
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[1.6fr_1fr]">
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <SectionTitle number="04" title="Extras & Laboratory" />
-          <div className="grid gap-2 p-3 sm:grid-cols-2">
-            <Field label="Extra 1" placeholder="Tinting / coating" />
-            <Field label="Extra 2" />
-            <Field label="Extra 3" />
-            <Field label="Others" />
-            <Field label="Lab to Apply" />
-            <Field label="Lab to Fit" />
-            <Field label="Discount Reason" />
-            <Field label="Overall Discount ₹" />
-            <label className="sm:col-span-2"><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Lab Instructions</span><textarea rows="4" defaultValue="" className="w-full resize-none rounded-md border border-slate-200 bg-white p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
-          </div>
-        </div>
+      {/* FRAME */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <SectionTitle number="03" title="Frame" action={<span className="text-[8px] text-slate-400">Frame / fitting / reorder</span>} />
+        <div className="grid gap-px bg-slate-200 sm:grid-cols-2 lg:grid-cols-12">
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Code" value={form.frameCode} onChange={(v) => setField("frameCode", v)} placeholder="OPT000007" /></div>
+          <div className="bg-white p-2 lg:col-span-5"><DispenseField label="Frame Description" value={form.frameDescription} onChange={(v) => setField("frameDescription", v)} placeholder="Gucci, 111, Silver, 48-18, 140" /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="To Reorder ₹" value={form.toReorder} onChange={(v) => setField("toReorder", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="Size" value={form.frameSize} onChange={(v) => setField("frameSize", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="Depth" value={form.depth} onChange={(v) => setField("depth", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="ED" value={form.ed} onChange={(v) => setField("ed", v)} /></div>
 
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <SectionTitle number="05" title="Financial Summary" />
-          <div className="space-y-1.5 p-3 text-[10px]">
-            {[["Frame", "₹ 220.00"],["Lenses", "₹ 100.00"],["Extras", "₹ 0.00"],["Discount", "₹ 0.00"],["GST", "₹ 57.60"]].map(([label, value]) => <div key={label} className="flex items-center justify-between text-slate-500"><span>{label}</span><span className="font-semibold text-slate-700">{value}</span></div>)}
-            <div className="my-2 border-t border-dashed border-slate-200" />
-            <div className="flex items-center justify-between text-sm font-bold text-slate-950"><span>Total</span><span>₹ 377.60</span></div>
-            <Field label="Billing No" placeholder="BILL0002524" className="pt-2" />
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Type" value={form.frameType} onChange={(v) => setField("frameType", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Other" value={form.frameOther} onChange={(v) => setField("frameOther", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Fitting $" value={form.fitting} onChange={(v) => setField("fitting", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Fr Discount $" value={form.frameDiscount} onChange={(v) => setField("frameDiscount", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Price $" value={form.framePrice} onChange={(v) => setField("framePrice", v)} /></div>
+          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Stock / Ref" value="" onChange={() => {}} placeholder="Inventory" /></div>
+        </div>
+      </div>
+
+      {/* LENSES */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <SectionTitle number="04" title="Lenses" action={<span className="text-[8px] font-semibold text-slate-400">Right / left dispensing details</span>} />
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1500px] border-collapse text-[8px]">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="border border-slate-200 px-2 py-2 text-left font-bold text-slate-500">Eye</th>
+                {lensHeaders.map(([, label]) => (
+                  <th key={label} className="border border-slate-200 px-2 py-2 text-center font-bold text-slate-500">{label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {form.lensRows.map((row, index) => (
+                <tr key={row.eye}>
+                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{row.eye}</td>
+                  {lensHeaders.map(([key]) => (
+                    <td key={key} className="border border-slate-200 p-1">
+                      <input
+                        type={key === "orderDate" ? "date" : "text"}
+                        value={row[key] || ""}
+                        onChange={(event) => setLensField(index, key, event.target.value)}
+                        className="h-7 w-full min-w-[58px] rounded border border-slate-200 bg-white px-1.5 text-[8px] text-slate-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* EXTRAS + LAB */}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <SectionTitle number="05" title="Extras & Laboratory" />
+        <div className="grid gap-px bg-slate-200 lg:grid-cols-[1.2fr_1fr]">
+          <div className="bg-white">
+            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
+              {[
+                ["extra1", "Extra 1", "extra1Price"],
+                ["extra2", "Extra 2", "extra2Price"],
+                ["extra3", "Extra 3", "extra3Price"],
+              ].map(([key, label, priceKey]) => (
+                <div key={key} className="bg-white p-2">
+                  <div className="grid grid-cols-[1fr_82px] gap-2">
+                    <DispenseField label={label} value={form[key]} onChange={(v) => setField(key, v)} />
+                    <DispenseField label="Price $" value={form[priceKey]} onChange={(v) => setField(priceKey, v)} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-2">
+              <DispenseField label="Others" value={form.others} onChange={(v) => setField("others", v)} />
+            </div>
+
+            <div className="p-2">
+              <label className="block">
+                <span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Lab Inst.</span>
+                <textarea
+                  rows={6}
+                  value={form.labInstructions}
+                  onChange={(event) => setField("labInstructions", event.target.value)}
+                  className="w-full resize-none rounded-md border border-slate-200 bg-white p-2 text-[9px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className="bg-white">
+            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
+              {[
+                ["labApply1", "Lab to Apply 1"],
+                ["labApply2", "Lab to Apply 2"],
+                ["labApply3", "Lab to Apply 3"],
+                ["labFit", "Lab to Fit"],
+              ].map(([key, label]) => (
+                <div key={key} className="bg-white p-2">
+                  <DispenseField label={label} value={form[key]} onChange={(v) => setField(key, v)} />
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
+              <div className="bg-white p-2"><DispenseField label="Discount Reason" value={form.discountReason} onChange={(v) => setField("discountReason", v)} /></div>
+              <div className="bg-white p-2"><DispenseField label="Overall Discount $" value={form.overallDiscount} onChange={(v) => setField("overallDiscount", v)} /></div>
+              <div className="bg-white p-2"><DispenseField label="Lens Discount %" value={form.lensDiscount} onChange={(v) => setField("lensDiscount", v)} /></div>
+              <div className="bg-white p-2"><DispenseField label="Follow Up" value={form.followUpDate} onChange={(v) => setField("followUpDate", v)} type="date" /></div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <SectionTitle number="06" title="Job Workflow" />
-        <div className="grid gap-2 p-3 sm:grid-cols-5">
-          {['Ordered','In Production','Job Ready','Notified','Collected'].map((status, index) => (
-            <div key={status} className={`rounded-lg border p-2.5 ${index === 0 ? 'border-blue-200 bg-blue-50' : 'border-slate-200 bg-white'}`}>
-              <div className="text-[9px] font-bold text-slate-700">{status}</div>
-              <div className="mt-1 text-[8px] text-slate-400">{index === 0 ? 'Current step' : 'Pending'}</div>
+      {/* BILLING + WORKFLOW */}
+      <div className="grid gap-3 lg:grid-cols-[1fr_1.25fr]">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <SectionTitle number="06" title="Billing" />
+          <div className="p-3">
+            <div className="space-y-2 text-[10px]">
+              {[
+                ["Frame", money(form.framePrice)],
+                ["Fitting", money(form.fitting)],
+                ["Lenses", money(lensTotal)],
+                ["Extras", money(extrasTotal)],
+                ["Frame Discount", `- ${money(form.frameDiscount)}`],
+                ["Overall Discount", `- ${money(form.overallDiscount)}`],
+                ["Lens Discount", `- ${money(form.lensDiscount)}`],
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="text-slate-500">{label}</span>
+                  <span className="font-semibold text-slate-700">{value}</span>
+                </div>
+              ))}
             </div>
-          ))}
+
+            <div className="my-3 border-t border-dashed border-slate-200" />
+
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Total</span>
+              <span className="text-lg font-black text-blue-700">{money(displayedTotal)}</span>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <DispenseField label="GST" value={form.gst} onChange={(v) => setField("gst", v)} />
+              <DispenseField label="Billing No" value={form.billingNo} onChange={(v) => setField("billingNo", v)} placeholder="BILL0002524" />
+            </div>
+
+            <button
+              type="button"
+              className="mt-3 h-9 w-full rounded-lg bg-slate-950 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+            >
+              Create Bill
+            </button>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <SectionTitle number="07" title="Order & Progress" />
+          <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
+            {[
+              ["Job Ready F6", "Mark the job ready for collection"],
+              ["Notified F7", "Notify the patient"],
+              ["Collected F8", "Mark the completed collection"],
+              ["Follow Up", "Schedule follow-up"],
+              ["Advance Progressive Parameters", "Open advanced progressive settings"],
+              ["E.Order", "Open electronic lab order"],
+            ].map(([label, description]) => (
+              <button
+                key={label}
+                type="button"
+                className="bg-white p-3 text-left transition hover:bg-slate-50"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[9px] font-bold text-slate-800">{label}</span>
+                  <span className="text-[8px] text-blue-600">Open</span>
+                </div>
+                <div className="mt-1 text-[8px] leading-4 text-slate-400">{description}</div>
+              </button>
+            ))}
+          </div>
+
+          <div className="grid gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-2">
+            <div className="bg-white p-3">
+              <DispenseField label="Job Status" value={form.status} onChange={(v) => setField("status", v)} />
+            </div>
+            <div className="bg-white p-3">
+              <DispenseField label="Notes" value={form.notes} onChange={(v) => setField("notes", v)} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function DispenseField({
+  label,
+  value = "",
+  onChange,
+  type = "text",
+  placeholder = "",
+}) {
+  return (
+    <label className="block min-w-0">
+      <span className="mb-1 block truncate text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        {label}
+      </span>
+      <input
+        type={type}
+        value={value ?? ""}
+        onChange={(event) => onChange?.(event.target.value)}
+        placeholder={placeholder}
+        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[9px] font-medium text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+      />
+    </label>
   );
 }
 
@@ -1665,7 +1992,8 @@ function AdditionalConsultMini() {
   );
 }
 
-function AdditionalConsultModalContent() {
+function AdditionalConsultModalContent({ patientId }) {
+  const navigate = useNavigate();
   const items = [
     ['Contact Lens Consultation','Assessment, keratometry, trial lens and fitting.'],
     ['Binocular Vision','Accommodation, vergence and binocular assessment.'],
@@ -1684,7 +2012,16 @@ function AdditionalConsultModalContent() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-[9px] font-bold text-white">0{index + 1}</div>
             <h4 className="mt-3 text-xs font-bold text-slate-800">{title}</h4>
             <p className="mt-1 text-[9px] leading-5 text-slate-400">{description}</p>
-            <button type="button" className="mt-4 h-8 w-full rounded-lg border border-slate-200 bg-white text-[9px] font-bold text-slate-600 hover:bg-slate-50">Open assessment</button>
+            <button
+              type="button"
+              onClick={() => {
+                const focus = index === 0 ? "contact_lenses" : index === 1 ? "binocular_vision" : "low_vision";
+                navigate(`/patients/${patientId}/consultations/new?focus=${focus}`);
+              }}
+              className="mt-4 h-8 w-full rounded-lg border border-slate-200 bg-white text-[9px] font-bold text-slate-600 hover:bg-slate-50"
+            >
+              Open assessment
+            </button>
           </div>
         ))}
       </div>
