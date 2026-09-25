@@ -1,32 +1,15 @@
 /**
  * V-Sync
- * ---------------------------------------------------------
- * Central navigation / UI access configuration.
+ * Centralized access, navigation and route configuration.
  *
  * IMPORTANT:
- * This controls what is DISPLAYED in the frontend.
- * Backend authorization remains the final security boundary.
- *
- * V-Sync has 3 UI access levels:
- *
- * 1. SUPER_ADMIN
- *    Platform-level administrator.
- *
- * 2. ORGANIZATION_ADMIN
- *    Administrator of one organization.
- *
- * 3. PRACTICE_USER
- *    Users working inside the organization:
- *    doctors, optometrists, front desk, branch managers,
- *    receptionists, optical staff, etc.
- *
- * Individual job titles should NOT create completely
- * different application UIs.
+ * This file controls FRONTEND visibility and route access.
+ * Backend authorization must remain the final security boundary.
  */
 
-// ---------------------------------------------------------
+// ============================================================
 // ACCESS LEVELS
-// ---------------------------------------------------------
+// ============================================================
 
 export const ACCESS_LEVELS = {
   SUPER_ADMIN: "super_admin",
@@ -34,13 +17,9 @@ export const ACCESS_LEVELS = {
   PRACTICE_USER: "practice_user",
 };
 
-// ---------------------------------------------------------
-// EXISTING BACKEND ROLES
-// ---------------------------------------------------------
-//
-// Keep these values because your existing backend/user
-// records already use them.
-//
+// ============================================================
+// ROLES
+// ============================================================
 
 export const ROLES = {
   SUPER_ADMIN: "super_admin",
@@ -58,10 +37,6 @@ export const ROLES = {
 
 export const ALL_ROLES = Object.values(ROLES);
 
-// ---------------------------------------------------------
-// ROLE GROUPS
-// ---------------------------------------------------------
-
 export const PRACTICE_ROLES = [
   ROLES.BRANCH_MANAGER,
   ROLES.OPTOMETRIST,
@@ -73,9 +48,9 @@ export const PRACTICE_ROLES = [
   ROLES.RECEPTIONIST,
 ];
 
-// ---------------------------------------------------------
-// NORMALIZE ROLE
-// ---------------------------------------------------------
+// ============================================================
+// ROLE HELPERS
+// ============================================================
 
 export const normalizeRole = (role) => {
   if (!role) return null;
@@ -86,22 +61,18 @@ export const normalizeRole = (role) => {
     .replace(/\s+/g, "_");
 };
 
-// ---------------------------------------------------------
-// ACCESS LEVEL RESOLUTION
-// ---------------------------------------------------------
-
 export const getAccessLevel = (role) => {
-  const normalized = normalizeRole(role);
+  const normalizedRole = normalizeRole(role);
 
-  if (normalized === ROLES.SUPER_ADMIN) {
+  if (normalizedRole === ROLES.SUPER_ADMIN) {
     return ACCESS_LEVELS.SUPER_ADMIN;
   }
 
-  if (normalized === ROLES.ORGANIZATION_ADMIN) {
+  if (normalizedRole === ROLES.ORGANIZATION_ADMIN) {
     return ACCESS_LEVELS.ORGANIZATION_ADMIN;
   }
 
-  if (PRACTICE_ROLES.includes(normalized)) {
+  if (PRACTICE_ROLES.includes(normalizedRole)) {
     return ACCESS_LEVELS.PRACTICE_USER;
   }
 
@@ -117,163 +88,209 @@ export const isOrganizationAdmin = (role) =>
 export const isPracticeUser = (role) =>
   getAccessLevel(role) === ACCESS_LEVELS.PRACTICE_USER;
 
-// ---------------------------------------------------------
+// ============================================================
 // MODULE ACCESS
-// ---------------------------------------------------------
+// ============================================================
 //
-// These are MODULE permissions, not separate UIs.
+// The application uses modules rather than creating a
+// completely different UI for every employee role.
 //
 // Example:
-// Doctor and Optometrist both use the same Clinical UI.
+// Doctor + Optometrist both access Clinical Management.
 //
-// Receptionist and Doctor may have different permissions
-// inside a module, but they should not receive completely
-// different navigation architectures.
+// Individual permissions can still be enforced by the backend.
 //
 
 export const MODULE_ACCESS = {
-  dashboard: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
-  ],
+  // ----------------------------------------------------------
+  // Core
+  // ----------------------------------------------------------
 
-  patients: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
-  ],
+  dashboard: ALL_ROLES,
 
-  appointments: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
-  ],
+  patients: ALL_ROLES,
+
+  appointments: ALL_ROLES,
+
+  // ----------------------------------------------------------
+  // Clinical
+  // ----------------------------------------------------------
 
   clinical: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
+
+  // ----------------------------------------------------------
+  // Optical
+  // ----------------------------------------------------------
 
   optical: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.SALES_EXECUTIVE,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
 
+  // ----------------------------------------------------------
+  // Operations
+  // ----------------------------------------------------------
+
   dispensing: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.SALES_EXECUTIVE,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
+    ROLES.RECEPTIONIST,
+    ROLES.LAB_TECHNICIAN,
   ],
 
   inventory: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.INVENTORY_MANAGER,
   ],
 
   catalogue: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.INVENTORY_MANAGER,
+    ROLES.SALES_EXECUTIVE,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
 
   laboratory: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.LAB_TECHNICIAN,
   ],
 
+  // ----------------------------------------------------------
+  // Finance
+  // ----------------------------------------------------------
+
   billing: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.CASHIER,
   ],
 
   finance: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-  ],
-
-  recall: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
-  ],
-
-  communications: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.CASHIER,
   ],
 
   reports: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.CASHIER,
   ],
 
+  // ----------------------------------------------------------
+  // Patient / Communication
+  // ----------------------------------------------------------
+
+  recall: [
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
+    ROLES.RECEPTIONIST,
+  ],
+
+  communications: [
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
+    ROLES.RECEPTIONIST,
+  ],
+
+  newsletters: [
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
+    ROLES.RECEPTIONIST,
+  ],
+
+  // ----------------------------------------------------------
+  // Administration
+  // ----------------------------------------------------------
+
   staff: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
   ],
 
   branches: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
   ],
 
   settings: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
   ],
 
   organization: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
   ],
 
-  organizations: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-  ],
+  organizations: [ROLES.SUPER_ADMIN],
 };
 
-// ---------------------------------------------------------
-// CHECK MODULE ACCESS
-// ---------------------------------------------------------
+// ============================================================
+// MODULE ACCESS CHECK
+// ============================================================
 
 export const canAccessModule = (module, role) => {
-  const level = getAccessLevel(role);
+  const normalizedRole = normalizeRole(role);
+  const allowedRoles = MODULE_ACCESS[module];
 
-  if (!level) return false;
+  if (!normalizedRole || !allowedRoles) {
+    return false;
+  }
 
-  const allowedLevels = MODULE_ACCESS[module];
-
-  if (!allowedLevels) return false;
-
-  return allowedLevels.includes(level);
+  return allowedRoles.includes(normalizedRole);
 };
 
-// Backwards-compatible helper.
+// Backward-compatible helper.
 //
-// If your existing components use:
+// Existing components can continue using:
 //
 // canAccess("clinical", user.role)
-//
-// they can continue working.
 //
 
 export const canAccess = (module, role) =>
   canAccessModule(module, role);
 
-// ---------------------------------------------------------
-// NAVIGATION DEFINITIONS
-// ---------------------------------------------------------
-//
-// Keep navigation definitions here instead of scattering
-// role checks throughout Topbar.jsx.
-//
+// ============================================================
+// MAIN NAVIGATION
+// ============================================================
 
 export const MAIN_NAV = [
   {
@@ -311,6 +328,10 @@ export const MAIN_NAV = [
     access: "optical",
   },
 
+  // ==========================================================
+  // OPERATIONS
+  // ==========================================================
+
   {
     key: "operations",
     label: "Operations",
@@ -347,6 +368,10 @@ export const MAIN_NAV = [
     ],
   },
 
+  // ==========================================================
+  // FINANCE
+  // ==========================================================
+
   {
     key: "finance",
     label: "Finance",
@@ -375,6 +400,10 @@ export const MAIN_NAV = [
       },
     ],
   },
+
+  // ==========================================================
+  // MORE
+  // ==========================================================
 
   {
     key: "more",
@@ -420,9 +449,9 @@ export const MAIN_NAV = [
   },
 ];
 
-// ---------------------------------------------------------
+// ============================================================
 // SUPER ADMIN NAVIGATION
-// ---------------------------------------------------------
+// ============================================================
 
 export const SUPER_ADMIN_NAV = [
   {
@@ -440,25 +469,39 @@ export const SUPER_ADMIN_NAV = [
   },
 ];
 
-// ---------------------------------------------------------
+// ============================================================
 // FILTER NAVIGATION
-// ---------------------------------------------------------
+// ============================================================
 
 export const filterNavigation = (items, role) => {
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
   return items
     .map((item) => {
-      // Normal link
+      // --------------------------------------------------------
+      // Normal navigation item
+      // --------------------------------------------------------
+
       if (!item.dropdown) {
         return canAccessModule(item.access, role) ? item : null;
       }
 
-      // Dropdown
-      const children = (item.children || []).filter((child) =>
-        canAccessModule(child.access, role)
-      );
+      // --------------------------------------------------------
+      // Dropdown navigation item
+      // --------------------------------------------------------
 
-      // Don't render empty dropdowns.
-      if (!children.length) return null;
+      const children = Array.isArray(item.children)
+        ? item.children.filter((child) =>
+            canAccessModule(child.access, role)
+          )
+        : [];
+
+      // Don't display an empty dropdown.
+      if (!children.length) {
+        return null;
+      }
 
       return {
         ...item,
@@ -468,76 +511,94 @@ export const filterNavigation = (items, role) => {
     .filter(Boolean);
 };
 
-// ---------------------------------------------------------
-// GET MAIN NAVIGATION
-// ---------------------------------------------------------
+// ============================================================
+// NAVIGATION HELPERS
+// ============================================================
 
 export const getMainNavigation = (role) =>
   filterNavigation(MAIN_NAV, role);
 
-// ---------------------------------------------------------
-// GET SUPER ADMIN NAVIGATION
-// ---------------------------------------------------------
-
 export const getSuperAdminNavigation = (role) => {
-  if (!isSuperAdmin(role)) return [];
+  if (!isSuperAdmin(role)) {
+    return [];
+  }
 
   return filterNavigation(SUPER_ADMIN_NAV, role);
 };
 
-// ---------------------------------------------------------
-// ROUTE ACCESS
-// ---------------------------------------------------------
+// ============================================================
+// ROUTE ACCESS MAP
+// ============================================================
 //
-// Useful for ProtectedRoute / RoleRoute.
+// Route keys intentionally map to MODULE_ACCESS.
 //
-// Keep route names independent from UI labels.
+// This means App.jsx / AccessRoute.jsx do not need to
+// duplicate role arrays.
 //
 
 export const ROUTE_ACCESS = {
+  // Core
   dashboard: "dashboard",
   patients: "patients",
   appointments: "appointments",
 
+  // Clinical / Optical
   clinical: "clinical",
   optical: "optical",
 
+  // Operations
   dispensing: "dispensing",
   inventory: "inventory",
   catalogue: "catalogue",
   laboratory: "laboratory",
 
+  // Finance
   billing: "billing",
   finance: "finance",
-
-  recall: "recall",
-  communications: "communications",
   reports: "reports",
 
+  // Communication
+  recall: "recall",
+  communications: "communications",
+
+  // Administration
   staff: "staff",
   branches: "branches",
   settings: "settings",
-
   organization: "organization",
   organizations: "organizations",
 };
 
+// ============================================================
+// ROUTE ACCESS CHECK
+// ============================================================
+
 export const canAccessRoute = (routeKey, role) => {
   const moduleKey = ROUTE_ACCESS[routeKey];
 
-  if (!moduleKey) return false;
+  if (!moduleKey) {
+    return false;
+  }
+
+  // Super admin organization route is intentionally restricted.
+  if (
+    moduleKey === "organizations" &&
+    !isSuperAdmin(role)
+  ) {
+    return false;
+  }
 
   return canAccessModule(moduleKey, role);
 };
 
-// ---------------------------------------------------------
-// DEFAULT LANDING PAGE
-// ---------------------------------------------------------
+// ============================================================
+// DEFAULT LANDING ROUTE
+// ============================================================
 
 export const getDefaultRoute = (role) => {
-  const level = getAccessLevel(role);
+  const accessLevel = getAccessLevel(role);
 
-  switch (level) {
+  switch (accessLevel) {
     case ACCESS_LEVELS.SUPER_ADMIN:
       return "/dashboard";
 
@@ -551,6 +612,10 @@ export const getDefaultRoute = (role) => {
       return "/login";
   }
 };
+
+// ============================================================
+// DEFAULT EXPORT
+// ============================================================
 
 export default {
   ACCESS_LEVELS,

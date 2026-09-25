@@ -742,7 +742,7 @@ export const getSpectacle = asyncHandler(
         "firstName lastName role",
       )
       .populate(
-        "prescriberId",
+        "prescribedById",
         "firstName lastName role",
       )
       .populate(

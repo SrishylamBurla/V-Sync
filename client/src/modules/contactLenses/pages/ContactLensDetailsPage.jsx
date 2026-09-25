@@ -28,7 +28,9 @@ export default function ContactLensDetailsPage() {
       .catch((e) =>
         setError(e?.response?.data?.message || "Unable to load order"),
       );
-  useEffect(load, [id]);
+  useEffect(() => {
+    void load();
+  }, [id]);
   const change = async (status) => {
     try {
       const r = await updateContactLens(id, { status });

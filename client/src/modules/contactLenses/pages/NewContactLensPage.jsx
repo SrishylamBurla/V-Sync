@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Save } from "lucide-react";
 import {
   createContactLens,
@@ -26,7 +26,9 @@ const eye = () => ({
 const name = (p) =>
   [p?.firstName, p?.middleName, p?.lastName].filter(Boolean).join(" ");
 export default function NewContactLensPage() {
-  const { patientId: initial } = useParams();
+  const { patientId: routePatientId } = useParams();
+  const [searchParams] = useSearchParams();
+  const initial = routePatientId || searchParams.get("patientId") || "";
   const nav = useNavigate();
   const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState("");

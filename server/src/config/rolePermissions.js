@@ -92,6 +92,7 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   branch_manager: [
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,
@@ -208,6 +209,7 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   sales_executive: [
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
 
@@ -233,6 +235,7 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   cashier: [
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.COMMUNICATION_VIEW,
     PERMISSIONS.COMMUNICATION_CREATE,
 
@@ -258,6 +261,10 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   inventory_manager: [
+    PERMISSIONS.PATIENT_VIEW,
+    PERMISSIONS.CLINICAL_VIEW,
+    PERMISSIONS.CLINICAL_CREATE,
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.APPOINTMENT_VIEW,
 
     PERMISSIONS.PRODUCT_VIEW,
@@ -274,6 +281,10 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   lab_technician: [
+    PERMISSIONS.PATIENT_VIEW,
+    PERMISSIONS.CLINICAL_VIEW,
+    PERMISSIONS.CLINICAL_CREATE,
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.APPOINTMENT_VIEW,
 
     PERMISSIONS.ORDER_VIEW,
@@ -285,6 +296,7 @@ export const ROLE_PERMISSIONS = {
   // ============================================================
 
   receptionist: [
+    PERMISSIONS.CLINICAL_CREATE,
     PERMISSIONS.RECALL_VIEW,
     PERMISSIONS.RECALL_CREATE,
     PERMISSIONS.RECALL_UPDATE,

@@ -152,11 +152,22 @@ const normalizeConsultationType = (type) => {
   const allowed = [
     "comprehensive",
     "short_consult",
+    "specialized",
   ];
 
   return allowed.includes(type)
     ? type
     : "comprehensive";
+};
+
+const normalizeSpecializedType = (type) => {
+  const allowed = [
+    "contact_lenses",
+    "binocular_vision",
+    "low_vision",
+  ];
+
+  return allowed.includes(type) ? type : "";
 };
 
 // --------------------------------------------------
@@ -213,6 +224,15 @@ const buildConsultationData = (req, patient, clinician) => {
       normalizeConsultationType(
         body.consultationType
       ),
+
+    specializedType:
+      body.consultationType === "specialized"
+        ? normalizeSpecializedType(body.specializedType)
+        : "",
+
+    status: "completed",
+    completedAt: new Date(),
+    completedBy: req.user._id,
 
     consultationOptions:
       normalizeConsultationOptions(
@@ -472,16 +492,26 @@ export const createConsultation = asyncHandler(
     // ----------------------------------------------
     // CLINICIAN
     // ----------------------------------------------
-    const clinician =
-      await validateOptometrist(
-        req.user,
-        req.body.optometristId
-      );
+    // Any authorized role may initiate the workflow. If the current
+    // user is not a clinician, attach the first active optometrist/doctor
+    // in the patient's branch as the clinical owner.
+    let clinician = await validateOptometrist(
+      req.user,
+      req.body.optometristId
+    );
+
+    if (!clinician) {
+      clinician = await User.findOne({
+        organizationId: req.user.organizationId,
+        status: "active",
+        role: { $in: ["optometrist", "doctor"] },
+      }).sort({ firstName: 1, lastName: 1 });
+    }
 
     if (!clinician) {
       res.status(400);
       throw new Error(
-        "A valid optometrist or doctor is required"
+        "No active optometrist or doctor is available for this branch"
       );
     }
 
@@ -493,6 +523,27 @@ export const createConsultation = asyncHandler(
       patient,
       clinician
     );
+
+    if (data.consultationType === "specialized") {
+      if (!data.specializedType) {
+        res.status(400);
+        throw new Error("A specialized consultation type is required");
+      }
+
+      const completedComprehensive = await Consultation.exists({
+        organizationId: req.user.organizationId,
+        patientId: patient._id,
+        consultationType: "comprehensive",
+        $or: [{ status: "completed" }, { status: { $exists: false } }],
+      });
+
+      if (!completedComprehensive) {
+        res.status(409);
+        throw new Error(
+          "Complete a Comprehensive Consultation before starting a specialized consultation"
+        );
+      }
+    }
 
     if (data.error) {
       res.status(400);
@@ -693,6 +744,7 @@ export const updateConsultation =
     const fields = [
       "consultationDate",
       "consultationType",
+      "specializedType",
       "reasonForVisit",
       "symptoms",
       "medicalHistory",
@@ -742,6 +794,37 @@ export const updateConsultation =
           req.body.consultationType
         );
     }
+
+    if (req.body.specializedType !== undefined) {
+      consultation.specializedType =
+        normalizeSpecializedType(req.body.specializedType);
+    }
+
+    if (consultation.consultationType === "specialized") {
+      const completedComprehensive = await Consultation.exists({
+        organizationId: req.user.organizationId,
+        patientId: consultation.patientId,
+        consultationType: "comprehensive",
+        $or: [{ status: "completed" }, { status: { $exists: false } }],
+        _id: { $ne: consultation._id },
+      });
+
+      if (!completedComprehensive) {
+        res.status(409);
+        throw new Error(
+          "Complete a Comprehensive Consultation before using a specialized consultation"
+        );
+      }
+
+      if (!consultation.specializedType) {
+        res.status(400);
+        throw new Error("A specialized consultation type is required");
+      }
+    }
+
+    consultation.status = "completed";
+    consultation.completedAt = consultation.completedAt || new Date();
+    consultation.completedBy = req.user._id;
 
     // ----------------------------------------------
     // OPTIONS
