@@ -8,7 +8,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import organizationRoutes from "./routes/organization.routes.js";
-import adminOrganizationRoutes from "./routes/adminOrganization.routes.js"
+import adminOrganizationRoutes from "./routes/adminOrganization.routes.js";
 import branchRoutes from "./routes/branch.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
 import patientRoutes from "./routes/patient.routes.js";
@@ -27,13 +27,22 @@ import settingsRoutes from "./routes/settings.routes.js";
 import financeRoutes from "./routes/finance.routes.js";
 import catalogueRoutes from "./routes/catalogue.routes.js";
 import contactLensCatalogueRoutes from "./routes/contactLensCatalogue.routes.js";
+
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
 
 const app = express();
 
+/* =========================================================
+   SECURITY
+========================================================= */
+
 app.use(helmet());
+
+/* =========================================================
+   CORS
+========================================================= */
 
 const allowedOrigins = [
   "https://v-sync.in",
@@ -43,19 +52,27 @@ const allowedOrigins = [
 ];
 
 const isAllowedOrigin = (origin) => {
-  if (!origin) return true;
+  // Requests without Origin:
+  // Postman, curl, server-to-server requests, etc.
+  if (!origin) {
+    return true;
+  }
 
-  // Exact allowed domains
+  // Exact allowed origins
   if (allowedOrigins.includes(origin)) {
     return true;
   }
 
-  // Allow Vercel preview deployments for this client project
-  if (
-    /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i.test(
-      origin
-    )
-  ) {
+  /*
+   * Allow Vercel preview deployments for this project.
+   *
+   * Example:
+   * https://client-git-v-sync-b1-xxxxx-srishylamburlas-projects.vercel.app
+   */
+  const vercelPreviewRegex =
+    /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i;
+
+  if (vercelPreviewRegex.test(origin)) {
     return true;
   }
 
@@ -72,8 +89,11 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+
     credentials: true,
+
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+
     allowedHeaders: [
       "Origin",
       "X-Requested-With",
@@ -81,57 +101,87 @@ app.use(
       "Accept",
       "Authorization",
     ],
+
     optionsSuccessStatus: 204,
-  })
+  }),
 );
 
-// Explicitly handle browser preflight requests
-app.options("*", cors({
-  origin(origin, callback) {
-    if (isAllowedOrigin(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+/* =========================================================
+   BODY / COOKIE MIDDLEWARE
+========================================================= */
+
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+/* =========================================================
+   HEALTH CHECK
+========================================================= */
+
 app.get("/api/health", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "OptiCore API is running",
     timestamp: new Date().toISOString(),
   });
 });
 
+/* =========================================================
+   API ROUTES
+========================================================= */
+
 app.use("/api/v1/auth", authRoutes);
+
 app.use("/api/v1/organizations", organizationRoutes);
+
 app.use("/api/v1/admin/organizations", adminOrganizationRoutes);
+
 app.use("/api/v1/branches", branchRoutes);
+
 app.use("/api/v1/staff", staffRoutes);
+
 app.use("/api/v1/patients", patientRoutes);
+
 app.use("/api/v1/consultations", consultationRoutes);
+
 app.use("/api/v1/appointments", appointmentRoutes);
+
 app.use("/api/v1/spectacles", spectacleRoutes);
+
 app.use("/api/v1/inventory", inventoryRoutes);
+
 app.use("/api/v1/billing", billingRoutes);
+
 app.use("/api/v1/contact-lenses", contactLensRoutes);
+
 app.use("/api/v1/dispensing", dispensingRoutes);
+
 app.use("/api/v1/recall", recallRoutes);
+
 app.use("/api/v1/communications", communicationsRoutes);
+
 app.use("/api/v1/marketing", marketingRoutes);
+
 app.use("/api/v1/reports", reportRoutes);
+
 app.use("/api/v1/settings", settingsRoutes);
+
 app.use("/api/v1/finance", financeRoutes);
+
 app.use("/api/v1/catalogue", catalogueRoutes);
+
 app.use("/api/v1/contact-lens-catalogue", contactLensCatalogueRoutes);
+
+/* =========================================================
+   ERROR HANDLING
+========================================================= */
 
 app.use(notFound);
 app.use(errorHandler);
+
+/* =========================================================
+   SERVER
+========================================================= */
 
 const PORT = process.env.PORT || 5000;
 
@@ -141,9 +191,11 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`OptiCore API running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
     });
   } catch (error) {
     console.error("Failed to start OptiCore:", error.message);
+
     process.exit(1);
   }
 };
