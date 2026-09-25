@@ -1,95 +1,111 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   CalendarDays,
+  ChevronRight,
   ClipboardPlus,
   ContactRound,
-  Glasses,
-  PackageCheck,
-  Eye,
-  FileText,
-  Upload,
   Download,
-  Trash2,
   Edit3,
-  Mail,
-  Phone,
-  Save,
+  FileText,
+  Glasses,
+  History,
+  Loader2,
+  Plus,
+  Receipt,
+  RefreshCw,
+  Stethoscope,
+  Trash2,
+  Upload,
   UserRound,
+  Wallet,
   X,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getPatient, updatePatient } from "../patient.api";
-
 import {
   uploadPatientDocument,
   getPatientDocuments,
   deletePatientDocument,
   openPatientDocument,
 } from "../patient.documents.api.js";
-
 import {
   getPatientConsultations,
   getConsultation,
 } from "../../clinical/consultation.api";
-
-// ============================================================
-// HELPERS
-// ============================================================
+import { getPatientSpectacles } from "../../optical/spectacle.api";
+import { getPatientContactLenses } from "../../contactLenses/contactLens.api";
+import { getDispensingList } from "../../dispensing/dispensing.api";
+import { getInvoices } from "../../billing/billing.api";
+import { getAppointments } from "../../appointments/appointment.api";
 
 const fullName = (patient) =>
   [patient?.firstName, patient?.middleName, patient?.lastName]
     .filter(Boolean)
     .join(" ");
 
-const formatDate = (value) =>
-  value
-    ? new Date(value).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-    : "—";
+const formatDate = (value) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const formatMoney = (value) =>
+  `₹${Number(value || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+
+const calculateAge = (dob) => {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  if (Number.isNaN(birth.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - birth.getFullYear();
+  const month = now.getMonth() - birth.getMonth();
+  if (month < 0 || (month === 0 && now.getDate() < birth.getDate())) age -= 1;
+  return age >= 0 ? age : null;
+};
 
 const roleLabel = (value = "") =>
-  value
+  String(value)
     .replaceAll("_", " ")
     .replace(/\b\w/g, (character) => character.toUpperCase());
 
-/**
- * Calculate age from date of birth.
- *
- * We intentionally calculate this instead of storing age in
- * MongoDB because age changes automatically over time.
- */
-const calculateAge = (dateOfBirth) => {
-  if (!dateOfBirth) return null;
+const getPatientData = (response) =>
+  response?.data?.patient || response?.data || response?.patient || null;
 
-  const birthDate = new Date(dateOfBirth);
+const getRows = (response) =>
+  Array.isArray(response?.data)
+    ? response.data
+    : Array.isArray(response?.data?.data)
+      ? response.data.data
+      : [];
 
-  if (Number.isNaN(birthDate.getTime())) {
-    return null;
+const consultationLabel = (item) => {
+  if (item?.consultationType === "specialized") {
+    return roleLabel(item.specializedType || "specialized");
   }
+  return item?.consultationType === "short_consult"
+    ? "Short Consultation"
+    : "Comprehensive";
+};
 
-  const today = new Date();
-
-  let age = today.getFullYear() - birthDate.getFullYear();
-
-  const monthDifference = today.getMonth() - birthDate.getMonth();
-
-  if (
-    monthDifference < 0 ||
-    (monthDifference === 0 && today.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
-
-  return age >= 0 ? age : null;
+const consultationTone = (item) => {
+  if (item?.consultationType === "specialized") return "violet";
+  if (item?.consultationType === "short_consult") return "amber";
+  return "blue";
 };
 
 const initialEdit = {
   firstName: "",
+  middleName: "",
   lastName: "",
   dateOfBirth: "",
   gender: "",
@@ -100,9 +116,15 @@ const initialEdit = {
   notes: "",
 };
 
-// ============================================================
-// MAIN PAGE
-// ============================================================
+const sections = [
+  ["overview", "Overview"],
+  ["consultations", "Consultations"],
+  ["optical", "Optical"],
+  ["dispensing", "Dispensing"],
+  ["billing", "Billing"],
+  ["appointments", "Appointments"],
+  ["documents", "Documents"],
+];
 
 export default function PatientDetailsPage() {
   const { patientId } = useParams();
@@ -110,153 +132,187 @@ export default function PatientDetailsPage() {
 
   const [patient, setPatient] = useState(null);
   const [consultations, setConsultations] = useState([]);
+  const [spectacles, setSpectacles] = useState([]);
+  const [contactLenses, setContactLenses] = useState([]);
+  const [dispensing, setDispensing] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [documents, setDocuments] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [loadingConsultation, setLoadingConsultation] = useState(false);
-
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [activeSection, setActiveSection] = useState("overview");
+  const [selectedConsultation, setSelectedConsultation] = useState(null);
+  const [loadingConsultation, setLoadingConsultation] = useState(false);
 
   const [editOpen, setEditOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-
   const [editForm, setEditForm] = useState(initialEdit);
 
-  const [selectedConsultation, setSelectedConsultation] = useState(null);
-  const [serviceModal, setServiceModal] = useState(null);
-
   const [documentOpen, setDocumentOpen] = useState(false);
-
   const [documentFiles, setDocumentFiles] = useState([]);
-
   const [documentCategory, setDocumentCategory] = useState("other");
-
   const [documentNote, setDocumentNote] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [documentAction, setDocumentAction] = useState("");
 
-  const [uploadingDocuments, setUploadingDocuments] = useState(false);
-
-  const [deletingDocumentId, setDeletingDocumentId] = useState("");
-
-  const [openingDocumentId, setOpeningDocumentId] = useState("");
-
-  // ==========================================================
-  // AGE
-  // ==========================================================
-
-  const patientAge = useMemo(
+  const age = useMemo(
     () => calculateAge(patient?.dateOfBirth),
     [patient?.dateOfBirth],
   );
 
-  // ==========================================================
-  // LOAD PATIENT
-  // ==========================================================
-
-  const load = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const [patientResponse, consultationsResponse, patientDocumentsResponse] =
-        await Promise.all([
-          getPatient(patientId),
-          getPatientConsultations(patientId),
-          getPatientDocuments(patientId),
-        ]);
-
-      const patientData =
-        patientResponse?.data?.patient ??
-        patientResponse?.data?.data?.patient ??
-        patientResponse?.data ??
-        patientResponse?.patient ??
-        null;
-
-      console.log("Patient API response:", patientResponse);
-      console.log("Patient data:", patientData);
-      console.log("DOB:", patientData?.dateOfBirth);
-      const consultationRows = Array.isArray(consultationsResponse?.data)
-        ? consultationsResponse.data
-        : Array.isArray(consultationsResponse?.data?.consultations)
-          ? consultationsResponse.data.consultations
-          : Array.isArray(consultationsResponse?.consultations)
-            ? consultationsResponse.consultations
-            : [];
-
-      const documentRows = Array.isArray(patientDocumentsResponse)
-        ? patientDocumentsResponse
-        : Array.isArray(patientDocumentsResponse?.data)
-          ? patientDocumentsResponse.data
-          : [];
-
-      setPatient({
-        ...patientData,
-        documents: documentRows,
-      });
-
-      setConsultations(consultationRows);
-
-      setEditForm({
-        ...initialEdit,
-
-        firstName: patientData?.firstName || "",
-
-        lastName: patientData?.lastName || "",
-
-        dateOfBirth: patientData?.dateOfBirth
-          ? new Date(patientData.dateOfBirth).toISOString().slice(0, 10)
-          : "",
-
-        gender: patientData?.gender || "",
-
-        phone: patientData?.phone || "",
-
-        alternatePhone: patientData?.alternatePhone || "",
-
-        email: patientData?.email || "",
-
-        source: patientData?.source || "",
-
-        notes: patientData?.notes || "",
-      });
-    } catch (err) {
-      setError(err?.response?.data?.message || "Unable to load patient record");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (patientId) {
-      load();
-    }
-  }, [patientId]);
-
-  // ==========================================================
-  // LATEST CONSULTATION
-  // ==========================================================
-
-  const latestConsultation = useMemo(
-    () => consultations[0] || null,
+  const completedComprehensive = useMemo(
+    () =>
+      consultations.some(
+        (item) =>
+          item.consultationType === "comprehensive" &&
+          (item.status === "completed" || !item.status),
+      ),
     [consultations],
   );
 
-  // ==========================================================
-  // OPEN CONSULTATION
-  // ==========================================================
+  const specializedHistory = useMemo(
+    () =>
+      consultations.filter((item) => item.consultationType === "specialized"),
+    [consultations],
+  );
+
+  const latestConsultation = consultations[0] || null;
+  const outstanding = invoices.reduce(
+    (sum, invoice) => sum + Number(invoice.balance || 0),
+    0,
+  );
+
+  const load = useCallback(
+    async ({ silent = false } = {}) => {
+      if (!patientId) return;
+
+      if (silent) setRefreshing(true);
+      else setLoading(true);
+      setError("");
+
+      try {
+        const results = await Promise.allSettled([
+          getPatient(patientId),
+          getPatientConsultations(patientId),
+          getPatientSpectacles(patientId),
+          getPatientContactLenses(patientId),
+          getDispensingList({ patientId }),
+          getInvoices({ patientId }),
+          getAppointments({ patientId }),
+          getPatientDocuments(patientId),
+        ]);
+
+        const patientResult = results[0];
+        if (patientResult.status === "rejected") throw patientResult.reason;
+
+        const patientData = getPatientData(patientResult.value);
+        if (!patientData) throw new Error("Patient record not found");
+
+        setPatient(patientData);
+        setEditForm({
+          ...initialEdit,
+          firstName: patientData.firstName || "",
+          middleName: patientData.middleName || "",
+          lastName: patientData.lastName || "",
+          dateOfBirth: patientData.dateOfBirth
+            ? new Date(patientData.dateOfBirth).toISOString().slice(0, 10)
+            : "",
+          gender: patientData.gender || "",
+          phone: patientData.phone || "",
+          alternatePhone: patientData.alternatePhone || "",
+          email: patientData.email || "",
+          source: patientData.source || "",
+          notes: patientData.notes || "",
+        });
+
+        const value = (index) =>
+          results[index].status === "fulfilled" ? results[index].value : null;
+
+        const consultationRows = getRows(value(1));
+        const spectacleRows = getRows(value(2));
+        const contactRows = getRows(value(3));
+        const dispensingRows = getRows(value(4));
+        const invoiceRows = getRows(value(5));
+        const appointmentRows = getRows(value(6));
+        const documentRows = Array.isArray(value(7))
+          ? value(7)
+          : getRows(value(7));
+
+        setConsultations(consultationRows);
+        setSpectacles(spectacleRows);
+        setContactLenses(contactRows);
+        setDispensing(dispensingRows);
+        setInvoices(invoiceRows);
+        setAppointments(appointmentRows);
+        setDocuments(documentRows);
+      } catch (err) {
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to load patient workspace",
+        );
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [patientId],
+  );
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-110px 0px -65% 0px", threshold: [0.05, 0.25, 0.5] },
+    );
+
+    sections.forEach(([id]) => {
+      const element = document.getElementById(`patient-${id}`);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, [loading, patientId]);
+
+  const startConsultation = () =>
+    navigate(`/patients/${patientId}/consultations/new`);
+
+  const startSpecialized = (specialty) => {
+    if (!completedComprehensive) {
+      setError(
+        "Complete a Comprehensive Consultation before starting a specialized consultation.",
+      );
+      return;
+    }
+    navigate(
+      `/patients/${patientId}/consultations/new?type=specialized&specializedType=${specialty}`,
+    );
+  };
 
   const openConsultation = async (consultation) => {
     setLoadingConsultation(true);
     setError("");
-
     try {
       const response = await getConsultation(consultation._id);
-
-      const data =
+      setSelectedConsultation(
         response?.data?.consultation ||
-        response?.data ||
-        response?.consultation ||
-        consultation;
-
-      setSelectedConsultation(data);
+          response?.data ||
+          response?.consultation ||
+          consultation,
+      );
     } catch {
       setSelectedConsultation(consultation);
     } finally {
@@ -264,138 +320,23 @@ export default function PatientDetailsPage() {
     }
   };
 
-  // ==========================================================
-  // DOCUMENT UPLOAD
-  // ==========================================================
-
-  const handleDocumentUpload = async (event) => {
+  const savePatient = async (event) => {
     event.preventDefault();
-
-    if (!documentFiles.length || uploadingDocuments) {
-      return;
-    }
-
-    setUploadingDocuments(true);
-    setError("");
-
-    try {
-      for (const file of documentFiles) {
-        await uploadPatientDocument(patientId, {
-          file,
-          category: documentCategory,
-          note: documentNote.trim(),
-        });
-      }
-
-      setDocumentFiles([]);
-      setDocumentNote("");
-      setDocumentCategory("other");
-      setDocumentOpen(false);
-
-      await load();
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Unable to upload patient document",
-      );
-    } finally {
-      setUploadingDocuments(false);
-    }
-  };
-
-  // ==========================================================
-  // OPEN DOCUMENT
-  // ==========================================================
-
-  const openDocument = async (document) => {
-    if (!document?._id || openingDocumentId) {
-      return;
-    }
-
-    setOpeningDocumentId(document._id);
-    setError("");
-
-    try {
-      await openPatientDocument(patientId, document);
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Unable to open patient document",
-      );
-    } finally {
-      setOpeningDocumentId("");
-    }
-  };
-
-  // ==========================================================
-  // DELETE DOCUMENT
-  // ==========================================================
-
-  const removePatientDocument = async (documentId) => {
-    if (!documentId || deletingDocumentId) {
-      return;
-    }
-
-    if (!window.confirm("Delete this patient document?")) {
-      return;
-    }
-
-    setDeletingDocumentId(documentId);
-    setError("");
-
-    try {
-      await deletePatientDocument(patientId, documentId);
-
-      await load();
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Unable to delete patient document",
-      );
-    } finally {
-      setDeletingDocumentId("");
-    }
-  };
-
-  // ==========================================================
-  // SAVE PATIENT
-  // ==========================================================
-
-  const saveEdit = async (event) => {
-    event.preventDefault();
-
     setSaving(true);
     setError("");
-
     try {
       const response = await updatePatient(patientId, {
         ...editForm,
-
         firstName: editForm.firstName.trim(),
-
+        middleName: editForm.middleName.trim(),
         lastName: editForm.lastName.trim(),
-
         phone: editForm.phone.trim(),
-
         alternatePhone: editForm.alternatePhone.trim(),
-
         email: editForm.email.trim().toLowerCase(),
-
         notes: editForm.notes.trim(),
       });
-
-      const updated =
-        response?.data?.patient || response?.data || response?.patient || null;
-
-      if (updated && typeof updated === "object") {
-        setPatient(updated);
-      } else {
-        await load();
-      }
-
+      const updated = getPatientData(response);
+      if (updated) setPatient(updated);
       setEditOpen(false);
     } catch (err) {
       setError(err?.response?.data?.message || "Unable to update patient");
@@ -404,694 +345,724 @@ export default function PatientDetailsPage() {
     }
   };
 
-  // ==========================================================
-  // LOADING
-  // ==========================================================
+  const uploadDocuments = async (event) => {
+    event.preventDefault();
+    if (!documentFiles.length || uploading) return;
+    setUploading(true);
+    setError("");
+    try {
+      for (const file of documentFiles) {
+        await uploadPatientDocument(patientId, {
+          file,
+          category: documentCategory,
+          note: documentNote.trim(),
+        });
+      }
+      setDocumentFiles([]);
+      setDocumentNote("");
+      setDocumentOpen(false);
+      await load({ silent: true });
+    } catch (err) {
+      setError(err?.response?.data?.message || "Unable to upload document");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeDocument = async (documentId) => {
+    if (!documentId || documentAction) return;
+    if (!window.confirm("Delete this patient document?")) return;
+    setDocumentAction(`delete:${documentId}`);
+    try {
+      await deletePatientDocument(patientId, documentId);
+      await load({ silent: true });
+    } catch (err) {
+      setError(err?.response?.data?.message || "Unable to delete document");
+    } finally {
+      setDocumentAction("");
+    }
+  };
+
+  const openDocument = async (document) => {
+    if (!document?._id || documentAction) return;
+    setDocumentAction(`open:${document._id}`);
+    try {
+      await openPatientDocument(patientId, document);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Unable to open document");
+    } finally {
+      setDocumentAction("");
+    }
+  };
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-slate-400">
-        Loading patient record...
+      <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
+        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500 shadow-sm">
+          <Loader2 size={18} className="animate-spin text-blue-600" />
+          Loading patient workspace...
+        </div>
       </div>
     );
   }
-
-  // ==========================================================
-  // NOT FOUND
-  // ==========================================================
 
   if (!patient) {
     return (
-      <div className="mx-auto max-w-4xl py-20 text-center">
+      <div className="mx-auto max-w-3xl px-4 py-16">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-          {error || "Patient not found"}
+          {error || "Patient record not found."}
         </div>
       </div>
     );
   }
 
-  // ==========================================================
-  // PAGE
-  // ==========================================================
-
   return (
-    <div className="space-y-6 py-5 sm:py-7">
-      {/* =====================================================
-          TOP ACTION BAR
-      ====================================================== */}
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 transition hover:text-slate-900"
-        >
-          <ArrowLeft size={15} />
-          Back
-        </button>
-
-        <div className="flex flex-wrap gap-2">
+    <div className="min-h-screen bg-slate-50 pb-10 text-slate-800">
+      <div className="mx-auto max-w-[1700px] px-3 py-4 sm:px-5 lg:px-7">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
-            onClick={() => navigate(`/patients/${patientId}/consultations/new`)}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-3.5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-violet-500 hover:to-blue-500"
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
-            <ClipboardPlus size={15} />
-            Consultation
+            <ArrowLeft size={15} /> Back
           </button>
 
-          <button
-            type="button"
-            onClick={() => setDocumentOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-xs font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100"
-          >
-            <Upload size={15} />
-            Upload documents
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setEditOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
-          >
-            <Edit3 size={15} />
-            Edit patient
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => void load({ silent: true })}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              <RefreshCw
+                size={14}
+                className={refreshing ? "animate-spin" : ""}
+              />
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={() => setDocumentOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+            >
+              <Upload size={14} /> Documents
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              <Edit3 size={14} /> Edit patient
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* =====================================================
-          ERROR
-      ====================================================== */}
+        {error && (
+          <div className="mb-4 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+            <span>{error}</span>
+            <button type="button" onClick={() => setError("")}>
+              <X size={14} />
+            </button>
+          </div>
+        )}
 
-      {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
-
-      {/* =====================================================
-          MAIN PATIENT CARD
-      ====================================================== */}
-
-      <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        {/* ===================================================
-            PATIENT HEADER
-        ==================================================== */}
-
-        <header className="bg-gradient-to-br from-violet-50 via-white to-cyan-50 px-5 py-6 sm:px-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            {/* Patient identity */}
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-lg font-bold text-white shadow-lg shadow-blue-100">
-                {patient.firstName?.[0]}
-                {patient.lastName?.[0]}
-              </div>
-
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[.2em] text-violet-600">
-                  Patient record
+        <header className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <div className="bg-gradient-to-br from-blue-50 via-white to-violet-50 px-5 py-6 sm:px-7">
+            <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-lg font-bold text-white shadow-lg">
+                  {(patient.firstName?.[0] || "P").toUpperCase()}
+                  {(patient.lastName?.[0] || "").toUpperCase()}
                 </div>
-
-                <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
-                  {fullName(patient)}
-                </h1>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  {patient.patientNumber || "No patient number"}
-
-                  {" · "}
-
-                  {patient.gender
-                    ? roleLabel(patient.gender)
-                    : "Gender not recorded"}
-                </p>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Badge
-                    label={
-                      patient.status === "inactive" ? "Inactive" : "Active"
-                    }
-                  />
-
-                  {patient.source && (
-                    <Badge
-                      label={`Source: ${roleLabel(patient.source)}`}
-                      tone="blue"
-                    />
-                  )}
-
-                  {/* AGE BADGE */}
-
-                  {patientAge !== null && (
-                    <span className="rounded-full border border-violet-100 bg-violet-50 px-2.5 py-1 text-[10px] font-bold text-violet-700">
-                      {patientAge} years
+                <div className="min-w-0">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600">
+                    Patient workspace
+                  </div>
+                  <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+                    {fullName(patient) || "Unnamed Patient"}
+                  </h1>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span className="font-semibold text-slate-700">
+                      {patient.patientNumber || "No patient number"}
                     </span>
-                  )}
+                    {age !== null && <span>· {age} years</span>}
+                    {patient.gender && (
+                      <span>· {roleLabel(patient.gender)}</span>
+                    )}
+                    {patient.phone && <span>· {patient.phone}</span>}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge
+                      label={
+                        patient.status === "inactive" ? "Inactive" : "Active"
+                      }
+                      tone={patient.status === "inactive" ? "amber" : "green"}
+                    />
+                    <Badge label={`${consultations.length} consultations`} />
+                    <Badge
+                      label={`${invoices.length} invoices`}
+                      tone="violet"
+                    />
+                    {outstanding > 0 && (
+                      <Badge
+                        label={`${formatMoney(outstanding)} outstanding`}
+                        tone="amber"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* =================================================
-                QUICK INFORMATION
-            ================================================== */}
-
-            <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/90 bg-white/75 p-4 sm:grid-cols-5">
-              <Info
-                label="Date of birth"
-                value={formatDate(patient.dateOfBirth)}
-              />
-
-              <Info
-                label="Age"
-                value={patientAge !== null ? `${patientAge} years` : "—"}
-              />
-
-              <Info label="Phone" value={patient.phone} />
-
-              <Info
-                label="Last consultation"
-                value={formatDate(
-                  patient.lastConsultationAt ||
-                    latestConsultation?.consultationDate,
-                )}
-              />
-
-              <Info
-                label="Next recall"
-                value={formatDate(patient.nextRecallAt)}
-              />
+              <div className="grid gap-2 sm:grid-cols-2 xl:min-w-[600px] xl:grid-cols-4">
+                <QuickAction
+                  icon={ClipboardPlus}
+                  label="Start Consultation"
+                  onClick={startConsultation}
+                  primary
+                />
+                <QuickAction
+                  icon={Glasses}
+                  label="New Spectacle Job"
+                  onClick={() =>
+                    navigate(`/optical/spectacles/new/${patientId}`)
+                  }
+                />
+                <QuickAction
+                  icon={ContactRound}
+                  label="Contact Lens"
+                  onClick={() => startSpecialized("contact_lenses")}
+                  disabled={!completedComprehensive}
+                />
+                <QuickAction
+                  icon={Receipt}
+                  label="Create Bill"
+                  onClick={() => navigate(`/billing?patientId=${patientId}`)}
+                />
+              </div>
             </div>
           </div>
+
+          <nav className="sticky top-0 z-20 flex gap-1 overflow-x-auto border-t border-slate-200 bg-white px-3 py-2 sm:px-5">
+            {sections.map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setActiveSection(id);
+                  document
+                    .getElementById(`patient-${id}`)
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className={`whitespace-nowrap rounded-lg px-3 py-2 text-[10px] font-bold transition ${activeSection === id ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
         </header>
 
-        {/* ===================================================
-            BODY
-        ==================================================== */}
-
-        <div className="grid xl:grid-cols-[1.35fr_.65fr]">
-          <section className="divide-y divide-slate-200">
-            {/* =================================================
-                PERSONAL DETAILS
-            ================================================== */}
-
-            <DocSection title="Personal & contact details">
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                <Info label="First name" value={patient.firstName} />
-
-                <Info label="Surname" value={patient.lastName} />
-
+        <main className="mt-4 space-y-4">
+          <section
+            id="patient-overview"
+            className="scroll-mt-24 grid gap-4 xl:grid-cols-[1.2fr_.8fr]"
+          >
+            <Panel title="Patient overview" icon={UserRound}>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <Info
                   label="Date of birth"
                   value={formatDate(patient.dateOfBirth)}
                 />
-
-                <Info
-                  label="Age"
-                  value={patientAge !== null ? `${patientAge} years` : "—"}
-                />
-
+                <Info label="Age" value={age === null ? "—" : `${age} years`} />
                 <Info
                   label="Gender"
                   value={patient.gender ? roleLabel(patient.gender) : "—"}
                 />
-
-                <Info label="Email" value={patient.email} />
-
-                <Info label="Phone" value={patient.phone} />
-
-                <Info label="Alternate phone" value={patient.alternatePhone} />
-
-                <Info label="Occupation" value={patient.occupation} />
-
+                <Info label="Phone" value={patient.phone || "—"} />
                 <Info
-                  label="Preferred language"
-                  value={patient.preferredLanguage}
+                  label="Alternate phone"
+                  value={patient.alternatePhone || "—"}
                 />
-
-                <Info label="Source" value={roleLabel(patient.source)} />
-
-                <Info label="External reference" value={patient.externalNo} />
-              </div>
-            </DocSection>
-
-            {/* =================================================
-                ADDRESS
-            ================================================== */}
-
-            <DocSection title="Address">
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
-                {[
-                  patient.address?.line1,
-                  patient.address?.line2,
-                  patient.address?.city,
-                  patient.address?.state,
-                  patient.address?.pincode,
-                  patient.address?.country,
-                ]
-                  .filter(Boolean)
-                  .join(", ") || "No address recorded."}
-              </div>
-            </DocSection>
-
-            {/* =================================================
-                EMERGENCY CONTACT
-            ================================================== */}
-
-            <DocSection title="Emergency contact">
-              <div className="grid gap-5 sm:grid-cols-3">
-                <Info label="Name" value={patient.emergencyContact?.name} />
-
+                <Info label="Email" value={patient.email || "—"} />
                 <Info
-                  label="Relationship"
-                  value={patient.emergencyContact?.relationship}
+                  label="Source"
+                  value={patient.source ? roleLabel(patient.source) : "—"}
                 />
-
-                <Info label="Phone" value={patient.emergencyContact?.phone} />
+                <Info
+                  label="Last consultation"
+                  value={formatDate(
+                    patient.lastConsultationAt ||
+                      latestConsultation?.consultationDate,
+                  )}
+                />
+                <Info
+                  label="Next recall"
+                  value={formatDate(patient.nextRecallAt)}
+                />
               </div>
-            </DocSection>
-
-            {/* =================================================
-                DOCUMENTS
-            ================================================== */}
-
-            <DocSection title="Patient documents">
-              <div className="rounded-2xl border border-dashed border-blue-200 bg-blue-50/60 p-4 sm:p-5">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm ring-1 ring-blue-100">
-                      <FileText size={18} />
-                    </div>
-
-                    <div>
-                      <div className="text-sm font-bold text-slate-800">
-                        Documents & attachments
-                      </div>
-
-                      <p className="mt-1 text-xs leading-5 text-slate-500">
-                        Store referrals, reports, prescriptions, IDs, clinical
-                        images and other files against this patient record.
-                      </p>
-                    </div>
+              {patient.notes && (
+                <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                    Patient notes
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setDocumentOpen(true)}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-700"
-                  >
-                    <Upload size={14} />
-                    Upload document
-                  </button>
+                  <p className="mt-2 whitespace-pre-wrap text-xs leading-6 text-slate-600">
+                    {patient.notes}
+                  </p>
                 </div>
+              )}
+            </Panel>
+
+            <Panel title="Care pathway" icon={Stethoscope}>
+              <div className="space-y-3">
+                <PathStep
+                  done={completedComprehensive}
+                  title="Comprehensive Consultation"
+                  description={
+                    completedComprehensive
+                      ? "Completed — specialized consultations are unlocked."
+                      : "Required before specialized consultations."
+                  }
+                />
+                <PathStep
+                  done={specializedHistory.some(
+                    (x) => x.specializedType === "contact_lenses",
+                  )}
+                  title="Contact Lens"
+                  description="Specialized consultation and fitting workflow."
+                  onClick={() => startSpecialized("contact_lenses")}
+                  disabled={!completedComprehensive}
+                />
+                <PathStep
+                  done={specializedHistory.some(
+                    (x) => x.specializedType === "binocular_vision",
+                  )}
+                  title="Binocular Vision"
+                  description="Specialized binocular vision assessment."
+                  onClick={() => startSpecialized("binocular_vision")}
+                  disabled={!completedComprehensive}
+                />
+                <PathStep
+                  done={specializedHistory.some(
+                    (x) => x.specializedType === "low_vision",
+                  )}
+                  title="Low Vision"
+                  description="Specialized low vision assessment."
+                  onClick={() => startSpecialized("low_vision")}
+                  disabled={!completedComprehensive}
+                />
               </div>
-
-              <div className="mt-5 overflow-x-auto">
-                <table className="w-full min-w-[700px] text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-400">
-                      <th className="pb-3">Document</th>
-
-                      <th className="pb-3">Category</th>
-
-                      <th className="pb-3">Uploaded</th>
-
-                      <th className="pb-3">Note</th>
-
-                      <th className="pb-3 text-right">Actions</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {Array.isArray(patient.documents) &&
-                    patient.documents.length ? (
-                      patient.documents.map((doc) => (
-                        <tr
-                          key={doc._id || doc.url || doc.name}
-                          className="border-b border-slate-100 last:border-0"
-                        >
-                          <td className="py-3">
-                            <div className="flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                                <FileText size={14} />
-                              </div>
-
-                              <div className="min-w-0">
-                                <div className="max-w-[230px] truncate text-xs font-semibold text-slate-700">
-                                  {doc.name || doc.originalName || "Document"}
-                                </div>
-
-                                <div className="mt-0.5 text-[10px] text-slate-400">
-                                  {doc.mimeType || doc.type || "File"}
-
-                                  {doc.size
-                                    ? ` · ${formatBytes(doc.size)}`
-                                    : ""}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-
-                          <td className="py-3 text-xs text-slate-600">
-                            {doc.category || "Other"}
-                          </td>
-
-                          <td className="py-3 text-xs text-slate-600">
-                            {formatDate(doc.createdAt || doc.uploadedAt)}
-                          </td>
-
-                          <td className="max-w-[220px] py-3 text-xs text-slate-500">
-                            {doc.note || "—"}
-                          </td>
-
-                          <td className="py-3 text-right">
-                            <div className="flex justify-end gap-2">
-                              {doc._id && (
-                                <button
-                                  type="button"
-                                  onClick={() => openDocument(doc)}
-                                  disabled={openingDocumentId === doc._id}
-                                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:cursor-wait disabled:opacity-50"
-                                >
-                                  <Download size={12} />
-
-                                  {openingDocumentId === doc._id
-                                    ? "Opening..."
-                                    : "Open"}
-                                </button>
-                              )}
-
-                              {(doc._id || doc.id) && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removePatientDocument(doc._id || doc.id)
-                                  }
-                                  disabled={
-                                    deletingDocumentId === (doc._id || doc.id)
-                                  }
-                                  className="inline-flex items-center justify-center rounded-lg border border-red-100 bg-red-50 p-1.5 text-red-600 hover:bg-red-100 disabled:opacity-50"
-                                  aria-label="Delete document"
-                                >
-                                  <Trash2 size={12} />
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={5} className="py-10 text-center">
-                          <FileText
-                            size={26}
-                            className="mx-auto text-slate-300"
-                          />
-
-                          <div className="mt-2 text-xs font-semibold text-slate-500">
-                            No documents uploaded yet
-                          </div>
-
-                          <div className="mt-1 text-[10px] text-slate-400">
-                            Upload patient files to keep the complete record
-                            together.
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </DocSection>
-
-            {/* =================================================
-                CONSULTATION HISTORY
-            ================================================== */}
-
-            <DocSection title="Consultation history">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-400">
-                      <th className="pb-3">Date</th>
-
-                      <th className="pb-3">Clinician</th>
-
-                      <th className="pb-3">Type</th>
-
-                      <th className="pb-3">Given Rx</th>
-
-                      <th className="pb-3">Recall</th>
-
-                      <th className="pb-3 text-right">Open</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {consultations.length ? (
-                      consultations.map((consultation) => (
-                        <tr
-                          key={consultation._id}
-                          className="border-b border-slate-100 transition hover:bg-slate-50/70"
-                        >
-                          <td className="py-3 font-semibold text-slate-700">
-                            {formatDate(consultation.consultationDate)}
-                          </td>
-
-                          <td className="py-3">
-                            {[
-                              consultation.optometristId?.firstName,
-
-                              consultation.optometristId?.lastName,
-                            ]
-                              .filter(Boolean)
-                              .join(" ") || "—"}
-                          </td>
-
-                          <td className="py-3">
-                            {roleLabel(consultation.consultationType)}
-                          </td>
-
-                          <td className="py-3">
-                            <span className="font-mono text-xs text-slate-600">
-                              {consultation.givenRx?.right?.sphere || "—"}
-
-                              {" / "}
-
-                              {consultation.givenRx?.left?.sphere || "—"}
-                            </span>
-                          </td>
-
-                          <td className="py-3">
-                            {formatDate(consultation.recallDue)}
-                          </td>
-
-                          <td className="py-3 text-right">
-                            <button
-                              type="button"
-                              onClick={() => openConsultation(consultation)}
-                              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
-                            >
-                              View clinical
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan={6}
-                          className="py-10 text-center text-xs text-slate-400"
-                        >
-                          No consultations recorded yet.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </DocSection>
-
-            {/* =================================================
-                CARE PATHWAYS
-            ================================================== */}
-            <DocSection title="Care pathways">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-                <p className="text-xs leading-5 text-slate-500">
-                  Clinical examinations and optical dispensing are separate workflows. Start the appropriate workflow below; each opens its own dedicated page.
-                </p>
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <ServiceActionButton
-                    icon={Glasses}
-                    label="New Spectacle Job"
-                    description="Create an optical order from the latest prescription"
-                    onClick={() => navigate(`/optical/spectacles/new/${patientId}`)}
-                  />
-                  <ServiceActionButton
-                    icon={ContactRound}
-                    label="Contact Lens Dispensing"
-                    description="Open contact lens order and fitting"
-                    onClick={() => navigate(`/optical/contact-lenses/new?patientId=${patientId}`)}
-                  />
-                  <ServiceActionButton
-                    icon={Eye}
-                    label="Additional Consultation"
-                    description="Start a focused clinical assessment"
-                    onClick={() => setServiceModal("additional")}
-                  />
-                </div>
-              </div>
-            </DocSection>
+            </Panel>
           </section>
 
-          {/* ===================================================
-              SIDEBAR
-          ==================================================== */}
-
-          <aside className="bg-gradient-to-b from-slate-50 to-white p-5 sm:p-7">
-            <div className="space-y-4">
-              <SideCard
-                icon={Phone}
-                label="Phone"
-                value={patient.phone || "Not recorded"}
-              />
-
-              <SideCard
-                icon={Mail}
-                label="Email"
-                value={patient.email || "Not recorded"}
-              />
-
-              <SideCard
-                icon={CalendarDays}
-                label="Recall"
-                value={formatDate(patient.nextRecallAt)}
-              />
-
-              <SideCard
-                icon={UserRound}
-                label="Registered practice"
-                value={patient.registeredBranchId?.name || "Practice"}
-              />
-            </div>
-
-            {/* =================================================
-                PATIENT NOTES
-            ================================================== */}
-
-            <div className="mt-6 rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
-                Patient notes
-              </div>
-
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">
-                {patient.notes || "No notes recorded."}
-              </p>
-            </div>
-
-            {/* =================================================
-                CLINICAL SUMMARY
-            ================================================== */}
-
-            <div className="mt-5 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-5">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                Clinical summary
-              </div>
-
-              {/* Patient quick facts */}
-
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <Stat
-                  label="Age"
-                  value={patientAge !== null ? `${patientAge}` : "—"}
+          <section id="patient-consultations" className="scroll-mt-24">
+            <Panel
+              title="Consultation history"
+              icon={History}
+              action={
+                <button
+                  type="button"
+                  onClick={startConsultation}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-[10px] font-bold text-white"
+                >
+                  <Plus size={13} /> New consultation
+                </button>
+              }
+            >
+              {consultations.length === 0 ? (
+                <Empty
+                  title="No consultations yet"
+                  description="Start the patient's first Comprehensive Consultation."
+                  action={startConsultation}
                 />
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex gap-2 overflow-x-auto pb-2">
+                    {consultations.map((item, index) => (
+                      <button
+                        key={item._id || index}
+                        type="button"
+                        onClick={() => void openConsultation(item)}
+                        className={`min-w-[150px] rounded-2xl border p-3 text-left transition ${index === 0 ? "border-blue-300 bg-blue-50" : "border-slate-200 bg-white hover:border-slate-300"}`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                            {index === 0
+                              ? "Latest"
+                              : `Visit ${consultations.length - index}`}
+                          </span>
+                          <ChevronRight size={13} className="text-slate-300" />
+                        </div>
+                        <div className="mt-2 text-sm font-bold text-slate-900">
+                          {formatDate(item.consultationDate)}
+                        </div>
+                        <div
+                          className={`mt-1 inline-flex rounded-full px-2 py-1 text-[9px] font-bold ${toneClass(consultationTone(item))}`}
+                        >
+                          {consultationLabel(item)}
+                        </div>
+                        <div className="mt-2 text-[9px] text-slate-400">
+                          {item.optometristId
+                            ? [
+                                item.optometristId.firstName,
+                                item.optometristId.lastName,
+                              ]
+                                .filter(Boolean)
+                                .join(" ")
+                            : "Clinical team"}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-4">
+                    <Stat
+                      label="Total consultations"
+                      value={consultations.length}
+                    />
+                    <Stat
+                      label="Comprehensive"
+                      value={
+                        consultations.filter(
+                          (x) => x.consultationType === "comprehensive",
+                        ).length
+                      }
+                    />
+                    <Stat
+                      label="Specialized"
+                      value={specializedHistory.length}
+                    />
+                    <Stat
+                      label="Latest"
+                      value={formatDate(latestConsultation?.consultationDate)}
+                    />
+                  </div>
+                </div>
+              )}
+            </Panel>
+          </section>
 
-                <Stat label="Consultations" value={consultations.length} />
-              </div>
-
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <Stat
-                  label="Given Rx"
-                  value={latestConsultation?.givenRx ? "Available" : "—"}
-                />
-
-                <Stat
-                  label="Recall"
-                  value={patient.nextRecallAt ? "Active" : "—"}
-                />
-              </div>
-
-              <div className="mt-4 space-y-2">
+          <section
+            id="patient-optical"
+            className="scroll-mt-24 grid gap-4 xl:grid-cols-2"
+          >
+            <Panel
+              title="Spectacle history"
+              icon={Glasses}
+              action={
                 <button
                   type="button"
                   onClick={() =>
-                    navigate(`/patients/${patientId}/consultations/new`)
+                    navigate(`/optical/spectacles/new/${patientId}`)
                   }
-                  className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100 transition hover:bg-blue-50"
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600"
                 >
-                  <span className="flex items-center gap-2">
-                    <ClipboardPlus size={14} />
-                    Start new consultation
-                  </span>
-                  <span className="text-[10px] text-blue-400">Clinical</span>
+                  New job
                 </button>
+              }
+            >
+              <RecordList
+                rows={spectacles}
+                empty="No spectacle jobs for this patient."
+                render={(item) => (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/optical/spectacles/${item._id}`)}
+                    className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50"
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {item.jobNumber || "Spectacle Job"}
+                      </div>
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        {formatDate(item.jobDate)} ·{" "}
+                        {item.frame?.description ||
+                          item.frame?.code ||
+                          "Frame pending"}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-800">
+                        {formatMoney(
+                          Number(item.frame?.price || 0) +
+                            Number(item.lens?.price || 0) +
+                            (item.extras || []).reduce(
+                              (a, x) => a + Number(x.price || 0),
+                              0,
+                            ) -
+                            Number(item.discount || 0),
+                        )}
+                      </div>
+                      <Status status={item.status} />
+                    </div>
+                  </button>
+                )}
+              />
+            </Panel>
 
-                <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
-                  <ServiceActionButton
-                    icon={Glasses}
-                    label="Optical Dispensing"
-                    description="Spectacle job"
-                    onClick={() => navigate(`/optical/spectacles/new/${patientId}`)}
-                  />
-                  <ServiceActionButton
-                    icon={ContactRound}
-                    label="Contact Lens Dispensing"
-                    description="Lens order & fitting"
-                    onClick={() => navigate(`/optical/contact-lenses/new?patientId=${patientId}`)}
-                  />
-                  <ServiceActionButton
-                    icon={Eye}
-                    label="Additional Consultation"
-                    description="CL · BV · LV"
-                    onClick={() => setServiceModal("additional")}
-                  />
-                </div>
+            <Panel
+              title="Contact lens history"
+              icon={ContactRound}
+              action={
+                completedComprehensive ? (
+                  <button
+                    type="button"
+                    onClick={() => startSpecialized("contact_lenses")}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600"
+                  >
+                    Consultation
+                  </button>
+                ) : null
+              }
+            >
+              <RecordList
+                rows={contactLenses}
+                empty="No contact lens orders for this patient."
+                render={(item) => (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(`/optical/contact-lenses/${item._id}`)
+                    }
+                    className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50"
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {item.orderNumber || "Contact Lens Order"}
+                      </div>
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        {formatDate(item.orderDate)} ·{" "}
+                        {item.brand || item.lensType || "Lens"}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-800">
+                        {formatMoney(item.total)}
+                      </div>
+                      <Status status={item.status} />
+                    </div>
+                  </button>
+                )}
+              />
+            </Panel>
+          </section>
+
+          <section id="patient-dispensing" className="scroll-mt-24">
+            <Panel
+              title="Dispensing"
+              icon={Receipt}
+              action={
+                <button
+                  type="button"
+                  onClick={() => navigate("/dispensing")}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600"
+                >
+                  Open dispensing
+                </button>
+              }
+            >
+              <RecordList
+                rows={dispensing}
+                empty="No dispensing records for this patient."
+                render={(item) => (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/dispensing/${item._id}`)}
+                    className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50"
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {item.recordNumber}
+                      </div>
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        {item.itemType} ·{" "}
+                        {formatDate(item.orderDate || item.jobDate)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-800">
+                        {formatMoney(item.amount)}
+                      </div>
+                      <Status status={item.status} />
+                    </div>
+                  </button>
+                )}
+              />
+            </Panel>
+          </section>
+
+          <section id="patient-appointments" className="scroll-mt-24">
+            <Panel
+              title="Appointments"
+              icon={CalendarDays}
+              action={
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(`/appointments/book?patientId=${patientId}`)
+                  }
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-[10px] font-bold text-white"
+                >
+                  <Plus size={13} /> Book appointment
+                </button>
+              }
+            >
+              <RecordList
+                rows={[...appointments].sort(
+                  (a, b) =>
+                    new Date(b.appointmentDate || 0).getTime() -
+                    new Date(a.appointmentDate || 0).getTime(),
+                )}
+                empty="No appointments for this patient."
+                render={(item) => (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/appointments/${item._id}`)}
+                    className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50"
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {formatDate(item.appointmentDate)}
+                      </div>
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        {item.type || "Eye Examination"} ·{" "}
+                        {item.reason || "Routine visit"}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-700">
+                        {item.appointmentDate
+                          ? new Date(item.appointmentDate).toLocaleTimeString(
+                              "en-IN",
+                              { hour: "2-digit", minute: "2-digit" },
+                            )
+                          : "—"}
+                      </div>
+                      <Status status={item.status} />
+                    </div>
+                  </button>
+                )}
+              />
+            </Panel>
+          </section>
+
+          <section id="patient-billing" className="scroll-mt-24">
+            <Panel
+              title="Billing & payments"
+              icon={Wallet}
+              action={
+                <button
+                  type="button"
+                  onClick={() => navigate(`/billing?patientId=${patientId}`)}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-[10px] font-bold text-white"
+                >
+                  <Plus size={13} /> Create bill
+                </button>
+              }
+            >
+              <div className="mb-4 grid gap-3 sm:grid-cols-3">
+                <Stat label="Invoices" value={invoices.length} />
+                <Stat
+                  label="Paid"
+                  value={formatMoney(
+                    invoices.reduce((a, x) => a + Number(x.paidAmount || 0), 0),
+                  )}
+                />
+                <Stat
+                  label="Outstanding"
+                  value={formatMoney(outstanding)}
+                  warning={outstanding > 0}
+                />
               </div>
-            </div>
-          </aside>
-        </div>
+              <RecordList
+                rows={invoices}
+                empty="No invoices for this patient."
+                render={(item) => (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/billing/${item._id}`)}
+                    className="flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50"
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">
+                        {item.invoiceNumber}
+                      </div>
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        {formatDate(item.invoiceDate)} ·{" "}
+                        {item.items?.length || 0} item(s)
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-800">
+                        {formatMoney(item.total)}
+                      </div>
+                      <div className="mt-1 text-[9px] font-semibold text-slate-500">
+                        Paid {formatMoney(item.paidAmount)} · Balance{" "}
+                        {formatMoney(item.balance)}
+                      </div>
+                      <Status status={item.status} />
+                    </div>
+                  </button>
+                )}
+              />
+            </Panel>
+          </section>
 
-        {/* =====================================================
-            FOOTER
-        ====================================================== */}
-
-        <footer className="border-t-2 border-slate-900 bg-slate-50 px-5 py-4 text-xs text-slate-400 sm:px-8">
-          <div className="flex flex-wrap justify-between gap-3">
-            <span>VividOpt · Patient Record</span>
-
-            <span>Created {formatDate(patient.createdAt)}</span>
-          </div>
-        </footer>
-      </article>
-
-      {/* =======================================================
-          MODALS
-      ======================================================== */}
-
-      {documentOpen && (
-        <DocumentUploadModal
-          files={documentFiles}
-          setFiles={setDocumentFiles}
-          category={documentCategory}
-          setCategory={setDocumentCategory}
-          note={documentNote}
-          setNote={setDocumentNote}
-          uploading={uploadingDocuments}
-          onClose={() => !uploadingDocuments && setDocumentOpen(false)}
-          onSubmit={handleDocumentUpload}
-        />
-      )}
+          <section id="patient-documents" className="scroll-mt-24">
+            <Panel
+              title="Documents"
+              icon={FileText}
+              action={
+                <button
+                  type="button"
+                  onClick={() => setDocumentOpen(true)}
+                  className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[10px] font-bold text-blue-700"
+                >
+                  Upload
+                </button>
+              }
+            >
+              <RecordList
+                rows={documents}
+                empty="No documents uploaded for this patient."
+                render={(item) => (
+                  <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 p-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                        <FileText size={15} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="truncate text-xs font-bold text-slate-900">
+                          {item.originalName ||
+                            item.filename ||
+                            "Patient document"}
+                        </div>
+                        <div className="mt-1 text-[10px] text-slate-400">
+                          {roleLabel(item.category || "other")} ·{" "}
+                          {formatDate(item.createdAt || item.uploadedAt)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 gap-1">
+                      <button
+                        type="button"
+                        onClick={() => void openDocument(item)}
+                        className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
+                      >
+                        <Download size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void removeDocument(item._id)}
+                        className="rounded-lg border border-red-100 p-2 text-red-500 hover:bg-red-50"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              />
+            </Panel>
+          </section>
+        </main>
+      </div>
 
       {selectedConsultation && (
         <ConsultationModal
@@ -1101,1447 +1072,441 @@ export default function PatientDetailsPage() {
         />
       )}
 
-      {serviceModal && (
-        <PatientServiceModal
-          type={serviceModal}
-          patient={patient}
-          latestConsultation={latestConsultation}
-          onClose={() => setServiceModal(null)}
-        />
-      )}
-
       {editOpen && (
-        <EditPatientModal
-          form={editForm}
-          saving={saving}
-          setForm={setEditForm}
-          onClose={() => setEditOpen(false)}
-          onSubmit={saveEdit}
-        />
-      )}
-    </div>
-  );
-}
-
-// ============================================================
-// EDIT PATIENT MODAL
-// ============================================================
-
-function EditPatientModal({ form, setForm, saving, onClose, onSubmit }) {
-  const age = calculateAge(form.dateOfBirth);
-
-  return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[2px]">
-      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl">
-        <header className="flex items-start justify-between border-b border-slate-200 px-5 py-4 sm:px-6">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[.18em] text-blue-600">
-              Patient maintenance
-            </div>
-
-            <h2 className="mt-1 text-lg font-bold text-slate-900">
-              Edit patient
-            </h2>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
-          >
-            <X size={16} />
-          </button>
-        </header>
-
-        <form onSubmit={onSubmit} className="space-y-5 p-5 sm:p-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <EditInput
-              label="First name"
-              value={form.firstName}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  firstName: value,
-                })
-              }
-              required
-            />
-
-            <EditInput
-              label="Surname"
-              value={form.lastName}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  lastName: value,
-                })
-              }
-            />
-
-            <EditInput
-              label="Date of birth"
-              type="date"
-              value={form.dateOfBirth}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  dateOfBirth: value,
-                })
-              }
-            />
-
-            {/* AGE */}
-
-            <div>
-              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Age
-              </span>
-
-              <div className="flex h-11 items-center rounded-xl border border-slate-200 bg-slate-100 px-3 text-sm font-semibold text-slate-600">
-                {age !== null ? `${age} years` : "Calculated from DOB"}
-              </div>
-            </div>
-
-            <EditInput
-              label="Gender"
-              value={form.gender}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  gender: value,
-                })
-              }
-            />
-
-            <EditInput
-              label="Phone"
-              value={form.phone}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  phone: value,
-                })
-              }
-              required
-            />
-
-            <EditInput
-              label="Alternate phone"
-              value={form.alternatePhone}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  alternatePhone: value,
-                })
-              }
-            />
-
-            <EditInput
-              label="Email"
-              type="email"
-              value={form.email}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  email: value,
-                })
-              }
-            />
-
-            <EditInput
-              label="Source"
-              value={form.source}
-              onChange={(value) =>
-                setForm({
-                  ...form,
-                  source: value,
-                })
-              }
-            />
-
-            <label className="block sm:col-span-2">
-              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Notes
-              </span>
-
-              <textarea
-                rows={6}
-                value={form.notes}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    notes: event.target.value,
-                  })
+        <Modal title="Edit patient" onClose={() => setEditOpen(false)}>
+          <form onSubmit={savePatient} className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field
+                label="First name"
+                value={editForm.firstName}
+                onChange={(v) => setEditForm({ ...editForm, firstName: v })}
+                required
+              />
+              <Field
+                label="Middle name"
+                value={editForm.middleName}
+                onChange={(v) => setEditForm({ ...editForm, middleName: v })}
+              />
+              <Field
+                label="Last name"
+                value={editForm.lastName}
+                onChange={(v) => setEditForm({ ...editForm, lastName: v })}
+                required
+              />
+              <Field
+                label="Date of birth"
+                type="date"
+                value={editForm.dateOfBirth}
+                onChange={(v) => setEditForm({ ...editForm, dateOfBirth: v })}
+              />
+              <Field
+                label="Gender"
+                value={editForm.gender}
+                onChange={(v) => setEditForm({ ...editForm, gender: v })}
+                options={["male", "female", "other"]}
+              />
+              <Field
+                label="Phone"
+                value={editForm.phone}
+                onChange={(v) => setEditForm({ ...editForm, phone: v })}
+              />
+              <Field
+                label="Alternate phone"
+                value={editForm.alternatePhone}
+                onChange={(v) =>
+                  setEditForm({ ...editForm, alternatePhone: v })
                 }
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none focus:border-blue-300 focus:bg-white"
+              />
+              <Field
+                label="Email"
+                value={editForm.email}
+                onChange={(v) => setEditForm({ ...editForm, email: v })}
+              />
+            </div>
+            <Field
+              label="Notes"
+              type="textarea"
+              value={editForm.notes}
+              onChange={(v) => setEditForm({ ...editForm, notes: v })}
+            />
+            <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
+              <button
+                type="button"
+                onClick={() => setEditOpen(false)}
+                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={saving}
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white"
+              >
+                {saving && <Loader2 size={14} className="animate-spin" />}Save
+                changes
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {documentOpen && (
+        <Modal
+          title="Upload patient documents"
+          onClose={() => setDocumentOpen(false)}
+        >
+          <form onSubmit={uploadDocuments} className="space-y-4">
+            <Field
+              label="Category"
+              value={documentCategory}
+              onChange={setDocumentCategory}
+              options={["prescription", "report", "invoice", "photo", "other"]}
+            />
+            <label className="block">
+              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Files
+              </span>
+              <input
+                type="file"
+                multiple
+                onChange={(e) =>
+                  setDocumentFiles(Array.from(e.target.files || []))
+                }
+                className="block w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs"
               />
             </label>
-          </div>
-
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"
-            >
-              <Save size={14} />
-
-              {saving ? "Saving..." : "Save changes"}
-            </button>
-          </div>
-        </form>
-      </div>
+            <Field
+              label="Note"
+              value={documentNote}
+              onChange={setDocumentNote}
+            />
+            <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
+              <button
+                type="button"
+                onClick={() => setDocumentOpen(false)}
+                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={!documentFiles.length || uploading}
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white"
+              >
+                {uploading && <Loader2 size={14} className="animate-spin" />}
+                Upload
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }
 
-// ============================================================
-// PATIENT SERVICE ACTION BUTTON
-// ============================================================
+function Panel({ title, icon: Icon, action, children }) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+            <Icon size={15} />
+          </div>
+          <h2 className="text-sm font-bold text-slate-900">{title}</h2>
+        </div>
+        {action}
+      </div>
+      <div className="p-5">{children}</div>
+    </section>
+  );
+}
 
-function ServiceActionButton({ icon: Icon, label, description, onClick }) {
+function QuickAction({
+  icon: Icon,
+  label,
+  onClick,
+  primary = false,
+  disabled = false,
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-3 rounded-xl border border-blue-100 bg-white px-3 py-3 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/70"
+      disabled={disabled}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 text-[10px] font-bold transition disabled:cursor-not-allowed disabled:opacity-45 ${primary ? "bg-slate-900 text-white hover:bg-slate-800" : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition group-hover:bg-blue-100">
-        <Icon size={16} />
-      </span>
-      <span className="min-w-0">
-        <span className="block truncate text-[11px] font-bold text-slate-800">
-          {label}
-        </span>
-        <span className="mt-0.5 block truncate text-[9px] text-slate-400">
-          {description}
-        </span>
-      </span>
+      <Icon size={14} />
+      {label}
     </button>
   );
 }
 
-// ============================================================
-// PATIENT SERVICE MODAL
-// ============================================================
-
-function PatientServiceModal({ type, patient, latestConsultation, onClose }) {
-  const [contactStep, setContactStep] = useState("consultation");
-
-  const patientDisplayName = fullName(patient) || "Patient";
-  const right = latestConsultation?.givenRx?.right || {};
-  const left = latestConsultation?.givenRx?.left || {};
-
-  const title =
-    type === "optical"
-      ? "Optical Dispensing"
-      : type === "contact"
-        ? "Contact Lens Dispensing"
-        : "Additional Consultation";
-
-  const subtitle =
-    type === "optical"
-      ? "Spectacle dispensing record"
-      : type === "contact"
-        ? "Contact lens order, fitting and follow-up"
-        : "Additional clinical assessments for this patient";
-
-  return (
-    <div
-      className="fixed inset-0 z-[140] flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm sm:p-5"
-      role="dialog"
-      aria-modal="true"
-      aria-label={title}
-    >
-      <div className="flex max-h-[94vh] w-full max-w-[1180px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-        <header className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 px-4 py-3 text-white sm:px-5">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              {type === "optical" ? (
-                <Glasses size={16} />
-              ) : type === "contact" ? (
-                <ContactRound size={16} />
-              ) : (
-                <Eye size={16} />
-              )}
-              <h2 className="truncate text-sm font-bold">{title}</h2>
-            </div>
-            <p className="mt-0.5 truncate text-[9px] text-slate-300">
-              {patientDisplayName} · {patient?.patientNumber || "No patient number"} · {subtitle}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
-          >
-            <X size={15} />
-          </button>
-        </header>
-
-        <div className="min-h-0 overflow-y-auto bg-slate-50 p-3 sm:p-5">
-          {type === "optical" && (
-            <OpticalDispensingModalContent
-              patient={patient}
-              consultation={latestConsultation}
-              right={right}
-              left={left}
-            />
-          )}
-
-          {type === "contact" && (
-            <ContactLensDispensingModalContent
-              patient={patient}
-              consultation={latestConsultation}
-              step={contactStep}
-              setStep={setContactStep}
-            />
-          )}
-
-          {type === "additional" && <AdditionalConsultModalContent patientId={patient?._id || patient?.id} />}
-        </div>
-
-        <footer className="flex shrink-0 items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-5">
-          <div className="text-[9px] text-slate-400">
-            Patient record · {patient?.patientNumber || "No reference"}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-8 rounded-lg bg-slate-950 px-4 text-[10px] font-bold text-white transition hover:bg-slate-800"
-          >
-            Close
-          </button>
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, value = "", placeholder = "", className = "" }) {
-  return (
-    <label className={`block ${className}`}>
-      <span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">
-        {label}
-      </span>
-      <input
-        defaultValue={value || ""}
-        placeholder={placeholder}
-        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[10px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
-      />
-    </label>
-  );
-}
-
-function SectionTitle({ number, title, action }) {
-  return (
-    <div className="flex items-center justify-between border-b border-slate-200 bg-white px-3 py-2">
-      <div className="flex items-center gap-2">
-        {number && <span className="text-[9px] font-bold text-blue-600">{number}.</span>}
-        <span className="text-[10px] font-bold uppercase tracking-[.12em] text-slate-700">
-          {title}
-        </span>
-      </div>
-      {action}
-    </div>
-  );
-}
-
-function OpticalDispensingModalContent({ patient, consultation, right, left }) {
-  const [form, setForm] = useState(() => ({
-    jobNo: "",
-    jobDate: new Date().toISOString().slice(0, 10),
-    specDue: "",
-    jobType: "New Spectacle",
-    status: "Draft",
-    dispenser: "",
-    saleBy: "",
-    saleByFs: "",
-    rxDate: consultation?.consultationDate
-      ? new Date(consultation.consultationDate).toISOString().slice(0, 10)
-      : "",
-    pd: consultation?.pd?.total || "",
-    monoRight: "",
-    monoLeft: "",
-    use: "Near",
-    frameCode: "",
-    frameDescription: "",
-    toReorder: "",
-    frameSize: "",
-    depth: "",
-    ed: "",
-    frameType: "MM",
-    frameOther: "",
-    fitting: "",
-    frameDiscount: "",
-    framePrice: "",
-    lensRows: [
-      { eye: "Right", code: "", description: "", size: "", segSize: "", segHt: "", ocHt: "", horDecen: "", verDecen: "", bc: "", lensSup: "", orderDate: "", price: "" },
-      { eye: "Left", code: "", description: "", size: "", segSize: "", segHt: "", ocHt: "", horDecen: "", verDecen: "", bc: "", lensSup: "", orderDate: "", price: "" },
-    ],
-    extra1: "",
-    extra1Price: "",
-    extra2: "",
-    extra2Price: "",
-    extra3: "",
-    extra3Price: "",
-    others: "",
-    labInstructions: "",
-    labApply1: "",
-    labApply2: "",
-    labApply3: "",
-    labFit: "",
-    discountReason: "",
-    overallDiscount: "",
-    lensDiscount: "",
-    billingNo: "",
-    gst: "",
-    total: "",
-    followUpDate: "",
-    notes: "",
-  }));
-
-  const setField = (key, value) => {
-    setForm((current) => ({ ...current, [key]: value }));
-  };
-
-  const setLensField = (index, key, value) => {
-    setForm((current) => ({
-      ...current,
-      lensRows: current.lensRows.map((row, rowIndex) =>
-        rowIndex === index ? { ...row, [key]: value } : row,
-      ),
-    }));
-  };
-
-  const num = (value) => Number(value || 0);
-  const lensTotal = form.lensRows.reduce((sum, row) => sum + num(row.price), 0);
-  const extrasTotal =
-    num(form.extra1Price) + num(form.extra2Price) + num(form.extra3Price);
-  const calculatedSubtotal =
-    num(form.framePrice) + lensTotal + extrasTotal;
-  const calculatedTotal = Math.max(
-    0,
-    calculatedSubtotal -
-      num(form.frameDiscount) -
-      num(form.overallDiscount) -
-      num(form.lensDiscount),
-  );
-  const displayedTotal = form.total === "" ? calculatedTotal : num(form.total);
-
-  const money = (value) => `₹${num(value).toFixed(2)}`;
-
-  const rxFields = [
-    ["sphere", "Sphere"],
-    ["cylinder", "Cyl"],
-    ["axis", "Axis"],
-    ["add", "Add"],
-    ["inter", "Inter"],
-    ["prism", "H Prism"],
-    ["base", "V Prism"],
-  ];
-
-  const lensHeaders = [
-    ["code", "Lens Code"],
-    ["description", "Lens Description"],
-    ["size", "Lens Size"],
-    ["segSize", "Seg Size"],
-    ["segHt", "Seg Ht"],
-    ["ocHt", "OC Ht"],
-    ["horDecen", "Hor Decen"],
-    ["verDecen", "Ver Decen"],
-    ["bc", "BC"],
-    ["lensSup", "Lens Sup"],
-    ["orderDate", "Supplier Order Date"],
-    ["price", "Lens Price $"],
-  ];
-
-  return (
-    <div className="space-y-3 text-slate-800">
-      {/* JOB HEADER */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <SectionTitle number="01" title="Spectacle details" action={<span className="text-[8px] font-semibold text-slate-400">Production dispensing record</span>} />
-
-        <div className="grid gap-px bg-slate-200 md:grid-cols-12">
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Job Date" value={form.jobDate} onChange={(v) => setField("jobDate", v)} type="date" />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Spec Due" value={form.specDue} onChange={(v) => setField("specDue", v)} type="date" />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Job No" value={form.jobNo} onChange={(v) => setField("jobNo", v)} placeholder="SP-000359" />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Job Type" value={form.jobType} onChange={(v) => setField("jobType", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Status" value={form.status} onChange={(v) => setField("status", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Dispenser" value={form.dispenser} onChange={(v) => setField("dispenser", v)} />
-          </div>
-
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Rx Date" value={form.rxDate} onChange={(v) => setField("rxDate", v)} type="date" />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Sale by" value={form.saleBy} onChange={(v) => setField("saleBy", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="by FS" value={form.saleByFs} onChange={(v) => setField("saleByFs", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="PD" value={form.pd} onChange={(v) => setField("pd", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-1">
-            <DispenseField label="Mono R" value={form.monoRight} onChange={(v) => setField("monoRight", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-1">
-            <DispenseField label="Mono L" value={form.monoLeft} onChange={(v) => setField("monoLeft", v)} />
-          </div>
-          <div className="bg-white p-2 md:col-span-2">
-            <DispenseField label="Use" value={form.use} onChange={(v) => setField("use", v)} />
-          </div>
-        </div>
-
-        <div className="border-t border-slate-200 bg-slate-50/70 px-3 py-2">
-          <div className="mb-1.5 text-[8px] font-bold uppercase tracking-[0.14em] text-slate-400">
-            Patient
-          </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-1 text-[10px]">
-            <span><b className="text-slate-400">Name:</b> {fullName(patient) || "—"}</span>
-            <span><b className="text-slate-400">Patient No:</b> {patient?.patientNumber || "—"}</span>
-            <span><b className="text-slate-400">Phone:</b> {patient?.phone || "—"}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* PRESCRIPTION */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <SectionTitle number="02" title="Rx" action={<span className="text-[8px] font-semibold text-blue-600">Latest given prescription</span>} />
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[780px] border-collapse text-[9px]">
-            <thead>
-              <tr className="bg-slate-50">
-                <th className="w-20 border border-slate-200 px-2 py-2 text-left font-bold text-slate-500">Eye</th>
-                {rxFields.map(([, label]) => (
-                  <th key={label} className="border border-slate-200 px-2 py-2 text-center font-bold text-slate-500">
-                    {label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ["Right", right],
-                ["Left", left],
-              ].map(([eyeName, values]) => (
-                <tr key={eyeName}>
-                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eyeName}</td>
-                  {rxFields.map(([key]) => (
-                    <td key={key} className="border border-slate-200 px-2 py-2 text-center font-mono font-semibold text-slate-700">
-                      {values?.[key] || "—"}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* FRAME */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <SectionTitle number="03" title="Frame" action={<span className="text-[8px] text-slate-400">Frame / fitting / reorder</span>} />
-        <div className="grid gap-px bg-slate-200 sm:grid-cols-2 lg:grid-cols-12">
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Code" value={form.frameCode} onChange={(v) => setField("frameCode", v)} placeholder="OPT000007" /></div>
-          <div className="bg-white p-2 lg:col-span-5"><DispenseField label="Frame Description" value={form.frameDescription} onChange={(v) => setField("frameDescription", v)} placeholder="Gucci, 111, Silver, 48-18, 140" /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="To Reorder ₹" value={form.toReorder} onChange={(v) => setField("toReorder", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="Size" value={form.frameSize} onChange={(v) => setField("frameSize", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="Depth" value={form.depth} onChange={(v) => setField("depth", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-1"><DispenseField label="ED" value={form.ed} onChange={(v) => setField("ed", v)} /></div>
-
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Type" value={form.frameType} onChange={(v) => setField("frameType", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Other" value={form.frameOther} onChange={(v) => setField("frameOther", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Fitting $" value={form.fitting} onChange={(v) => setField("fitting", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Fr Discount $" value={form.frameDiscount} onChange={(v) => setField("frameDiscount", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Price $" value={form.framePrice} onChange={(v) => setField("framePrice", v)} /></div>
-          <div className="bg-white p-2 lg:col-span-2"><DispenseField label="Frame Stock / Ref" value="" onChange={() => {}} placeholder="Inventory" /></div>
-        </div>
-      </div>
-
-      {/* LENSES */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <SectionTitle number="04" title="Lenses" action={<span className="text-[8px] font-semibold text-slate-400">Right / left dispensing details</span>} />
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1500px] border-collapse text-[8px]">
-            <thead>
-              <tr className="bg-slate-50">
-                <th className="border border-slate-200 px-2 py-2 text-left font-bold text-slate-500">Eye</th>
-                {lensHeaders.map(([, label]) => (
-                  <th key={label} className="border border-slate-200 px-2 py-2 text-center font-bold text-slate-500">{label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {form.lensRows.map((row, index) => (
-                <tr key={row.eye}>
-                  <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{row.eye}</td>
-                  {lensHeaders.map(([key]) => (
-                    <td key={key} className="border border-slate-200 p-1">
-                      <input
-                        type={key === "orderDate" ? "date" : "text"}
-                        value={row[key] || ""}
-                        onChange={(event) => setLensField(index, key, event.target.value)}
-                        className="h-7 w-full min-w-[58px] rounded border border-slate-200 bg-white px-1.5 text-[8px] text-slate-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* EXTRAS + LAB */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <SectionTitle number="05" title="Extras & Laboratory" />
-        <div className="grid gap-px bg-slate-200 lg:grid-cols-[1.2fr_1fr]">
-          <div className="bg-white">
-            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
-              {[
-                ["extra1", "Extra 1", "extra1Price"],
-                ["extra2", "Extra 2", "extra2Price"],
-                ["extra3", "Extra 3", "extra3Price"],
-              ].map(([key, label, priceKey]) => (
-                <div key={key} className="bg-white p-2">
-                  <div className="grid grid-cols-[1fr_82px] gap-2">
-                    <DispenseField label={label} value={form[key]} onChange={(v) => setField(key, v)} />
-                    <DispenseField label="Price $" value={form[priceKey]} onChange={(v) => setField(priceKey, v)} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-2">
-              <DispenseField label="Others" value={form.others} onChange={(v) => setField("others", v)} />
-            </div>
-
-            <div className="p-2">
-              <label className="block">
-                <span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Lab Inst.</span>
-                <textarea
-                  rows={6}
-                  value={form.labInstructions}
-                  onChange={(event) => setField("labInstructions", event.target.value)}
-                  className="w-full resize-none rounded-md border border-slate-200 bg-white p-2 text-[9px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
-                />
-              </label>
-            </div>
-          </div>
-
-          <div className="bg-white">
-            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
-              {[
-                ["labApply1", "Lab to Apply 1"],
-                ["labApply2", "Lab to Apply 2"],
-                ["labApply3", "Lab to Apply 3"],
-                ["labFit", "Lab to Fit"],
-              ].map(([key, label]) => (
-                <div key={key} className="bg-white p-2">
-                  <DispenseField label={label} value={form[key]} onChange={(v) => setField(key, v)} />
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
-              <div className="bg-white p-2"><DispenseField label="Discount Reason" value={form.discountReason} onChange={(v) => setField("discountReason", v)} /></div>
-              <div className="bg-white p-2"><DispenseField label="Overall Discount $" value={form.overallDiscount} onChange={(v) => setField("overallDiscount", v)} /></div>
-              <div className="bg-white p-2"><DispenseField label="Lens Discount %" value={form.lensDiscount} onChange={(v) => setField("lensDiscount", v)} /></div>
-              <div className="bg-white p-2"><DispenseField label="Follow Up" value={form.followUpDate} onChange={(v) => setField("followUpDate", v)} type="date" /></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* BILLING + WORKFLOW */}
-      <div className="grid gap-3 lg:grid-cols-[1fr_1.25fr]">
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <SectionTitle number="06" title="Billing" />
-          <div className="p-3">
-            <div className="space-y-2 text-[10px]">
-              {[
-                ["Frame", money(form.framePrice)],
-                ["Fitting", money(form.fitting)],
-                ["Lenses", money(lensTotal)],
-                ["Extras", money(extrasTotal)],
-                ["Frame Discount", `- ${money(form.frameDiscount)}`],
-                ["Overall Discount", `- ${money(form.overallDiscount)}`],
-                ["Lens Discount", `- ${money(form.lensDiscount)}`],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between">
-                  <span className="text-slate-500">{label}</span>
-                  <span className="font-semibold text-slate-700">{value}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="my-3 border-t border-dashed border-slate-200" />
-
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Total</span>
-              <span className="text-lg font-black text-blue-700">{money(displayedTotal)}</span>
-            </div>
-
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <DispenseField label="GST" value={form.gst} onChange={(v) => setField("gst", v)} />
-              <DispenseField label="Billing No" value={form.billingNo} onChange={(v) => setField("billingNo", v)} placeholder="BILL0002524" />
-            </div>
-
-            <button
-              type="button"
-              className="mt-3 h-9 w-full rounded-lg bg-slate-950 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
-            >
-              Create Bill
-            </button>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <SectionTitle number="07" title="Order & Progress" />
-          <div className="grid gap-px bg-slate-200 sm:grid-cols-2">
-            {[
-              ["Job Ready F6", "Mark the job ready for collection"],
-              ["Notified F7", "Notify the patient"],
-              ["Collected F8", "Mark the completed collection"],
-              ["Follow Up", "Schedule follow-up"],
-              ["Advance Progressive Parameters", "Open advanced progressive settings"],
-              ["E.Order", "Open electronic lab order"],
-            ].map(([label, description]) => (
-              <button
-                key={label}
-                type="button"
-                className="bg-white p-3 text-left transition hover:bg-slate-50"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[9px] font-bold text-slate-800">{label}</span>
-                  <span className="text-[8px] text-blue-600">Open</span>
-                </div>
-                <div className="mt-1 text-[8px] leading-4 text-slate-400">{description}</div>
-              </button>
-            ))}
-          </div>
-
-          <div className="grid gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-2">
-            <div className="bg-white p-3">
-              <DispenseField label="Job Status" value={form.status} onChange={(v) => setField("status", v)} />
-            </div>
-            <div className="bg-white p-3">
-              <DispenseField label="Notes" value={form.notes} onChange={(v) => setField("notes", v)} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DispenseField({
-  label,
-  value = "",
-  onChange,
-  type = "text",
-  placeholder = "",
-}) {
-  return (
-    <label className="block min-w-0">
-      <span className="mb-1 block truncate text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-        {label}
-      </span>
-      <input
-        type={type}
-        value={value ?? ""}
-        onChange={(event) => onChange?.(event.target.value)}
-        placeholder={placeholder}
-        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[9px] font-medium text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
-      />
-    </label>
-  );
-}
-
-function RxDispensingRow({ eye, values }) {
-  const fields = ['sphere','cylinder','axis','add','inter','prism','base'];
-  return (
-    <tr>
-      <td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>
-      {fields.map((field) => <td key={field} className="border border-slate-200 px-2 py-2 text-center font-mono text-slate-700">{values?.[field] || '—'}</td>)}
-    </tr>
-  );
-}
-
-function ContactLensDispensingModalContent({ patient, consultation, step, setStep }) {
-  const steps = [
-    ['consultation', '01', 'Additional Consultation'],
-    ['order', '02', 'Contact Lens Order'],
-    ['fit', '03', 'Trial & Fitting'],
-    ['followup', '04', 'Review & Collection'],
-  ];
-
-  return (
-    <div className="space-y-3">
-      <div className="grid gap-2 rounded-xl border border-slate-200 bg-white p-3 sm:grid-cols-4">
-        <Field label="Patient" value={fullName(patient)} />
-        <Field label="Patient No" value={patient?.patientNumber} />
-        <Field label="Order Date" value={new Date().toISOString().slice(0, 10)} />
-        <Field label="Status" value="Draft" />
-      </div>
-
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white p-2">
-        <div className="flex min-w-[680px] items-center gap-1">
-          {steps.map(([key, number, label], index) => (
-            <button key={key} type="button" onClick={() => setStep(key)} className={`flex flex-1 items-center gap-2 rounded-lg px-3 py-2 text-left transition ${step === key ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>
-              <span className="text-[8px] font-bold">{number}</span>
-              <span className="text-[9px] font-bold">{label}</span>
-              {index < steps.length - 1 && <span className="ml-auto text-slate-300">›</span>}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {step === 'consultation' && (
-        <div className="space-y-3">
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <SectionTitle number="01" title="Additional Consultation — Contact Lens" />
-            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Field label="Consult Type" value="Contact Lens Assessment" />
-              <Field label="Reason" placeholder="New fit / Review" />
-              <Field label="Dominant Eye" />
-              <Field label="Previous Lens" />
-              <Field label="Unaided VA OD" />
-              <Field label="Unaided VA OS" />
-              <Field label="Keratometry OD" />
-              <Field label="Keratometry OS" />
-            </div>
-            <div className="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-2">
-              <label><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Assessment</span><textarea rows="4" className="w-full resize-none rounded-md border border-slate-200 p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
-              <label><span className="mb-1 block text-[8px] font-bold uppercase tracking-wider text-slate-400">Advice / Care</span><textarea rows="4" className="w-full resize-none rounded-md border border-slate-200 p-2.5 text-[10px] outline-none focus:border-blue-400" /></label>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {step === 'order' && (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <SectionTitle number="02" title="Contact Lens Order" />
-          <div className="overflow-x-auto p-3">
-            <table className="w-full min-w-[900px] border-collapse text-[9px]">
-              <thead><tr className="bg-slate-50 text-slate-500">{['Eye','Lens Type','Brand','Base Curve','Diameter','Sphere','Cylinder','Axis','Add','Supplier','Order Date','Price ₹'].map((head) => <th key={head} className="border border-slate-200 px-2 py-2 text-center font-bold">{head}</th>)}</tr></thead>
-              <tbody>{['Right','Left'].map((eye) => <tr key={eye}><td className="border border-slate-200 bg-slate-50 px-2 py-2 font-bold">{eye}</td>{['Soft','Acuvue','8.6','14.2','+1.00','','','','','Supplier','', '1200'].map((value, i) => <td key={i} className="border border-slate-200 p-1"><input defaultValue={value} className="h-7 w-full min-w-[55px] rounded border border-slate-200 px-1.5 text-[9px]" /></td>)}</tr>)}</tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {step === 'fit' && (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <SectionTitle number="03" title="Trial & Fitting" />
-          <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Field label="Trial Lens OD" /><Field label="Trial Lens OS" /><Field label="Movement OD" /><Field label="Movement OS" /><Field label="Centration OD" /><Field label="Centration OS" /><Field label="Comfort OD" /><Field label="Comfort OS" />
-          </div>
-          <div className="grid gap-2 border-t border-slate-100 p-3 sm:grid-cols-2"><Field label="Fit Assessment" /><Field label="Final Lens Recommendation" /></div>
-        </div>
-      )}
-
-      {step === 'followup' && (
-        <div className="space-y-3">
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <SectionTitle number="04" title="Review & Collection" />
-            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-4"><Field label="Review Date" /><Field label="Collection Date" /><Field label="Notified Date" /><Field label="Billing No" /></div>
-          </div>
-          <AdditionalConsultMini />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AdditionalConsultMini() {
-  return (
-    <div className="overflow-hidden rounded-xl border border-blue-100 bg-white">
-      <SectionTitle number="05" title="Additional Consultations" />
-      <div className="grid gap-2 p-3 sm:grid-cols-3">
-        {['Contact Lens Review','Binocular Vision','Low Vision'].map((item) => (
-          <button key={item} type="button" className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-200 hover:bg-blue-50">
-            <div className="text-[10px] font-bold text-slate-700">{item}</div>
-            <div className="mt-0.5 text-[8px] text-slate-400">Open assessment</div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AdditionalConsultModalContent({ patientId }) {
-  const navigate = useNavigate();
-  const items = [
-    ['Contact Lens Consultation','Assessment, keratometry, trial lens and fitting.'],
-    ['Binocular Vision','Accommodation, vergence and binocular assessment.'],
-    ['Low Vision','Functional vision assessment and management plan.'],
-  ];
-  return (
-    <div className="space-y-3">
-      <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
-        <div className="text-[9px] font-bold uppercase tracking-[.14em] text-blue-600">Additional consultation</div>
-        <h3 className="mt-1 text-base font-bold text-slate-900">Choose the assessment workflow</h3>
-        <p className="mt-1 text-[10px] leading-5 text-slate-500">Each assessment stays attached to the patient record and can be completed independently from the main consultation.</p>
-      </div>
-      <div className="grid gap-3 md:grid-cols-3">
-        {items.map(([title, description], index) => (
-          <div key={title} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950 text-[9px] font-bold text-white">0{index + 1}</div>
-            <h4 className="mt-3 text-xs font-bold text-slate-800">{title}</h4>
-            <p className="mt-1 text-[9px] leading-5 text-slate-400">{description}</p>
-            <button
-              type="button"
-              onClick={() => {
-                const focus = index === 0 ? "contact_lenses" : index === 1 ? "binocular_vision" : "low_vision";
-                navigate(`/patients/${patientId}/consultations/new?focus=${focus}`);
-              }}
-              className="mt-4 h-8 w-full rounded-lg border border-slate-200 bg-white text-[9px] font-bold text-slate-600 hover:bg-slate-50"
-            >
-              Open assessment
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// CONSULTATION MODAL
-// ============================================================
-
-function ConsultationModal({ consultation, onClose, loading }) {
-  const right = consultation?.givenRx?.right || {};
-
-  const left = consultation?.givenRx?.left || {};
-
-  return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[2px]">
-      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl">
-        <header className="flex items-start justify-between border-b border-slate-200 bg-gradient-to-r from-violet-50 to-blue-50 px-5 py-4 sm:px-6">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[.18em] text-violet-600">
-              Clinical record
-            </div>
-
-            <h2 className="mt-1 text-lg font-bold text-slate-900">
-              Consultation · {formatDate(consultation?.consultationDate)}
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-500">
-              {loading
-                ? "Loading latest clinical details..."
-                : roleLabel(consultation?.consultationType)}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-white bg-white/80 p-2 text-slate-500"
-          >
-            <X size={16} />
-          </button>
-        </header>
-
-        <div className="space-y-5 p-5 sm:p-6">
-          {/* QUICK INFO */}
-
-          <div className="grid gap-4 sm:grid-cols-4">
-            <Mini label="Medication" value={consultation?.medication} />
-
-            <Mini label="Allergy" value={consultation?.allergy} />
-
-            <Mini label="Recall" value={formatDate(consultation?.recallDue)} />
-
-            <Mini
-              label="Clinician"
-              value={
-                [
-                  consultation?.optometristId?.firstName,
-
-                  consultation?.optometristId?.lastName,
-                ]
-                  .filter(Boolean)
-                  .join(" ") || "—"
-              }
-            />
-          </div>
-
-          {/* GIVEN RX */}
-
-          <section className="overflow-hidden rounded-2xl border border-slate-200">
-            <header className="border-b border-slate-100 bg-slate-50 px-4 py-3 text-xs font-bold text-slate-700">
-              Given prescription
-            </header>
-
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[800px] text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-white text-[10px] uppercase tracking-wider text-slate-400">
-                    <th className="px-4 py-3 text-left">Eye</th>
-
-                    {[
-                      "Sphere",
-                      "Cylinder",
-                      "Axis",
-                      "VA",
-                      "Add",
-                      "Inter",
-                      "Prism",
-                      "Base",
-                    ].map((field) => (
-                      <th key={field} className="px-2 py-3 text-center">
-                        {field}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <RxRow code="OD" values={right} tone="blue" />
-
-                  <RxRow code="OS" values={left} tone="rose" />
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* CLINICAL INFORMATION */}
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <MiniPanel title="Symptoms" value={consultation?.symptoms} />
-
-            <MiniPanel
-              title="Examination"
-              value={[consultation?.ophthalmoscopy, consultation?.biomicroscopy]
-                .filter(Boolean)
-                .join("\n\n")}
-            />
-
-            <MiniPanel
-              title="Visual field / colour vision"
-              value={[consultation?.visualField, consultation?.colourVision]
-                .filter(Boolean)
-                .join("\n\n")}
-            />
-
-            <MiniPanel
-              title="Clinical notes"
-              value={consultation?.notes || consultation?.givenRx?.note}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// RX ROW
-// ============================================================
-
-function RxRow({ code, values, tone }) {
-  const fields = [
-    "sphere",
-    "cylinder",
-    "axis",
-    "va",
-    "add",
-    "inter",
-    "prism",
-    "base",
-  ];
-
-  return (
-    <tr className="border-b border-slate-100">
-      <th
-        className={`px-4 py-3 text-left text-xs font-bold ${
-          tone === "blue"
-            ? "bg-blue-50 text-blue-800"
-            : "bg-rose-50 text-rose-800"
-        }`}
+function PathStep({ done, title, description, onClick, disabled }) {
+  const content = (
+    <>
+      <div
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${done ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-400"}`}
       >
-        {code}
-      </th>
-
-      {fields.map((field) => (
-        <td
-          key={field}
-          className="px-2 py-3 text-center font-mono text-xs text-slate-700"
-        >
-          {values?.[field] || "—"}
-        </td>
-      ))}
-    </tr>
+        {done ? "✓" : "•"}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="text-xs font-bold text-slate-900">{title}</div>
+        <div className="mt-1 text-[10px] leading-5 text-slate-400">
+          {description}
+        </div>
+      </div>
+      {onClick && <ChevronRight size={15} className="text-slate-300" />}
+    </>
+  );
+  if (!onClick)
+    return (
+      <div className="flex items-start gap-3 rounded-xl border border-slate-200 p-3">
+        {content}
+      </div>
+    );
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="flex w-full items-start gap-3 rounded-xl border border-slate-200 p-3 text-left hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {content}
+    </button>
   );
 }
 
-// ============================================================
-// BADGE
-// ============================================================
-
-function Badge({ label, tone = "green" }) {
-  const classes =
-    tone === "blue"
-      ? "border-blue-100 bg-blue-50 text-blue-700"
-      : "border-emerald-100 bg-emerald-50 text-emerald-700";
-
+function Stat({ label, value, warning = false }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+        {label}
+      </div>
+      <div
+        className={`mt-1 text-sm font-bold ${warning ? "text-amber-700" : "text-slate-900"}`}
+      >
+        {value}
+      </div>
+    </div>
+  );
+}
+function Info({ label, value }) {
+  return (
+    <div>
+      <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+        {label}
+      </div>
+      <div className="mt-1 break-words text-xs font-semibold text-slate-700">
+        {value || "—"}
+      </div>
+    </div>
+  );
+}
+function Badge({ label, tone = "slate" }) {
   return (
     <span
-      className={`rounded-full border px-2.5 py-1 text-[10px] font-bold ${classes}`}
+      className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${toneClass(tone)}`}
     >
       {label}
     </span>
   );
 }
-
-// ============================================================
-// DOCUMENT SECTION
-// ============================================================
-
-function DocSection({ title, children }) {
+function toneClass(tone) {
+  return tone === "green"
+    ? "bg-emerald-50 text-emerald-700"
+    : tone === "blue"
+      ? "bg-blue-50 text-blue-700"
+      : tone === "violet"
+        ? "bg-violet-50 text-violet-700"
+        : tone === "amber"
+          ? "bg-amber-50 text-amber-700"
+          : "bg-slate-100 text-slate-600";
+}
+function Status({ status }) {
   return (
-    <section className="p-5 sm:p-7">
-      <h2 className="mb-5 text-xs font-bold uppercase tracking-[.16em] text-slate-800">
-        {title}
-      </h2>
-
-      {children}
-    </section>
+    <span
+      className={`mt-1 inline-flex rounded-full px-2 py-1 text-[8px] font-bold uppercase ${status === "paid" || status === "collected" || status === "ready" ? "bg-emerald-50 text-emerald-700" : status === "partially_paid" || status === "notified" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-500"}`}
+    >
+      {roleLabel(status || "pending")}
+    </span>
   );
 }
-
-// ============================================================
-// INFO
-// ============================================================
-
-function Info({ label, value }) {
+function RecordList({ rows, empty, render }) {
+  if (!rows?.length)
+    return (
+      <div className="rounded-xl border border-dashed border-slate-200 p-7 text-center text-xs text-slate-400">
+        {empty}
+      </div>
+    );
   return (
-    <div>
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-        {label}
-      </div>
-
-      <div className="mt-1 text-sm font-semibold text-slate-700">
-        {value || "—"}
-      </div>
+    <div className="space-y-2">
+      {rows.map((row, index) => (
+        <div key={row._id || index}>{render(row)}</div>
+      ))}
+    </div>
+  );
+}
+function Empty({ title, description, action }) {
+  return (
+    <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
+      <div className="text-sm font-bold text-slate-700">{title}</div>
+      <div className="mt-1 text-xs text-slate-400">{description}</div>
+      {action && (
+        <button
+          type="button"
+          onClick={action}
+          className="mt-4 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white"
+        >
+          Start now
+        </button>
+      )}
     </div>
   );
 }
 
-// ============================================================
-// SIDE CARD
-// ============================================================
-
-function SideCard({ icon: Icon, label, value }) {
+function ConsultationModal({ consultation, loading, onClose }) {
+  const rx = consultation?.givenRx || consultation?.finalRx || {};
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-        <Icon size={16} />
+    <Modal
+      title={`${consultationLabel(consultation)} · ${formatDate(consultation.consultationDate)}`}
+      onClose={onClose}
+    >
+      <div className="space-y-4">
+        {loading ? (
+          <div className="py-10 text-center text-xs text-slate-400">
+            Loading consultation...
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Info label="Type" value={consultationLabel(consultation)} />
+              <Info
+                label="Clinician"
+                value={
+                  [
+                    consultation.optometristId?.firstName,
+                    consultation.optometristId?.lastName,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || "Clinical team"
+                }
+              />
+              <Info
+                label="Status"
+                value={roleLabel(consultation.status || "completed")}
+              />
+            </div>
+            <div className="rounded-xl border border-slate-200 overflow-hidden">
+              <div className="border-b border-slate-200 bg-slate-50 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                Prescription
+              </div>
+              <div className="grid grid-cols-3 text-xs">
+                <div className="border-r border-slate-200 p-3 font-bold">
+                  Eye
+                </div>
+                <div className="border-r border-slate-200 p-3 font-bold">
+                  OD
+                </div>
+                <div className="p-3 font-bold">OS</div>
+                {["sphere", "cylinder", "axis", "va", "add"].map((key) => (
+                  <>
+                    <div
+                      key={`${key}-l`}
+                      className="border-r border-t border-slate-200 p-3 text-slate-500"
+                    >
+                      {roleLabel(key)}
+                    </div>
+                    <div
+                      key={`${key}-r`}
+                      className="border-r border-t border-slate-200 p-3"
+                    >
+                      {rx.right?.[key] || "—"}
+                    </div>
+                    <div
+                      key={`${key}-o`}
+                      className="border-t border-slate-200 p-3"
+                    >
+                      {rx.left?.[key] || "—"}
+                    </div>
+                  </>
+                ))}
+              </div>
+            </div>
+            <Info
+              label="Notes"
+              value={
+                consultation.notes ||
+                consultation.clinicalNotes ||
+                "No clinical notes recorded."
+              }
+            />
+          </>
+        )}
       </div>
+    </Modal>
+  );
+}
 
-      <div className="min-w-0">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-          {label}
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+          <h2 className="text-base font-bold text-slate-900">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg border border-slate-200 p-2 text-slate-400 hover:bg-slate-50"
+          >
+            <X size={15} />
+          </button>
         </div>
-
-        <div className="mt-0.5 break-all text-sm font-semibold text-slate-700">
-          {value}
+        <div className="max-h-[calc(90vh-70px)] overflow-y-auto p-5">
+          {children}
         </div>
       </div>
     </div>
   );
 }
 
-// ============================================================
-// STAT
-// ============================================================
-
-function Stat({ label, value }) {
-  return (
-    <div className="rounded-xl border border-blue-100 bg-white p-3 text-center">
-      <div className="text-lg font-bold text-slate-900">{value}</div>
-
-      <div className="mt-0.5 text-[10px] uppercase tracking-wider text-slate-400">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// MINI
-// ============================================================
-
-function Mini({ label, value }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-        {label}
-      </div>
-
-      <div className="mt-1 truncate text-xs font-semibold text-slate-700">
-        {value || "—"}
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// MINI PANEL
-// ============================================================
-
-function MiniPanel({ title, value }) {
-  return (
-    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-        {title}
-      </div>
-
-      <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">
-        {value || "—"}
-      </div>
-    </section>
-  );
-}
-
-// ============================================================
-// EDIT INPUT
-// ============================================================
-
-function EditInput({
+function Field({
   label,
   value,
   onChange,
   type = "text",
+  options,
   required = false,
 }) {
+  if (options)
+    return (
+      <label className="block">
+        <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          {label}
+        </span>
+        <select
+          required={required}
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs outline-none focus:border-blue-400"
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {roleLabel(option)}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
   return (
     <label className="block">
       <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
         {label}
-
-        {required && <span className="ml-1 text-red-500">*</span>}
       </span>
-
       <input
         required={required}
         type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none focus:border-blue-300 focus:bg-white"
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs outline-none focus:border-blue-400"
       />
     </label>
-  );
-}
-
-// ============================================================
-// FILE SIZE
-// ============================================================
-
-function formatBytes(bytes) {
-  const value = Number(bytes || 0);
-
-  if (!value) {
-    return "";
-  }
-
-  const units = ["B", "KB", "MB", "GB"];
-
-  const index = Math.min(
-    Math.floor(Math.log(value) / Math.log(1024)),
-    units.length - 1,
-  );
-
-  return `${(value / 1024 ** index).toFixed(index ? 1 : 0)} ${units[index]}`;
-}
-
-// ============================================================
-// DOCUMENT UPLOAD MODAL
-// ============================================================
-
-function DocumentUploadModal({
-  files,
-  setFiles,
-  category,
-  setCategory,
-  note,
-  setNote,
-  uploading,
-  onClose,
-  onSubmit,
-}) {
-  return (
-    <div className="fixed inset-0 z-[140] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
-        {/* HEADER */}
-
-        <header className="flex items-start justify-between border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-cyan-50 px-5 py-4 sm:px-6">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[.18em] text-blue-600">
-              Patient record
-            </div>
-
-            <h2 className="mt-1 text-lg font-bold text-slate-900">
-              Upload documents
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-500">
-              Attach one or more files to this patient's record.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={uploading}
-            className="rounded-xl border border-slate-200 bg-white p-2 text-slate-500 disabled:opacity-40"
-          >
-            <X size={16} />
-          </button>
-        </header>
-
-        {/* FORM */}
-
-        <form onSubmit={onSubmit} className="space-y-5 p-5 sm:p-6">
-          {/* FILES */}
-
-          <label className="block">
-            <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Files
-            </span>
-
-            <input
-              type="file"
-              multiple
-              onChange={(event) =>
-                setFiles(Array.from(event.target.files || []))
-              }
-              className="w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
-              required={!files.length}
-            />
-          </label>
-
-          {/* SELECTED FILES */}
-
-          {files.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-              <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Selected files
-              </div>
-
-              <div className="space-y-1.5">
-                {files.map((file) => (
-                  <div
-                    key={`${file.name}-${file.size}`}
-                    className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2"
-                  >
-                    <div className="min-w-0 truncate text-xs font-semibold text-slate-700">
-                      {file.name}
-                    </div>
-
-                    <div className="shrink-0 text-[10px] text-slate-400">
-                      {formatBytes(file.size)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* CATEGORY / NOTE */}
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Category
-              </span>
-
-              <select
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none focus:border-blue-300 focus:bg-white"
-              >
-                {[
-                  ["referral", "Referral"],
-                  ["prescription", "Prescription"],
-                  ["clinical_report", "Clinical report"],
-                  ["identity", "Identity document"],
-                  ["clinical_image", "Clinical image"],
-                  ["insurance", "Insurance"],
-                  ["other", "Other"],
-                ].map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="block">
-              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Note
-              </span>
-
-              <input
-                value={note}
-                onChange={(event) => setNote(event.target.value)}
-                placeholder="Optional description"
-                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none focus:border-blue-300 focus:bg-white"
-              />
-            </label>
-          </div>
-
-          {/* ACTIONS */}
-
-          <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={uploading}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 disabled:opacity-40"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              disabled={!files.length || uploading}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"
-            >
-              <Upload size={14} />
-
-              {uploading
-                ? "Uploading..."
-                : `Upload ${files.length ? `(${files.length})` : ""}`}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
   );
 }

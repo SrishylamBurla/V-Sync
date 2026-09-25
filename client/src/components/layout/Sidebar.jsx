@@ -1,11 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { BarChart3, Eye, Factory, Glasses, LayoutDashboard, Package, Settings, Wallet, UserCog } from "lucide-react";
+import { BarChart3, Factory, LayoutDashboard, Package, Settings, Wallet, UserCog } from "lucide-react";
 import { useAuth } from "../../modules/auth/AuthContext";
 
 const navigation = [
   { label: "Overview", path: "/dashboard", icon: LayoutDashboard, roles: null },
-  { label: "Clinical", path: "/clinical", icon: Eye, roles: ["super_admin", "organization_admin", "branch_manager", "optometrist", "doctor"] },
-  { label: "Optical", path: "/optical", icon: Glasses, roles: ["super_admin", "organization_admin", "branch_manager", "sales_executive"] },
   { label: "Inventory", path: "/inventory", icon: Package, roles: ["super_admin", "organization_admin", "branch_manager", "inventory_manager"] },
   { label: "Laboratory", path: "/lab", icon: Factory, roles: ["super_admin", "organization_admin", "branch_manager", "lab_technician"] },
   { label: "Billing", path: "/billing", icon: Wallet, roles: ["super_admin", "organization_admin", "branch_manager", "cashier"] },

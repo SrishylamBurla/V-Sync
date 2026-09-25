@@ -12,6 +12,7 @@ const populate = (q) => q.populate("patientId", "patientNumber firstName middleN
 export const listDispensing = asyncHandler(async (req, res) => {
   const q = base(req);
   if (req.query.status) q.status = req.query.status;
+  if (req.query.patientId) q.patientId = req.query.patientId;
   const search = String(req.query.search || "").trim();
   const [spectacles, contactLenses] = await Promise.all([
     populate(Spectacle.find(q).sort({ updatedAt: -1 }).limit(500)).lean(),

@@ -758,9 +758,36 @@ const consultationSchema = new mongoose.Schema(
     // --------------------------------------------------
     consultationType: {
       type: String,
-      enum: ["comprehensive", "short_consult"],
+      enum: ["comprehensive", "short_consult", "specialized"],
       default: "comprehensive",
       index: true,
+    },
+
+    // A specialized consultation is only available after a
+    // completed comprehensive consultation for the same patient.
+    specializedType: {
+      type: String,
+      enum: ["", "contact_lenses", "binocular_vision", "low_vision"],
+      default: "",
+      index: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["completed"],
+      default: "completed",
+      index: true,
+    },
+
+    completedAt: {
+      type: Date,
+      default: Date.now,
+    },
+
+    completedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
     },
 
     // Optional specialist workflows
