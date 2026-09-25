@@ -35,13 +35,6 @@ const app = express();
 
 app.use(helmet());
 
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL || "http://localhost:5173",
-//     credentials: true,
-//   }),
-// );
-
 const allowedOrigins = [
   "https://v-sync.in",
   "https://www.v-sync.in",
@@ -49,18 +42,60 @@ const allowedOrigins = [
   "https://client-git-v-sync-b1-srishylamburlas-projects.vercel.app",
 ];
 
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+
+  // Exact allowed domains
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+
+  // Allow Vercel preview deployments for this client project
+  if (
+    /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i.test(
+      origin
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (isAllowedOrigin(origin)) {
         callback(null, true);
       } else {
+        console.warn("Blocked CORS origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-  }),
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
+    optionsSuccessStatus: 204,
+  })
 );
+
+// Explicitly handle browser preflight requests
+app.options("*", cors({
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
