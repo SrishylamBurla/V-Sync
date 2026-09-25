@@ -8,7 +8,7 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import organizationRoutes from "./routes/organization.routes.js";
-import adminOrganizationRoutes from "./routes/adminOrganization.routes.js"
+import adminOrganizationRoutes from "./routes/adminOrganization.routes.js";
 import branchRoutes from "./routes/branch.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
 import patientRoutes from "./routes/patient.routes.js";
@@ -45,15 +45,14 @@ const allowedOrigins = [
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
 
-  // Exact allowed domains
   if (allowedOrigins.includes(origin)) {
     return true;
   }
 
-  // Allow Vercel preview deployments for this client project
+  // Allow Vercel preview deployments
   if (
     /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i.test(
-      origin
+      origin,
     )
   ) {
     return true;
@@ -82,20 +81,20 @@ app.use(
       "Authorization",
     ],
     optionsSuccessStatus: 204,
-  })
+  }),
 );
 
 // Explicitly handle browser preflight requests
-app.options("*", cors({
-  origin(origin, callback) {
-    if (isAllowedOrigin(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+// app.options("*", cors({
+//   origin(origin, callback) {
+//     if (isAllowedOrigin(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// }));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
