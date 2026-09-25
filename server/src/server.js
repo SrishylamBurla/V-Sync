@@ -46,6 +46,7 @@ const allowedOrigins = [
   "https://v-sync.in",
   "https://www.v-sync.in",
   "http://localhost:5173",
+  "https://client-git-v-sync-b1-srishylamburlas-projects.vercel.app",
 ];
 
 app.use(
