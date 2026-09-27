@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 // --------------------------------------------------
@@ -23,7 +24,7 @@ const eyePrescriptionSchema = new mongoose.Schema(
     prism: { type: String, trim: true, default: "" },
     base: { type: String, trim: true, default: "" },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -54,7 +55,7 @@ const prescriptionSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -92,7 +93,7 @@ const visualAcuityEyeSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const visualAcuitySchema = new mongoose.Schema(
@@ -114,7 +115,7 @@ const visualAcuitySchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -146,14 +147,1131 @@ const pdSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
 // BINOCULAR VISION
 // --------------------------------------------------
+
+const binocularSensorySchema = new mongoose.Schema(
+  {
+    stereopsisNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    wfdtDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    wfdtIntermediate: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    wfdtNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const binocularMotorSchema = new mongoose.Schema(
+  {
+    eomOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    eomOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    saccades: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    pursuits: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    coverTestMethod: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    coverDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    coverNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phoriaHorizontalDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phoriaHorizontalNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phoriaVerticalDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phoriaVerticalNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    gradientACA: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const accommodationSchema = new mongoose.Schema(
+  {
+    npcAccommodativeSubjective: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcAccommodativeObjective: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcAccommodativeBreak: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcAccommodativeRecovery: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcRGSubjective: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcRGObjective: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcRGBreak: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npcRGRecovery: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npaOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npaOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    npaOU: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    aaOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    aaOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    aaOU: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    hofstetterMinimumAA: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    memOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    memOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    nra: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    pra: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const fusionalVergenceSchema = new mongoose.Schema(
+  {
+    biDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    biNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    boDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    boNear: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    vertical: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    recovery: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const vergenceFacilitySchema = new mongoose.Schema(
+  {
+    prism: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    testDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    od: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    os: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    ou: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    cpm: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const accommodativeFacilitySchema = new mongoose.Schema(
+  {
+    lensPower: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    testDistance: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    amplitude: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    scaledFacility: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    odCPM: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    osCPM: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    ouCPM: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    comments: {
+      type: String,
+      trim: true,
+      maxlength: 3000,
+      default: "",
+    },
+
+    interpretation: {
+      type: String,
+      trim: true,
+      maxlength: 3000,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const finalGlassRxEyeSchema = new mongoose.Schema(
+  {
+    sphere: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    cylinder: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    axis: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    add: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    va: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+const finalGlassRxSchema = new mongoose.Schema(
+  {
+    od: {
+      type: finalGlassRxEyeSchema,
+      default: () => ({}),
+    },
+
+    os: {
+      type: finalGlassRxEyeSchema,
+      default: () => ({}),
+    },
+
+    addOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    addOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    prismOD: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    prismOS: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+  },
+  { _id: false },
+);
 const binocularVisionSchema = new mongoose.Schema(
   {
+    date: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    time: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    workUpBy: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    occupation: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    regNo: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phone: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    email: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    place: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    chiefComplaints: {
+      type: String,
+      trim: true,
+      maxlength: 5000,
+      default: "",
+    },
+
+    refractionNote: {
+      type: String,
+      trim: true,
+      maxlength: 3000,
+      default: "",
+    },
+
+    // -----------------------------
+    // SENSORY
+    // -----------------------------
+    sensory: {
+      type: new mongoose.Schema(
+        {
+          stereopsisNear: {
+            type: String,
+            default: "",
+          },
+
+          wfdtDistance: {
+            type: String,
+            default: "",
+          },
+
+          wfdtIntermediate: {
+            type: String,
+            default: "",
+          },
+
+          wfdtNear: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // MOTOR
+    // -----------------------------
+    motor: {
+      type: new mongoose.Schema(
+        {
+          eomOD: {
+            type: String,
+            default: "",
+          },
+
+          eomOS: {
+            type: String,
+            default: "",
+          },
+
+          saccades: {
+            type: String,
+            default: "",
+          },
+
+          pursuits: {
+            type: String,
+            default: "",
+          },
+
+          coverTestMethod: {
+            type: String,
+            default: "",
+          },
+
+          coverDistance: {
+            type: String,
+            default: "",
+          },
+
+          coverNear: {
+            type: String,
+            default: "",
+          },
+
+          phoriaHorizontalDistance: {
+            type: String,
+            default: "",
+          },
+
+          phoriaHorizontalNear: {
+            type: String,
+            default: "",
+          },
+
+          phoriaVerticalDistance: {
+            type: String,
+            default: "",
+          },
+
+          phoriaVerticalNear: {
+            type: String,
+            default: "",
+          },
+
+          gradientACA: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // ==================================================
+    // ACCOMMODATION
+    // ==================================================
+    accommodation: {
+      type: new mongoose.Schema(
+        {
+          npcAccommodativeSubjective: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcAccommodativeObjective: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcAccommodativeBreak: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcAccommodativeRecovery: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcRGSubjective: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcRGObjective: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcRGBreak: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npcRGRecovery: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npaOD: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npaOS: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          npaOU: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          aaOD: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          aaOS: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          aaOU: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          hofstetterMinimumAA: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          memOD: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          memOS: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          nra: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+
+          pra: {
+            type: String,
+            trim: true,
+            default: "",
+          },
+        },
+        {
+          _id: false,
+        },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // FUSIONAL VERGENCE
+    // -----------------------------
+    fusionalVergence: {
+      type: new mongoose.Schema(
+        {
+          biDistance: {
+            type: String,
+            default: "",
+          },
+
+          biNear: {
+            type: String,
+            default: "",
+          },
+
+          boDistance: {
+            type: String,
+            default: "",
+          },
+
+          boNear: {
+            type: String,
+            default: "",
+          },
+
+          vertical: {
+            type: String,
+            default: "",
+          },
+
+          recovery: {
+            type: String,
+            default: "",
+          },
+
+          nfvDistanceBlur: {
+            type: String,
+            default: "",
+          },
+
+          nfvDistanceBreak: {
+            type: String,
+            default: "",
+          },
+
+          nfvDistanceRecovery: {
+            type: String,
+            default: "",
+          },
+
+          nfvNearBlur: {
+            type: String,
+            default: "",
+          },
+
+          nfvNearBreak: {
+            type: String,
+            default: "",
+          },
+
+          nfvNearRecovery: {
+            type: String,
+            default: "",
+          },
+
+          pfvDistanceBlur: {
+            type: String,
+            default: "",
+          },
+
+          pfvDistanceBreak: {
+            type: String,
+            default: "",
+          },
+
+          pfvDistanceRecovery: {
+            type: String,
+            default: "",
+          },
+
+          pfvNearBlur: {
+            type: String,
+            default: "",
+          },
+
+          pfvNearBreak: {
+            type: String,
+            default: "",
+          },
+
+          pfvNearRecovery: {
+            type: String,
+            default: "",
+          },
+
+          comments: {
+            type: String,
+            default: "",
+          },
+
+          interpretation: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // VERGENCE FACILITY
+    // -----------------------------
+    vergenceFacility: {
+      type: new mongoose.Schema(
+        {
+          prism: {
+            type: String,
+            default: "",
+          },
+
+          testDistance: {
+            type: String,
+            default: "",
+          },
+
+          od: {
+            type: String,
+            default: "",
+          },
+
+          os: {
+            type: String,
+            default: "",
+          },
+
+          ou: {
+            type: String,
+            default: "",
+          },
+
+          cpm: {
+            type: String,
+            default: "",
+          },
+
+          comments: {
+            type: String,
+            default: "",
+          },
+
+          interpretation: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // ACCOMMODATIVE FACILITY
+    // -----------------------------
+    accommodativeFacility: {
+      type: new mongoose.Schema(
+        {
+          lensPower: {
+            type: String,
+            default: "",
+          },
+
+          testDistance: {
+            type: String,
+            default: "",
+          },
+
+          amplitude: {
+            type: String,
+            default: "",
+          },
+
+          scaledFacility: {
+            type: String,
+            default: "",
+          },
+
+          odCPM: {
+            type: String,
+            default: "",
+          },
+
+          osCPM: {
+            type: String,
+            default: "",
+          },
+
+          ouCPM: {
+            type: String,
+            default: "",
+          },
+
+          cpm: {
+            type: String,
+            default: "",
+          },
+
+          comments: {
+            type: String,
+            default: "",
+          },
+
+          interpretation: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // OTHER BINOCULAR TESTS
+    // -----------------------------
+    cissScore: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    fixationDisparity: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    otherTests: {
+      type: String,
+      trim: true,
+      maxlength: 3000,
+      default: "",
+    },
+
+    // -----------------------------
+    // FINAL GLASS RX
+    // -----------------------------
+    finalGlassRx: {
+      type: new mongoose.Schema(
+        {
+          od: {
+            type: new mongoose.Schema(
+              {
+                sphere: {
+                  type: String,
+                  default: "",
+                },
+
+                cylinder: {
+                  type: String,
+                  default: "",
+                },
+
+                axis: {
+                  type: String,
+                  default: "",
+                },
+
+                add: {
+                  type: String,
+                  default: "",
+                },
+
+                va: {
+                  type: String,
+                  default: "",
+                },
+              },
+              { _id: false },
+            ),
+
+            default: () => ({}),
+          },
+
+          os: {
+            type: new mongoose.Schema(
+              {
+                sphere: {
+                  type: String,
+                  default: "",
+                },
+
+                cylinder: {
+                  type: String,
+                  default: "",
+                },
+
+                axis: {
+                  type: String,
+                  default: "",
+                },
+
+                add: {
+                  type: String,
+                  default: "",
+                },
+
+                va: {
+                  type: String,
+                  default: "",
+                },
+              },
+              { _id: false },
+            ),
+
+            default: () => ({}),
+          },
+
+          addOD: {
+            type: String,
+            default: "",
+          },
+
+          addOS: {
+            type: String,
+            default: "",
+          },
+
+          prismOD: {
+            type: String,
+            default: "",
+          },
+
+          prismOS: {
+            type: String,
+            default: "",
+          },
+        },
+        { _id: false },
+      ),
+
+      default: () => ({}),
+    },
+
+    // -----------------------------
+    // DIAGNOSIS / ADVICE
+    // -----------------------------
+    diagnosis: {
+      type: String,
+      trim: true,
+      maxlength: 5000,
+      default: "",
+    },
+
+    advice: {
+      type: String,
+      trim: true,
+      maxlength: 5000,
+      default: "",
+    },
+
+    followUp: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    notes: {
+      type: String,
+      trim: true,
+      maxlength: 5000,
+      default: "",
+    },
+
+    // -----------------------------
+    // LEGACY FIELDS
+    // -----------------------------
     coverTestDistance: {
       type: String,
       trim: true,
@@ -196,12 +1314,6 @@ const binocularVisionSchema = new mongoose.Schema(
       default: "",
     },
 
-    accommodation: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-
     findings: {
       type: String,
       trim: true,
@@ -209,7 +1321,9 @@ const binocularVisionSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  {
+    _id: false,
+  },
 );
 
 // --------------------------------------------------
@@ -259,7 +1373,7 @@ const slitLampEyeSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const slitLampSchema = new mongoose.Schema(
@@ -281,7 +1395,7 @@ const slitLampSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -325,7 +1439,7 @@ const fundusEyeSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const fundusSchema = new mongoose.Schema(
@@ -347,7 +1461,7 @@ const fundusSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -367,7 +1481,7 @@ const testSchema = new mongoose.Schema(
       maxlength: 4000,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -395,7 +1509,7 @@ const diagnosisSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -416,7 +1530,7 @@ const adviceSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -436,6 +1550,13 @@ const lowVisionSchema = new mongoose.Schema(
       default: "",
     },
 
+    contrast: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    // Backward-compatible legacy field.
     contrastSensitivity: {
       type: String,
       trim: true,
@@ -467,7 +1588,7 @@ const lowVisionSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -511,7 +1632,7 @@ const contactLensEyeSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const contactLensSchema = new mongoose.Schema(
@@ -563,7 +1684,7 @@ const contactLensSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -637,7 +1758,7 @@ const dispensingSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -679,7 +1800,7 @@ const therapeuticItemSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -711,7 +1832,7 @@ const recallSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // --------------------------------------------------
@@ -754,21 +1875,18 @@ const consultationSchema = new mongoose.Schema(
     },
 
     // --------------------------------------------------
-    // NEW CONSULTATION TYPE
+    // CONSULTATION TYPE
     // --------------------------------------------------
     consultationType: {
       type: String,
-      enum: ["comprehensive", "short_consult", "specialized"],
+      enum: [
+        "comprehensive",
+        "short_consult",
+        "binocular_vision",
+        "contact_lenses",
+        "low_vision",
+      ],
       default: "comprehensive",
-      index: true,
-    },
-
-    // A specialized consultation is only available after a
-    // completed comprehensive consultation for the same patient.
-    specializedType: {
-      type: String,
-      enum: ["", "contact_lenses", "binocular_vision", "low_vision"],
-      default: "",
       index: true,
     },
 
@@ -788,21 +1906,6 @@ const consultationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
-    },
-
-    // Optional specialist workflows
-    consultationOptions: {
-      type: [
-        {
-          type: String,
-          enum: [
-            "binocular_vision",
-            "low_vision",
-            "contact_lenses",
-          ],
-        },
-      ],
-      default: [],
     },
 
     // --------------------------------------------------
@@ -916,9 +2019,9 @@ const consultationSchema = new mongoose.Schema(
     // BINOCULAR VISION
     // --------------------------------------------------
     binocularVision: {
-      type: binocularVisionSchema,
-      default: () => ({}),
-    },
+  type: mongoose.Schema.Types.Mixed,
+  default: () => ({}),
+},
 
     // --------------------------------------------------
     // SLIT LAMP
@@ -969,6 +2072,12 @@ const consultationSchema = new mongoose.Schema(
     },
 
     contactLens: {
+      type: contactLensSchema,
+      default: () => ({}),
+    },
+
+    // Current frontend field.
+    contactLenses: {
       type: contactLensSchema,
       default: () => ({}),
     },
@@ -1089,9 +2198,8 @@ const consultationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
-
 // --------------------------------------------------
 // INDEXES
 // --------------------------------------------------
@@ -1112,4 +2220,20 @@ consultationSchema.index({
   consultationDate: -1,
 });
 
+
+console.log(
+  "🔥🔥🔥 CONSULTATION MODEL FILE LOADED 🔥🔥🔥"
+);
+
+console.log(
+  "🔥 binocularVision:",
+  consultationSchema.path("binocularVision")?.instance
+);
+
+console.log(
+  "🔥 accommodation:",
+  consultationSchema.path(
+    "binocularVision.accommodation"
+  )?.instance
+);
 export default mongoose.model("Consultation", consultationSchema);

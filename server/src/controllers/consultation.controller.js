@@ -6,6 +6,30 @@ import Patient from "../models/Patient.js";
 import Branch from "../models/Branch.js";
 import User from "../models/User.js";
 
+
+console.log("========== CONSULTATION MODEL ==========");
+console.log("Model:", Consultation.modelName);
+
+console.log(
+  "binocularVision:",
+  Consultation.schema.path("binocularVision")?.instance
+);
+
+console.log(
+  "accommodation:",
+  Consultation.schema.path(
+    "binocularVision.accommodation"
+  )?.instance
+);
+
+console.log(
+  "accommodation schema:",
+  Consultation.schema.path(
+    "binocularVision.accommodation"
+  )
+);
+
+console.log("========================================");
 // --------------------------------------------------
 // BRANCH ACCESS
 // --------------------------------------------------
@@ -74,7 +98,10 @@ const getPatientForUser = async (user, patientId) => {
 // --------------------------------------------------
 // CLINICIAN VALIDATION
 // --------------------------------------------------
-const validateOptometrist = async (user, optometristId) => {
+const validateOptometrist = async (
+  user,
+  optometristId
+) => {
   const id = optometristId || user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -95,7 +122,9 @@ const validateOptometrist = async (user, optometristId) => {
 // PRESCRIPTION SANITIZER
 // --------------------------------------------------
 const sanitizePrescription = (rx, type) => {
-  if (!rx) return null;
+  if (!rx || typeof rx !== "object") {
+    return null;
+  }
 
   return {
     type,
@@ -146,20 +175,39 @@ const getConsultationDate = (value) => {
 };
 
 // --------------------------------------------------
-// NORMALIZE CONSULTATION TYPE
+// CONSULTATION TYPE
 // --------------------------------------------------
 const normalizeConsultationType = (type) => {
   const allowed = [
     "comprehensive",
     "short_consult",
-    "specialized",
+    "binocular_vision",
+    "contact_lenses",
+    "low_vision",
   ];
+
+  /*
+   * Backward compatibility:
+   * Older frontend versions sent:
+   *
+   * consultationType: "specialized"
+   * specializedType: "binocular_vision"
+   *
+   * We no longer use that internally, but the request can
+   * still be converted safely.
+   */
+  if (type === "specialized") {
+    return "specialized";
+  }
 
   return allowed.includes(type)
     ? type
     : "comprehensive";
 };
 
+// --------------------------------------------------
+// LEGACY SPECIALIZED TYPE
+// --------------------------------------------------
 const normalizeSpecializedType = (type) => {
   const allowed = [
     "contact_lenses",
@@ -167,11 +215,13 @@ const normalizeSpecializedType = (type) => {
     "low_vision",
   ];
 
-  return allowed.includes(type) ? type : "";
+  return allowed.includes(type)
+    ? type
+    : "";
 };
 
 // --------------------------------------------------
-// NORMALIZE CONSULTATION OPTIONS
+// CONSULTATION OPTIONS
 // --------------------------------------------------
 const normalizeConsultationOptions = (options) => {
   if (!Array.isArray(options)) {
@@ -194,14 +244,217 @@ const normalizeConsultationOptions = (options) => {
 };
 
 // --------------------------------------------------
+// EMPTY ACCOMMODATION OBJECT
+// --------------------------------------------------
+const createEmptyAccommodation = () => ({
+  npcAccommodativeSubjective: "",
+  npcAccommodativeObjective: "",
+  npcAccommodativeBreak: "",
+  npcAccommodativeRecovery: "",
+
+  npcRGSubjective: "",
+  npcRGObjective: "",
+  npcRGBreak: "",
+  npcRGRecovery: "",
+
+  npaOD: "",
+  npaOS: "",
+  npaOU: "",
+
+  aaOD: "",
+  aaOS: "",
+  aaOU: "",
+
+  hofstetterMinimumAA: "",
+
+  memOD: "",
+  memOS: "",
+
+  nra: "",
+  pra: "",
+});
+
+// --------------------------------------------------
+// NORMALIZE ACCOMMODATION
+// --------------------------------------------------
+const normalizeAccommodation = (value) => {
+  const empty = createEmptyAccommodation();
+
+  /*
+   * IMPORTANT:
+   *
+   * accommodation MUST remain an object.
+   *
+   * Never do:
+   *
+   * accommodation: value || ""
+   *
+   * because that can result in a String being passed
+   * into the Mongoose nested schema.
+   */
+
+  if (
+    !value ||
+    typeof value !== "object" ||
+    Array.isArray(value)
+  ) {
+    return empty;
+  }
+
+  return {
+    npcAccommodativeSubjective:
+      value.npcAccommodativeSubjective ?? "",
+
+    npcAccommodativeObjective:
+      value.npcAccommodativeObjective ?? "",
+
+    npcAccommodativeBreak:
+      value.npcAccommodativeBreak ?? "",
+
+    npcAccommodativeRecovery:
+      value.npcAccommodativeRecovery ?? "",
+
+    npcRGSubjective:
+      value.npcRGSubjective ?? "",
+
+    npcRGObjective:
+      value.npcRGObjective ?? "",
+
+    npcRGBreak:
+      value.npcRGBreak ?? "",
+
+    npcRGRecovery:
+      value.npcRGRecovery ?? "",
+
+    npaOD:
+      value.npaOD ?? "",
+
+    npaOS:
+      value.npaOS ?? "",
+
+    npaOU:
+      value.npaOU ?? "",
+
+    aaOD:
+      value.aaOD ?? "",
+
+    aaOS:
+      value.aaOS ?? "",
+
+    aaOU:
+      value.aaOU ?? "",
+
+    hofstetterMinimumAA:
+      value.hofstetterMinimumAA ?? "",
+
+    memOD:
+      value.memOD ?? "",
+
+    memOS:
+      value.memOS ?? "",
+
+    nra:
+      value.nra ?? "",
+
+    pra:
+      value.pra ?? "",
+  };
+};
+
+// --------------------------------------------------
+// NORMALIZE BINOCULAR VISION
+// --------------------------------------------------
+const normalizeBinocularVision = (value) => {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    Array.isArray(value)
+  ) {
+    return {};
+  }
+
+  return {
+    ...value,
+
+    // CRITICAL:
+    // Keep accommodation as an object.
+    accommodation:
+      normalizeAccommodation(
+        value.accommodation
+      ),
+  };
+};
+
+// --------------------------------------------------
+// NORMALIZE SPECIALIZED OBJECTS
+// --------------------------------------------------
+const normalizeObject = (value) => {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    Array.isArray(value)
+  ) {
+    return {};
+  }
+
+  return value;
+};
+
+// --------------------------------------------------
+// MODEL VALIDATION
+// --------------------------------------------------
+const validateLoadedConsultationSchema = () => {
+  const binocularVisionPath =
+    Consultation.schema.path(
+      "binocularVision"
+    );
+
+  if (!binocularVisionPath) {
+    throw new Error(
+      "Consultation model does not contain binocularVision. Check the imported Consultation model."
+    );
+  }
+
+  const accommodationPath =
+    Consultation.schema.path(
+      "binocularVision.accommodation"
+    );
+
+  if (!accommodationPath) {
+    throw new Error(
+      "Consultation model does not contain binocularVision.accommodation. Update models/Consultation.js."
+    );
+  }
+
+  /*
+   * This is the exact problem we have been debugging.
+   *
+   * If this prints String, the backend is loading the OLD
+   * Consultation model.
+   */
+  if (accommodationPath.instance === "String") {
+    throw new Error(
+      "BACKEND MODEL ERROR: Consultation.schema.path('binocularVision.accommodation') is String. It MUST be a nested object schema. Check ../models/Consultation.js and restart the backend."
+    );
+  }
+
+  return true;
+};
+
+// --------------------------------------------------
 // BUILD CONSULTATION DATA
 // --------------------------------------------------
-const buildConsultationData = (req, patient, clinician) => {
-  const body = req.body;
+const buildConsultationData = (
+  req,
+  patient,
+  clinician
+) => {
+  const body = req.body || {};
 
-  const consultationDate = getConsultationDate(
-    body.consultationDate
-  );
+  const consultationDate =
+    getConsultationDate(
+      body.consultationDate
+    );
 
   if (!consultationDate) {
     return {
@@ -209,30 +462,74 @@ const buildConsultationData = (req, patient, clinician) => {
     };
   }
 
+  /*
+   * --------------------------------------------------
+   * CONSULTATION TYPE
+   * --------------------------------------------------
+   *
+   * New system:
+   *
+   * comprehensive
+   * short_consult
+   * binocular_vision
+   * contact_lenses
+   * low_vision
+   *
+   * Specialized types are NOT child options anymore.
+   */
+
+  let consultationType =
+    normalizeConsultationType(
+      body.consultationType
+    );
+
+  /*
+   * Backward compatibility for old requests.
+   */
+  if (
+    body.consultationType === "specialized"
+  ) {
+    const legacyType =
+      normalizeSpecializedType(
+        body.specializedType
+      );
+
+    if (legacyType) {
+      consultationType = legacyType;
+    }
+  }
+
   return {
-    organizationId: req.user.organizationId,
+    organizationId:
+      req.user.organizationId,
 
-    branchId: patient.registeredBranchId,
+    branchId:
+      patient.registeredBranchId,
 
-    patientId: patient._id,
+    patientId:
+      patient._id,
 
-    optometristId: clinician._id,
+    optometristId:
+      clinician._id,
 
     consultationDate,
 
-    consultationType:
-      normalizeConsultationType(
-        body.consultationType
-      ),
+    consultationType,
 
-    specializedType:
-      body.consultationType === "specialized"
-        ? normalizeSpecializedType(body.specializedType)
-        : "",
+    /*
+     * Keep this empty for the new structure.
+     *
+     * It remains only for compatibility with old
+     * documents/controllers.
+     */
+    specializedType: "",
 
     status: "completed",
+
     completedAt: new Date(),
-    completedBy: req.user._id,
+
+    completedBy:
+      req.user._id,
 
     consultationOptions:
       normalizeConsultationOptions(
@@ -270,55 +567,69 @@ const buildConsultationData = (req, patient, clinician) => {
     // VISUAL ACUITY
     // ----------------------------------------------
     visualAcuity:
-      body.visualAcuity || {},
+      normalizeObject(
+        body.visualAcuity
+      ),
 
     // ----------------------------------------------
     // REFRACTION
     // ----------------------------------------------
-    previousRx: sanitizePrescription(
-      body.previousRx,
-      "previous"
-    ),
+    previousRx:
+      sanitizePrescription(
+        body.previousRx,
+        "previous"
+      ),
 
-    objectiveRx: sanitizePrescription(
-      body.objectiveRx,
-      "objective"
-    ),
+    objectiveRx:
+      sanitizePrescription(
+        body.objectiveRx,
+        "objective"
+      ),
 
-    subjectiveRx: sanitizePrescription(
-      body.subjectiveRx,
-      "subjective"
-    ),
+    subjectiveRx:
+      sanitizePrescription(
+        body.subjectiveRx,
+        "subjective"
+      ),
 
-    finalRx: sanitizePrescription(
-      body.finalRx,
-      "final"
-    ),
+    finalRx:
+      sanitizePrescription(
+        body.finalRx,
+        "final"
+      ),
 
-    givenRx: sanitizePrescription(
-      body.givenRx,
-      "given"
-    ),
+    givenRx:
+      sanitizePrescription(
+        body.givenRx,
+        "given"
+      ),
 
     refractionNotes:
       body.refractionNotes || "",
 
-    pd: body.pd || {},
+    pd:
+      normalizeObject(body.pd),
 
     // ----------------------------------------------
     // BINOCULAR VISION
     // ----------------------------------------------
     binocularVision:
-      body.binocularVision || {},
+      normalizeBinocularVision(
+        body.binocularVision
+      ),
 
     // ----------------------------------------------
     // TESTS
     // ----------------------------------------------
     slitLamp:
-      body.slitLamp || {},
+      normalizeObject(
+        body.slitLamp
+      ),
 
     fundus:
-      body.fundus || {},
+      normalizeObject(
+        body.fundus
+      ),
 
     otherTests:
       Array.isArray(body.otherTests)
@@ -342,19 +653,35 @@ const buildConsultationData = (req, patient, clinician) => {
         : [],
 
     // ----------------------------------------------
-    // SPECIALIZED
+    // LOW VISION
     // ----------------------------------------------
     lowVision:
-      body.lowVision || {},
+      normalizeObject(
+        body.lowVision
+      ),
 
+    // ----------------------------------------------
+    // CONTACT LENS
+    // ----------------------------------------------
     contactLens:
-      body.contactLens || {},
+      normalizeObject(
+        body.contactLens ||
+          body.contactLenses
+      ),
+
+    contactLenses:
+      normalizeObject(
+        body.contactLenses ||
+          body.contactLens
+      ),
 
     // ----------------------------------------------
     // DISPENSING
     // ----------------------------------------------
     dispensing:
-      body.dispensing || {},
+      normalizeObject(
+        body.dispensing
+      ),
 
     // ----------------------------------------------
     // THERAPEUTICS
@@ -365,7 +692,7 @@ const buildConsultationData = (req, patient, clinician) => {
         : [],
 
     // ----------------------------------------------
-    // LEGACY FIELDS
+    // LEGACY CLINICAL FIELDS
     // ----------------------------------------------
     ophthalmoscopy:
       body.ophthalmoscopy || "",
@@ -383,7 +710,9 @@ const buildConsultationData = (req, patient, clinician) => {
     // RECALL
     // ----------------------------------------------
     recall:
-      body.recall || {},
+      normalizeObject(
+        body.recall
+      ),
 
     recallDue:
       body.recall?.due ||
@@ -410,65 +739,78 @@ const buildConsultationData = (req, patient, clinician) => {
     notes:
       body.notes || "",
 
-    createdBy: req.user._id,
+    createdBy:
+      req.user._id,
   };
 };
 
 // --------------------------------------------------
 // UPDATE PATIENT RECALL INFORMATION
 // --------------------------------------------------
-const updatePatientFromConsultation = async (
-  patient,
-  consultation,
-  userId
-) => {
-  patient.updatedBy = userId;
+const updatePatientFromConsultation =
+  async (
+    patient,
+    consultation,
+    userId
+  ) => {
+    patient.updatedBy = userId;
 
-  patient.lastConsultationAt =
-    consultation.consultationDate;
+    patient.lastConsultationAt =
+      consultation.consultationDate;
 
-  patient.lastOptometristId =
-    consultation.optometristId;
+    patient.lastOptometristId =
+      consultation.optometristId;
 
-  patient.nextRecallAt =
-    consultation.recall?.due ||
-    consultation.recallDue ||
-    null;
+    patient.nextRecallAt =
+      consultation.recall?.due ||
+      consultation.recallDue ||
+      null;
 
-  patient.nextRecallLetter =
-    consultation.recall?.message ||
-    consultation.recallLetter ||
-    "";
+    patient.nextRecallLetter =
+      consultation.recall?.message ||
+      consultation.recallLetter ||
+      "";
 
-  patient.recallStage = 1;
+    patient.recallStage = 1;
 
-  patient.lastRecallAt = null;
+    patient.lastRecallAt = null;
 
-  await patient.save();
-};
+    await patient.save();
+  };
 
 // ==================================================
 // CREATE CONSULTATION
 // ==================================================
-export const createConsultation = asyncHandler(
-  async (req, res) => {
-    const { patientId } = req.body;
+export const createConsultation =
+  asyncHandler(async (req, res) => {
+    const { patientId } =
+      req.body || {};
 
     if (!patientId) {
       res.status(400);
-      throw new Error("Patient is required");
+
+      throw new Error(
+        "Patient is required"
+      );
     }
+
+    // ----------------------------------------------
+    // VERIFY ACTUAL LOADED MODEL
+    // ----------------------------------------------
+    validateLoadedConsultationSchema();
 
     // ----------------------------------------------
     // PATIENT ACCESS
     // ----------------------------------------------
-    const patient = await getPatientForUser(
-      req.user,
-      patientId
-    );
+    const patient =
+      await getPatientForUser(
+        req.user,
+        patientId
+      );
 
     if (!patient) {
       res.status(403);
+
       throw new Error(
         "You do not have access to this patient"
       );
@@ -477,13 +819,15 @@ export const createConsultation = asyncHandler(
     // ----------------------------------------------
     // BRANCH ACCESS
     // ----------------------------------------------
-    const branch = await validateBranchAccess(
-      req.user,
-      patient.registeredBranchId
-    );
+    const branch =
+      await validateBranchAccess(
+        req.user,
+        patient.registeredBranchId
+      );
 
     if (!branch) {
       res.status(403);
+
       throw new Error(
         "You do not have access to this patient's branch"
       );
@@ -492,24 +836,35 @@ export const createConsultation = asyncHandler(
     // ----------------------------------------------
     // CLINICIAN
     // ----------------------------------------------
-    // Any authorized role may initiate the workflow. If the current
-    // user is not a clinician, attach the first active optometrist/doctor
-    // in the patient's branch as the clinical owner.
-    let clinician = await validateOptometrist(
-      req.user,
-      req.body.optometristId
-    );
+    let clinician =
+      await validateOptometrist(
+        req.user,
+        req.body.optometristId
+      );
 
     if (!clinician) {
-      clinician = await User.findOne({
-        organizationId: req.user.organizationId,
-        status: "active",
-        role: { $in: ["optometrist", "doctor"] },
-      }).sort({ firstName: 1, lastName: 1 });
+      clinician =
+        await User.findOne({
+          organizationId:
+            req.user.organizationId,
+
+          status: "active",
+
+          role: {
+            $in: [
+              "optometrist",
+              "doctor",
+            ],
+          },
+        }).sort({
+          firstName: 1,
+          lastName: 1,
+        });
     }
 
     if (!clinician) {
       res.status(400);
+
       throw new Error(
         "No active optometrist or doctor is available for this branch"
       );
@@ -518,43 +873,44 @@ export const createConsultation = asyncHandler(
     // ----------------------------------------------
     // BUILD DATA
     // ----------------------------------------------
-    const data = buildConsultationData(
-      req,
-      patient,
-      clinician
-    );
-
-    if (data.consultationType === "specialized") {
-      if (!data.specializedType) {
-        res.status(400);
-        throw new Error("A specialized consultation type is required");
-      }
-
-      const completedComprehensive = await Consultation.exists({
-        organizationId: req.user.organizationId,
-        patientId: patient._id,
-        consultationType: "comprehensive",
-        $or: [{ status: "completed" }, { status: { $exists: false } }],
-      });
-
-      if (!completedComprehensive) {
-        res.status(409);
-        throw new Error(
-          "Complete a Comprehensive Consultation before starting a specialized consultation"
-        );
-      }
-    }
+    const data =
+      buildConsultationData(
+        req,
+        patient,
+        clinician
+      );
 
     if (data.error) {
       res.status(400);
-      throw new Error(data.error);
+
+      throw new Error(
+        data.error
+      );
+    }
+
+    // ----------------------------------------------
+    // DEBUG / SAFETY CHECK
+    // ----------------------------------------------
+    if (
+      data.binocularVision &&
+      typeof data.binocularVision
+        .accommodation !==
+        "object"
+    ) {
+      res.status(400);
+
+      throw new Error(
+        "Invalid binocular vision accommodation data. Expected an object."
+      );
     }
 
     // ----------------------------------------------
     // CREATE
     // ----------------------------------------------
     const consultation =
-      await Consultation.create(data);
+      await Consultation.create(
+        data
+      );
 
     // ----------------------------------------------
     // UPDATE PATIENT
@@ -583,16 +939,21 @@ export const createConsultation = asyncHandler(
         .populate(
           "createdBy",
           "firstName lastName"
+        )
+        .populate(
+          "updatedBy",
+          "firstName lastName"
         );
 
     res.status(201).json({
       success: true,
+
       message:
         "Consultation saved successfully",
+
       data: populated,
     });
-  }
-);
+  });
 
 // ==================================================
 // LIST PATIENT CONSULTATIONS
@@ -607,6 +968,7 @@ export const getPatientConsultations =
 
     if (!patient) {
       res.status(403);
+
       throw new Error(
         "You do not have access to this patient"
       );
@@ -617,7 +979,8 @@ export const getPatientConsultations =
         organizationId:
           req.user.organizationId,
 
-        patientId: patient._id,
+        patientId:
+          patient._id,
       })
         .populate(
           "optometristId",
@@ -645,6 +1008,7 @@ export const getConsultation =
       )
     ) {
       res.status(400);
+
       throw new Error(
         "Invalid consultation ID"
       );
@@ -653,6 +1017,7 @@ export const getConsultation =
     const consultation =
       await Consultation.findOne({
         _id: req.params.id,
+
         organizationId:
           req.user.organizationId,
       })
@@ -667,10 +1032,15 @@ export const getConsultation =
         .populate(
           "createdBy",
           "firstName lastName"
+        )
+        .populate(
+          "updatedBy",
+          "firstName lastName"
         );
 
     if (!consultation) {
       res.status(404);
+
       throw new Error(
         "Consultation not found"
       );
@@ -684,6 +1054,7 @@ export const getConsultation =
 
     if (!patient) {
       res.status(403);
+
       throw new Error(
         "You do not have access to this consultation"
       );
@@ -706,25 +1077,39 @@ export const updateConsultation =
       )
     ) {
       res.status(400);
+
       throw new Error(
         "Invalid consultation ID"
       );
     }
 
+    // ----------------------------------------------
+    // VERIFY ACTUAL LOADED MODEL
+    // ----------------------------------------------
+    validateLoadedConsultationSchema();
+
+    // ----------------------------------------------
+    // FIND CONSULTATION
+    // ----------------------------------------------
     const consultation =
       await Consultation.findOne({
         _id: req.params.id,
+
         organizationId:
           req.user.organizationId,
       });
 
     if (!consultation) {
       res.status(404);
+
       throw new Error(
         "Consultation not found"
       );
     }
 
+    // ----------------------------------------------
+    // PATIENT ACCESS
+    // ----------------------------------------------
     const patient =
       await getPatientForUser(
         req.user,
@@ -733,6 +1118,7 @@ export const updateConsultation =
 
     if (!patient) {
       res.status(403);
+
       throw new Error(
         "You do not have access to this consultation"
       );
@@ -743,8 +1129,7 @@ export const updateConsultation =
     // ----------------------------------------------
     const fields = [
       "consultationDate",
-      "consultationType",
-      "specializedType",
+
       "reasonForVisit",
       "symptoms",
       "medicalHistory",
@@ -753,23 +1138,35 @@ export const updateConsultation =
       "medication",
       "allergy",
       "pupils",
+
       "visualAcuity",
+
       "refractionNotes",
+
       "pd",
-      "binocularVision",
+
       "slitLamp",
       "fundus",
+
       "otherTests",
+
       "diagnosis",
       "advice",
+
       "lowVision",
+
       "contactLens",
+      "contactLenses",
+
       "dispensing",
+
       "therapeutics",
+
       "ophthalmoscopy",
       "biomicroscopy",
       "visualField",
       "colourVision",
+
       "clinicalNotes",
       "patientInstructions",
       "internalNotes",
@@ -777,64 +1174,70 @@ export const updateConsultation =
     ];
 
     fields.forEach((field) => {
-      if (req.body[field] !== undefined) {
+      if (
+        req.body[field] !==
+        undefined
+      ) {
         consultation[field] =
           req.body[field];
       }
     });
 
     // ----------------------------------------------
-    // TYPE
+    // CONSULTATION TYPE
     // ----------------------------------------------
     if (
-      req.body.consultationType !== undefined
+      req.body.consultationType !==
+      undefined
     ) {
-      consultation.consultationType =
+      let type =
         normalizeConsultationType(
           req.body.consultationType
         );
-    }
 
-    if (req.body.specializedType !== undefined) {
-      consultation.specializedType =
-        normalizeSpecializedType(req.body.specializedType);
-    }
+      /*
+       * Backward compatibility:
+       * specialized + specializedType
+       */
+      if (
+        req.body.consultationType ===
+        "specialized"
+      ) {
+        const legacyType =
+          normalizeSpecializedType(
+            req.body.specializedType
+          );
 
-    if (consultation.consultationType === "specialized") {
-      const completedComprehensive = await Consultation.exists({
-        organizationId: req.user.organizationId,
-        patientId: consultation.patientId,
-        consultationType: "comprehensive",
-        $or: [{ status: "completed" }, { status: { $exists: false } }],
-        _id: { $ne: consultation._id },
-      });
-
-      if (!completedComprehensive) {
-        res.status(409);
-        throw new Error(
-          "Complete a Comprehensive Consultation before using a specialized consultation"
-        );
+        if (legacyType) {
+          type = legacyType;
+        }
       }
 
-      if (!consultation.specializedType) {
-        res.status(400);
-        throw new Error("A specialized consultation type is required");
+      consultation.consultationType =
+        type;
+
+      /*
+       * New system does not use specializedType.
+       */
+      if (
+        "specializedType" in
+        consultation
+      ) {
+        consultation.specializedType =
+          "";
       }
     }
-
-    consultation.status = "completed";
-    consultation.completedAt = consultation.completedAt || new Date();
-    consultation.completedBy = req.user._id;
 
     // ----------------------------------------------
-    // OPTIONS
+    // BINOCULAR VISION
     // ----------------------------------------------
     if (
-      req.body.consultationOptions !== undefined
+      req.body.binocularVision !==
+      undefined
     ) {
-      consultation.consultationOptions =
-        normalizeConsultationOptions(
-          req.body.consultationOptions
+      consultation.binocularVision =
+        normalizeBinocularVision(
+          req.body.binocularVision
         );
     }
 
@@ -842,7 +1245,8 @@ export const updateConsultation =
     // PRESCRIPTIONS
     // ----------------------------------------------
     if (
-      req.body.previousRx !== undefined
+      req.body.previousRx !==
+      undefined
     ) {
       consultation.previousRx =
         sanitizePrescription(
@@ -852,7 +1256,8 @@ export const updateConsultation =
     }
 
     if (
-      req.body.objectiveRx !== undefined
+      req.body.objectiveRx !==
+      undefined
     ) {
       consultation.objectiveRx =
         sanitizePrescription(
@@ -862,7 +1267,8 @@ export const updateConsultation =
     }
 
     if (
-      req.body.subjectiveRx !== undefined
+      req.body.subjectiveRx !==
+      undefined
     ) {
       consultation.subjectiveRx =
         sanitizePrescription(
@@ -872,7 +1278,8 @@ export const updateConsultation =
     }
 
     if (
-      req.body.finalRx !== undefined
+      req.body.finalRx !==
+      undefined
     ) {
       consultation.finalRx =
         sanitizePrescription(
@@ -882,7 +1289,8 @@ export const updateConsultation =
     }
 
     if (
-      req.body.givenRx !== undefined
+      req.body.givenRx !==
+      undefined
     ) {
       consultation.givenRx =
         sanitizePrescription(
@@ -892,43 +1300,63 @@ export const updateConsultation =
     }
 
     // ----------------------------------------------
+    // OPTIONS
+    // ----------------------------------------------
+    if (
+      req.body.consultationOptions !==
+      undefined
+    ) {
+      consultation.consultationOptions =
+        normalizeConsultationOptions(
+          req.body.consultationOptions
+        );
+    }
+
+    // ----------------------------------------------
     // RECALL
     // ----------------------------------------------
     if (
-      req.body.recall !== undefined
+      req.body.recall !==
+      undefined
     ) {
       consultation.recall =
-        req.body.recall || {};
+        normalizeObject(
+          req.body.recall
+        );
+
+      consultation.recallDue =
+        req.body.recall?.due ||
+        null;
+
+      consultation.recallLetter =
+        req.body.recall?.message ||
+        "";
     }
 
     if (
-      req.body.recallDue !== undefined
+      req.body.recallDue !==
+      undefined
     ) {
       consultation.recallDue =
-        req.body.recallDue || null;
+        req.body.recallDue ||
+        null;
     }
 
     if (
-      req.body.recallLetter !== undefined
+      req.body.recallLetter !==
+      undefined
     ) {
       consultation.recallLetter =
-        req.body.recallLetter || "";
-    }
-
-    // Keep legacy and new recall values synchronized.
-    if (req.body.recall !== undefined) {
-      consultation.recallDue =
-        req.body.recall?.due || null;
-
-      consultation.recallLetter =
-        req.body.recall?.message || "";
+        req.body.recallLetter ||
+        "";
     }
 
     // ----------------------------------------------
     // CLINICIAN
     // ----------------------------------------------
     if (
-      req.body.optometristId !== undefined
+      req.body.optometristId !==
+      undefined
     ) {
       const clinician =
         await validateOptometrist(
@@ -938,6 +1366,7 @@ export const updateConsultation =
 
       if (!clinician) {
         res.status(400);
+
         throw new Error(
           "A valid optometrist or doctor is required"
         );
@@ -951,25 +1380,45 @@ export const updateConsultation =
     // DATE
     // ----------------------------------------------
     if (
-      req.body.consultationDate !== undefined
+      req.body.consultationDate !==
+      undefined
     ) {
-      const date = getConsultationDate(
-        req.body.consultationDate
-      );
+      const date =
+        getConsultationDate(
+          req.body.consultationDate
+        );
 
       if (!date) {
         res.status(400);
+
         throw new Error(
           "Invalid consultation date"
         );
       }
 
-      consultation.consultationDate = date;
+      consultation.consultationDate =
+        date;
     }
+
+    // ----------------------------------------------
+    // STATUS
+    // ----------------------------------------------
+    consultation.status =
+      "completed";
+
+    consultation.completedAt =
+      consultation.completedAt ||
+      new Date();
+
+    consultation.completedBy =
+      req.user._id;
 
     consultation.updatedBy =
       req.user._id;
 
+    // ----------------------------------------------
+    // SAVE
+    // ----------------------------------------------
     await consultation.save();
 
     // ----------------------------------------------
@@ -1007,8 +1456,10 @@ export const updateConsultation =
 
     res.json({
       success: true,
+
       message:
         "Consultation updated successfully",
+
       data: populated,
     });
   });
