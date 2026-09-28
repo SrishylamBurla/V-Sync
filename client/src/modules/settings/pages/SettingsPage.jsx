@@ -51,7 +51,7 @@ export default function SettingsPage() {
       <DocumentShell
         eyebrow="Maintenance"
         title="Practice Configuration"
-        subtitle="Configure VividOpt defaults and operational parameters."
+        subtitle="Configure V-Sync defaults and operational parameters."
         code="SETTINGS"
       >
         <div className="p-10 text-center text-sm text-slate-400">
@@ -308,7 +308,7 @@ export default function SettingsPage() {
           />
           <Field
             label="Sender name"
-            value={data.communication?.senderName || "VividOpt"}
+            value={data.communication?.senderName || "V-Sync"}
             onChange={(v) => set("communication", "senderName", v)}
           />
         </FieldRow>

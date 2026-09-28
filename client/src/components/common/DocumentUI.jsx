@@ -52,7 +52,7 @@ export function DocumentShell({
           )}
         </div>
         <footer className="border-t-2 border-slate-900 bg-slate-50 px-5 py-4 text-xs text-slate-400 sm:px-8">
-          VividOpt · Practice Management
+          V-Sync · Practice Management
         </footer>
       </article>
     </div>

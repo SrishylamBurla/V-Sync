@@ -117,39 +117,21 @@ export const MODULE_ACCESS = {
   // ----------------------------------------------------------
 
   clinical: [
-    ROLES.SUPER_ADMIN,
-    ROLES.ORGANIZATION_ADMIN,
-    ROLES.BRANCH_MANAGER,
-    ROLES.OPTOMETRIST,
-    ROLES.DOCTOR,
+    ACCESS_LEVELS.SUPER_ADMIN,
+    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ACCESS_LEVELS.PRACTICE_USER,
   ],
-
-  // ----------------------------------------------------------
-  // Optical
-  // ----------------------------------------------------------
 
   optical: [
-    ROLES.SUPER_ADMIN,
-    ROLES.ORGANIZATION_ADMIN,
-    ROLES.BRANCH_MANAGER,
-    ROLES.SALES_EXECUTIVE,
-    ROLES.OPTOMETRIST,
-    ROLES.DOCTOR,
+    ACCESS_LEVELS.SUPER_ADMIN,
+    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ACCESS_LEVELS.PRACTICE_USER,
   ],
 
-  // ----------------------------------------------------------
-  // Operations
-  // ----------------------------------------------------------
-
   dispensing: [
-    ROLES.SUPER_ADMIN,
-    ROLES.ORGANIZATION_ADMIN,
-    ROLES.BRANCH_MANAGER,
-    ROLES.SALES_EXECUTIVE,
-    ROLES.OPTOMETRIST,
-    ROLES.DOCTOR,
-    ROLES.RECEPTIONIST,
-    ROLES.LAB_TECHNICIAN,
+    ACCESS_LEVELS.SUPER_ADMIN,
+    ACCESS_LEVELS.ORGANIZATION_ADMIN,
+    ACCESS_LEVELS.PRACTICE_USER,
   ],
 
   inventory: [
@@ -322,10 +304,10 @@ export const MAIN_NAV = [
   },
 
   {
-    key: "optical",
-    label: "Optical",
-    path: "/optical",
-    access: "optical",
+    key: "dispensing",
+    label: "Dispensing",
+    path: "/dispensing",
+    access: "dispensing",
   },
 
   // ==========================================================
@@ -338,13 +320,6 @@ export const MAIN_NAV = [
     dropdown: true,
 
     children: [
-      {
-        key: "dispensing",
-        label: "Dispensing",
-        path: "/dispensing",
-        access: "dispensing",
-      },
-
       {
         key: "inventory",
         label: "Inventory",
@@ -542,12 +517,12 @@ export const ROUTE_ACCESS = {
   patients: "patients",
   appointments: "appointments",
 
-  // Clinical / Optical
   clinical: "clinical",
   optical: "optical",
 
-  // Operations
   dispensing: "dispensing",
+
+  // Operations
   inventory: "inventory",
   catalogue: "catalogue",
   laboratory: "laboratory",

@@ -37,7 +37,7 @@ const practiceSettingsSchema = new mongoose.Schema({
   communication: {
     emailEnabled: { type: Boolean, default: false },
     smsEnabled: { type: Boolean, default: false },
-    senderName: { type: String, default: "VividOpt" },
+    senderName: { type: String, default: "Opt" },
   },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 }, { timestamps: true });

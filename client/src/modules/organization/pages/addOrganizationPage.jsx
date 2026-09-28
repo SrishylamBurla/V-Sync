@@ -93,7 +93,7 @@ export default function AddOrganizationPage() {
                 </h1>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  Add a new organization to the VividOpt platform.
+                  Add a new organization to the V-Sync platform.
                 </p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function AddOrganizationPage() {
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  placeholder="VividOpt"
+                  placeholder="V-Sync"
                   className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                 />
               </div>

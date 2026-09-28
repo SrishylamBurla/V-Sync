@@ -971,12 +971,20 @@ function WorkspaceSection({ user, navigate, isAdmin }) {
     },
     {
       key: "inventory",
+<<<<<<< HEAD
       title: "Inventory & Optical",
+=======
+      title: "Inventory & Dispensing",
+>>>>>>> eb2658a (updated)
       description: "Frames, lenses, stock and dispensing operations.",
       icon: Boxes,
       tone: "violet",
       items: [
+<<<<<<< HEAD
         { label: "Optical", description: "Spectacle jobs and optical records", to: "/optical", icon: Glasses, access: "optical" },
+=======
+        { label: "Optical", description: "Spectacle jobs and optical records", to: "/dispensing", icon: Glasses, access: "dispensing" },
+>>>>>>> eb2658a (updated)
         { label: "Inventory", description: "Stock, adjustments and stock take", to: "/inventory", icon: Boxes, access: "inventory" },
         { label: "Catalogue", description: "Frame, lens and product setup", to: "/catalogue", icon: ClipboardList, access: "catalogue" },
         { label: "Dispensing", description: "Ready orders and delivery workflow", to: "/dispensing", icon: PackageCheck, access: "dispensing" },
@@ -1001,7 +1009,11 @@ function WorkspaceSection({ user, navigate, isAdmin }) {
   ];
 
   // const specialistItems = [
+<<<<<<< HEAD
   //   { label: "Contact Lens", description: "Contact-lens consultation and records", to: "/optical/contact-lenses", icon: ScanEye, access: "optical" },
+=======
+  //   { label: "Contact Lens", description: "Contact-lens consultation and records", to: "/dispensing/contact-lenses", icon: ScanEye, access: "dispensing" },
+>>>>>>> eb2658a (updated)
   //   { label: "Binocular Vision", description: "Specialist binocular evaluation", to: "/clinical", icon: Focus, access: "clinical" },
   //   { label: "Low Vision", description: "Specialist low-vision assessment", to: "/clinical", icon: Eye, access: "clinical" },
   // ];

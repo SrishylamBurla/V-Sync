@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 
 import { getDispensingList } from "../spectacle.api";
 import { getContactLenses } from "../../contactLenses/contactLens.api";
@@ -37,6 +38,8 @@ const money = (value) =>
 
 export default function OpticalManagementPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const canCreateJob = ["super_admin", "organization_admin", "branch_manager", "optometrist", "doctor", "receptionist", "sales_executive"].includes(user?.role);
   const [jobs, setJobs] = useState([]);
   const [contactOrders, setContactOrders] = useState([]);
   const [query, setQuery] = useState("");
@@ -76,7 +79,7 @@ export default function OpticalManagementPage() {
       setError(
         requestError?.response?.data?.message ||
           requestError?.message ||
-          "Unable to load the optical workspace.",
+          "Unable to load the dispensing workspace.",
       );
     } finally {
       setLoading(false);
@@ -190,7 +193,11 @@ export default function OpticalManagementPage() {
   const selectPatientForSpectacle = (patient) => {
     if (!patient?._id) return;
     setPatientModalOpen(false);
+<<<<<<< HEAD
     navigate(`/optical/spectacles/new/${patient._id}`);
+=======
+    navigate(`/dispensing/spectacles/new/${patient._id}`);
+>>>>>>> eb2658a (updated)
   };
 
   const spectacleJobs = useMemo(
@@ -230,12 +237,12 @@ export default function OpticalManagementPage() {
         <header className="mb-5 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-sm sm:px-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[.2em] text-emerald-600">Optical workspace</div>
-              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">Optical Management</h1>
-              <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-500">Manage spectacle jobs, contact lens dispensing and optical production. Clinical consultations remain in Clinical Management.</p>
+              <div className="text-[10px] font-bold uppercase tracking-[.2em] text-emerald-600">Dispensing</div>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">Dispensing Management</h1>
+              <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-500">Manage spectacle jobs, contact lens dispensing and dispensing workflow. Clinical consultations remain in Clinical Management.</p>
             </div>
             <div className="flex flex-wrap items-center justify-end gap-2">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold text-slate-500">OPTICAL</div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold text-slate-500">DISPENSING</div>
               <button
                 type="button"
                 onClick={load}
@@ -243,6 +250,7 @@ export default function OpticalManagementPage() {
               >
                 <RefreshCw size={14} /> Refresh
               </button>
+<<<<<<< HEAD
               <button
                 type="button"
                 onClick={() => navigate("/optical/contact-lenses/new")}
@@ -257,12 +265,30 @@ export default function OpticalManagementPage() {
               >
                 <Plus size={14} /> Select patient for spectacle job
               </button>
+=======
+              {canCreateJob && (<>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dispensing/contact-lenses/new")}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  <ContactRound size={14} /> New contact lens job
+                </button>
+                <button
+                  type="button"
+                  onClick={openPatientSelector}
+                  className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3.5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                >
+                  <Plus size={14} /> New spectacle job
+                </button>
+              </>)}
+>>>>>>> eb2658a (updated)
             </div>
           </div>
         </header>
       {error && <div className="m-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">{error}</div>}
 
-      <Section number="01" title="Optical overview">
+      <Section number="01" title="Dispensing overview">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Metric icon={Glasses} label="Open jobs" value={totalOpen} />
           <Metric icon={PackageCheck} label="Ready" value={ready} />
@@ -272,7 +298,11 @@ export default function OpticalManagementPage() {
 
       </Section>
 
+<<<<<<< HEAD
       <Section number="02" title="Patient optical records" description="Quickly distinguish the complete spectacle history, active orders and previous purchases. Click any record to open the full optical record.">
+=======
+      <Section number="02" title="Patient dispensing records" description="Quickly distinguish the complete spectacle history, active orders and previous purchases. Click any record to open the full optical record.">
+>>>>>>> eb2658a (updated)
         <div className="grid gap-3 sm:grid-cols-3">
           <RecordCard
             icon={History}
@@ -406,10 +436,17 @@ export default function OpticalManagementPage() {
         />
       </Section>
 
+<<<<<<< HEAD
       <Section number="05" title="Optical workflows">
         <div className="grid gap-3 sm:grid-cols-3">
           <WorkflowCard icon={Glasses} title="Spectacle dispensing" description="Create a spectacle job from the patient record." onClick={openPatientSelector} />
           <WorkflowCard icon={ContactRound} title="Contact lenses" description="Create or review contact lens orders and fitting." onClick={() => navigate("/optical/contact-lenses")} />
+=======
+      <Section number="05" title="Dispensing workflows">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <WorkflowCard icon={Glasses} title="Spectacle dispensing" description="Create a spectacle job from the patient record." onClick={openPatientSelector} />
+          <WorkflowCard icon={ContactRound} title="Contact lens jobs" description="Create and manage contact lens dispensing jobs. Clinical contact lens consultation is handled in Consultation." onClick={() => navigate("/dispensing/contact-lenses")} />
+>>>>>>> eb2658a (updated)
           <WorkflowCard icon={PackageCheck} title="Dispensing queue" description="Move optical jobs through order, ready and collection stages." onClick={() => navigate("/dispensing")} />
         </div>
       </Section>
@@ -422,9 +459,15 @@ export default function OpticalManagementPage() {
           onClose={() => setRecordModal(null)}
           onOpen={() => {
             if (recordModal.type === "spectacle") {
+<<<<<<< HEAD
               navigate(`/optical/spectacles/${recordModal.row._id}`);
             } else {
               navigate(`/optical/contact-lenses/${recordModal.row._id}`);
+=======
+              navigate(`/dispensing/spectacles/${recordModal.row._id}`);
+            } else {
+              navigate(`/dispensing/contact-lenses/${recordModal.row._id}`);
+>>>>>>> eb2658a (updated)
             }
           }}
         />
@@ -711,7 +754,11 @@ function OpticalRecordModal({ record, type, onClose, onOpen }) {
             </>
           ) : (
             <>
+<<<<<<< HEAD
               <ModalSection title="Contact lens order">
+=======
+              <ModalSection title="Contact lens job">
+>>>>>>> eb2658a (updated)
                 <DetailGrid
                   items={[
                     ["Order", record?.orderNumber],

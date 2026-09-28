@@ -73,24 +73,33 @@ const CLINICAL_NAV = [
     icon: Stethoscope,
     access: "clinical",
   },
+<<<<<<< HEAD
   {
     label: "Optical Management",
     to: "/optical",
     icon: Glasses,
     access: "optical",
   },
+=======
+];
+
+const DISPENSING_NAV = [
+>>>>>>> eb2658a (updated)
   {
     label: "Dispensing",
     to: "/dispensing",
     icon: ClipboardList,
     access: "dispensing",
   },
+<<<<<<< HEAD
   {
     label: "Laboratory",
     to: "/lab",
     icon: Activity,
     access: "laboratory",
   },
+=======
+>>>>>>> eb2658a (updated)
 ];
 
 const FINANCE_NAV = [
@@ -301,6 +310,10 @@ export default function Topbar() {
 
   const patientNav = filterItems(PATIENT_NAV);
   const clinicalNav = filterItems(CLINICAL_NAV);
+<<<<<<< HEAD
+=======
+  const dispensingNav = filterItems(DISPENSING_NAV);
+>>>>>>> eb2658a (updated)
   const financeNav = filterItems(FINANCE_NAV);
   const inventoryNav = filterItems(INVENTORY_NAV);
   const maintenanceNav = filterItems(MAINTENANCE_NAV);
@@ -338,7 +351,12 @@ export default function Topbar() {
 
   const mobileSections = [
     { label: "Patients & Care", items: patientNav },
+<<<<<<< HEAD
     { label: "Dispensing", items: clinicalNav },
+=======
+    { label: "Clinical", items: clinicalNav },
+    { label: "Dispensing", items: dispensingNav },
+>>>>>>> eb2658a (updated)
     { label: "Financial", items: financeNav },
     { label: "Inventory", items: inventoryNav },
     { label: "Maintenance", items: maintenanceNav },
@@ -513,13 +531,29 @@ export default function Topbar() {
 
               {clinicalNav.length > 0 && (
                 <Dropdown
+<<<<<<< HEAD
                   label="Dispensing"
+=======
+                  label="Clinical"
+>>>>>>> eb2658a (updated)
                   items={clinicalNav}
                   pathname={location.pathname}
                   onNavigate={closeMenus}
                 />
               )}
 
+<<<<<<< HEAD
+=======
+              {dispensingNav.length > 0 && (
+                <Dropdown
+                  label="Dispensing"
+                  items={dispensingNav}
+                  pathname={location.pathname}
+                  onNavigate={closeMenus}
+                />
+              )}
+
+>>>>>>> eb2658a (updated)
               {financeNav.length > 0 && (
                 <Dropdown
                   label="Financial"

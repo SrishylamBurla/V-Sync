@@ -45,7 +45,7 @@ export default function LoginPage() {
               <div className="mt-20 max-w-lg">
                 <p className="text-xs font-semibold uppercase tracking-[.22em] text-white/40">One secure workspace</p>
                 <h1 className="mt-4 text-5xl font-semibold leading-[1.05] tracking-tight">Everything your practice needs, in one place.</h1>
-                <p className="mt-6 max-w-md text-sm leading-7 text-white/50">Sign in once. VividOpt uses your role to present the clinical, front desk, optical, finance and administration workspace you are authorized to use.</p>
+                <p className="mt-6 max-w-md text-sm leading-7 text-white/50">Sign in once. V-Sync uses your role to present the clinical, front desk, optical, finance and administration workspace you are authorized to use.</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-white/40"><ShieldCheck size={15} /> Role-based access is applied automatically.</div>

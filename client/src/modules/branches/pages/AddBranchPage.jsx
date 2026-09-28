@@ -154,7 +154,7 @@ export default function AddBranchPage() {
                 onChange={(value) =>
                   updateField("name", value)
                 }
-                placeholder="VividOpt Hyderabad"
+                placeholder="V-Sync Hyderabad"
               />
 
               <Field
@@ -187,7 +187,7 @@ export default function AddBranchPage() {
                 onChange={(value) =>
                   updateField("email", value)
                 }
-                placeholder="hyderabad@vividopt.in"
+                placeholder="hyderabad@vsync.in"
               />
 
               <div className="md:col-span-2">

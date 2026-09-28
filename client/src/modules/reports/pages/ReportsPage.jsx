@@ -166,7 +166,7 @@ export default function ReportsPage() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `vividopt-report-${range.from}-${range.to}.csv`;
+    anchor.download = `v-sync-report-${range.from}-${range.to}.csv`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -459,7 +459,7 @@ export default function ReportsPage() {
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs leading-6 text-slate-500">
           Reports are calculated from the current organization's records. Financial totals use
           invoice and payment records; operational totals use appointments, consultations,
-          optical jobs, recalls and inventory currently stored in VividOpt.
+          optical jobs, recalls and inventory currently stored in V-Sync.
         </div>
       </Section>
     </DocumentShell>

@@ -65,7 +65,11 @@ export default function ContactLensPage() {
             Refresh
           </button>
           <button
+<<<<<<< HEAD
             onClick={() => nav("/optical/contact-lenses/new")}
+=======
+            onClick={() => nav("/dispensing/contact-lenses/new")}
+>>>>>>> eb2658a (updated)
             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white"
           >
             <Plus size={14} />
@@ -116,7 +120,11 @@ export default function ContactLensPage() {
                 label: "Order",
                 render: (r) => (
                   <button
+<<<<<<< HEAD
                     onClick={() => nav(`/optical/contact-lenses/${r._id}`)}
+=======
+                    onClick={() => nav(`/dispensing/contact-lenses/${r._id}`)}
+>>>>>>> eb2658a (updated)
                     className="font-semibold text-slate-900 hover:underline"
                   >
                     {r.orderNumber}

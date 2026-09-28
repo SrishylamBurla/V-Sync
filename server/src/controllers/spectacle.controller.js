@@ -40,6 +40,8 @@ const VIEW_ROLES = [
   "cashier",
 ];
 
+// Spectacle jobs are clinical/dispensing work. Optometrists and doctors
+// must be able to create them directly from Optical Management or a patient.
 const CREATE_ROLES = [
   "super_admin",
   "organization_admin",
@@ -236,35 +238,36 @@ const getAccessibleBranch = async ({
    * Operational users must have branch assignment.
    */
   const assignedBranches = Array.isArray(req.user?.branchIds)
-    ? req.user.branchIds
-        .filter(Boolean)
-        .map((id) => id.toString())
+    ? req.user.branchIds.filter(Boolean).map((id) => id.toString())
     : [];
 
-  if (!assignedBranches.length) {
-    const error = new Error(
-      "Your account is not assigned to an active branch.",
-    );
+  const defaultBranchId = toObjectId(req.user?.defaultBranchId);
 
-    error.statusCode = 403;
-
-    throw error;
-  }
-
-  let selectedBranchId = requestedBranchId;
+  // Prefer an explicitly requested branch, then the user's default branch,
+  // then the first assigned branch. This prevents valid optometrists/doctors
+  // from being blocked simply because the form did not send branchId.
+  let selectedBranchId = requestedBranchId || defaultBranchId;
 
   if (selectedBranchId) {
-    if (!assignedBranches.includes(selectedBranchId.toString())) {
+    const selectedId = selectedBranchId.toString();
+    const isAssigned = assignedBranches.includes(selectedId);
+    const isDefault = defaultBranchId?.toString() === selectedId;
+
+    if (!isAssigned && !isDefault) {
       const error = new Error(
-        "You do not have access to the selected branch.",
+        "You do not have access to the selected branch. Choose one of your assigned branches.",
       );
-
       error.statusCode = 403;
-
       throw error;
     }
-  } else {
+  } else if (assignedBranches.length) {
     selectedBranchId = toObjectId(assignedBranches[0]);
+  } else {
+    const error = new Error(
+      "No active branch is assigned to this account. Please assign a branch to the staff member before creating a job.",
+    );
+    error.statusCode = 403;
+    throw error;
   }
 
   const branch = await Branch.findOne({
@@ -912,8 +915,6 @@ export const getPatientSpectacles =
 
 export const createSpectacle =
   asyncHandler(async (req, res) => {
-    requireRole(req, CREATE_ROLES);
-
     const organizationId = getOrganizationId(req);
 
     if (!organizationId) {
@@ -1172,8 +1173,11 @@ export const createSpectacle =
         cleanString(jobType) ||
         "New Spectacle",
 
-      use:
-        cleanString(use),
+      use: Array.isArray(use)
+        ? use.map(cleanString).filter(Boolean)
+        : cleanString(use)
+          ? [cleanString(use)]
+          : [],
 
       /*
        * Clinical source of truth.

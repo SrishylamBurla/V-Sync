@@ -591,7 +591,7 @@ export default function NewSpectaclePage() {
       const spectacle = response?.data;
 
       if (spectacle?._id) {
-        navigate(`/optical/spectacles/${spectacle._id}`);
+        navigate(`/dispensing/spectacles/${spectacle._id}`);
         return;
       }
 

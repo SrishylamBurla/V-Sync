@@ -264,7 +264,7 @@ export default function OrganizationSettingsPage() {
               </h2>
 
               <p className="mt-1 text-sm text-slate-500">
-                Update the details used across your VividOpt workspace.
+                Update the details used across your V-Sync workspace.
               </p>
             </div>
 
@@ -284,7 +284,7 @@ export default function OrganizationSettingsPage() {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    placeholder="VividOpt"
+                    placeholder="V-Sync Technologies"
                     className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>

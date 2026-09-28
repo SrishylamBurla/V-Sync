@@ -668,7 +668,7 @@ export default function StaffListPage() {
 
         <footer className="py-6 text-center">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            VividOpt · Practice Management
+            V-Sync · Practice Management
           </p>
         </footer>
       </main>

@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Spectacle from "../models/Spectacle.js";
 import ContactLens from "../models/ContactLens.js";
+import mongoose from "mongoose";
 
 const stages = ["ordered", "not_ready", "ready", "notified", "collected", "cancelled"];
 const nextStage = { draft: "ordered", ordered: "not_ready", not_ready: "ready", ready: "notified", notified: "collected" };
@@ -31,6 +32,7 @@ export const listDispensing = asyncHandler(async (req, res) => {
 });
 
 export const getDispensing = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) { res.status(400); throw new Error("Invalid dispensing job ID"); }
   const filter = { _id: req.params.id, organizationId: req.user.organizationId };
   const [spectacle, contactLens] = await Promise.all([
     populate(Spectacle.findOne(filter)).lean(),
@@ -42,6 +44,7 @@ export const getDispensing = asyncHandler(async (req, res) => {
 });
 
 export const updateDispensing = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) { res.status(400); throw new Error("Invalid dispensing job ID"); }
   const { status } = req.body;
   if (!stages.includes(status)) { res.status(400); throw new Error("Invalid dispensing status"); }
   const filter = { _id: req.params.id, organizationId: req.user.organizationId };

@@ -39,7 +39,7 @@ export default function NewContactLensPage() {
   const [form, setForm] = useState({
     patientId: initial || "",
     consultationId: "",
-    orderType: "consultation_and_order",
+    orderType: "order_only",
     lensType: "Soft",
     brand: "",
     model: "",
@@ -83,9 +83,13 @@ export default function NewContactLensPage() {
       setError("Please select a patient");
       return;
     }
+    if (form.orderType === "order_only" && !consult) {
+      setError("Complete the contact-lens consultation before creating this job.");
+      return;
+    }
     try {
       const r = await createContactLens({ ...form, total });
-      nav(`/optical/contact-lenses/${r?.data?._id}`);
+      nav(`/dispensing/contact-lenses/${r?.data?._id}`);
     } catch (e) {
       setError(e?.response?.data?.message || "Unable to create order");
     }
@@ -94,17 +98,18 @@ export default function NewContactLensPage() {
     setForm((f) => ({ ...f, [side]: { ...f[side], [key]: value } }));
   return (
     <DocumentShell
-      eyebrow="Optical workspace"
-      title="New Contact Lens Order"
-      subtitle="Complete contact lens consultation and order document."
+      eyebrow="Dispensing"
+      title="New Contact Lens Job"
+      subtitle="Create the dispensing job from the patient's completed contact-lens consultation."
       code="NEW CONTACT LENS"
       actions={
         <button
           form="cl-form"
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white"
+          disabled={Boolean(form.patientId) && !consult && form.orderType === "order_only"}
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Save size={14} />
-          Create order
+          Create job
         </button>
       }
     >
@@ -144,6 +149,17 @@ export default function NewContactLensPage() {
               </div>
             )}
           </div>
+          {selected && !consult && (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+              <div className="font-bold">Contact-lens consultation required</div>
+              <p className="mt-1 leading-5">Complete the clinical contact-lens consultation first. This page is only for creating the dispensing job.</p>
+              <button
+                type="button"
+                onClick={() => nav(`/patients/${selected}/consultations/new?type=specialized&specializedType=contact_lenses`)}
+                className="mt-2 font-bold underline underline-offset-2"
+              >Open contact-lens consultation</button>
+            </div>
+          )}
           {selected && (
             <div className="mt-4">
               <InfoGrid
@@ -179,8 +195,6 @@ export default function NewContactLensPage() {
               value={form.orderType}
               onChange={(v) => setForm({ ...form, orderType: v })}
               options={[
-                "consultation_and_order",
-                "consultation_only",
                 "order_only",
                 "repeat_order",
               ]}

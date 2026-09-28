@@ -52,7 +52,25 @@ import { ROLE_PERMISSIONS } from "../config/rolePermissions.js";
 export const requirePermission =
   (permission) =>
   (req, res, next) => {
-    const role = req.user?.role;
+    const role = String(req.user?.role || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+
+    console.log("=================================");
+    console.log("PERMISSION CHECK");
+    console.log("USER ID:", req.user?._id);
+    console.log("USER ROLE:", role);
+    console.log("REQUIRED:", permission);
+    console.log(
+      "AVAILABLE:",
+      ROLE_PERMISSIONS[role] || []
+    );
+    console.log(
+      "HAS PERMISSION:",
+      (ROLE_PERMISSIONS[role] || []).includes(permission)
+    );
+    console.log("=================================");
 
     console.log("=================================");
     console.log("PERMISSION CHECK");

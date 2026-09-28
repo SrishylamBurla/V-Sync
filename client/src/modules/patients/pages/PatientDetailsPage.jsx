@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // // import { useCallback, useEffect, useMemo, useState } from "react";
 // // import {
 // //   ArrowLeft,
@@ -3725,6 +3726,8 @@
 //     </label>
 //   );
 // }
+=======
+>>>>>>> eb2658a (updated)
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -3766,7 +3769,11 @@ import { getPatientSpectacles } from "../../optical/spectacle.api";
 import { getPatientContactLenses } from "../../contactLenses/contactLens.api";
 import { getDispensingList } from "../../dispensing/dispensing.api";
 import { getInvoices } from "../../billing/billing.api";
+<<<<<<< HEAD
 import { getAppointments } from "../../appointments/appointment.api";
+=======
+import { getPatientAppointments } from "../../appointments/appointment.api";
+>>>>>>> eb2658a (updated)
 
 const fullName = (patient) =>
   [patient?.firstName, patient?.middleName, patient?.lastName]
@@ -3983,7 +3990,11 @@ export default function PatientDetailsPage() {
           getPatientContactLenses(patientId),
           getDispensingList({ patientId }),
           getInvoices({ patientId }),
+<<<<<<< HEAD
           getAppointments({ patientId }),
+=======
+          getPatientAppointments(patientId),
+>>>>>>> eb2658a (updated)
           getPatientDocuments(patientId),
         ]);
 
@@ -4813,7 +4824,11 @@ export default function PatientDetailsPage() {
           {activeSection === "dispensing" && (
             <section>
             <Panel
+<<<<<<< HEAD
               title="Optical Care & Dispensing"
+=======
+              title="Dispensing"
+>>>>>>> eb2658a (updated)
               icon={Receipt}
               action={
                 <button

@@ -130,7 +130,7 @@ export default function AdminOrganizationsPage() {
                 </h1>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  Manage organizations registered on VividOpt.
+                  Manage organizations registered on V-Sync.
                 </p>
               </div>
             </div>
