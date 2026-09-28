@@ -2220,20 +2220,4 @@ consultationSchema.index({
   consultationDate: -1,
 });
 
-
-console.log(
-  "🔥🔥🔥 CONSULTATION MODEL FILE LOADED 🔥🔥🔥"
-);
-
-console.log(
-  "🔥 binocularVision:",
-  consultationSchema.path("binocularVision")?.instance
-);
-
-console.log(
-  "🔥 accommodation:",
-  consultationSchema.path(
-    "binocularVision.accommodation"
-  )?.instance
-);
 export default mongoose.model("Consultation", consultationSchema);

@@ -6,30 +6,6 @@ import Patient from "../models/Patient.js";
 import Branch from "../models/Branch.js";
 import User from "../models/User.js";
 
-
-console.log("========== CONSULTATION MODEL ==========");
-console.log("Model:", Consultation.modelName);
-
-console.log(
-  "binocularVision:",
-  Consultation.schema.path("binocularVision")?.instance
-);
-
-console.log(
-  "accommodation:",
-  Consultation.schema.path(
-    "binocularVision.accommodation"
-  )?.instance
-);
-
-console.log(
-  "accommodation schema:",
-  Consultation.schema.path(
-    "binocularVision.accommodation"
-  )
-);
-
-console.log("========================================");
 // --------------------------------------------------
 // BRANCH ACCESS
 // --------------------------------------------------
