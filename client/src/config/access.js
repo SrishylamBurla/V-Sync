@@ -49,6 +49,50 @@ export const PRACTICE_ROLES = [
 ];
 
 // ============================================================
+// ROLE GROUPS
+// ============================================================
+
+/**
+ * Clinical users
+ *
+ * These users can work with:
+ * - Patient consultations
+ * - Refraction
+ * - Prescriptions
+ * - Contact lens consultation
+ * - Binocular vision
+ * - Low vision
+ * - Clinical records
+ */
+export const CLINICAL_ROLES = [
+  ROLES.OPTOMETRIST,
+  ROLES.DOCTOR,
+];
+
+/**
+ * Optical / dispensing users
+ *
+ * Doctors and optometrists can create and manage optical jobs.
+ *
+ * Branch managers are also allowed operational access.
+ */
+export const OPTICAL_ROLES = [
+  ROLES.OPTOMETRIST,
+  ROLES.DOCTOR,
+  ROLES.BRANCH_MANAGER,
+];
+
+/**
+ * Patient-facing operational users.
+ */
+export const PATIENT_SERVICE_ROLES = [
+  ROLES.OPTOMETRIST,
+  ROLES.DOCTOR,
+  ROLES.RECEPTIONIST,
+  ROLES.BRANCH_MANAGER,
+];
+
+// ============================================================
 // ROLE HELPERS
 // ============================================================
 
@@ -88,18 +132,18 @@ export const isOrganizationAdmin = (role) =>
 export const isPracticeUser = (role) =>
   getAccessLevel(role) === ACCESS_LEVELS.PRACTICE_USER;
 
+export const isOptometrist = (role) =>
+  normalizeRole(role) === ROLES.OPTOMETRIST;
+
+export const isDoctor = (role) =>
+  normalizeRole(role) === ROLES.DOCTOR;
+
+export const isClinician = (role) =>
+  CLINICAL_ROLES.includes(normalizeRole(role));
+
 // ============================================================
 // MODULE ACCESS
 // ============================================================
-//
-// The application uses modules rather than creating a
-// completely different UI for every employee role.
-//
-// Example:
-// Doctor + Optometrist both access Clinical Management.
-//
-// Individual permissions can still be enforced by the backend.
-//
 
 export const MODULE_ACCESS = {
   // ----------------------------------------------------------
@@ -115,24 +159,70 @@ export const MODULE_ACCESS = {
   // ----------------------------------------------------------
   // Clinical
   // ----------------------------------------------------------
+  //
+  // Explicitly available to:
+  // - Super Admin
+  // - Organization Admin
+  // - Optometrist
+  // - Doctor
+  // - Branch Manager
+  //
+  // Other practice users should not see Clinical.
+  //
 
   clinical: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
+
+  // ----------------------------------------------------------
+  // Optical
+  // ----------------------------------------------------------
+  //
+  // Optical workflow includes:
+  // - Spectacle jobs
+  // - Contact lens workflow
+  // - Optical orders
+  // - Optical history
+  //
+  // Optometrist and Doctor MUST have access.
+  //
 
   optical: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
 
+  // ----------------------------------------------------------
+  // Dispensing
+  // ----------------------------------------------------------
+  //
+  // Dispensing workflow includes:
+  // - Spectacle jobs
+  // - Contact lens jobs
+  // - Job status
+  // - Ready / notified / collected workflow
+  //
+  // Optometrist and Doctor MUST have access.
+  //
+
   dispensing: [
-    ACCESS_LEVELS.SUPER_ADMIN,
-    ACCESS_LEVELS.ORGANIZATION_ADMIN,
-    ACCESS_LEVELS.PRACTICE_USER,
+    ROLES.SUPER_ADMIN,
+    ROLES.ORGANIZATION_ADMIN,
+    ROLES.BRANCH_MANAGER,
+    ROLES.OPTOMETRIST,
+    ROLES.DOCTOR,
   ],
+
+  // ----------------------------------------------------------
+  // Inventory
+  // ----------------------------------------------------------
 
   inventory: [
     ROLES.SUPER_ADMIN,
@@ -140,6 +230,10 @@ export const MODULE_ACCESS = {
     ROLES.BRANCH_MANAGER,
     ROLES.INVENTORY_MANAGER,
   ],
+
+  // ----------------------------------------------------------
+  // Catalogue
+  // ----------------------------------------------------------
 
   catalogue: [
     ROLES.SUPER_ADMIN,
@@ -150,6 +244,10 @@ export const MODULE_ACCESS = {
     ROLES.OPTOMETRIST,
     ROLES.DOCTOR,
   ],
+
+  // ----------------------------------------------------------
+  // Laboratory
+  // ----------------------------------------------------------
 
   laboratory: [
     ROLES.SUPER_ADMIN,
@@ -242,7 +340,9 @@ export const MODULE_ACCESS = {
     ROLES.BRANCH_MANAGER,
   ],
 
-  organizations: [ROLES.SUPER_ADMIN],
+  organizations: [
+    ROLES.SUPER_ADMIN,
+  ],
 };
 
 // ============================================================
@@ -260,13 +360,7 @@ export const canAccessModule = (module, role) => {
   return allowedRoles.includes(normalizedRole);
 };
 
-// Backward-compatible helper.
-//
-// Existing components can continue using:
-//
-// canAccess("clinical", user.role)
-//
-
+// Backward-compatible helper
 export const canAccess = (module, role) =>
   canAccessModule(module, role);
 
@@ -469,11 +563,10 @@ export const filterNavigation = (items, role) => {
 
       const children = Array.isArray(item.children)
         ? item.children.filter((child) =>
-            canAccessModule(child.access, role)
+            canAccessModule(child.access, role),
           )
         : [];
 
-      // Don't display an empty dropdown.
       if (!children.length) {
         return null;
       }
@@ -504,12 +597,6 @@ export const getSuperAdminNavigation = (role) => {
 // ============================================================
 // ROUTE ACCESS MAP
 // ============================================================
-//
-// Route keys intentionally map to MODULE_ACCESS.
-//
-// This means App.jsx / AccessRoute.jsx do not need to
-// duplicate role arrays.
-//
 
 export const ROUTE_ACCESS = {
   // Core
@@ -517,9 +604,13 @@ export const ROUTE_ACCESS = {
   patients: "patients",
   appointments: "appointments",
 
+  // Clinical
   clinical: "clinical",
+
+  // Optical
   optical: "optical",
 
+  // Dispensing
   dispensing: "dispensing",
 
   // Operations
@@ -555,7 +646,6 @@ export const canAccessRoute = (routeKey, role) => {
     return false;
   }
 
-  // Super admin organization route is intentionally restricted.
   if (
     moduleKey === "organizations" &&
     !isSuperAdmin(role)
@@ -598,12 +688,19 @@ export default {
   ALL_ROLES,
   PRACTICE_ROLES,
 
+  CLINICAL_ROLES,
+  OPTICAL_ROLES,
+  PATIENT_SERVICE_ROLES,
+
   normalizeRole,
   getAccessLevel,
 
   isSuperAdmin,
   isOrganizationAdmin,
   isPracticeUser,
+  isOptometrist,
+  isDoctor,
+  isClinician,
 
   MODULE_ACCESS,
   ROUTE_ACCESS,
