@@ -18,10 +18,7 @@ import AppointmentDetailsPage from "./modules/appointments/pages/AppointmentDeta
 import BookAppointmentPage from "./modules/appointments/pages/BookAppointmentPage";
 
 import OpticalManagementPage from "./modules/optical/pages/OpticalManagementPage";
-<<<<<<< HEAD
-=======
-import DispensingPage from "./modules/dispensing/pages/DispensingPage";
->>>>>>> eb2658a (updated)
+
 import NewSpectaclePage from "./modules/optical/pages/NewSpectaclePage";
 import SpectacleDetailsPage from "./modules/optical/pages/SpectacleDetailsPage";
 
@@ -29,10 +26,7 @@ import ContactLensPage from "./modules/contactLenses/pages/ContactLensPage";
 import NewContactLensPage from "./modules/contactLenses/pages/NewContactLensPage";
 import ContactLensDetailsPage from "./modules/contactLenses/pages/ContactLensDetailsPage";
 
-<<<<<<< HEAD
 import DispensingPage from "./modules/dispensing/pages/DispensingPage";
-=======
->>>>>>> eb2658a (updated)
 import DispensingDetailsPage from "./modules/dispensing/pages/DispensingDetailsPage";
 import InventoryPage from "./modules/inventory/pages/InventoryPage";
 import LaboratoryManagementPage from "./modules/laboratory/pages/LaboratoryMangementPage";
@@ -104,7 +98,7 @@ export default function App() {
             <Route path="/clinical" element={<ClinicalManagementPage />} />
           </Route>
 
-<<<<<<< HEAD
+
           <Route element={<AccessRoute module="optical" />}>
             <Route path="/optical" element={<OpticalManagementPage />} />
             <Route
@@ -143,7 +137,6 @@ export default function App() {
             <Route path="/dispensing/:id" element={<DispensingDetailsPage />} />
           </Route>
 
-=======
           <Route element={<AccessRoute module="dispensing" />}>
             {/* Single canonical optical/dispensing workspace. */}
             <Route path="/dispensing" element={<DispensingPage />} />
@@ -168,8 +161,6 @@ export default function App() {
           <Route path="/optical/contact-lenses/new/:patientId" element={<NewContactLensPage />} />
           <Route path="/optical/contact-lenses/:id" element={<Navigate to="/dispensing" replace />} />
 
-
->>>>>>> eb2658a (updated)
           <Route element={<AccessRoute module="inventory" />}>
             <Route path="/inventory" element={<InventoryPage />} />
           </Route>

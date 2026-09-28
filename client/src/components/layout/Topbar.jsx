@@ -9,7 +9,6 @@ import {
   ChevronDown,
   ClipboardList,
   FileBarChart,
-  Glasses,
   LogOut,
   Menu,
   Search,
@@ -45,7 +44,12 @@ const PLATFORM_NAV = [
 ];
 
 const PATIENT_NAV = [
-  { label: "Patients", to: "/patients", icon: Users, access: "patients" },
+  {
+    label: "Patients",
+    to: "/patients",
+    icon: Users,
+    access: "patients",
+  },
   {
     label: "Appointments",
     to: "/appointments",
@@ -66,6 +70,11 @@ const PATIENT_NAV = [
   },
 ];
 
+/*
+ * Clinical contains clinical workflows only.
+ * Optical/dispensing is intentionally kept out of this group so there
+ * is only one clear global entry point for dispensing work.
+ */
 const CLINICAL_NAV = [
   {
     label: "Clinical Management",
@@ -73,33 +82,21 @@ const CLINICAL_NAV = [
     icon: Stethoscope,
     access: "clinical",
   },
-<<<<<<< HEAD
-  {
-    label: "Optical Management",
-    to: "/optical",
-    icon: Glasses,
-    access: "optical",
-  },
-=======
-];
-
-const DISPENSING_NAV = [
->>>>>>> eb2658a (updated)
-  {
-    label: "Dispensing",
-    to: "/dispensing",
-    icon: ClipboardList,
-    access: "dispensing",
-  },
-<<<<<<< HEAD
   {
     label: "Laboratory",
     to: "/lab",
     icon: Activity,
     access: "laboratory",
   },
-=======
->>>>>>> eb2658a (updated)
+];
+
+const DISPENSING_NAV = [
+  {
+    label: "Dispensing",
+    to: "/dispensing",
+    icon: ClipboardList,
+    access: "dispensing",
+  },
 ];
 
 const FINANCE_NAV = [
@@ -161,16 +158,29 @@ const MAINTENANCE_NAV = [
 
 const idOf = (value) => {
   if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || value.toString?.() || "";
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "object") {
+    return String(value._id || value.id || "");
+  }
+
+  return "";
 };
 
 const pathMatches = (pathname, path) => {
-  if (path === "/dashboard") return pathname === "/dashboard";
+  if (!path) return false;
+
+  if (path === "/dashboard") {
+    return pathname === "/dashboard";
+  }
+
   return pathname === path || pathname.startsWith(`${path}/`);
 };
 
-const sectionActive = (pathname, items) =>
+const sectionActive = (pathname, items = []) =>
   items.some((item) => pathMatches(pathname, item.to));
 
 function TopNavLink({ to, children, onNavigate }) {
@@ -184,13 +194,16 @@ function TopNavLink({ to, children, onNavigate }) {
           "relative inline-flex h-11 shrink-0 items-center justify-center",
           "px-3.5 text-[13px] font-medium leading-none whitespace-nowrap",
           "transition-colors duration-150",
-          isActive ? "text-slate-950" : "text-slate-500 hover:text-slate-900",
+          isActive
+            ? "text-slate-950"
+            : "text-slate-500 hover:text-slate-900",
         ].join(" ")
       }
     >
       {({ isActive }) => (
         <>
           <span>{children}</span>
+
           {isActive && (
             <span className="absolute inset-x-3.5 bottom-0 h-0.5 rounded-full bg-slate-950" />
           )}
@@ -203,6 +216,8 @@ function TopNavLink({ to, children, onNavigate }) {
 function Dropdown({ label, items, pathname, onNavigate }) {
   const active = sectionActive(pathname, items);
 
+  if (!items?.length) return null;
+
   return (
     <div className="group relative">
       <button
@@ -211,15 +226,19 @@ function Dropdown({ label, items, pathname, onNavigate }) {
           "relative inline-flex h-11 shrink-0 items-center justify-center gap-1.5",
           "px-3.5 text-[13px] font-medium leading-none whitespace-nowrap",
           "transition-colors duration-150",
-          active ? "text-slate-950" : "text-slate-500 hover:text-slate-900",
+          active
+            ? "text-slate-950"
+            : "text-slate-500 hover:text-slate-900",
         ].join(" ")}
       >
         <span>{label}</span>
+
         <ChevronDown
           size={13}
           strokeWidth={1.8}
           className="transition-transform duration-150 group-hover:rotate-180"
         />
+
         {active && (
           <span className="absolute inset-x-3.5 bottom-0 h-0.5 rounded-full bg-slate-950" />
         )}
@@ -230,7 +249,8 @@ function Dropdown({ label, items, pathname, onNavigate }) {
           "invisible absolute left-0 top-full z-50 mt-1 w-60 translate-y-1",
           "overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5",
           "opacity-0 shadow-[0_12px_40px_rgba(15,23,42,0.12)]",
-          "transition-all duration-150 group-hover:visible group-hover:translate-y-0",
+          "transition-all duration-150",
+          "group-hover:visible group-hover:translate-y-0",
           "group-hover:opacity-100",
         ].join(" ")}
       >
@@ -244,14 +264,22 @@ function Dropdown({ label, items, pathname, onNavigate }) {
               to={item.to}
               onClick={onNavigate}
               className={[
-                "flex h-10 items-center gap-3 rounded-lg px-3 text-[13px]",
-                "font-medium leading-none transition-colors duration-150",
+                "flex h-10 items-center gap-3 rounded-lg px-3",
+                "text-[13px] font-medium leading-none",
+                "transition-colors duration-150",
                 activeItem
                   ? "bg-slate-100 text-slate-950"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
               ].join(" ")}
             >
-              <Icon size={15} strokeWidth={1.8} className="shrink-0" />
+              {Icon ? (
+                <Icon
+                  size={15}
+                  strokeWidth={1.8}
+                  className="shrink-0"
+                />
+              ) : null}
+
               <span>{item.label}</span>
             </NavLink>
           );
@@ -262,6 +290,8 @@ function Dropdown({ label, items, pathname, onNavigate }) {
 }
 
 function MobileSection({ label, items, pathname, onNavigate }) {
+  if (!items?.length) return null;
+
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-2">
       <div className="px-2 pb-1.5 pt-1 text-[9px] font-bold uppercase tracking-[.16em] text-slate-400">
@@ -279,13 +309,14 @@ function MobileSection({ label, items, pathname, onNavigate }) {
               to={item.to}
               onClick={onNavigate}
               className={[
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5",
+                "text-[13px] font-medium",
                 active
                   ? "bg-white text-slate-950 shadow-sm"
                   : "text-slate-600 hover:bg-white hover:text-slate-950",
               ].join(" ")}
             >
-              <Icon size={16} strokeWidth={1.8} />
+              {Icon ? <Icon size={16} strokeWidth={1.8} /> : null}
               <span>{item.label}</span>
             </NavLink>
           );
@@ -298,8 +329,10 @@ function MobileSection({ label, items, pathname, onNavigate }) {
 export default function Topbar() {
   const { user, organization, branches = [], logout } = useAuth();
   const location = useLocation();
+
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const rootRef = useRef(null);
 
   const role = user?.role;
@@ -310,16 +343,15 @@ export default function Topbar() {
 
   const patientNav = filterItems(PATIENT_NAV);
   const clinicalNav = filterItems(CLINICAL_NAV);
-<<<<<<< HEAD
-=======
   const dispensingNav = filterItems(DISPENSING_NAV);
->>>>>>> eb2658a (updated)
   const financeNav = filterItems(FINANCE_NAV);
   const inventoryNav = filterItems(INVENTORY_NAV);
   const maintenanceNav = filterItems(MAINTENANCE_NAV);
 
   const currentBranch = useMemo(() => {
-    if (isSuperAdmin || !branches.length) return null;
+    if (isSuperAdmin || !branches.length) {
+      return null;
+    }
 
     const defaultId = idOf(user?.defaultBranchId);
 
@@ -341,8 +373,16 @@ export default function Topbar() {
     };
 
     document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+    setProfileOpen(false);
+  }, [location.pathname]);
 
   const closeMenus = () => {
     setProfileOpen(false);
@@ -350,16 +390,30 @@ export default function Topbar() {
   };
 
   const mobileSections = [
-    { label: "Patients & Care", items: patientNav },
-<<<<<<< HEAD
-    { label: "Dispensing", items: clinicalNav },
-=======
-    { label: "Clinical", items: clinicalNav },
-    { label: "Dispensing", items: dispensingNav },
->>>>>>> eb2658a (updated)
-    { label: "Financial", items: financeNav },
-    { label: "Inventory", items: inventoryNav },
-    { label: "Maintenance", items: maintenanceNav },
+    {
+      label: "Patients & Care",
+      items: patientNav,
+    },
+    {
+      label: "Clinical",
+      items: clinicalNav,
+    },
+    {
+      label: "Dispensing",
+      items: dispensingNav,
+    },
+    {
+      label: "Financial",
+      items: financeNav,
+    },
+    {
+      label: "Inventory",
+      items: inventoryNav,
+    },
+    {
+      label: "Maintenance",
+      items: maintenanceNav,
+    },
   ].filter((section) => section.items.length);
 
   return (
@@ -381,6 +435,7 @@ export default function Topbar() {
             <span className="block text-[15px] font-bold tracking-tight text-slate-950">
               V-Sync
             </span>
+
             <span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-400">
               Vision Platform
             </span>
@@ -395,6 +450,7 @@ export default function Topbar() {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               size={16}
             />
+
             <input
               type="search"
               placeholder="Search patients, appointments..."
@@ -406,11 +462,16 @@ export default function Topbar() {
         <div className="ml-auto flex items-center gap-2">
           {!isSuperAdmin && (
             <div className="hidden max-w-[260px] items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 md:flex">
-              <Building2 size={15} className="shrink-0 text-slate-400" />
+              <Building2
+                size={15}
+                className="shrink-0 text-slate-400"
+              />
+
               <div className="min-w-0">
                 <div className="truncate text-[11px] font-semibold text-slate-800">
                   {organizationName}
                 </div>
+
                 <div className="truncate text-[10px] text-slate-400">
                   {currentBranch?.name || "Default branch"}
                 </div>
@@ -424,6 +485,7 @@ export default function Topbar() {
             aria-label="Notifications"
           >
             <Bell size={18} strokeWidth={1.8} />
+
             <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-white" />
           </button>
 
@@ -445,6 +507,7 @@ export default function Topbar() {
                     .filter(Boolean)
                     .join(" ") || "User"}
                 </span>
+
                 <span className="block text-[10px] text-slate-400">
                   {roleLabel}
                 </span>
@@ -464,6 +527,7 @@ export default function Topbar() {
                       .filter(Boolean)
                       .join(" ") || "User"}
                   </div>
+
                   <div className="mt-0.5 truncate text-[11px] text-slate-400">
                     {user?.email || ""}
                   </div>
@@ -478,7 +542,9 @@ export default function Topbar() {
                   {!isSuperAdmin && (
                     <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[12px] text-slate-600">
                       <Building2 size={16} />
-                      <span className="truncate">{organizationName}</span>
+                      <span className="truncate">
+                        {organizationName}
+                      </span>
                     </div>
                   )}
 
@@ -510,13 +576,20 @@ export default function Topbar() {
         <nav className="mx-auto flex h-11 w-full max-w-[1500px] items-center overflow-visible px-3 sm:px-5 lg:px-7">
           {isSuperAdmin ? (
             PLATFORM_NAV.map((item) => (
-              <TopNavLink key={item.to} to={item.to} onNavigate={closeMenus}>
+              <TopNavLink
+                key={item.to}
+                to={item.to}
+                onNavigate={closeMenus}
+              >
                 {item.label}
               </TopNavLink>
             ))
           ) : (
             <>
-              <TopNavLink to="/dashboard" onNavigate={closeMenus}>
+              <TopNavLink
+                to="/dashboard"
+                onNavigate={closeMenus}
+              >
                 Dashboard
               </TopNavLink>
 
@@ -531,19 +604,13 @@ export default function Topbar() {
 
               {clinicalNav.length > 0 && (
                 <Dropdown
-<<<<<<< HEAD
-                  label="Dispensing"
-=======
                   label="Clinical"
->>>>>>> eb2658a (updated)
                   items={clinicalNav}
                   pathname={location.pathname}
                   onNavigate={closeMenus}
                 />
               )}
 
-<<<<<<< HEAD
-=======
               {dispensingNav.length > 0 && (
                 <Dropdown
                   label="Dispensing"
@@ -553,7 +620,6 @@ export default function Topbar() {
                 />
               )}
 
->>>>>>> eb2658a (updated)
               {financeNav.length > 0 && (
                 <Dropdown
                   label="Financial"
@@ -585,7 +651,9 @@ export default function Topbar() {
 
           <div className="ml-auto flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
             <Wrench size={13} />
-            <span>{isSuperAdmin ? "Platform" : "Workspace"}</span>
+            <span>
+              {isSuperAdmin ? "Platform" : "Workspace"}
+            </span>
           </div>
         </nav>
       </div>
@@ -598,6 +666,7 @@ export default function Topbar() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 size={16}
               />
+
               <input
                 type="search"
                 placeholder="Search patients, appointments..."

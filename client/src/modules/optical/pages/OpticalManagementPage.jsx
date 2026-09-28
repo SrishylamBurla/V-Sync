@@ -193,11 +193,7 @@ export default function OpticalManagementPage() {
   const selectPatientForSpectacle = (patient) => {
     if (!patient?._id) return;
     setPatientModalOpen(false);
-<<<<<<< HEAD
     navigate(`/optical/spectacles/new/${patient._id}`);
-=======
-    navigate(`/dispensing/spectacles/new/${patient._id}`);
->>>>>>> eb2658a (updated)
   };
 
   const spectacleJobs = useMemo(
@@ -250,7 +246,7 @@ export default function OpticalManagementPage() {
               >
                 <RefreshCw size={14} /> Refresh
               </button>
-<<<<<<< HEAD
+
               <button
                 type="button"
                 onClick={() => navigate("/optical/contact-lenses/new")}
@@ -282,7 +278,7 @@ export default function OpticalManagementPage() {
                   <Plus size={14} /> New spectacle job
                 </button>
               </>)}
->>>>>>> eb2658a (updated)
+
             </div>
           </div>
         </header>
@@ -298,11 +294,7 @@ export default function OpticalManagementPage() {
 
       </Section>
 
-<<<<<<< HEAD
       <Section number="02" title="Patient optical records" description="Quickly distinguish the complete spectacle history, active orders and previous purchases. Click any record to open the full optical record.">
-=======
-      <Section number="02" title="Patient dispensing records" description="Quickly distinguish the complete spectacle history, active orders and previous purchases. Click any record to open the full optical record.">
->>>>>>> eb2658a (updated)
         <div className="grid gap-3 sm:grid-cols-3">
           <RecordCard
             icon={History}
@@ -436,17 +428,10 @@ export default function OpticalManagementPage() {
         />
       </Section>
 
-<<<<<<< HEAD
       <Section number="05" title="Optical workflows">
         <div className="grid gap-3 sm:grid-cols-3">
           <WorkflowCard icon={Glasses} title="Spectacle dispensing" description="Create a spectacle job from the patient record." onClick={openPatientSelector} />
           <WorkflowCard icon={ContactRound} title="Contact lenses" description="Create or review contact lens orders and fitting." onClick={() => navigate("/optical/contact-lenses")} />
-=======
-      <Section number="05" title="Dispensing workflows">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <WorkflowCard icon={Glasses} title="Spectacle dispensing" description="Create a spectacle job from the patient record." onClick={openPatientSelector} />
-          <WorkflowCard icon={ContactRound} title="Contact lens jobs" description="Create and manage contact lens dispensing jobs. Clinical contact lens consultation is handled in Consultation." onClick={() => navigate("/dispensing/contact-lenses")} />
->>>>>>> eb2658a (updated)
           <WorkflowCard icon={PackageCheck} title="Dispensing queue" description="Move optical jobs through order, ready and collection stages." onClick={() => navigate("/dispensing")} />
         </div>
       </Section>
@@ -459,15 +444,9 @@ export default function OpticalManagementPage() {
           onClose={() => setRecordModal(null)}
           onOpen={() => {
             if (recordModal.type === "spectacle") {
-<<<<<<< HEAD
-              navigate(`/optical/spectacles/${recordModal.row._id}`);
-            } else {
-              navigate(`/optical/contact-lenses/${recordModal.row._id}`);
-=======
               navigate(`/dispensing/spectacles/${recordModal.row._id}`);
             } else {
               navigate(`/dispensing/contact-lenses/${recordModal.row._id}`);
->>>>>>> eb2658a (updated)
             }
           }}
         />
@@ -754,11 +733,7 @@ function OpticalRecordModal({ record, type, onClose, onOpen }) {
             </>
           ) : (
             <>
-<<<<<<< HEAD
               <ModalSection title="Contact lens order">
-=======
-              <ModalSection title="Contact lens job">
->>>>>>> eb2658a (updated)
                 <DetailGrid
                   items={[
                     ["Order", record?.orderNumber],
