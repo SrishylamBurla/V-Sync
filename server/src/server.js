@@ -190,11 +190,11 @@ const startServer = async () => {
     await connectDB();
 
     app.listen(PORT, () => {
-      console.log(`OptiCore API running on port ${PORT}`);
+      console.log(`V-Sync API running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
     });
   } catch (error) {
-    console.error("Failed to start OptiCore:", error.message);
+    console.error("Failed to start V-Sync:", error.message);
 
     process.exit(1);
   }

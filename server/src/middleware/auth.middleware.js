@@ -5,22 +5,20 @@ export const protect = async (req, res, next) => {
   try {
     const authorization = req.headers.authorization;
 
-    if (
-      !authorization ||
-      !authorization.startsWith("Bearer ")
-    ) {
+    if (!authorization || !authorization.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "Authentication required",
       });
     }
-
+    console.log("AUTH USER:", {
+      id: req.user?._id,
+      role: req.user?.role,
+      organizationId: req.user?.organizationId,
+    });
     const token = authorization.split(" ")[1];
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_ACCESS_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     const user = await User.findById(decoded.userId);
 
