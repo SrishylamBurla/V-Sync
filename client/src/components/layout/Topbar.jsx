@@ -92,9 +92,21 @@ const CLINICAL_NAV = [
 
 const DISPENSING_NAV = [
   {
-    label: "Dispensing",
-    to: "/dispensing",
+    label: "Spectacle Jobs",
+    to: "/dispensing/spectacle-jobs",
     icon: ClipboardList,
+    access: "dispensing",
+  },
+  {
+    label: "Contact Lens Jobs",
+    to: "/dispensing/contact-lenses",
+    icon: ClipboardList,
+    access: "dispensing",
+  },
+  {
+    label: "Sundries",
+    to: "/dispensing/sundries",
+    icon: Boxes,
     access: "dispensing",
   },
 ];

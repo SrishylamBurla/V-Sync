@@ -150,6 +150,138 @@ const getConsultationDate = (value) => {
   return date;
 };
 
+export const getConsultations = asyncHandler(
+  async (req, res) => {
+    const organizationId = req.user.organizationId;
+
+    const page = Math.max(
+      1,
+      Number(req.query.page || 1),
+    );
+
+    const limit = Math.min(
+      100,
+      Math.max(
+        1,
+        Number(req.query.limit || 25),
+      ),
+    );
+
+    const skip = (page - 1) * limit;
+
+    const filter = {
+      organizationId,
+    };
+
+    if (req.query.patientId) {
+      if (
+        !mongoose.Types.ObjectId.isValid(
+          req.query.patientId,
+        )
+      ) {
+        res.status(400);
+        throw new Error("Invalid patient ID");
+      }
+
+      filter.patientId = req.query.patientId;
+    }
+
+    if (req.query.consultationType) {
+      filter.consultationType =
+        req.query.consultationType;
+    }
+
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+
+    const search = String(
+      req.query.search || "",
+    ).trim();
+
+    if (search) {
+      const patients = await Patient.find({
+        organizationId,
+        $or: [
+          {
+            firstName: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            middleName: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            lastName: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            patientNumber: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            phone: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+        ],
+      })
+        .select("_id")
+        .lean();
+
+      filter.patientId = {
+        $in: patients.map(
+          (patient) => patient._id,
+        ),
+      };
+    }
+
+    const [rows, total] =
+      await Promise.all([
+        Consultation.find(filter)
+          .populate(
+            "patientId",
+            "patientNumber firstName middleName lastName phone",
+          )
+          .populate(
+            "optometristId",
+            "firstName lastName role",
+          )
+          .sort({
+            consultationDate: -1,
+            createdAt: -1,
+          })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+
+        Consultation.countDocuments(filter),
+      ]);
+
+    res.json({
+      success: true,
+      data: {
+        consultations: rows,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages:
+            Math.ceil(total / limit) || 1,
+        },
+      },
+    });
+  },
+);
 // --------------------------------------------------
 // CONSULTATION TYPE
 // --------------------------------------------------
@@ -1439,3 +1571,4 @@ export const updateConsultation =
       data: populated,
     });
   });
+

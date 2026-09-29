@@ -1,42 +1,44 @@
 import express from "express";
 
 import {
-  createConsultation,
+  getConsultations,
   getPatientConsultations,
   getConsultation,
+  createConsultation,
   updateConsultation,
 } from "../controllers/consultation.controller.js";
 
 import { protect } from "../middleware/auth.middleware.js";
-import { requirePermission } from "../middleware/permission.middleware.js";
-import { PERMISSIONS } from "../config/permissions.js";
 
 const router = express.Router();
 
 router.use(protect);
 
+// All consultations
+router.get("/", getConsultations);
+
+// Patient consultation history
 router.get(
   "/patient/:patientId",
-  requirePermission(PERMISSIONS.CLINICAL_VIEW),
-  getPatientConsultations,
+  getPatientConsultations
 );
 
+// Single consultation
 router.get(
   "/:id",
-  requirePermission(PERMISSIONS.CLINICAL_VIEW),
-  getConsultation,
+  getConsultation
 );
 
+// Create consultation
 router.post(
   "/",
-  requirePermission(PERMISSIONS.CLINICAL_CREATE),
-  createConsultation,
+  createConsultation
 );
 
+// Update consultation
 router.put(
   "/:id",
-  requirePermission(PERMISSIONS.CLINICAL_UPDATE),
-  updateConsultation,
+  updateConsultation
 );
 
 export default router;

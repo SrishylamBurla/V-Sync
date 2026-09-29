@@ -368,6 +368,156 @@ export const canAccess = (module, role) =>
 // MAIN NAVIGATION
 // ============================================================
 
+// export const MAIN_NAV = [
+//   {
+//     key: "dashboard",
+//     label: "Dashboard",
+//     path: "/dashboard",
+//     access: "dashboard",
+//   },
+
+//   {
+//     key: "patients",
+//     label: "Patients",
+//     path: "/patients",
+//     access: "patients",
+//   },
+
+//   {
+//     key: "appointments",
+//     label: "Appointments",
+//     path: "/appointments",
+//     access: "appointments",
+//   },
+
+//   {
+//     key: "clinical",
+//     label: "Clinical",
+//     path: "/clinical",
+//     access: "clinical",
+//   },
+
+//   {
+//     key: "dispensing",
+//     label: "Dispensing",
+//     path: "/dispensing",
+//     access: "dispensing",
+//   },
+
+//   // ==========================================================
+//   // OPERATIONS
+//   // ==========================================================
+
+//   {
+//     key: "operations",
+//     label: "Operations",
+//     dropdown: true,
+
+//     children: [
+//       {
+//         key: "inventory",
+//         label: "Inventory",
+//         path: "/inventory",
+//         access: "inventory",
+//       },
+
+//       {
+//         key: "catalogue",
+//         label: "Catalogue",
+//         path: "/catalogue",
+//         access: "catalogue",
+//       },
+
+//       {
+//         key: "laboratory",
+//         label: "Laboratory",
+//         path: "/lab",
+//         access: "laboratory",
+//       },
+//     ],
+//   },
+
+//   // ==========================================================
+//   // FINANCE
+//   // ==========================================================
+
+//   {
+//     key: "finance",
+//     label: "Finance",
+//     dropdown: true,
+
+//     children: [
+//       {
+//         key: "billing",
+//         label: "Billing",
+//         path: "/billing",
+//         access: "billing",
+//       },
+
+//       {
+//         key: "finance-management",
+//         label: "Finance",
+//         path: "/finance",
+//         access: "finance",
+//       },
+
+//       {
+//         key: "reports",
+//         label: "Reports",
+//         path: "/reports",
+//         access: "reports",
+//       },
+//     ],
+//   },
+
+//   // ==========================================================
+//   // MORE
+//   // ==========================================================
+
+//   {
+//     key: "more",
+//     label: "More",
+//     dropdown: true,
+
+//     children: [
+//       {
+//         key: "recall",
+//         label: "Recall",
+//         path: "/recall",
+//         access: "recall",
+//       },
+
+//       {
+//         key: "communications",
+//         label: "Letters & Images",
+//         path: "/communications",
+//         access: "communications",
+//       },
+
+//       {
+//         key: "staff",
+//         label: "Staff",
+//         path: "/staff",
+//         access: "staff",
+//       },
+
+//       {
+//         key: "branches",
+//         label: "Branches",
+//         path: "/branches",
+//         access: "branches",
+//       },
+
+//       {
+//         key: "settings",
+//         label: "Settings",
+//         path: "/settings",
+//         access: "settings",
+//       },
+//     ],
+//   },
+// ];
+
 export const MAIN_NAV = [
   {
     key: "dashboard",
@@ -397,11 +547,39 @@ export const MAIN_NAV = [
     access: "clinical",
   },
 
+  // ==========================================================
+  // DISPENSING
+  // ==========================================================
+
   {
     key: "dispensing",
     label: "Dispensing",
     path: "/dispensing",
     access: "dispensing",
+    dropdown: true,
+
+    children: [
+      {
+        key: "spectacle-history",
+        label: "Spectacle Jobs",
+        path: "/dispensing/spectacles",
+        access: "dispensing",
+      },
+
+      {
+        key: "contact-lens-jobs",
+        label: "Contact Lens Jobs",
+        path: "/dispensing/contact-lenses",
+        access: "dispensing",
+      },
+
+      {
+        key: "sundries",
+        label: "Sundries",
+        path: "/dispensing/sundries",
+        access: "dispensing",
+      },
+    ],
   },
 
   // ==========================================================
@@ -599,35 +777,28 @@ export const getSuperAdminNavigation = (role) => {
 // ============================================================
 
 export const ROUTE_ACCESS = {
-  // Core
   dashboard: "dashboard",
   patients: "patients",
   appointments: "appointments",
 
-  // Clinical
   clinical: "clinical",
 
-  // Optical
-  optical: "optical",
-
-  // Dispensing
   dispensing: "dispensing",
+  spectacleJobs: "dispensing",
+  contactLensJobs: "dispensing",
+  sundries: "dispensing",
 
-  // Operations
   inventory: "inventory",
   catalogue: "catalogue",
   laboratory: "laboratory",
 
-  // Finance
   billing: "billing",
   finance: "finance",
   reports: "reports",
 
-  // Communication
   recall: "recall",
   communications: "communications",
 
-  // Administration
   staff: "staff",
   branches: "branches",
   settings: "settings",
