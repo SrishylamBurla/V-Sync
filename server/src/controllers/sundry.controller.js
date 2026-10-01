@@ -179,14 +179,13 @@ export const createSundryJob = asyncHandler(async (req, res) => {
     notes: clean(req.body.notes),
     createdBy: req.user._id,
   });
-  const populated = await populate(SundryJob.findById(job._id));
-  res
-    .status(201)
-    .json({
-      success: true,
-      message: "Sundry job created successfully",
-      data: await populated.lean(),
-    });
+  const populated = await populate(SundryJob.findById(job._id)).lean();
+
+  res.status(201).json({
+    success: true,
+    message: "Sundry job created successfully",
+    data: populated,
+  });
 });
 
 export const updateSundryStatus = asyncHandler(async (req, res) => {
@@ -265,11 +264,12 @@ export const updateSundryStatus = asyncHandler(async (req, res) => {
   }
   if (status === "collected") job.collectedAt = new Date();
   await job.save();
-  const populated = await populate(SundryJob.findById(job._id));
+  const populated = await populate(SundryJob.findById(job._id)).lean();
+
   res.json({
     success: true,
     message: "Sundry status updated",
-    data: await populated.lean(),
+    data: populated,
   });
 });
 
@@ -309,10 +309,11 @@ export const updateSundryJob = asyncHandler(async (req, res) => {
   if (req.body.notes !== undefined) job.notes = clean(req.body.notes);
   job.updatedBy = req.user._id;
   await job.save();
-  const populated = await populate(SundryJob.findById(job._id));
+  const populated = await populate(SundryJob.findById(job._id)).lean();
+
   res.json({
     success: true,
     message: "Sundry job updated",
-    data: await populated.lean(),
+    data: populated,
   });
 });
