@@ -44,7 +44,9 @@ const patientName = (patient) =>
     .join(" ") || "Unknown patient";
 
 const normalizeItemType = (value) => {
-  const type = String(value || "").toLowerCase().replace(/[_-]/g, " ");
+  const type = String(value || "")
+    .toLowerCase()
+    .replace(/[_-]/g, " ");
 
   if (
     type.includes("contact") ||
@@ -57,8 +59,7 @@ const normalizeItemType = (value) => {
   return "spectacle";
 };
 
-const isSpectacle = (row) =>
-  normalizeItemType(row?.itemType) === "spectacle";
+const isSpectacle = (row) => normalizeItemType(row?.itemType) === "spectacle";
 
 const isContactLens = (row) =>
   normalizeItemType(row?.itemType) === "contact_lens";
@@ -79,15 +80,12 @@ export default function DispensingPage() {
     setError("");
 
     try {
-      const response = await getDispensingList(
-        status ? { status } : {},
-      );
+      const response = await getDispensingList(status ? { status } : {});
 
       setRows(response?.data || []);
     } catch (error) {
       setError(
-        error?.response?.data?.message ||
-          "Unable to load dispensing jobs",
+        error?.response?.data?.message || "Unable to load dispensing jobs",
       );
     } finally {
       setLoading(false);
@@ -104,20 +102,12 @@ export default function DispensingPage() {
    * Spectacle jobs and contact-lens jobs remain in the same
    * API response, but are never displayed together.
    */
-  const spectacleRows = useMemo(
-    () => rows.filter(isSpectacle),
-    [rows],
-  );
+  const spectacleRows = useMemo(() => rows.filter(isSpectacle), [rows]);
 
-  const contactLensRows = useMemo(
-    () => rows.filter(isContactLens),
-    [rows],
-  );
+  const contactLensRows = useMemo(() => rows.filter(isContactLens), [rows]);
 
   const activeRows =
-    activeType === "spectacle"
-      ? spectacleRows
-      : contactLensRows;
+    activeType === "spectacle" ? spectacleRows : contactLensRows;
 
   /*
    * Search only inside the currently selected dispensing type.
@@ -167,9 +157,7 @@ export default function DispensingPage() {
       Object.fromEntries(
         statuses.map((value) => [
           value,
-          spectacleRows.filter(
-            (row) => row.status === value,
-          ).length,
+          spectacleRows.filter((row) => row.status === value).length,
         ]),
       ),
     [spectacleRows],
@@ -180,18 +168,14 @@ export default function DispensingPage() {
       Object.fromEntries(
         statuses.map((value) => [
           value,
-          contactLensRows.filter(
-            (row) => row.status === value,
-          ).length,
+          contactLensRows.filter((row) => row.status === value).length,
         ]),
       ),
     [contactLensRows],
   );
 
   const activeCounts =
-    activeType === "spectacle"
-      ? spectacleCounts
-      : contactLensCounts;
+    activeType === "spectacle" ? spectacleCounts : contactLensCounts;
 
   const advance = async (row) => {
     const target = next[row?.status];
@@ -203,22 +187,16 @@ export default function DispensingPage() {
     try {
       setError("");
 
-      const response = await updateDispensing(
-        row._id,
-        target,
-      );
+      const response = await updateDispensing(row._id, target);
 
       setRows((currentRows) =>
         currentRows.map((item) =>
-          item._id === row._id
-            ? response?.data || item
-            : item,
+          item._id === row._id ? response?.data || item : item,
         ),
       );
     } catch (error) {
       setError(
-        error?.response?.data?.message ||
-          "Unable to update dispensing status",
+        error?.response?.data?.message || "Unable to update dispensing status",
       );
     }
   };
@@ -229,17 +207,19 @@ export default function DispensingPage() {
     setQuery("");
     setError("");
   };
-
   const openJob = (row) => {
     if (!row?._id) {
       return;
     }
 
-    /*
-     * Never navigate using ":id".
-     * The actual MongoDB ObjectId must be supplied.
-     */
-    navigate(`/dispensing/${row._id}`);
+    if (isSpectacle(row)) {
+      navigate(`/dispensing/spectacles/${row._id}`);
+      return;
+    }
+
+    if (isContactLens(row)) {
+      navigate(`/dispensing/contact-lenses/${row._id}`);
+    }
   };
 
   const openPatient = (patientId) => {
@@ -251,9 +231,7 @@ export default function DispensingPage() {
   };
 
   const activeTitle =
-    activeType === "spectacle"
-      ? "Spectacle Jobs"
-      : "Contact Lens Jobs";
+    activeType === "spectacle" ? "Spectacle Jobs" : "Contact Lens Jobs";
 
   const activeDescription =
     activeType === "spectacle"
@@ -328,9 +306,7 @@ export default function DispensingPage() {
             <div className="mt-5">
               <div
                 className={`text-sm font-bold ${
-                  activeType === "spectacle"
-                    ? "text-white"
-                    : "text-slate-900"
+                  activeType === "spectacle" ? "text-white" : "text-slate-900"
                 }`}
               >
                 Spectacle Jobs
@@ -343,8 +319,7 @@ export default function DispensingPage() {
                     : "text-slate-500"
                 }`}
               >
-                Frames, lenses, prescription and spectacle
-                dispensing orders.
+                Frames, lenses, prescription and spectacle dispensing orders.
               </div>
             </div>
           </button>
@@ -399,8 +374,8 @@ export default function DispensingPage() {
                     : "text-slate-500"
                 }`}
               >
-                Contact lens orders, brands, replacement,
-                parameters and dispensing.
+                Contact lens orders, brands, replacement, parameters and
+                dispensing.
               </div>
             </div>
           </button>
@@ -418,21 +393,15 @@ export default function DispensingPage() {
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {statuses.map((currentStatus) => {
-            const count =
-              activeCounts[currentStatus] || 0;
+            const count = activeCounts[currentStatus] || 0;
 
-            const selected =
-              status === currentStatus;
+            const selected = status === currentStatus;
 
             return (
               <button
                 key={currentStatus}
                 type="button"
-                onClick={() =>
-                  setStatus(
-                    selected ? "" : currentStatus,
-                  )
-                }
+                onClick={() => setStatus(selected ? "" : currentStatus)}
                 className={`rounded-xl border p-4 text-left transition ${
                   selected
                     ? "border-slate-900 bg-slate-900 text-white shadow-sm"
@@ -441,17 +410,13 @@ export default function DispensingPage() {
               >
                 <div
                   className={`text-[10px] font-bold uppercase tracking-wider ${
-                    selected
-                      ? "text-slate-300"
-                      : "text-slate-400"
+                    selected ? "text-slate-300" : "text-slate-400"
                   }`}
                 >
                   {label(currentStatus)}
                 </div>
 
-                <div className="mt-2 text-2xl font-bold">
-                  {count}
-                </div>
+                <div className="mt-2 text-2xl font-bold">{count}</div>
               </button>
             );
           })}
@@ -462,11 +427,7 @@ export default function DispensingPage() {
           03. ACTIVE JOB REGISTER
       ========================================================== */}
 
-      <Section
-        number="03"
-        title={activeTitle}
-        description={activeDescription}
-      >
+      <Section number="03" title={activeTitle} description={activeDescription}>
         {/* Search / filter */}
         <div className="mb-5 flex flex-col gap-3 lg:flex-row">
           <div className="relative flex-1">
@@ -477,9 +438,7 @@ export default function DispensingPage() {
 
             <input
               value={query}
-              onChange={(event) =>
-                setQuery(event.target.value)
-              }
+              onChange={(event) => setQuery(event.target.value)}
               placeholder={
                 activeType === "spectacle"
                   ? "Search spectacle job, patient, frame, lens..."
@@ -491,18 +450,13 @@ export default function DispensingPage() {
 
           <select
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value)
-            }
+            onChange={(event) => setStatus(event.target.value)}
             className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none"
           >
             <option value="">All statuses</option>
 
             {statuses.map((currentStatus) => (
-              <option
-                key={currentStatus}
-                value={currentStatus}
-              >
+              <option key={currentStatus} value={currentStatus}>
                 {label(currentStatus)}
               </option>
             ))}
@@ -537,9 +491,7 @@ export default function DispensingPage() {
                 render: (row) => (
                   <button
                     type="button"
-                    onClick={() =>
-                      openPatient(row.patientId?._id)
-                    }
+                    onClick={() => openPatient(row.patientId?._id)}
                     className="text-left"
                   >
                     <span className="block font-semibold text-slate-800 hover:underline">
@@ -547,11 +499,9 @@ export default function DispensingPage() {
                     </span>
 
                     <span className="text-[10px] text-slate-400">
-                      {row.patientId?.patientNumber ||
-                        "No patient number"}
+                      {row.patientId?.patientNumber || "No patient number"}
                       {" · "}
-                      {row.patientId?.phone ||
-                        "No phone"}
+                      {row.patientId?.phone || "No phone"}
                     </span>
                   </button>
                 ),
@@ -569,17 +519,14 @@ export default function DispensingPage() {
                       render: (row) => (
                         <div>
                           <div className="text-xs font-semibold text-slate-700">
-                            {row.frame?.code ||
-                              row.frame?.description ||
-                              "—"}
+                            {row.frame?.code || row.frame?.description || "—"}
                           </div>
 
-                          {row.frame?.description &&
-                            row.frame?.code && (
-                              <div className="mt-0.5 text-[10px] text-slate-400">
-                                {row.frame.description}
-                              </div>
-                            )}
+                          {row.frame?.description && row.frame?.code && (
+                            <div className="mt-0.5 text-[10px] text-slate-400">
+                              {row.frame.description}
+                            </div>
+                          )}
                         </div>
                       ),
                     },
@@ -590,9 +537,7 @@ export default function DispensingPage() {
                       render: (row) => (
                         <div>
                           <div className="text-xs font-semibold text-slate-700">
-                            {row.lens?.code ||
-                              row.lens?.description ||
-                              "—"}
+                            {row.lens?.code || row.lens?.description || "—"}
                           </div>
 
                           {row.lens?.supplier && (
@@ -648,8 +593,7 @@ export default function DispensingPage() {
                     {
                       key: "quantity",
                       label: "Qty",
-                      render: (row) =>
-                        row.quantity || "—",
+                      render: (row) => row.quantity || "—",
                     },
                   ]),
 
@@ -658,9 +602,7 @@ export default function DispensingPage() {
                 label: "Due",
                 render: (row) =>
                   row.dueDate
-                    ? new Date(
-                        row.dueDate,
-                      ).toLocaleDateString("en-IN")
+                    ? new Date(row.dueDate).toLocaleDateString("en-IN")
                     : "—",
               },
 
@@ -689,9 +631,7 @@ export default function DispensingPage() {
                       {label(next[row.status])}
                     </button>
                   ) : (
-                    <span className="text-xs text-slate-400">
-                      —
-                    </span>
+                    <span className="text-xs text-slate-400">—</span>
                   ),
               },
             ]}
@@ -709,10 +649,7 @@ export default function DispensingPage() {
           04. CURRENT WORKFLOW
       ========================================================== */}
 
-      <Section
-        number="04"
-        title={`${activeTitle} — Workflow`}
-      >
+      <Section number="04" title={`${activeTitle} — Workflow`}>
         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
           <span className="rounded-lg border border-slate-200 bg-white px-3 py-2">
             Ordered

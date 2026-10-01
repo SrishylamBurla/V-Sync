@@ -562,7 +562,7 @@ export const MAIN_NAV = [
       {
         key: "spectacle-history",
         label: "Spectacle Jobs",
-        path: "/dispensing/spectacles",
+        path: "/dispensing/spectacle-jobs",
         access: "dispensing",
       },
 

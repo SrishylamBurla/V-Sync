@@ -27,6 +27,7 @@ import settingsRoutes from "./routes/settings.routes.js";
 import financeRoutes from "./routes/finance.routes.js";
 import catalogueRoutes from "./routes/catalogue.routes.js";
 import contactLensCatalogueRoutes from "./routes/contactLensCatalogue.routes.js";
+import sundryRoutes from "./routes/sundry.routes.js";
 
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
@@ -171,6 +172,8 @@ app.use("/api/v1/finance", financeRoutes);
 app.use("/api/v1/catalogue", catalogueRoutes);
 
 app.use("/api/v1/contact-lens-catalogue", contactLensCatalogueRoutes);
+
+app.use("/api/v1/sundry-jobs", sundryRoutes);
 
 /* =========================================================
    ERROR HANDLING

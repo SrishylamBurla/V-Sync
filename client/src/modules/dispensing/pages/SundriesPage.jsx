@@ -14,7 +14,6 @@ import {
   X,
 } from "lucide-react";
 import {
-  adjustSundryStock,
   createSundry,
   getSundries,
   updateSundry,

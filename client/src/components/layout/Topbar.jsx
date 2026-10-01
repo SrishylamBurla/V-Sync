@@ -104,7 +104,7 @@ const DISPENSING_NAV = [
     access: "dispensing",
   },
   {
-    label: "Sundries",
+    label: "Sundry Jobs",
     to: "/dispensing/sundries",
     icon: Boxes,
     access: "dispensing",
