@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Boxes, CheckCircle2, RefreshCw } from "lucide-react";
+import { Boxes, CheckCircle2, RefreshCw } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getSundryJob, updateSundryJobStatus } from "../sundryJob.api";
 
@@ -32,7 +32,6 @@ export default function SundryJobDetailsPage() {
   if (!job) return <div className="mx-auto max-w-3xl p-6"><div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error || "Sundry job not found."}</div></div>;
 
   return <div className="mx-auto w-full max-w-4xl space-y-5 py-5 sm:py-7">
-    <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900"><ArrowLeft size={15}/> Back</button>
     {error && <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

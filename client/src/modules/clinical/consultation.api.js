@@ -1,85 +1,3 @@
-// // import api from "../../services/api";
-
-// // export const getPatientConsultations = async (patientId) => {
-// //   const response = await api.get(`/consultations/patient/${patientId}`);
-// //   return response.data;
-// // };
-
-// // export const getConsultation = async (consultationId) => {
-// //   const response = await api.get(`/consultations/${consultationId}`);
-// //   return response.data;
-// // };
-
-// // export const createConsultation = async (consultationData) => {
-// //   const response = await api.post("/consultations", consultationData);
-// //   return response.data;
-// // };
-
-// // export const updateConsultation = async (consultationId, consultationData) => {
-// //   const response = await api.put(`/consultations/${consultationId}`, consultationData);
-// //   return response.data;
-// // };
-// import api from "../../services/api";
-
-// const unwrap = (response) => response?.data ?? response;
-
-// export const getConsultations = async (params = {}) =>
-//   unwrap(await api.get("/consultations", { params }));
-
-// export const getPatientConsultations = async (patientId) => {
-//   if (!patientId) {
-//     throw new Error("Patient ID is required.");
-//   }
-
-//   return unwrap(
-//     await api.get(`/consultations/patient/${patientId}`),
-//   );
-// };
-
-// export const getConsultation = async (consultationId) => {
-//   if (!consultationId) {
-//     throw new Error("Consultation ID is required.");
-//   }
-
-//   return unwrap(
-//     await api.get(`/consultations/${consultationId}`),
-//   );
-// };
-
-// export const createConsultation = async (payload) => {
-//   if (!payload?.patientId) {
-//     throw new Error("Patient ID is required.");
-//   }
-
-//   return unwrap(
-//     await api.post("/consultations", payload),
-//   );
-// };
-
-// export const updateConsultation = async (
-//   consultationId,
-//   payload,
-// ) => {
-//   if (!consultationId) {
-//     throw new Error("Consultation ID is required.");
-//   }
-
-//   return unwrap(
-//     await api.put(
-//       `/consultations/${consultationId}`,
-//       payload,
-//     ),
-//   );
-// };
-
-// export default {
-//   getConsultations,
-//   getPatientConsultations,
-//   getConsultation,
-//   createConsultation,
-//   updateConsultation,
-// };
-
 import api from "../../services/api";
 
 /**
@@ -211,6 +129,29 @@ export const updateConsultation = async (
   return unwrap(response);
 };
 
+
+/**
+ * ============================================================
+ * UPDATE CONSULTATION STATUS
+ * ============================================================
+ */
+export const updateConsultationStatus = async (consultationId, status) => {
+  if (!consultationId) {
+    throw new Error("Consultation ID is required.");
+  }
+
+  if (!status) {
+    throw new Error("Consultation status is required.");
+  }
+
+  const response = await api.patch(
+    `/consultations/${consultationId}/status`,
+    { status },
+  );
+
+  return unwrap(response);
+};
+
 /**
  * ============================================================
  * DEFAULT EXPORT
@@ -222,4 +163,5 @@ export default {
   getConsultation,
   createConsultation,
   updateConsultation,
+  updateConsultationStatus,
 };

@@ -76,11 +76,14 @@ export const CLINICAL_ROLES = [
  *
  * Branch managers are also allowed operational access.
  */
-export const OPTICAL_ROLES = [
+export const DISPENSING_ROLES = [
   ROLES.OPTOMETRIST,
   ROLES.DOCTOR,
   ROLES.BRANCH_MANAGER,
 ];
+
+// Backward-compatible alias for older imports.
+export const OPTICAL_ROLES = DISPENSING_ROLES;
 
 /**
  * Patient-facing operational users.
@@ -178,26 +181,8 @@ export const MODULE_ACCESS = {
     ROLES.DOCTOR,
   ],
 
-  // ----------------------------------------------------------
-  // Optical
-  // ----------------------------------------------------------
-  //
-  // Optical workflow includes:
-  // - Spectacle jobs
-  // - Contact lens workflow
-  // - Optical orders
-  // - Optical history
-  //
-  // Optometrist and Doctor MUST have access.
-  //
-
-  optical: [
-    ROLES.SUPER_ADMIN,
-    ROLES.ORGANIZATION_ADMIN,
-    ROLES.BRANCH_MANAGER,
-    ROLES.OPTOMETRIST,
-    ROLES.DOCTOR,
-  ],
+  // Optical Management was retired as a separate module.
+  // All optical operational work is exposed through dispensing.
 
   // ----------------------------------------------------------
   // Dispensing
@@ -560,6 +545,13 @@ export const MAIN_NAV = [
 
     children: [
       {
+        key: "dispensing-overview",
+        label: "Dispensing Overview",
+        path: "/dispensing",
+        access: "dispensing",
+      },
+
+      {
         key: "spectacle-history",
         label: "Spectacle Jobs",
         path: "/dispensing/spectacle-jobs",
@@ -860,6 +852,7 @@ export default {
   PRACTICE_ROLES,
 
   CLINICAL_ROLES,
+  DISPENSING_ROLES,
   OPTICAL_ROLES,
   PATIENT_SERVICE_ROLES,
 

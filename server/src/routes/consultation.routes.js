@@ -6,6 +6,7 @@ import {
   getConsultation,
   createConsultation,
   updateConsultation,
+  updateConsultationStatus,
 } from "../controllers/consultation.controller.js";
 
 import { protect } from "../middleware/auth.middleware.js";
@@ -39,6 +40,12 @@ router.post(
 router.put(
   "/:id",
   updateConsultation
+);
+
+// Update consultation workflow status
+router.patch(
+  "/:id/status",
+  updateConsultationStatus
 );
 
 export default router;

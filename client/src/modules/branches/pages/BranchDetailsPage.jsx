@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Building2,
   Edit3,
   Mail,
@@ -30,7 +29,6 @@ const emptyAddress = {
 
 export default function BranchDetailsPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [branch, setBranch] = useState(null);
   const [form, setForm] = useState(null);
@@ -200,13 +198,6 @@ export default function BranchDetailsPage() {
     return (
       <div className="min-h-screen bg-[#f5f7f9]">
         <main className="mx-auto max-w-[1100px] px-4 py-8">
-          <Link
-            to="/branches"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800"
-          >
-            <ArrowLeft size={16} />
-            Back to branches
-          </Link>
 
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 text-center">
             <Building2 className="mx-auto text-slate-400" size={28} />
@@ -229,15 +220,6 @@ export default function BranchDetailsPage() {
       <main className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
 
         {/* Top navigation */}
-        <div className="mb-5">
-          <Link
-            to="/branches"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
-          >
-            <ArrowLeft size={16} />
-            Back to branches
-          </Link>
-        </div>
 
         {/* Alerts */}
         {error && (

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Building2, Save } from "lucide-react";
+import { Building2, Save } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { createBranch } from "../api/branch.api";
@@ -102,14 +102,6 @@ export default function AddBranchPage() {
     <div className="min-h-screen bg-[#f5f7f9]">
       <main className="mx-auto w-full max-w-[1100px] px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <Link
-            to="/branches"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800"
-          >
-            <ArrowLeft size={16} />
-            Back to branches
-          </Link>
-
           <div className="mt-5 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
               <Building2 size={20} />

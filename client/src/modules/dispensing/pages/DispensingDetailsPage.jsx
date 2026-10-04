@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CheckCircle2,
   FileText,
   Glasses,
@@ -486,15 +485,6 @@ export default function DispensingDetailsPage() {
       <div className="mx-auto max-w-3xl py-16">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
           {error || "Dispensing record not found"}
-
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-700"
-          >
-            <ArrowLeft size={14} />
-            Back
-          </button>
         </div>
       </div>
     );
@@ -554,17 +544,6 @@ export default function DispensingDetailsPage() {
         status={label(record.status)}
         actions={
           <>
-            {/* BACK */}
-
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600"
-            >
-              <ArrowLeft size={14} />
-              Back
-            </button>
-
             {/* CREATE BILL */}
 
             <button

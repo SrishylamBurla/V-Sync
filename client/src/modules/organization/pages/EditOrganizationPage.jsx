@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
   Building2,
   Save,
   Loader2,
@@ -154,17 +153,6 @@ export default function EditOrganizationPage() {
     <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
 
-        {/* Back */}
-        <button
-          type="button"
-          onClick={() =>
-            navigate(`/admin/organizations/${id}`)
-          }
-          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
-        >
-          <ArrowLeft size={16} />
-          Back to organization
-        </button>
 
         {/* Card */}
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">

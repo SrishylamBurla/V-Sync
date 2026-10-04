@@ -12,15 +12,6 @@ import InventoryTransaction from "../models/InventoryTransaction.js";
 |--------------------------------------------------------------------------
 | Roles
 |--------------------------------------------------------------------------
-|
-| The application intentionally keeps the access model simple:
-|
-| 1. super_admin
-| 2. organization_admin
-| 3. operational users
-|
-| Operational users can work with the clinical / optical workflow.
-|
 */
 
 const OPERATIONAL_ROLES = [
@@ -40,8 +31,6 @@ const VIEW_ROLES = [
   "cashier",
 ];
 
-// Spectacle jobs are clinical/dispensing work. Optometrists and doctors
-// must be able to create them directly from Optical Management or a patient.
 const CREATE_ROLES = [
   "super_admin",
   "organization_admin",
@@ -75,6 +64,15 @@ const STATUS_ROLES = [
   "lab_technician",
 ];
 
+const USE_VALUES = [
+  "distance",
+  "near",
+  "intermediate",
+  "bifocal",
+  "trifocal",
+  "multifocal",
+];
+
 const ACTIVE_STATUSES = [
   "draft",
   "ordered",
@@ -89,6 +87,16 @@ const ALL_STATUSES = [
   "cancelled",
 ];
 
+const STATUS_TRANSITIONS = {
+  draft: ["ordered", "cancelled"],
+  ordered: ["not_ready", "cancelled"],
+  not_ready: ["ready", "cancelled"],
+  ready: ["notified", "collected"],
+  notified: ["collected"],
+  collected: [],
+  cancelled: [],
+};
+
 /*
 |--------------------------------------------------------------------------
 | Generic helpers
@@ -96,10 +104,13 @@ const ALL_STATUSES = [
 */
 
 const isValidObjectId = (value) =>
-  Boolean(value) && mongoose.Types.ObjectId.isValid(value);
+  Boolean(value) &&
+  mongoose.Types.ObjectId.isValid(value);
 
 const toObjectId = (value) =>
-  isValidObjectId(value) ? new mongoose.Types.ObjectId(value) : null;
+  isValidObjectId(value)
+    ? new mongoose.Types.ObjectId(value)
+    : null;
 
 const money = (value) => {
   const number = Number(value);
@@ -112,61 +123,694 @@ const money = (value) => {
 };
 
 const cleanString = (value) =>
-  typeof value === "string" ? value.trim() : "";
+  typeof value === "string"
+    ? value.trim()
+    : "";
 
 const normalizeDate = (value) => {
   if (!value) return null;
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return date;
+  return Number.isNaN(date.getTime())
+    ? null
+    : date;
 };
 
 const getOrganizationId = (req) => {
   const id = req.user?.organizationId;
 
-  if (!isValidObjectId(id)) {
-    return null;
-  }
-
-  return id;
+  return isValidObjectId(id)
+    ? id
+    : null;
 };
 
-const requireRole = (req, allowedRoles) => {
-  const role = req.user?.role;
+const requireRole = (
+  req,
+  allowedRoles,
+) => {
+  if (
+    allowedRoles.includes(
+      req.user?.role,
+    )
+  ) {
+    return;
+  }
 
-  if (!allowedRoles.includes(role)) {
-    const error = new Error(
-      "You do not have permission to perform this action.",
+  const error = new Error(
+    "You do not have permission to perform this action.",
+  );
+
+  error.statusCode = 403;
+  throw error;
+};
+
+const getId = (value) => {
+  if (!value) return null;
+
+  if (
+    typeof value === "string" ||
+    typeof value === "number"
+  ) {
+    return isValidObjectId(value)
+      ? toObjectId(value)
+      : null;
+  }
+
+  const id =
+    value._id ||
+    value.id;
+
+  return isValidObjectId(id)
+    ? toObjectId(id)
+    : null;
+};
+
+const normalizeUse = (use) => {
+  const values = Array.isArray(use)
+    ? use
+    : cleanString(use)
+      ? [use]
+      : [];
+
+  return [
+    ...new Set(
+      values
+        .map(cleanString)
+        .filter((value) =>
+          USE_VALUES.includes(value),
+        ),
+    ),
+  ];
+};
+
+const normalizeToApply = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) =>
+        cleanString(item),
+      )
+      .filter(Boolean);
+  }
+
+  return cleanString(value)
+    ? cleanString(value)
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+};
+
+const normalizeExtras = (extras) => {
+  if (!Array.isArray(extras)) {
+    return [];
+  }
+
+  return extras
+    .slice(0, 50)
+    .map((extra) => ({
+      name: cleanString(
+        extra?.name,
+      ),
+
+      description: cleanString(
+        extra?.description,
+      ),
+
+      price: money(
+        extra?.price,
+      ),
+
+      labRequired:
+        extra?.labRequired === true,
+    }))
+    .filter(
+      (extra) =>
+        extra.name ||
+        extra.description ||
+        extra.price > 0 ||
+        extra.labRequired,
+    );
+};
+
+const normalizeEyeRx = (value) => {
+  const source =
+    value &&
+    typeof value === "object"
+      ? value
+      : {};
+
+  return {
+    sphere: cleanString(
+      source.sphere,
+    ),
+    cylinder: cleanString(
+      source.cylinder,
+    ),
+    axis: cleanString(
+      source.axis,
+    ),
+    add: cleanString(
+      source.add,
+    ),
+    inter: cleanString(
+      source.inter,
+    ),
+    prism: cleanString(
+      source.prism,
+    ),
+    base: cleanString(
+      source.base,
+    ),
+    va: cleanString(
+      source.va,
+    ),
+  };
+};
+
+const normalizeRx = (
+  rx,
+  fallback = {},
+) => {
+  const source =
+    rx &&
+    typeof rx === "object"
+      ? rx
+      : {};
+
+  const fallbackRx =
+    fallback &&
+    typeof fallback === "object"
+      ? fallback
+      : {};
+
+  return {
+    right: normalizeEyeRx(
+      source.right ||
+        fallbackRx.right ||
+        {},
+    ),
+
+    left: normalizeEyeRx(
+      source.left ||
+        fallbackRx.left ||
+        {},
+    ),
+
+    note: cleanString(
+      source.note ??
+        fallbackRx.note,
+    ),
+  };
+};
+
+const normalizePd = (
+  pd,
+  fallback = {},
+) => {
+  const source =
+    pd &&
+    typeof pd === "object"
+      ? pd
+      : {};
+
+  const fallbackPd =
+    fallback &&
+    typeof fallback === "object"
+      ? fallback
+      : {};
+
+  return {
+    right: cleanString(
+      source.right ??
+        fallbackPd.right,
+    ),
+
+    left: cleanString(
+      source.left ??
+        fallbackPd.left,
+    ),
+
+    total: cleanString(
+      source.total ??
+        fallbackPd.total,
+    ),
+  };
+};
+
+const normalizeFrame = (
+  frame,
+  fallback = {},
+) => {
+  const source =
+    frame &&
+    typeof frame === "object"
+      ? frame
+      : {};
+
+  const fallbackFrame =
+    fallback &&
+    typeof fallback === "object"
+      ? fallback
+      : {};
+
+  return {
+    code: cleanString(
+      source.code ??
+        fallbackFrame.code,
+    ),
+
+    description: cleanString(
+      source.description ??
+        fallbackFrame.description,
+    ),
+
+    size: cleanString(
+      source.size ??
+        fallbackFrame.size,
+    ),
+
+    depth: cleanString(
+      source.depth ??
+        fallbackFrame.depth,
+    ),
+
+    ed: cleanString(
+      source.ed ??
+        fallbackFrame.ed,
+    ),
+
+    type: cleanString(
+      source.type ??
+        fallbackFrame.type,
+    ),
+
+    ssi: cleanString(
+      source.ssi ??
+        fallbackFrame.ssi,
+    ),
+
+    other: cleanString(
+      source.other ??
+        fallbackFrame.other,
+    ),
+
+    fitting: cleanString(
+      source.fitting ??
+        fallbackFrame.fitting,
+    ),
+
+    price: money(
+      source.price ??
+        fallbackFrame.price,
+    ),
+
+    discount: money(
+      source.discount ??
+        fallbackFrame.discount,
+    ),
+
+    toReorder: money(
+      source.toReorder ??
+        fallbackFrame.toReorder,
+    ),
+
+    ownFrame:
+      source.ownFrame ??
+      fallbackFrame.ownFrame ??
+      false,
+  };
+};
+
+const normalizeLensEye = (
+  value,
+  fallback = {},
+) => {
+  const source =
+    value &&
+    typeof value === "object"
+      ? value
+      : {};
+
+  const fallbackLens =
+    fallback &&
+    typeof fallback === "object"
+      ? fallback
+      : {};
+
+  return {
+    lensCode: cleanString(
+      source.lensCode ??
+        fallbackLens.lensCode ??
+        fallbackLens.code,
+    ),
+
+    lensDescription: cleanString(
+      source.lensDescription ??
+        fallbackLens.lensDescription ??
+        fallbackLens.description,
+    ),
+
+    lensSize: cleanString(
+      source.lensSize ??
+        fallbackLens.lensSize,
+    ),
+
+    segmentSize: cleanString(
+      source.segmentSize ??
+        fallbackLens.segmentSize,
+    ),
+
+    segmentHeight: cleanString(
+      source.segmentHeight ??
+        fallbackLens.segmentHeight,
+    ),
+
+    ocHeight: cleanString(
+      source.ocHeight ??
+        fallbackLens.ocHeight,
+    ),
+
+    horizontalDecentration:
+      cleanString(
+        source.horizontalDecentration ??
+          fallbackLens.horizontalDecentration,
+      ),
+
+    verticalDecentration:
+      cleanString(
+        source.verticalDecentration ??
+          fallbackLens.verticalDecentration,
+      ),
+
+    baseCurve: cleanString(
+      source.baseCurve ??
+        fallbackLens.baseCurve,
+    ),
+
+    supplier: cleanString(
+      source.supplier ??
+        fallbackLens.supplier,
+    ),
+
+    supplierOrderDate:
+      source.supplierOrderDate
+        ? normalizeDate(
+            source.supplierOrderDate,
+          )
+        : fallbackLens.supplierOrderDate ||
+          null,
+
+    tint: cleanString(
+      source.tint ??
+        fallbackLens.tint,
+    ),
+
+    price: money(
+      source.price ??
+        fallbackLens.price,
+    ),
+  };
+};
+
+const normalizeLenses = (
+  lenses,
+  legacyLens = {},
+) => {
+  const source =
+    lenses &&
+    typeof lenses === "object"
+      ? lenses
+      : {};
+
+  const legacy =
+    legacyLens &&
+    typeof legacyLens === "object"
+      ? legacyLens
+      : {};
+
+  const right = normalizeLensEye(
+    source.right,
+    legacy,
+  );
+
+  const left = normalizeLensEye(
+    source.left,
+    legacy,
+  );
+
+  return {
+    right,
+    left,
+  };
+};
+
+const normalizeLegacyLens = (
+  lens,
+  fallback = {},
+) => {
+  const source =
+    lens &&
+    typeof lens === "object"
+      ? lens
+      : {};
+
+  const fallbackLens =
+    fallback &&
+    typeof fallback === "object"
+      ? fallback
+      : {};
+
+  return {
+    code: cleanString(
+      source.code ??
+        fallbackLens.code ??
+        fallbackLens.lensCode,
+    ),
+
+    description: cleanString(
+      source.description ??
+        fallbackLens.description ??
+        fallbackLens.lensDescription,
+    ),
+
+    supplier: cleanString(
+      source.supplier ??
+        fallbackLens.supplier,
+    ),
+
+    price: money(
+      source.price ??
+        fallbackLens.price,
+    ),
+  };
+};
+
+const normalizeLab = (
+  lab,
+  legacy = {},
+) => {
+  const source =
+    lab &&
+    typeof lab === "object"
+      ? lab
+      : {};
+
+  const legacySource =
+    legacy &&
+    typeof legacy === "object"
+      ? legacy
+      : {};
+
+  return {
+    instructions: cleanString(
+      source.instructions ??
+        legacySource.instructions,
+    ),
+
+    toApply: normalizeToApply(
+      source.toApply ??
+        legacySource.toApply,
+    ),
+
+    toFit:
+      source.toFit === true ||
+      legacySource.toFit === true,
+  };
+};
+
+/*
+|--------------------------------------------------------------------------
+| Pricing
+|--------------------------------------------------------------------------
+|
+| The server is authoritative for totals.
+| Inventory item selling prices remain authoritative whenever a linked
+| frame/lens inventory item exists.
+|--------------------------------------------------------------------------
+*/
+
+const calculateTotals = ({
+  framePrice = 0,
+  lensPrice = 0,
+  extras = [],
+  discount = 0,
+  gstRate = 0,
+}) => {
+  const safeFramePrice =
+    money(framePrice);
+
+  const safeLensPrice =
+    money(lensPrice);
+
+  const normalizedExtras =
+    normalizeExtras(extras);
+
+  const extrasTotal =
+    normalizedExtras.reduce(
+      (sum, extra) =>
+        money(
+          sum +
+            money(
+              extra.price,
+            ),
+        ),
+      0,
     );
 
-    error.statusCode = 403;
+  const safeDiscount = Math.max(
+    0,
+    money(discount),
+  );
 
-    throw error;
-  }
+  const subtotal = Math.max(
+    0,
+    money(
+      safeFramePrice +
+        safeLensPrice +
+        extrasTotal,
+    ),
+  );
+
+  const total = Math.max(
+    0,
+    money(
+      subtotal -
+        safeDiscount,
+    ),
+  );
+
+  const safeGstRate = Math.max(
+    0,
+    money(gstRate),
+  );
+
+  const gstAmount = money(
+    total *
+      (safeGstRate / 100),
+  );
+
+  return {
+    framePrice:
+      safeFramePrice,
+
+    lensPrice:
+      safeLensPrice,
+
+    extras:
+      normalizedExtras,
+
+    extrasTotal,
+
+    frameDiscount: 0,
+
+    lensDiscount: 0,
+
+    overallDiscount:
+      safeDiscount,
+
+    discount:
+      safeDiscount,
+
+    subtotal,
+
+    total,
+
+    gstRate:
+      safeGstRate,
+
+    gstAmount,
+
+    gst:
+      gstAmount,
+
+    billTotal:
+      money(
+        total +
+          gstAmount,
+      ),
+  };
 };
+
+const buildPricing = ({
+  existing = {},
+  totals,
+  frameDiscount,
+  lensDiscount,
+  discountReason,
+}) => ({
+  ...(existing || {}),
+
+  framePrice:
+    totals.framePrice,
+
+  lensPrice:
+    totals.lensPrice,
+
+  extrasTotal:
+    totals.extrasTotal,
+
+  frameDiscount:
+    money(
+      frameDiscount ??
+        existing?.frameDiscount,
+    ),
+
+  lensDiscount:
+    money(
+      lensDiscount ??
+        existing?.lensDiscount,
+    ),
+
+  overallDiscount:
+    totals.overallDiscount,
+
+  discountReason:
+    cleanString(
+      discountReason ??
+        existing?.discountReason,
+    ),
+
+  subtotal:
+    totals.subtotal,
+
+  total:
+    totals.total,
+
+  gstRate:
+    totals.gstRate,
+
+  gstAmount:
+    totals.gstAmount,
+
+  billTotal:
+    totals.billTotal,
+});
 
 /*
 |--------------------------------------------------------------------------
 | Branch access
 |--------------------------------------------------------------------------
-|
-| super_admin:
-|   Can work across organizations/branches only when the organization
-|   is explicitly represented by req.user.organizationId.
-|
-| organization_admin:
-|   Can access any active branch in their organization.
-|
-| operational users:
-|   Must have an assigned branch.
-|
-| We never trust an arbitrary branchId from the browser.
-|
 */
 
 const getAccessibleBranch = async ({
@@ -174,7 +818,8 @@ const getAccessibleBranch = async ({
   branchId,
   session = null,
 }) => {
-  const organizationId = getOrganizationId(req);
+  const organizationId =
+    getOrganizationId(req);
 
   if (!organizationId) {
     const error = new Error(
@@ -182,27 +827,29 @@ const getAccessibleBranch = async ({
     );
 
     error.statusCode = 403;
-
     throw error;
   }
 
-  const requestedBranchId = branchId
-    ? toObjectId(branchId)
-    : null;
+  const requestedBranchId =
+    branchId
+      ? getId(branchId)
+      : null;
 
-  if (branchId && !requestedBranchId) {
-    const error = new Error("Invalid branch ID.");
+  if (
+    branchId &&
+    !requestedBranchId
+  ) {
+    const error = new Error(
+      "Invalid branch ID.",
+    );
 
     error.statusCode = 400;
-
     throw error;
   }
 
-  const role = req.user?.role;
+  const role =
+    req.user?.role;
 
-  /*
-   * Organization admins can work with any active branch.
-   */
   if (
     role === "super_admin" ||
     role === "organization_admin"
@@ -213,13 +860,17 @@ const getAccessibleBranch = async ({
     };
 
     if (requestedBranchId) {
-      query._id = requestedBranchId;
+      query._id =
+        requestedBranchId;
     }
 
-    const branch = await Branch.findOne(query)
-      .session(session)
-      .select("_id organizationId name code status")
-      .lean();
+    const branch =
+      await Branch.findOne(query)
+        .session(session)
+        .select(
+          "_id organizationId name code status",
+        )
+        .lean();
 
     if (!branch) {
       const error = new Error(
@@ -227,57 +878,80 @@ const getAccessibleBranch = async ({
       );
 
       error.statusCode = 404;
-
       throw error;
     }
 
     return branch;
   }
 
-  /*
-   * Operational users must have branch assignment.
-   */
-  const assignedBranches = Array.isArray(req.user?.branchIds)
-    ? req.user.branchIds.filter(Boolean).map((id) => id.toString())
-    : [];
+  const assignedBranches =
+    Array.isArray(
+      req.user?.branchIds,
+    )
+      ? req.user.branchIds
+          .filter(Boolean)
+          .map((value) =>
+            value.toString(),
+          )
+      : [];
 
-  const defaultBranchId = toObjectId(req.user?.defaultBranchId);
+  const defaultBranchId =
+    getId(
+      req.user?.defaultBranchId,
+    );
 
-  // Prefer an explicitly requested branch, then the user's default branch,
-  // then the first assigned branch. This prevents valid optometrists/doctors
-  // from being blocked simply because the form did not send branchId.
-  let selectedBranchId = requestedBranchId || defaultBranchId;
+  let selectedBranchId =
+    requestedBranchId ||
+    defaultBranchId;
 
   if (selectedBranchId) {
-    const selectedId = selectedBranchId.toString();
-    const isAssigned = assignedBranches.includes(selectedId);
-    const isDefault = defaultBranchId?.toString() === selectedId;
+    const selectedId =
+      selectedBranchId.toString();
 
-    if (!isAssigned && !isDefault) {
-      const error = new Error(
-        "You do not have access to the selected branch. Choose one of your assigned branches.",
+    const assigned =
+      assignedBranches.includes(
+        selectedId,
       );
+
+    const isDefault =
+      defaultBranchId?.toString() ===
+      selectedId;
+
+    if (!assigned && !isDefault) {
+      const error = new Error(
+        "You do not have access to the selected branch.",
+      );
+
       error.statusCode = 403;
       throw error;
     }
-  } else if (assignedBranches.length) {
-    selectedBranchId = toObjectId(assignedBranches[0]);
+  } else if (
+    assignedBranches.length
+  ) {
+    selectedBranchId =
+      toObjectId(
+        assignedBranches[0],
+      );
   } else {
     const error = new Error(
       "No active branch is assigned to this account. Please assign a branch to the staff member before creating a job.",
     );
+
     error.statusCode = 403;
     throw error;
   }
 
-  const branch = await Branch.findOne({
-    _id: selectedBranchId,
-    organizationId,
-    status: "active",
-  })
-    .session(session)
-    .select("_id organizationId name code status")
-    .lean();
+  const branch =
+    await Branch.findOne({
+      _id: selectedBranchId,
+      organizationId,
+      status: "active",
+    })
+      .session(session)
+      .select(
+        "_id organizationId name code status",
+      )
+      .lean();
 
   if (!branch) {
     const error = new Error(
@@ -285,7 +959,6 @@ const getAccessibleBranch = async ({
     );
 
     error.statusCode = 403;
-
     throw error;
   }
 
@@ -298,42 +971,51 @@ const getAccessibleBranch = async ({
 |--------------------------------------------------------------------------
 */
 
-const getAccessiblePatient = async ({
-  req,
-  patientId,
-  session = null,
-}) => {
-  const organizationId = getOrganizationId(req);
+const getAccessiblePatient =
+  async ({
+    req,
+    patientId,
+    session = null,
+  }) => {
+    const organizationId =
+      getOrganizationId(req);
 
-  if (!isValidObjectId(patientId)) {
-    const error = new Error("Invalid patient ID.");
+    if (
+      !isValidObjectId(
+        patientId,
+      )
+    ) {
+      const error = new Error(
+        "Invalid patient ID.",
+      );
 
-    error.statusCode = 400;
+      error.statusCode = 400;
+      throw error;
+    }
 
-    throw error;
-  }
+    const patient =
+      await Patient.findOne({
+        _id: patientId,
+        organizationId,
+        status: "active",
+      })
+        .session(session)
+        .select(
+          "_id patientNumber firstName middleName lastName phone status",
+        )
+        .lean();
 
-  const patient = await Patient.findOne({
-    _id: patientId,
-    organizationId,
-    status: "active",
-  })
-    .session(session)
-    .select(
-      "_id patientNumber firstName middleName lastName phone status",
-    )
-    .lean();
+    if (!patient) {
+      const error = new Error(
+        "Patient not found.",
+      );
 
-  if (!patient) {
-    const error = new Error("Patient not found.");
+      error.statusCode = 404;
+      throw error;
+    }
 
-    error.statusCode = 404;
-
-    throw error;
-  }
-
-  return patient;
-};
+    return patient;
+  };
 
 /*
 |--------------------------------------------------------------------------
@@ -341,25 +1023,58 @@ const getAccessiblePatient = async ({
 |--------------------------------------------------------------------------
 */
 
-const getLatestConsultation = async ({
-  req,
-  patientId,
-  consultationId = null,
-  session = null,
-}) => {
-  const organizationId = getOrganizationId(req);
+const getLatestConsultation =
+  async ({
+    req,
+    patientId,
+    consultationId = null,
+    session = null,
+  }) => {
+    const organizationId =
+      getOrganizationId(req);
 
-  if (consultationId) {
-    if (!isValidObjectId(consultationId)) {
-      const error = new Error("Invalid consultation ID.");
+    if (consultationId) {
+      if (
+        !isValidObjectId(
+          consultationId,
+        )
+      ) {
+        const error =
+          new Error(
+            "Invalid consultation ID.",
+          );
 
-      error.statusCode = 400;
+        error.statusCode = 400;
+        throw error;
+      }
 
-      throw error;
+      const consultation =
+        await Consultation.findOne({
+          _id: consultationId,
+          patientId,
+          organizationId,
+        })
+          .session(session)
+          .sort({
+            consultationDate: -1,
+            createdAt: -1,
+          })
+          .lean();
+
+      if (!consultation) {
+        const error =
+          new Error(
+            "Selected consultation was not found for this patient.",
+          );
+
+        error.statusCode = 404;
+        throw error;
+      }
+
+      return consultation;
     }
 
-    const consultation = await Consultation.findOne({
-      _id: consultationId,
+    return Consultation.findOne({
       patientId,
       organizationId,
     })
@@ -369,70 +1084,18 @@ const getLatestConsultation = async ({
         createdAt: -1,
       })
       .lean();
-
-    if (!consultation) {
-      const error = new Error(
-        "Selected consultation was not found for this patient.",
-      );
-
-      error.statusCode = 404;
-
-      throw error;
-    }
-
-    return consultation;
-  }
-
-  return Consultation.findOne({
-    patientId,
-    organizationId,
-  })
-    .session(session)
-    .sort({
-      consultationDate: -1,
-      createdAt: -1,
-    })
-    .lean();
-};
-
-/*
-|--------------------------------------------------------------------------
-| Prescription
-|--------------------------------------------------------------------------
-|
-| The clinical consultation remains the source of truth.
-| We do not allow the browser to silently replace the clinical Rx.
-|
-*/
-
-const getClinicalPrescription = (consultation) => {
-  if (!consultation) {
-    return {
-      givenRx: {
-        right: {},
-        left: {},
-      },
-      pd: {
-        right: "",
-        left: "",
-        total: "",
-      },
-    };
-  }
-
-  return {
-    givenRx: consultation.givenRx || {
-      right: {},
-      left: {},
-    },
-
-    pd: consultation.pd || {
-      right: "",
-      left: "",
-      total: "",
-    },
   };
-};
+
+const getClinicalPrescription =
+  (consultation) => ({
+    givenRx: normalizeRx(
+      consultation?.givenRx,
+    ),
+
+    pd: normalizePd(
+      consultation?.pd,
+    ),
+  });
 
 /*
 |--------------------------------------------------------------------------
@@ -440,180 +1103,56 @@ const getClinicalPrescription = (consultation) => {
 |--------------------------------------------------------------------------
 */
 
-const getInventoryItem = async ({
-  req,
-  itemId,
-  category,
-  session = null,
-}) => {
-  if (!itemId) {
-    return null;
-  }
-
-  if (!isValidObjectId(itemId)) {
-    const error = new Error(
-      `Invalid ${category} inventory item ID.`,
-    );
-
-    error.statusCode = 400;
-
-    throw error;
-  }
-
-  const organizationId = getOrganizationId(req);
-
-  const item = await InventoryItem.findOne({
-    _id: itemId,
-    organizationId,
+const getInventoryItem =
+  async ({
+    req,
+    itemId,
     category,
-    status: "active",
-  })
-    .session(session)
-    .lean();
+    session = null,
+  }) => {
+    if (!itemId) {
+      return null;
+    }
 
-  if (!item) {
-    const error = new Error(
-      `Selected ${category} is no longer available.`,
-    );
+    if (
+      !isValidObjectId(
+        itemId,
+      )
+    ) {
+      const error =
+        new Error(
+          `Invalid ${category} inventory item ID.`,
+        );
 
-    error.statusCode = 400;
+      error.statusCode = 400;
+      throw error;
+    }
 
-    throw error;
-  }
+    const organizationId =
+      getOrganizationId(req);
 
-  return item;
-};
+    const item =
+      await InventoryItem.findOne({
+        _id: itemId,
+        organizationId,
+        category,
+        status: "active",
+      })
+        .session(session)
+        .lean();
 
-/*
-|--------------------------------------------------------------------------
-| Pricing
-|--------------------------------------------------------------------------
-|
-| Inventory prices are authoritative.
-| Browser supplied price values are ignored when an inventory item exists.
-|
-*/
+    if (!item) {
+      const error =
+        new Error(
+          `Selected ${category} is no longer available.`,
+        );
 
-const calculateTotals = ({
-  framePrice = 0,
-  lensPrice = 0,
-  extras = [],
-  discount = 0,
-  gstRate = 0,
-}) => {
-  const safeFramePrice = money(framePrice);
-  const safeLensPrice = money(lensPrice);
+      error.statusCode = 400;
+      throw error;
+    }
 
-  const normalizedExtras = Array.isArray(extras)
-    ? extras.map((extra) => ({
-        ...extra,
-        price: money(extra?.price),
-      }))
-    : [];
-
-  const extrasTotal = normalizedExtras.reduce(
-    (total, extra) => total + money(extra.price),
-    0,
-  );
-
-  const safeDiscount = Math.max(0, money(discount));
-
-  const subtotal = Math.max(
-    0,
-    money(
-      safeFramePrice +
-        safeLensPrice +
-        extrasTotal -
-        safeDiscount,
-    ),
-  );
-
-  const safeGstRate = Math.max(0, money(gstRate));
-
-  const gst = money(
-    subtotal * (safeGstRate / 100),
-  );
-
-  const billTotal = money(subtotal + gst);
-
-  return {
-    framePrice: safeFramePrice,
-    lensPrice: safeLensPrice,
-    extras: normalizedExtras,
-    extrasTotal,
-    discount: safeDiscount,
-    subtotal,
-    gstRate: safeGstRate,
-    gst,
-    billTotal,
-    total: subtotal,
+    return item;
   };
-};
-
-/*
-|--------------------------------------------------------------------------
-| Status workflow
-|--------------------------------------------------------------------------
-*/
-
-const STATUS_TRANSITIONS = {
-  draft: ["ordered", "cancelled"],
-
-  ordered: [
-    "not_ready",
-    "cancelled",
-  ],
-
-  not_ready: [
-    "ready",
-    "cancelled",
-  ],
-
-  ready: [
-    "notified",
-    "collected",
-  ],
-
-  notified: [
-    "collected",
-  ],
-
-  collected: [],
-
-  cancelled: [],
-};
-
-const validateStatusTransition = (
-  currentStatus,
-  nextStatus,
-) => {
-  if (!ALL_STATUSES.includes(nextStatus)) {
-    const error = new Error(
-      `Invalid spectacle status: ${nextStatus}`,
-    );
-
-    error.statusCode = 400;
-
-    throw error;
-  }
-
-  if (currentStatus === nextStatus) {
-    return;
-  }
-
-  const allowed =
-    STATUS_TRANSITIONS[currentStatus] || [];
-
-  if (!allowed.includes(nextStatus)) {
-    const error = new Error(
-      `Invalid status transition: ${currentStatus} → ${nextStatus}.`,
-    );
-
-    error.statusCode = 400;
-
-    throw error;
-  }
-};
 
 /*
 |--------------------------------------------------------------------------
@@ -621,29 +1160,34 @@ const validateStatusTransition = (
 |--------------------------------------------------------------------------
 */
 
-const generateJobNumber = async () => {
-  let attempts = 0;
+const generateJobNumber =
+  async () => {
+    for (
+      let attempt = 0;
+      attempt < 15;
+      attempt += 1
+    ) {
+      const jobNumber =
+        `SP-${Date.now()
+          .toString()
+          .slice(-8)}${Math.floor(
+          Math.random() * 10,
+        )}`;
 
-  while (attempts < 10) {
-    attempts += 1;
+      const exists =
+        await Spectacle.exists({
+          jobNumber,
+        });
 
-    const jobNumber = `SP-${Date.now()
-      .toString()
-      .slice(-8)}${Math.floor(Math.random() * 10)}`;
-
-    const exists = await Spectacle.exists({
-      jobNumber,
-    });
-
-    if (!exists) {
-      return jobNumber;
+      if (!exists) {
+        return jobNumber;
+      }
     }
-  }
 
-  throw new Error(
-    "Unable to generate a unique spectacle job number.",
-  );
-};
+    throw new Error(
+      "Unable to generate a unique spectacle job number.",
+    );
+  };
 
 /*
 |--------------------------------------------------------------------------
@@ -651,55 +1195,60 @@ const generateJobNumber = async () => {
 |--------------------------------------------------------------------------
 */
 
-export const latestConsultation = asyncHandler(
-  async (req, res) => {
-    requireRole(req, VIEW_ROLES);
+export const latestConsultation =
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
+        req,
+        VIEW_ROLES,
+      );
 
-    const organizationId = getOrganizationId(req);
+      const organizationId =
+        getOrganizationId(req);
 
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
+
+      const patient =
+        await getAccessiblePatient({
+          req,
+          patientId:
+            req.params.patientId,
+        });
+
+      await getAccessibleBranch({
+        req,
+        branchId:
+          req.query.branchId,
       });
-    }
 
-    const patient = await getAccessiblePatient({
-      req,
-      patientId: req.params.patientId,
-    });
-
-    /*
-     * Make sure the patient is accessible through one of
-     * the user's branches where branch restrictions apply.
-     */
-    await getAccessibleBranch({
-      req,
-      branchId: req.query.branchId,
-    });
-
-    const consultation =
-      await Consultation.findOne({
-        patientId: patient._id,
-        organizationId,
-      })
-        .sort({
-          consultationDate: -1,
-          createdAt: -1,
+      const consultation =
+        await Consultation.findOne({
+          patientId: patient._id,
+          organizationId,
         })
-        .populate(
-          "optometristId",
-          "firstName lastName role",
-        )
-        .lean();
+          .sort({
+            consultationDate: -1,
+            createdAt: -1,
+          })
+          .populate(
+            "optometristId",
+            "firstName lastName role",
+          )
+          .lean();
 
-    return res.json({
-      success: true,
-      data: consultation,
-    });
-  },
-);
+      return res.json({
+        success: true,
+        data:
+          consultation,
+      });
+    },
+  );
 
 /*
 |--------------------------------------------------------------------------
@@ -707,136 +1256,295 @@ export const latestConsultation = asyncHandler(
 |--------------------------------------------------------------------------
 */
 
-export const getSpectacle = asyncHandler(
-  async (req, res) => {
-    requireRole(req, VIEW_ROLES);
+export const getSpectacle =
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
+        req,
+        VIEW_ROLES,
+      );
 
-    const organizationId = getOrganizationId(req);
+      const organizationId =
+        getOrganizationId(req);
 
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
-      });
-    }
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
 
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid spectacle job ID.",
-      });
-    }
-
-    const spectacle = await Spectacle.findOne({
-      _id: req.params.id,
-      organizationId,
-    })
-      .populate(
-        "patientId",
-        "patientNumber firstName middleName lastName phone",
-      )
-      .populate(
-        "branchId",
-        "name code status",
-      )
-      .populate(
-        "dispenserId",
-        "firstName lastName role",
-      )
-      .populate(
-        "prescribedById",
-        "firstName lastName role",
-      )
-      .populate(
-        "consultationId",
-        "consultationDate consultationType givenRx pd",
-      )
-      .populate(
-        "frameItemId",
-        "code brand model description sellingPrice stock",
-      )
-      .populate(
-        "lensItemId",
-        "code brand model description supplier sellingPrice stock",
-      )
-      .lean();
-
-    if (!spectacle) {
-      return res.status(404).json({
-        success: false,
-        message: "Spectacle job not found.",
-      });
-    }
-
-    /*
-     * Branch-level authorization.
-     */
-    await getAccessibleBranch({
-      req,
-      branchId: spectacle.branchId?._id,
-    });
-
-    const extrasTotal = Array.isArray(
-      spectacle.extras,
-    )
-      ? spectacle.extras.reduce(
-          (total, extra) =>
-            total + money(extra?.price),
-          0,
+      if (
+        !isValidObjectId(
+          req.params.id,
         )
-      : 0;
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid spectacle job ID.",
+        });
+      }
 
-    const framePrice = money(
-      spectacle.frame?.price,
-    );
+      const spectacle =
+        await Spectacle.findOne({
+          _id: req.params.id,
+          organizationId,
+        })
+          .populate(
+            "patientId",
+            "patientNumber firstName middleName lastName phone",
+          )
+          .populate(
+            "branchId",
+            "name code status",
+          )
+          .populate(
+            "dispenserId",
+            "firstName lastName role",
+          )
+          .populate(
+            "prescribedById",
+            "firstName lastName role",
+          )
+          .populate(
+            "readyBy",
+            "firstName lastName role",
+          )
+          .populate(
+            "collectedBy",
+            "firstName lastName role",
+          )
+          .populate(
+            "consultationId",
+            "consultationDate consultationType givenRx pd",
+          )
+          .populate(
+            "frameItemId",
+            "code brand model description sellingPrice stock",
+          )
+          .populate(
+            "lensItemId",
+            "code brand model description supplier sellingPrice stock",
+          )
+          .lean();
 
-    const lensPrice = money(
-      spectacle.lens?.price,
-    );
+      if (!spectacle) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Spectacle job not found.",
+        });
+      }
 
-    const discount = money(
-      spectacle.discount,
-    );
+      await getAccessibleBranch({
+        req,
+        branchId:
+          spectacle.branchId?._id ||
+          spectacle.branchId,
+      });
 
-    const total = Math.max(
-      0,
-      money(
-        framePrice +
-          lensPrice +
-          extrasTotal -
-          discount,
-      ),
-    );
+      /*
+       * Compatibility aliases:
+       * Existing pages may still read root totals or legacy lens fields.
+       */
+      const framePrice =
+        money(
+          spectacle.pricing
+            ?.framePrice ??
+            spectacle.frame
+              ?.price,
+        );
 
-    return res.json({
-      success: true,
+      const detailLensPrice =
+        money(
+          spectacle.pricing
+            ?.lensPrice,
+        );
 
-      data: {
-        ...spectacle,
+      const legacyLensPrice =
+        money(
+          spectacle.lens?.price,
+        );
 
-        extrasTotal,
+      const rightLensPrice =
+        money(
+          spectacle.lenses
+            ?.right?.price,
+        );
 
-        total,
+      const leftLensPrice =
+        money(
+          spectacle.lenses
+            ?.left?.price,
+        );
 
-        /*
-         * Backward-compatible aliases for the current UI.
-         */
-        pricing: {
-          framePrice,
-          lensPrice,
+      const lensPrice =
+        detailLensPrice ||
+        legacyLensPrice ||
+        money(
+          rightLensPrice +
+            leftLensPrice,
+        );
+
+      const extrasTotal =
+        money(
+          spectacle.pricing
+            ?.extrasTotal ??
+            spectacle.extrasTotal ??
+            (
+              Array.isArray(
+                spectacle.extras,
+              )
+                ? spectacle.extras.reduce(
+                    (sum, extra) =>
+                      sum +
+                      money(
+                        extra?.price,
+                      ),
+                    0,
+                  )
+                : 0
+            ),
+        );
+
+      const discount =
+        money(
+          spectacle.pricing
+            ?.overallDiscount ??
+            spectacle.discount,
+        );
+
+      const subtotal =
+        money(
+          spectacle.pricing
+            ?.subtotal ??
+            (
+              framePrice +
+              lensPrice +
+              extrasTotal
+            ),
+        );
+
+      const total =
+        money(
+          spectacle.pricing
+            ?.total ??
+            spectacle.total ??
+            Math.max(
+              0,
+              subtotal -
+                discount,
+            ),
+        );
+
+      const gstRate =
+        money(
+          spectacle.pricing
+            ?.gstRate ??
+            0,
+        );
+
+      const gstAmount =
+        money(
+          spectacle.pricing
+            ?.gstAmount ??
+            spectacle.gst ??
+            (
+              total *
+              (gstRate / 100)
+            ),
+        );
+
+      const billTotal =
+        money(
+          spectacle.pricing
+            ?.billTotal ??
+            spectacle.billTotal ??
+            (
+              total +
+              gstAmount
+            ),
+        );
+
+      return res.json({
+        success: true,
+
+        data: {
+          ...spectacle,
+
           extrasTotal,
           discount,
-          subtotal: total,
-          gst: money(spectacle.gst),
-          billTotal: money(
-            spectacle.billTotal ?? total,
-          ),
+          total,
+          gst: gstAmount,
+          billTotal,
+
+          // UI-friendly aliases.
+          dueDate:
+            spectacle.specDueDate,
+          specDue:
+            spectacle.specDueDate,
+          jobReadyAt:
+            spectacle.jobReadyAt,
+          readyDate:
+            spectacle.jobReadyAt,
+          collectedDate:
+            spectacle.collectedAt,
+
+          electronicOrder:
+            spectacle.electronicOrder ||
+            spectacle.eOrder ||
+            "",
+
+          notification:
+            spectacle.notification ||
+            (
+              spectacle.sms &&
+              spectacle.email
+                ? "sms_email"
+                : spectacle.sms
+                  ? "sms"
+                  : spectacle.email
+                    ? "email"
+                    : "none"
+            ),
+
+          pricing: {
+            ...(spectacle.pricing ||
+              {}),
+
+            framePrice,
+            lensPrice,
+            extrasTotal,
+            frameDiscount:
+              money(
+                spectacle.pricing
+                  ?.frameDiscount ??
+                spectacle.frame
+                  ?.discount,
+              ),
+            lensDiscount:
+              money(
+                spectacle.pricing
+                  ?.lensDiscount,
+              ),
+            overallDiscount:
+              discount,
+            discountReason:
+              spectacle.pricing
+                ?.discountReason ||
+              "",
+            subtotal,
+            total,
+            gstRate,
+            gstAmount,
+            billTotal,
+          },
         },
-      },
-    });
-  },
-);
+      });
+    },
+  );
 
 /*
 |--------------------------------------------------------------------------
@@ -845,67 +1553,85 @@ export const getSpectacle = asyncHandler(
 */
 
 export const getPatientSpectacles =
-  asyncHandler(async (req, res) => {
-    requireRole(req, VIEW_ROLES);
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
+        req,
+        VIEW_ROLES,
+      );
 
-    const organizationId = getOrganizationId(req);
+      const organizationId =
+        getOrganizationId(req);
 
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
+
+      const patient =
+        await getAccessiblePatient({
+          req,
+          patientId:
+            req.params.patientId,
+        });
+
+      const branch =
+        await getAccessibleBranch({
+          req,
+          branchId:
+            req.query.branchId,
+        });
+
+      const query = {
+        patientId:
+          patient._id,
+        organizationId,
+      };
+
+      if (
+        req.user.role !==
+          "super_admin" &&
+        req.user.role !==
+          "organization_admin"
+      ) {
+        query.branchId =
+          branch._id;
+      } else if (
+        req.query.branchId
+      ) {
+        query.branchId =
+          branch._id;
+      }
+
+      const list =
+        await Spectacle.find(query)
+          .sort({
+            createdAt: -1,
+          })
+          .limit(100)
+          .populate(
+            "branchId",
+            "name code",
+          )
+          .populate(
+            "dispenserId",
+            "firstName lastName role",
+          )
+          .populate(
+            "prescribedById",
+            "firstName lastName role",
+          )
+          .lean();
+
+      return res.json({
+        success: true,
+        data: list,
       });
-    }
-
-    const patient = await getAccessiblePatient({
-      req,
-      patientId: req.params.patientId,
-    });
-
-    const branch = await getAccessibleBranch({
-      req,
-      branchId: req.query.branchId,
-    });
-
-    const query = {
-      patientId: patient._id,
-      organizationId,
-    };
-
-    /*
-     * Operational users only see their accessible branch.
-     * Admin users can see all branches unless branchId is supplied.
-     */
-    if (
-      req.user.role !== "super_admin" &&
-      req.user.role !== "organization_admin"
-    ) {
-      query.branchId = branch._id;
-    } else if (req.query.branchId) {
-      query.branchId = branch._id;
-    }
-
-    const list = await Spectacle.find(query)
-      .sort({
-        createdAt: -1,
-      })
-      .limit(100)
-      .populate(
-        "branchId",
-        "name code",
-      )
-      .populate(
-        "dispenserId",
-        "firstName lastName role",
-      )
-      .lean();
-
-    return res.json({
-      success: true,
-      data: list,
-    });
-  });
+    },
+  );
 
 /*
 |--------------------------------------------------------------------------
@@ -914,1266 +1640,2028 @@ export const getPatientSpectacles =
 */
 
 export const createSpectacle =
-  asyncHandler(async (req, res) => {
-    const organizationId = getOrganizationId(req);
-
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
-      });
-    }
-
-    const {
-      patientId,
-      branchId,
-      consultationId,
-      frameItemId,
-      lensItemId,
-      frame,
-      lens,
-      lenses,
-      extras,
-      discount,
-      gstRate,
-      jobDate,
-      dueDate,
-      specDueDate,
-      labDueDate,
-      notes,
-      labInstructions,
-      billing,
-      use,
-      jobType,
-    } = req.body;
-
-    /*
-     * Validate patient.
-     */
-    const patient = await getAccessiblePatient({
-      req,
-      patientId,
-    });
-
-    /*
-     * Validate branch.
-     */
-    const branch = await getAccessibleBranch({
-      req,
-      branchId,
-    });
-
-    /*
-     * Get latest consultation.
-     */
-    const consultation =
-      await getLatestConsultation({
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
         req,
-        patientId: patient._id,
-        consultationId,
-      });
-
-    /*
-     * Inventory items are loaded from the database.
-     */
-    const frameItem =
-      await getInventoryItem({
-        req,
-        itemId: frameItemId,
-        category: "frame",
-      });
-
-    const lensItem =
-      await getInventoryItem({
-        req,
-        itemId: lensItemId,
-        category: "lens",
-      });
-
-    /*
-     * Clinical prescription is authoritative.
-     */
-    const clinicalRx =
-      getClinicalPrescription(
-        consultation,
+        CREATE_ROLES,
       );
 
-    /*
-     * Frame:
-     * If inventory is selected, its values are authoritative.
-     * Otherwise manual frame data can be retained for own-frame jobs.
-     */
-    const normalizedFrame = frameItem
-      ? {
-          code: cleanString(frameItem.code),
+      const organizationId =
+        getOrganizationId(req);
 
-          description:
-            cleanString(
-              frameItem.description,
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
+
+      const {
+        patientId,
+        branchId,
+        consultationId,
+        frameItemId,
+        lensItemId,
+        frame,
+        lens,
+        lenses,
+        extras,
+        discount,
+        gstRate,
+        pricing,
+        jobDate,
+        dueDate,
+        specDueDate,
+        labDueDate,
+        rxDate,
+        notes,
+        lab,
+        labInstructions,
+        billingNo,
+        notification,
+        smsEmail,
+        sms,
+        email,
+        electronicOrder,
+        eOrder,
+        use,
+        jobType,
+        dispenserId,
+        prescribedById,
+      } = req.body;
+
+      const patient =
+        await getAccessiblePatient({
+          req,
+          patientId,
+        });
+
+      const branch =
+        await getAccessibleBranch({
+          req,
+          branchId,
+        });
+
+      const consultation =
+        await getLatestConsultation({
+          req,
+          patientId:
+            patient._id,
+          consultationId,
+        });
+
+      const frameItem =
+        await getInventoryItem({
+          req,
+          itemId:
+            frameItemId,
+          category: "frame",
+        });
+
+      const lensItem =
+        await getInventoryItem({
+          req,
+          itemId:
+            lensItemId,
+          category: "lens",
+        });
+
+      /*
+       * CREATE:
+       * The selected consultation provides the initial clinical Rx.
+       */
+      const clinical =
+        getClinicalPrescription(
+          consultation,
+        );
+
+      const normalizedFrame =
+        frameItem
+          ? normalizeFrame({
+              code: frameItem.code,
+              description:
+                frameItem.description ||
+                [
+                  frameItem.brand,
+                  frameItem.model,
+                ]
+                  .filter(Boolean)
+                  .join(" "),
+              price:
+                frameItem.sellingPrice,
+              ownFrame:
+                false,
+            })
+          : normalizeFrame(
+              frame,
+            );
+
+      const normalizedLegacyLens =
+        lensItem
+          ? normalizeLegacyLens({
+              code:
+                lensItem.code,
+              description:
+                lensItem.description,
+              supplier:
+                lensItem.supplier,
+              price:
+                lensItem.sellingPrice,
+            })
+          : normalizeLegacyLens(
+              lens,
+            );
+
+      const normalizedLenses =
+        normalizeLenses(
+          lenses,
+          normalizedLegacyLens,
+        );
+
+      /*
+       * Inventory lens price is authoritative when linked.
+       *
+       * Without an inventory item, the detailed eye prices are summed.
+       * With an inventory item, its sellingPrice represents the job lens
+       * price and prevents a right/left double count.
+       */
+      const detailedLensPrice =
+        money(
+          normalizedLenses
+            .right.price,
+        ) +
+        money(
+          normalizedLenses
+            .left.price,
+        );
+
+      const initialLensPrice =
+        lensItem
+          ? money(
+              lensItem.sellingPrice,
+            )
+          : money(
+              pricing?.lensPrice ??
+                detailedLensPrice ??
+                normalizedLegacyLens.price,
+            );
+
+      const normalizedExtras =
+        normalizeExtras(
+          extras,
+        );
+
+      const overallDiscount =
+        money(
+          pricing
+            ?.overallDiscount ??
+            discount ??
+            0,
+        );
+
+      const initialGstRate =
+        money(
+          pricing?.gstRate ??
+            gstRate ??
+            0,
+        );
+
+      const totals =
+        calculateTotals({
+          framePrice:
+            normalizedFrame.price,
+          lensPrice:
+            initialLensPrice,
+          extras:
+            normalizedExtras,
+          discount:
+            overallDiscount,
+          gstRate:
+            initialGstRate,
+        });
+
+      const jobNumber =
+        await generateJobNumber();
+
+      const normalizedLab =
+        normalizeLab(
+          lab,
+          typeof labInstructions ===
+            "object"
+            ? labInstructions
+            : {
+                instructions:
+                  labInstructions,
+              },
+        );
+
+      const normalizedNotification =
+        cleanString(
+          notification ||
+            (
+              sms && email
+                ? "sms_email"
+                : sms
+                  ? "sms"
+                  : email
+                    ? "email"
+                    : ""
+            ),
+        ) || "none";
+
+      const spectacle =
+        await Spectacle.create({
+          organizationId,
+
+          branchId:
+            branch._id,
+
+          patientId:
+            patient._id,
+
+          consultationId:
+            consultation?._id ||
+            null,
+
+          frameItemId:
+            frameItem?._id ||
+            null,
+
+          lensItemId:
+            lensItem?._id ||
+            null,
+
+          jobNumber,
+
+          jobDate:
+            normalizeDate(
+              jobDate,
             ) ||
-            [
-              frameItem.brand,
-              frameItem.model,
-            ]
-              .filter(Boolean)
-              .join(" "),
+            new Date(),
 
-          price: money(
-            frameItem.sellingPrice,
-          ),
-
-          ownFrame: false,
-        }
-      : {
-          code: cleanString(frame?.code),
-          description: cleanString(
-            frame?.description,
-          ),
-          price: money(frame?.price),
-          ownFrame:
-            frame?.ownFrame === true,
-        };
-
-    /*
-     * Backward compatibility:
-     *
-     * Existing UI sends:
-     *   lens
-     *
-     * New UI can send:
-     *   lenses.right
-     *   lenses.left
-     *
-     * The inventory item remains authoritative for pricing.
-     */
-    const normalizedLens = lensItem
-      ? {
-          code: cleanString(lensItem.code),
-
-          description: cleanString(
-            lensItem.description,
-          ),
-
-          supplier: cleanString(
-            lensItem.supplier,
-          ),
-
-          price: money(
-            lensItem.sellingPrice,
-          ),
-        }
-      : {
-          code: cleanString(lens?.code),
-          description: cleanString(
-            lens?.description,
-          ),
-          supplier: cleanString(
-            lens?.supplier,
-          ),
-          price: money(lens?.price),
-        };
-
-    /*
-     * Detailed two-eye lens information.
-     */
-    const normalizedLenses = {
-      right:
-        lenses?.right ||
-        {
-          ...normalizedLens,
-        },
-
-      left:
-        lenses?.left ||
-        {
-          ...normalizedLens,
-        },
-    };
-
-    /*
-     * Sanitize extras.
-     */
-    const normalizedExtras = Array.isArray(
-      extras,
-    )
-      ? extras
-          .slice(0, 20)
-          .map((extra) => ({
-            description: cleanString(
-              extra?.description,
+          specDueDate:
+            normalizeDate(
+              specDueDate ||
+                dueDate,
             ),
-            supplier: cleanString(
-              extra?.supplier,
+
+          labDueDate:
+            normalizeDate(
+              labDueDate,
             ),
-            price: money(extra?.price),
-          }))
-          .filter(
-            (extra) =>
-              extra.description ||
-              extra.supplier ||
-              extra.price > 0,
+
+          jobType:
+            cleanString(
+              jobType,
+            ) ||
+            "Spectacle",
+
+          dispenserId:
+            getId(
+              dispenserId,
+            ),
+
+          prescribedById:
+            getId(
+              prescribedById,
+            ) ||
+            consultation
+              ?.optometristId ||
+            null,
+
+          rxDate:
+            normalizeDate(
+              rxDate,
+            ),
+
+          use:
+            normalizeUse(
+              use,
+            ),
+
+          rx:
+            clinical.givenRx,
+
+          pd:
+            clinical.pd,
+
+          frame:
+            normalizedFrame,
+
+          lens:
+            normalizedLegacyLens,
+
+          lenses:
+            normalizedLenses,
+
+          extras:
+            totals.extras,
+
+          lab:
+            normalizedLab,
+
+          pricing:
+            buildPricing({
+              totals,
+              frameDiscount:
+                pricing?.frameDiscount,
+              lensDiscount:
+                pricing?.lensDiscount,
+              discountReason:
+                pricing?.discountReason,
+            }),
+
+          // Legacy compatibility totals.
+          extrasTotal:
+            totals.extrasTotal,
+          discount:
+            totals.discount,
+          total:
+            totals.total,
+          gst:
+            totals.gstAmount,
+          billTotal:
+            totals.billTotal,
+
+          billingNo:
+            cleanString(
+              billingNo,
+            ),
+
+          notification:
+            normalizedNotification,
+
+          smsEmail:
+            cleanString(
+              smsEmail,
+            ),
+
+          sms:
+            sms === true ||
+            normalizedNotification ===
+              "sms" ||
+            normalizedNotification ===
+              "sms_email",
+
+          email:
+            email === true ||
+            normalizedNotification ===
+              "email" ||
+            normalizedNotification ===
+              "sms_email",
+
+          electronicOrder:
+            cleanString(
+              electronicOrder ||
+                eOrder,
+            ),
+
+          eOrder:
+            cleanString(
+              eOrder ||
+                electronicOrder,
+            ),
+
+          notes:
+            cleanString(
+              notes,
+            ),
+
+          status:
+            "draft",
+
+          createdBy:
+            req.user._id,
+        });
+
+      const populated =
+        await Spectacle.findById(
+          spectacle._id,
+        )
+          .populate(
+            "patientId",
+            "patientNumber firstName middleName lastName phone",
           )
-      : [];
+          .populate(
+            "branchId",
+            "name code",
+          )
+          .populate(
+            "dispenserId",
+            "firstName lastName role",
+          )
+          .populate(
+            "prescribedById",
+            "firstName lastName role",
+          )
+          .populate(
+            "consultationId",
+            "consultationDate consultationType givenRx pd",
+          )
+          .populate(
+            "frameItemId",
+            "code brand model description sellingPrice stock",
+          )
+          .populate(
+            "lensItemId",
+            "code brand model description supplier sellingPrice stock",
+          )
+          .lean();
 
-    /*
-     * Server-side pricing.
-     */
-    const totals = calculateTotals({
-      framePrice:
-        normalizedFrame.price,
-      lensPrice:
-        normalizedLens.price,
-      extras:
-        normalizedExtras,
-      discount,
-      gstRate,
-    });
+      return res.status(201).json({
+        success: true,
 
-    const jobNumber =
-      await generateJobNumber();
+        message:
+          "Spectacle job created successfully.",
 
-    const spectacle = await Spectacle.create({
-      organizationId,
-
-      branchId: branch._id,
-
-      patientId: patient._id,
-
-      consultationId:
-        consultation?._id || null,
-
-      frameItemId:
-        frameItem?._id || null,
-
-      lensItemId:
-        lensItem?._id || null,
-
-      jobNumber,
-
-      jobDate:
-        normalizeDate(jobDate) ||
-        new Date(),
-
-      dueDate:
-        normalizeDate(
-          dueDate || specDueDate,
-        ),
-
-      specDueDate:
-        normalizeDate(
-          specDueDate,
-        ) ||
-        normalizeDate(dueDate),
-
-      labDueDate:
-        normalizeDate(labDueDate),
-
-      jobType:
-        cleanString(jobType) ||
-        "New Spectacle",
-
-      use: Array.isArray(use)
-        ? use.map(cleanString).filter(Boolean)
-        : cleanString(use)
-          ? [cleanString(use)]
-          : [],
-
-      /*
-       * Clinical source of truth.
-       */
-      rx: clinicalRx.givenRx,
-
-      pd: clinicalRx.pd,
-
-      /*
-       * Current compatibility structure.
-       */
-      frame: normalizedFrame,
-
-      lens: normalizedLens,
-
-      /*
-       * New two-eye structure.
-       */
-      lenses: normalizedLenses,
-
-      extras:
-        totals.extras,
-
-      extrasTotal:
-        totals.extrasTotal,
-
-      discount:
-        totals.discount,
-
-      total:
-        totals.total,
-
-      gst:
-        totals.gst,
-
-      gstRate:
-        totals.gstRate,
-
-      billTotal:
-        totals.billTotal,
-
-      labInstructions:
-        labInstructions || {},
-
-      billing:
-        billing || {},
-
-      notes:
-        cleanString(notes),
-
-      status: "draft",
-
-      createdBy:
-        req.user._id,
-    });
-
-    const populated =
-      await Spectacle.findById(
-        spectacle._id,
-      )
-        .populate(
-          "patientId",
-          "patientNumber firstName middleName lastName phone",
-        )
-        .populate(
-          "branchId",
-          "name code",
-        )
-        .populate(
-          "consultationId",
-          "consultationDate consultationType givenRx pd",
-        )
-        .lean();
-
-    return res.status(201).json({
-      success: true,
-
-      message:
-        "Spectacle job created successfully.",
-
-      data: populated,
-    });
-  });
+        data:
+          populated,
+      });
+    },
+  );
 
 /*
 |--------------------------------------------------------------------------
 | UPDATE spectacle
 |--------------------------------------------------------------------------
+|
+| General job edits use PUT /spectacles/:id.
+|
+| Status is intentionally excluded. Use:
+| PATCH /spectacles/:id/status
+|
+| Security/ownership fields and inventory links are protected.
+|--------------------------------------------------------------------------
 */
 
 export const updateSpectacle =
-  asyncHandler(async (req, res) => {
-    requireRole(req, UPDATE_ROLES);
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
+        req,
+        UPDATE_ROLES,
+      );
 
-    const organizationId =
-      getOrganizationId(req);
+      const organizationId =
+        getOrganizationId(req);
 
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
-      });
-    }
-
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid spectacle job ID.",
-      });
-    }
-
-    const spectacle =
-      await Spectacle.findOne({
-        _id: req.params.id,
-        organizationId,
-      });
-
-    if (!spectacle) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Spectacle job not found.",
-      });
-    }
-
-    /*
-     * Branch authorization.
-     */
-    await getAccessibleBranch({
-      req,
-      branchId: spectacle.branchId,
-    });
-
-    /*
-     * Once a job is ordered, its inventory linkage should not
-     * be casually changed.
-     */
-    const lockedStatuses = [
-      "ordered",
-      "not_ready",
-      "ready",
-      "notified",
-      "collected",
-    ];
-
-    if (
-      lockedStatuses.includes(
-        spectacle.status,
-      )
-    ) {
-      if (
-        req.body.frameItemId !== undefined &&
-        String(
-          req.body.frameItemId || "",
-        ) !==
-          String(
-            spectacle.frameItemId || "",
-          )
-      ) {
-        return res.status(409).json({
+      if (!organizationId) {
+        return res.status(403).json({
           success: false,
           message:
-            "Frame cannot be changed after the spectacle job has been ordered.",
+            "Authenticated user is not assigned to an organization.",
         });
       }
 
       if (
-        req.body.lensItemId !== undefined &&
-        String(
-          req.body.lensItemId || "",
-        ) !==
-          String(
-            spectacle.lensItemId || "",
-          )
+        !isValidObjectId(
+          req.params.id,
+        )
       ) {
-        return res.status(409).json({
+        return res.status(400).json({
           success: false,
           message:
-            "Lens cannot be changed after the spectacle job has been ordered.",
+            "Invalid spectacle job ID.",
         });
       }
-    }
 
-    /*
-     * Status must be updated through the dedicated status endpoint.
-     */
-    if (
-      req.body.status &&
-      req.body.status !==
-        spectacle.status
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Use the spectacle status endpoint to change job status.",
+      const spectacle =
+        await Spectacle.findOne({
+          _id: req.params.id,
+          organizationId,
+        });
+
+      if (!spectacle) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Spectacle job not found.",
+        });
+      }
+
+      await getAccessibleBranch({
+        req,
+        branchId:
+          spectacle.branchId,
       });
-    }
 
-    /*
-     * Never allow ownership/security fields to be modified
-     * from the browser.
-     */
-    const blockedFields = [
-      "organizationId",
-      "branchId",
-      "patientId",
-      "consultationId",
-      "createdBy",
-      "jobNumber",
-      "frameItemId",
-      "lensItemId",
-      "status",
-      "createdAt",
-      "updatedAt",
-    ];
+      /*
+       * Status changes must go through the dedicated status endpoint.
+       */
+      if (
+        req.body.status !==
+        undefined
+      ) {
+        if (
+          req.body.status !==
+          spectacle.status
+        ) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Use the spectacle status endpoint to change job status.",
+          });
+        }
+      }
 
-    const payload = {
-      ...req.body,
-    };
+      const lockedInventory =
+        [
+          "ordered",
+          "not_ready",
+          "ready",
+          "notified",
+          "collected",
+        ].includes(
+          spectacle.status,
+        );
 
-    blockedFields.forEach(
-      (field) => {
-        delete payload[field];
-      },
-    );
+      /*
+       * Inventory item changes are permitted only while the job is draft.
+       */
+      const requestedFrameItemId =
+        req.body.frameItemId !==
+        undefined
+          ? req.body.frameItemId
+          : undefined;
 
-    /*
-     * Re-load inventory prices when inventory references are present.
-     */
-    let frameItem = null;
+      const requestedLensItemId =
+        req.body.lensItemId !==
+        undefined
+          ? req.body.lensItemId
+          : undefined;
 
-    if (spectacle.frameItemId) {
-      frameItem =
-        await getInventoryItem({
-          req,
-          itemId:
-            spectacle.frameItemId,
-          category: "frame",
-        });
-    }
-
-    let lensItem = null;
-
-    if (spectacle.lensItemId) {
-      lensItem =
-        await getInventoryItem({
-          req,
-          itemId:
-            spectacle.lensItemId,
-          category: "lens",
-        });
-    }
-
-    /*
-     * If frame/lens data is changed while still in draft,
-     * validate the new inventory references.
-     */
-    if (
-      payload.frameItemId !==
-      undefined
-    ) {
-      frameItem =
-        await getInventoryItem({
-          req,
-          itemId:
-            payload.frameItemId,
-          category: "frame",
-        });
-
-      payload.frameItemId =
-        frameItem?._id || null;
-    }
-
-    if (
-      payload.lensItemId !==
-      undefined
-    ) {
-      lensItem =
-        await getInventoryItem({
-          req,
-          itemId:
-            payload.lensItemId,
-          category: "lens",
-        });
-
-      payload.lensItemId =
-        lensItem?._id || null;
-    }
-
-    /*
-     * Recalculate pricing from trusted inventory values.
-     */
-    const framePrice =
-      frameItem?.sellingPrice ??
-      spectacle.frame?.price ??
-      payload.frame?.price ??
-      0;
-
-    const lensPrice =
-      lensItem?.sellingPrice ??
-      spectacle.lens?.price ??
-      payload.lens?.price ??
-      0;
-
-    const extras =
-      payload.extras !== undefined
-        ? Array.isArray(
-            payload.extras,
-          )
-          ? payload.extras
-              .slice(0, 20)
-              .map((extra) => ({
-                description:
-                  cleanString(
-                    extra?.description,
-                  ),
-                supplier:
-                  cleanString(
-                    extra?.supplier,
-                  ),
-                price: money(
-                  extra?.price,
-                ),
-              }))
-          : []
-        : spectacle.extras || [];
-
-    const totals =
-      calculateTotals({
-        framePrice,
-        lensPrice,
-        extras,
-        discount:
-          payload.discount !==
+      if (lockedInventory) {
+        if (
+          requestedFrameItemId !==
           undefined
-            ? payload.discount
-            : spectacle.discount,
-        gstRate:
-          payload.gstRate !==
+        ) {
+          const incoming =
+            requestedFrameItemId
+              ? String(
+                  requestedFrameItemId,
+                )
+              : "";
+
+          const current =
+            spectacle.frameItemId
+              ? String(
+                  spectacle.frameItemId,
+                )
+              : "";
+
+          if (
+            incoming !==
+            current
+          ) {
+            return res.status(409).json({
+              success: false,
+              message:
+                "Frame cannot be changed after the spectacle job has been ordered.",
+            });
+          }
+        }
+
+        if (
+          requestedLensItemId !==
           undefined
-            ? payload.gstRate
-            : spectacle.gstRate,
-      });
+        ) {
+          const incoming =
+            requestedLensItemId
+              ? String(
+                  requestedLensItemId,
+                )
+              : "";
 
-    payload.extras =
-      totals.extras;
+          const current =
+            spectacle.lensItemId
+              ? String(
+                  spectacle.lensItemId,
+                )
+              : "";
 
-    payload.extrasTotal =
-      totals.extrasTotal;
+          if (
+            incoming !==
+            current
+          ) {
+            return res.status(409).json({
+              success: false,
+              message:
+                "Lens cannot be changed after the spectacle job has been ordered.",
+            });
+          }
+        }
+      }
 
-    payload.discount =
-      totals.discount;
+      let frameItem = null;
+      let lensItem = null;
 
-    payload.total =
-      totals.total;
+      if (
+        requestedFrameItemId !==
+        undefined
+      ) {
+        frameItem =
+          await getInventoryItem({
+            req,
+            itemId:
+              requestedFrameItemId,
+            category:
+              "frame",
+          });
+      } else if (
+        spectacle.frameItemId
+      ) {
+        frameItem =
+          await getInventoryItem({
+            req,
+            itemId:
+              spectacle.frameItemId,
+            category:
+              "frame",
+          });
+      }
 
-    payload.gst =
-      totals.gst;
+      if (
+        requestedLensItemId !==
+        undefined
+      ) {
+        lensItem =
+          await getInventoryItem({
+            req,
+            itemId:
+              requestedLensItemId,
+            category:
+              "lens",
+          });
+      } else if (
+        spectacle.lensItemId
+      ) {
+        lensItem =
+          await getInventoryItem({
+            req,
+            itemId:
+              spectacle.lensItemId,
+            category:
+              "lens",
+          });
+      }
 
-    payload.gstRate =
-      totals.gstRate;
+      /*
+       * Start with current values.
+       */
+      let nextFrame =
+        normalizeFrame(
+          spectacle.frame
+            ?.toObject?.() ||
+            spectacle.frame ||
+            {},
+        );
 
-    payload.billTotal =
-      totals.billTotal;
+      let nextLenses =
+        normalizeLenses(
+          spectacle.lenses,
+          spectacle.lens,
+        );
 
-    /*
-     * Keep inventory pricing synchronized.
-     */
-    if (frameItem) {
-      payload.frame = {
-        ...(payload.frame ||
-          spectacle.frame?.toObject?.() ||
-          spectacle.frame ||
-          {}),
+      let nextLegacyLens =
+        normalizeLegacyLens(
+          spectacle.lens,
+        );
 
-        code: frameItem.code,
+      let nextExtras =
+        normalizeExtras(
+          spectacle.extras,
+        );
 
-        description:
-          frameItem.description ||
-          [
-            frameItem.brand,
-            frameItem.model,
-          ]
-            .filter(Boolean)
-            .join(" "),
+      let nextRx =
+        normalizeRx(
+          spectacle.rx,
+        );
 
-        price:
-          money(
-            frameItem.sellingPrice,
-          ),
+      let nextPd =
+        normalizePd(
+          spectacle.pd,
+        );
 
-        ownFrame: false,
-      };
-    }
+      let nextLab =
+        normalizeLab(
+          spectacle.lab,
+        );
 
-    if (lensItem) {
-      payload.lens = {
-        ...(payload.lens ||
-          spectacle.lens?.toObject?.() ||
-          spectacle.lens ||
-          {}),
+      let nextPricing =
+        {
+          ...(spectacle.pricing
+            ?.toObject?.() ||
+            spectacle.pricing ||
+            {}),
+        };
 
-        code: lensItem.code,
+      /*
+       * Editable canonical fields.
+       */
+      const editableJobDate =
+        req.body.jobDate !==
+        undefined
+          ? normalizeDate(
+              req.body.jobDate,
+            )
+          : spectacle.jobDate;
 
-        description:
-          lensItem.description,
+      const editableSpecDueDate =
+        req.body.specDueDate !==
+          undefined ||
+        req.body.dueDate !==
+          undefined
+          ? normalizeDate(
+              req.body.specDueDate ??
+                req.body.dueDate,
+            )
+          : spectacle.specDueDate;
 
-        supplier:
-          lensItem.supplier,
+      const editableLabDueDate =
+        req.body.labDueDate !==
+        undefined
+          ? normalizeDate(
+              req.body.labDueDate,
+            )
+          : spectacle.labDueDate;
 
-        price:
-          money(
-            lensItem.sellingPrice,
-          ),
-      };
-    }
+      const editableRxDate =
+        req.body.rxDate !==
+        undefined
+          ? normalizeDate(
+              req.body.rxDate,
+            )
+          : spectacle.rxDate;
 
-    Object.assign(
-      spectacle,
-      payload,
-    );
+      if (
+        req.body.frame !==
+        undefined
+      ) {
+        nextFrame =
+          normalizeFrame(
+            req.body.frame,
+            nextFrame,
+          );
+      }
 
-    spectacle.updatedBy =
-      req.user._id;
+      if (
+        req.body.lenses !==
+        undefined
+      ) {
+        nextLenses =
+          normalizeLenses(
+            req.body.lenses,
+            req.body.lens ||
+              nextLegacyLens,
+          );
+      }
 
-    await spectacle.save();
+      if (
+        req.body.lens !==
+        undefined
+      ) {
+        nextLegacyLens =
+          normalizeLegacyLens(
+            req.body.lens,
+            nextLegacyLens,
+          );
+      }
 
-    const updated =
-      await Spectacle.findById(
-        spectacle._id,
-      )
-        .populate(
-          "patientId",
-          "patientNumber firstName middleName lastName phone",
-        )
-        .populate(
-          "branchId",
-          "name code",
-        )
-        .populate(
-          "consultationId",
-          "consultationDate consultationType givenRx pd",
-        )
-        .lean();
+      /*
+       * Keep legacy lens data synchronized from the right/left detail when
+       * a detailed lens edit is provided.
+       */
+      if (
+        req.body.lenses !==
+        undefined &&
+        req.body.lens ===
+          undefined
+      ) {
+        const preferredLens =
+          nextLenses.right;
 
-    return res.json({
-      success: true,
-      message:
-        "Spectacle job updated successfully.",
-      data: updated,
-    });
-  });
+        nextLegacyLens =
+          normalizeLegacyLens(
+            {
+              code:
+                preferredLens.lensCode,
+              description:
+                preferredLens.lensDescription,
+              supplier:
+                preferredLens.supplier,
+              price:
+                preferredLens.price,
+            },
+            nextLegacyLens,
+          );
+      }
 
-/*
-|--------------------------------------------------------------------------
-| CHANGE STATUS
-|--------------------------------------------------------------------------
-|
-| POST/PATCH this endpoint when the user performs a workflow action.
-|
-| draft
-|   ↓
-| ordered
-|   ↓
-| not_ready
-|   ↓
-| ready
-|   ↓
-| notified
-|   ↓
-| collected
-|
-| Cancellation is available before completion.
-|
-*/
+      if (
+        req.body.extras !==
+        undefined
+      ) {
+        nextExtras =
+          normalizeExtras(
+            req.body.extras,
+          );
+      }
 
-export const updateSpectacleStatus =
-  asyncHandler(async (req, res) => {
-    requireRole(req, STATUS_ROLES);
+      if (
+        req.body.rx !==
+        undefined
+      ) {
+        /*
+         * Spectacle Rx may be edited at the dispensing/job level after
+         * creation. The consultation itself remains unchanged.
+         */
+        nextRx =
+          normalizeRx(
+            req.body.rx,
+            nextRx,
+          );
+      }
 
-    const organizationId =
-      getOrganizationId(req);
+      if (
+        req.body.pd !==
+        undefined
+      ) {
+        nextPd =
+          normalizePd(
+            req.body.pd,
+            nextPd,
+          );
+      }
 
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
-      });
-    }
+      if (
+        req.body.lab !==
+        undefined
+      ) {
+        nextLab =
+          normalizeLab(
+            req.body.lab,
+            nextLab,
+          );
+      }
 
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid spectacle job ID.",
-      });
-    }
+      /*
+       * Legacy form aliases for lab fields.
+       */
+      if (
+        req.body.labInstructions !==
+        undefined
+      ) {
+        nextLab.instructions =
+          typeof req.body.labInstructions ===
+            "object"
+            ? cleanString(
+                req.body
+                  .labInstructions
+                  ?.instructions,
+              )
+            : cleanString(
+                req.body
+                  .labInstructions,
+              );
+      }
 
-    const nextStatus =
-      cleanString(req.body.status);
+      if (
+        req.body.toApply !==
+        undefined
+      ) {
+        nextLab.toApply =
+          normalizeToApply(
+            req.body.toApply,
+          );
+      }
 
-    if (!ALL_STATUSES.includes(nextStatus)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid spectacle status.",
-      });
-    }
+      if (
+        req.body.toFit !==
+        undefined
+      ) {
+        nextLab.toFit =
+          req.body.toFit === true;
+      }
 
-    const session =
-      await mongoose.startSession();
+      /*
+       * Pricing input.
+       */
+      const incomingPricing =
+        req.body.pricing &&
+        typeof req.body.pricing ===
+          "object"
+          ? req.body.pricing
+          : {};
 
-    try {
-      let updatedJob = null;
-
-      await session.withTransaction(
-        async () => {
-          const spectacle =
-            await Spectacle.findOne({
-              _id: req.params.id,
-              organizationId,
-            }).session(session);
-
-          if (!spectacle) {
-            const error = new Error(
-              "Spectacle job not found.",
+      const discount =
+        req.body.discount !==
+        undefined
+          ? money(
+              req.body.discount,
+            )
+          : money(
+              incomingPricing
+                .overallDiscount ??
+                nextPricing
+                  .overallDiscount ??
+                spectacle.discount,
             );
 
-            error.statusCode = 404;
+      const gstRate =
+        incomingPricing.gstRate !==
+          undefined
+          ? money(
+              incomingPricing.gstRate,
+            )
+          : req.body.gstRate !==
+              undefined
+            ? money(
+                req.body.gstRate,
+              )
+            : money(
+                nextPricing.gstRate,
+              );
 
-            throw error;
-          }
+      /*
+       * Inventory pricing is authoritative if the item exists.
+       * Otherwise use the editable frame/lens values.
+       */
+      if (frameItem) {
+        nextFrame =
+          normalizeFrame({
+            ...nextFrame,
+            code:
+              frameItem.code,
+            description:
+              frameItem.description ||
+              [
+                frameItem.brand,
+                frameItem.model,
+              ]
+                .filter(Boolean)
+                .join(" "),
+            price:
+              frameItem.sellingPrice,
+            ownFrame:
+              false,
+          });
+      }
 
-          await getAccessibleBranch({
-            req,
-            branchId:
-              spectacle.branchId,
-            session,
+      if (lensItem) {
+        nextLegacyLens =
+          normalizeLegacyLens({
+            ...nextLegacyLens,
+            code:
+              lensItem.code,
+            description:
+              lensItem.description,
+            supplier:
+              lensItem.supplier,
+            price:
+              lensItem.sellingPrice,
           });
 
-          const previousStatus =
-            spectacle.status;
-
-          validateStatusTransition(
-            previousStatus,
-            nextStatus,
+        /*
+         * Do not overwrite detailed optical measurements, but keep the
+         * common inventory identity and price synchronized on both eyes
+         * when detailed lens structure has no explicit eye pricing.
+         */
+        const detailedPrice =
+          money(
+            nextLenses.right.price,
+          ) +
+          money(
+            nextLenses.left.price,
           );
 
-          /*
-           * ORDERING
-           *
-           * Inventory is deducted only when moving:
-           * draft → ordered
-           */
-          if (
-            nextStatus ===
-              "ordered" &&
-            previousStatus !==
-              "ordered"
-          ) {
-            const inventoryIds =
-              [
-                spectacle.frameItemId,
-                spectacle.lensItemId,
-              ].filter(Boolean);
+        const canonicalLensPrice =
+          money(
+            lensItem.sellingPrice,
+          );
 
-            /*
-             * Prevent the same inventory item from being
-             * deducted twice if frame/lens reference the same item.
-             */
-            const uniqueInventoryIds = [
-              ...new Set(
-                inventoryIds.map(
-                  (id) =>
-                    id.toString(),
-                ),
-              ),
-            ];
-
-            for (const itemId of uniqueInventoryIds) {
-              const item =
-                await InventoryItem.findOne({
-                  _id: itemId,
-                  organizationId,
-                  status: "active",
-                }).session(
-                  session,
-                );
-
-              if (!item) {
-                const error =
-                  new Error(
-                    "Linked inventory item no longer exists.",
-                  );
-
-                error.statusCode = 400;
-
-                throw error;
-              }
-
-              /*
-               * Atomic stock protection.
-               *
-               * We update only if stock > 0.
-               */
-              const beforeStock =
-                Number(item.stock || 0);
-
-              if (beforeStock < 1) {
-                const error =
-                  new Error(
-                    `Insufficient stock for ${item.code}.`,
-                  );
-
-                error.statusCode = 400;
-
-                throw error;
-              }
-
-              const updatedItem =
-                await InventoryItem.findOneAndUpdate(
-                  {
-                    _id: item._id,
-                    organizationId,
-                    status: "active",
-                    stock: {
-                      $gte: 1,
-                    },
-                  },
-                  {
-                    $inc: {
-                      stock: -1,
-                    },
-
-                    $set: {
-                      updatedBy:
-                        req.user._id,
-                    },
-                  },
-                  {
-                    new: true,
-                    session,
-                  },
-                );
-
-              if (!updatedItem) {
-                const error =
-                  new Error(
-                    `Unable to reserve stock for ${item.code}.`,
-                  );
-
-                error.statusCode = 409;
-
-                throw error;
-              }
-
-              await InventoryTransaction.create(
-                [
-                  {
-                    organizationId,
-
-                    branchId:
-                      spectacle.branchId,
-
-                    itemId:
-                      item._id,
-
-                    spectacleId:
-                      spectacle._id,
-
-                    type: "sale",
-
-                    quantity: -1,
-
-                    beforeStock,
-
-                    afterStock:
-                      Number(
-                        updatedItem.stock ||
-                          0,
-                      ),
-
-                    reason:
-                      "Spectacle job ordered",
-
-                    reference:
-                      spectacle.jobNumber,
-
-                    createdBy:
-                      req.user._id,
-                  },
-                ],
-                {
-                  session,
-                },
-              );
-            }
-
-            spectacle.lensOrderDate =
-              new Date();
-          }
+        if (
+          detailedPrice === 0 ||
+          req.body.lensItemId !==
+            undefined
+        ) {
+          nextLenses = {
+            right: {
+              ...nextLenses.right,
+              lensCode:
+                nextLenses.right
+                  .lensCode ||
+                lensItem.code,
+              lensDescription:
+                nextLenses.right
+                  .lensDescription ||
+                lensItem.description ||
+                "",
+              supplier:
+                nextLenses.right
+                  .supplier ||
+                lensItem.supplier ||
+                "",
+            },
+            left: {
+              ...nextLenses.left,
+              lensCode:
+                nextLenses.left
+                  .lensCode ||
+                lensItem.code,
+              lensDescription:
+                nextLenses.left
+                  .lensDescription ||
+                lensItem.description ||
+                "",
+              supplier:
+                nextLenses.left
+                  .supplier ||
+                lensItem.supplier ||
+                "",
+            },
+          };
 
           /*
-           * READY
+           * The job-level pricing uses the inventory item price once,
+           * not twice for OD + OS.
            */
-          if (
-            nextStatus ===
-              "ready" &&
-            previousStatus !==
-              "ready"
-          ) {
-            spectacle.jobReadyAt =
-              new Date();
-          }
+        }
+      }
 
-          /*
-           * NOTIFIED
-           */
-          if (
-            nextStatus ===
-              "notified"
-          ) {
-            spectacle.lastNotifiedAt =
-              new Date();
+      const lensDetailPrice =
+        money(
+          nextLenses.right.price,
+        ) +
+        money(
+          nextLenses.left.price,
+        );
 
-            spectacle.notificationCount =
-              Number(
-                spectacle.notificationCount ||
-                  0,
-              ) + 1;
-          }
+      let nextLensPrice =
+        req.body.lenses !==
+          undefined ||
+        req.body.lens !==
+          undefined ||
+        incomingPricing
+          .lensPrice !==
+          undefined
+          ? lensDetailPrice
+          : money(
+              spectacle
+                .pricing
+                ?.lensPrice ??
+              spectacle.lens
+                ?.price ??
+              lensDetailPrice,
+            );
 
-          /*
-           * COLLECTED
-           */
-          if (
-            nextStatus ===
-              "collected"
-          ) {
-            spectacle.collectedAt =
-              new Date();
-          }
+      if (lensItem) {
+        nextLensPrice =
+          money(
+            lensItem.sellingPrice,
+          );
+      }
 
-          /*
-           * Cancellation timestamp can be represented
-           * through the status itself. We don't introduce
-           * another field unless the model supports it.
-           */
-          spectacle.status =
-            nextStatus;
-
-          spectacle.updatedBy =
-            req.user._id;
-
-          await spectacle.save({
-            session,
-          });
-
-          updatedJob =
-            await Spectacle.findById(
-              spectacle._id,
+      /*
+       * Frame inventory price is authoritative.
+       */
+      const nextFramePrice =
+        frameItem
+          ? money(
+              frameItem.sellingPrice,
             )
-              .session(session)
-              .populate(
-                "patientId",
-                "patientNumber firstName middleName lastName phone",
+          : money(
+              nextFrame.price,
+            );
+
+      const totals =
+        calculateTotals({
+          framePrice:
+            nextFramePrice,
+          lensPrice:
+            nextLensPrice,
+          extras:
+            nextExtras,
+          discount,
+          gstRate,
+        });
+
+      const nextFrameDiscount =
+        req.body.frame
+          ?.discount !==
+          undefined
+          ? money(
+              req.body.frame
+                .discount,
+            )
+          : money(
+              incomingPricing
+                .frameDiscount ??
+                nextPricing
+                  .frameDiscount,
+            );
+
+      const nextLensDiscount =
+        money(
+          incomingPricing
+            .lensDiscount ??
+            nextPricing
+              .lensDiscount,
+        );
+
+      const nextDiscountReason =
+        cleanString(
+          incomingPricing
+            .discountReason ??
+            nextPricing
+              .discountReason,
+        );
+
+      nextPricing =
+        buildPricing({
+          existing:
+            nextPricing,
+          totals,
+          frameDiscount:
+            nextFrameDiscount,
+          lensDiscount:
+            nextLensDiscount,
+          discountReason:
+            nextDiscountReason,
+        });
+
+      /*
+       * Build a controlled update.
+       */
+      const update = {
+        jobDate:
+          editableJobDate,
+
+        specDueDate:
+          editableSpecDueDate,
+
+        labDueDate:
+          editableLabDueDate,
+
+        rxDate:
+          editableRxDate,
+
+        jobType:
+          req.body.jobType !==
+          undefined
+            ? cleanString(
+                req.body.jobType,
               )
-              .populate(
-                "branchId",
-                "name code",
+            : spectacle.jobType,
+
+        use:
+          req.body.use !==
+          undefined
+            ? normalizeUse(
+                req.body.use,
               )
-              .lean();
-        },
+            : spectacle.use,
+
+        dispenserId:
+          req.body.dispenserId !==
+          undefined
+            ? getId(
+                req.body.dispenserId,
+              )
+            : spectacle.dispenserId,
+
+        prescribedById:
+          req.body.prescribedById !==
+          undefined
+            ? getId(
+                req.body
+                  .prescribedById,
+              )
+            : spectacle
+                .prescribedById,
+
+        rx: nextRx,
+
+        pd: nextPd,
+
+        frame: nextFrame,
+
+        lenses: nextLenses,
+
+        lens: nextLegacyLens,
+
+        extras: totals.extras,
+
+        lab: nextLab,
+
+        pricing: nextPricing,
+
+        // Legacy totals.
+        extrasTotal:
+          totals.extrasTotal,
+        discount:
+          totals.discount,
+        total:
+          totals.total,
+        gst:
+          totals.gstAmount,
+        billTotal:
+          totals.billTotal,
+
+        billingNo:
+          req.body.billingNo !==
+          undefined
+            ? cleanString(
+                req.body.billingNo,
+              )
+            : spectacle
+                .billingNo,
+
+        notification:
+          req.body.notification !==
+          undefined
+            ? cleanString(
+                req.body
+                  .notification,
+              ) || "none"
+            : spectacle
+                .notification,
+
+        smsEmail:
+          req.body.smsEmail !==
+          undefined
+            ? cleanString(
+                req.body.smsEmail,
+              )
+            : spectacle
+                .smsEmail,
+
+        sms:
+          req.body.sms !==
+          undefined
+            ? req.body.sms === true
+            : spectacle.sms,
+
+        email:
+          req.body.email !==
+          undefined
+            ? req.body.email ===
+              true
+            : spectacle.email,
+
+        electronicOrder:
+          req.body.electronicOrder !==
+          undefined
+            ? cleanString(
+                req.body
+                  .electronicOrder,
+              )
+            : req.body.eOrder !==
+                undefined
+              ? cleanString(
+                  req.body.eOrder,
+                )
+              : spectacle
+                  .electronicOrder,
+
+        eOrder:
+          req.body.eOrder !==
+          undefined
+            ? cleanString(
+                req.body.eOrder,
+              )
+            : req.body
+                .electronicOrder !==
+                undefined
+              ? cleanString(
+                  req.body
+                    .electronicOrder,
+                )
+              : spectacle
+                  .eOrder,
+
+        notes:
+          req.body.notes !==
+          undefined
+            ? cleanString(
+                req.body.notes,
+              )
+            : spectacle.notes,
+
+        updatedBy:
+          req.user._id,
+      };
+
+      /*
+       * Inventory references can only be modified when still draft.
+       */
+      if (
+        !lockedInventory
+      ) {
+        if (
+          requestedFrameItemId !==
+          undefined
+        ) {
+          update.frameItemId =
+            frameItem?._id ||
+            null;
+        }
+
+        if (
+          requestedLensItemId !==
+          undefined
+        ) {
+          update.lensItemId =
+            lensItem?._id ||
+            null;
+        }
+      }
+
+      Object.assign(
+        spectacle,
+        update,
       );
+
+      await spectacle.save();
+
+      const updated =
+        await Spectacle.findById(
+          spectacle._id,
+        )
+          .populate(
+            "patientId",
+            "patientNumber firstName middleName lastName phone",
+          )
+          .populate(
+            "branchId",
+            "name code",
+          )
+          .populate(
+            "dispenserId",
+            "firstName lastName role",
+          )
+          .populate(
+            "prescribedById",
+            "firstName lastName role",
+          )
+          .populate(
+            "readyBy",
+            "firstName lastName role",
+          )
+          .populate(
+            "collectedBy",
+            "firstName lastName role",
+          )
+          .populate(
+            "consultationId",
+            "consultationDate consultationType givenRx pd",
+          )
+          .populate(
+            "frameItemId",
+            "code brand model description sellingPrice stock",
+          )
+          .populate(
+            "lensItemId",
+            "code brand model description supplier sellingPrice stock",
+          )
+          .lean();
 
       return res.json({
         success: true,
 
         message:
-          `Spectacle job moved to ${nextStatus}.`,
+          "Spectacle job updated successfully.",
 
-        data: updatedJob,
+        data: updated,
       });
-    } finally {
-      await session.endSession();
-    }
-  });
+    },
+  );
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE spectacle status
+|--------------------------------------------------------------------------
+|
+| Dedicated endpoint:
+|
+| PATCH /spectacles/:id/status
+|
+| Status transitions:
+|
+| draft
+|   → ordered / cancelled
+|
+| ordered
+|   → not_ready / cancelled
+|
+| not_ready
+|   → ready / cancelled
+|
+| ready
+|   → notified / collected
+|
+| notified
+|   → collected
+|
+| Once collected/cancelled, no further status transition is allowed.
+|--------------------------------------------------------------------------
+*/
+
+export const updateSpectacleStatus =
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
+        req,
+        STATUS_ROLES,
+      );
+
+      const organizationId =
+        getOrganizationId(req);
+
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
+
+      if (
+        !isValidObjectId(
+          req.params.id,
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid spectacle job ID.",
+        });
+      }
+
+      const nextStatus =
+        cleanString(
+          req.body.status,
+        );
+
+      if (
+        !ALL_STATUSES.includes(
+          nextStatus,
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid spectacle status.",
+        });
+      }
+
+      const session =
+        await mongoose.startSession();
+
+      try {
+        let updatedJob = null;
+
+        await session.withTransaction(
+          async () => {
+            const spectacle =
+              await Spectacle.findOne({
+                _id:
+                  req.params.id,
+                organizationId,
+              }).session(
+                session,
+              );
+
+            if (!spectacle) {
+              const error =
+                new Error(
+                  "Spectacle job not found.",
+                );
+
+              error.statusCode =
+                404;
+              throw error;
+            }
+
+            await getAccessibleBranch({
+              req,
+              branchId:
+                spectacle.branchId,
+              session,
+            });
+
+            const previousStatus =
+              spectacle.status;
+
+            /*
+             * Same-status click is harmless.
+             */
+            if (
+              previousStatus !==
+              nextStatus
+            ) {
+              const allowed =
+                STATUS_TRANSITIONS[
+                  previousStatus
+                ] || [];
+
+              if (
+                !allowed.includes(
+                  nextStatus,
+                )
+              ) {
+                const error =
+                  new Error(
+                    `Invalid status transition: ${previousStatus} → ${nextStatus}.`,
+                  );
+
+                error.statusCode =
+                  400;
+                throw error;
+              }
+            }
+
+            /*
+             * DRAFT → ORDERED
+             *
+             * Reserve/deduct linked frame and lens stock exactly once.
+             */
+            if (
+              previousStatus ===
+                "draft" &&
+              nextStatus ===
+                "ordered"
+            ) {
+              const linkedItems =
+                [
+                  spectacle.frameItemId,
+                  spectacle.lensItemId,
+                ].filter(Boolean);
+
+              const uniqueItemIds =
+                [
+                  ...new Set(
+                    linkedItems.map(
+                      (value) =>
+                        value.toString(),
+                    ),
+                  ),
+                ];
+
+              for (
+                const itemId of uniqueItemIds
+              ) {
+                const item =
+                  await InventoryItem.findOne({
+                    _id:
+                      itemId,
+                    organizationId,
+                    status:
+                      "active",
+                  }).session(
+                    session,
+                  );
+
+                if (!item) {
+                  const error =
+                    new Error(
+                      "Linked inventory item is no longer available.",
+                    );
+
+                  error.statusCode =
+                    400;
+                  throw error;
+                }
+
+                const beforeStock =
+                  Number(
+                    item.stock || 0,
+                  );
+
+                if (
+                  beforeStock <
+                  1
+                ) {
+                  const error =
+                    new Error(
+                      `Insufficient stock for ${item.code}.`,
+                    );
+
+                  error.statusCode =
+                    400;
+                  throw error;
+                }
+
+                const updatedItem =
+                  await InventoryItem.findOneAndUpdate(
+                    {
+                      _id:
+                        item._id,
+                      organizationId,
+                      status:
+                        "active",
+                      stock: {
+                        $gte: 1,
+                      },
+                    },
+                    {
+                      $inc: {
+                        stock: -1,
+                      },
+                      $set: {
+                        updatedBy:
+                          req.user
+                            ._id,
+                      },
+                    },
+                    {
+                      new: true,
+                      session,
+                    },
+                  );
+
+                if (!updatedItem) {
+                  const error =
+                    new Error(
+                      `Unable to reserve stock for ${item.code}.`,
+                    );
+
+                  error.statusCode =
+                    409;
+                  throw error;
+                }
+
+                await InventoryTransaction.create(
+                  [
+                    {
+                      organizationId,
+
+                      branchId:
+                        spectacle.branchId,
+
+                      itemId:
+                        item._id,
+
+                      spectacleId:
+                        spectacle._id,
+
+                      type:
+                        "sale",
+
+                      quantity:
+                        -1,
+
+                      beforeStock,
+
+                      afterStock:
+                        Number(
+                          updatedItem.stock ||
+                            0,
+                        ),
+
+                      reason:
+                        "Spectacle job ordered",
+
+                      reference:
+                        spectacle.jobNumber,
+
+                      createdBy:
+                        req.user
+                          ._id,
+                    },
+                  ],
+                  {
+                    session,
+                  },
+                );
+              }
+
+              const now =
+                new Date();
+
+              spectacle.lensOrderedAt =
+                now;
+
+              spectacle.lensOrderDate =
+                now;
+            }
+
+            if (
+              nextStatus ===
+                "ready" &&
+              previousStatus !==
+                "ready"
+            ) {
+              spectacle.jobReadyAt =
+                new Date();
+
+              spectacle.readyBy =
+                req.user._id;
+            }
+
+            if (
+              nextStatus ===
+                "notified"
+            ) {
+              spectacle.lastNotifiedAt =
+                new Date();
+
+              spectacle.notificationCount =
+                Number(
+                  spectacle.notificationCount ||
+                    0,
+                ) + 1;
+            }
+
+            if (
+              nextStatus ===
+                "collected"
+            ) {
+              spectacle.collectedAt =
+                new Date();
+
+              spectacle.collectedBy =
+                req.user._id;
+            }
+
+            spectacle.status =
+              nextStatus;
+
+            spectacle.updatedBy =
+              req.user._id;
+
+            await spectacle.save({
+              session,
+            });
+
+            updatedJob =
+              await Spectacle.findById(
+                spectacle._id,
+              )
+                .session(session)
+                .populate(
+                  "patientId",
+                  "patientNumber firstName middleName lastName phone",
+                )
+                .populate(
+                  "branchId",
+                  "name code",
+                )
+                .populate(
+                  "dispenserId",
+                  "firstName lastName role",
+                )
+                .populate(
+                  "prescribedById",
+                  "firstName lastName role",
+                )
+                .populate(
+                  "readyBy",
+                  "firstName lastName role",
+                )
+                .populate(
+                  "collectedBy",
+                  "firstName lastName role",
+                )
+                .lean();
+          },
+        );
+
+        return res.json({
+          success: true,
+
+          message:
+            `Spectacle job moved to ${nextStatus}.`,
+
+          data:
+            updatedJob,
+        });
+      } finally {
+        await session.endSession();
+      }
+    },
+  );
 
 /*
 |--------------------------------------------------------------------------
 | DISPENSING LIST
 |--------------------------------------------------------------------------
-|
-| Production search:
-|
-| - Job number
-| - Patient number
-| - Patient name
-| - Phone
-| - Frame code
-| - Lens code
-|
 */
 
 export const dispensingList =
-  asyncHandler(async (req, res) => {
-    requireRole(req, VIEW_ROLES);
-
-    const organizationId =
-      getOrganizationId(req);
-
-    if (!organizationId) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Authenticated user is not assigned to an organization.",
-      });
-    }
-
-    const {
-      status,
-      search = "",
-      branchId,
-      page = 1,
-      limit = 50,
-    } = req.query;
-
-    const currentPage =
-      Math.max(
-        Number(page) || 1,
-        1,
-      );
-
-    const pageLimit =
-      Math.min(
-        Math.max(
-          Number(limit) || 50,
-          1,
-        ),
-        250,
-      );
-
-    const skip =
-      (currentPage - 1) *
-      pageLimit;
-
-    const branch =
-      await getAccessibleBranch({
+  asyncHandler(
+    async (req, res) => {
+      requireRole(
         req,
+        VIEW_ROLES,
+      );
+
+      const organizationId =
+        getOrganizationId(req);
+
+      if (!organizationId) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "Authenticated user is not assigned to an organization.",
+        });
+      }
+
+      const {
+        status,
+        search = "",
         branchId,
-      });
+        page = 1,
+        limit = 50,
+      } = req.query;
 
-    const query = {
-      organizationId,
-    };
+      const currentPage =
+        Math.max(
+          Number(page) || 1,
+          1,
+        );
 
-    if (
-      status &&
-      ALL_STATUSES.includes(status)
-    ) {
-      query.status = status;
-    }
+      const pageLimit =
+        Math.min(
+          Math.max(
+            Number(limit) || 50,
+            1,
+          ),
+          250,
+        );
 
-    /*
-     * Branch restrictions.
-     */
-    if (
-      req.user.role !==
-        "super_admin" &&
-      req.user.role !==
-        "organization_admin"
-    ) {
-      query.branchId =
-        branch._id;
-    } else if (branchId) {
-      query.branchId =
-        branch._id;
-    }
+      const skip =
+        (
+          currentPage -
+          1
+        ) *
+        pageLimit;
 
-    /*
-     * Search is handled after population using patient
-     * identifiers. For larger installations, this should
-     * eventually become denormalized/search-indexed.
-     */
-    const normalizedSearch =
-      cleanString(search);
+      const branch =
+        await getAccessibleBranch({
+          req,
+          branchId,
+        });
 
-    let list =
-      await Spectacle.find(query)
-        .sort({
-          updatedAt: -1,
-        })
-        .skip(skip)
-        .limit(pageLimit)
-        .populate(
-          "patientId",
-          "patientNumber firstName middleName lastName phone",
+      const query = {
+        organizationId,
+      };
+
+      if (
+        status &&
+        ALL_STATUSES.includes(
+          status,
         )
-        .populate(
-          "branchId",
-          "name code",
-        )
-        .populate(
-          "frameItemId",
-          "code brand model description sellingPrice",
-        )
-        .populate(
-          "lensItemId",
-          "code brand model description supplier sellingPrice",
-        )
-        .lean();
+      ) {
+        query.status =
+          status;
+      }
 
-    /*
-     * Search after population.
-     */
-    if (normalizedSearch) {
-      const searchText =
-        normalizedSearch.toLowerCase();
+      if (
+        req.user.role !==
+          "super_admin" &&
+        req.user.role !==
+          "organization_admin"
+      ) {
+        query.branchId =
+          branch._id;
+      } else if (
+        branchId
+      ) {
+        query.branchId =
+          branch._id;
+      }
 
-      list = list.filter(
-        (job) => {
-          const patient =
-            job.patientId || {};
+      const normalizedSearch =
+        cleanString(search);
 
-          const patientName =
-            [
+      let list =
+        await Spectacle.find(query)
+          .sort({
+            updatedAt: -1,
+          })
+          .skip(skip)
+          .limit(pageLimit)
+          .populate(
+            "patientId",
+            "patientNumber firstName middleName lastName phone",
+          )
+          .populate(
+            "branchId",
+            "name code",
+          )
+          .populate(
+            "dispenserId",
+            "firstName lastName role",
+          )
+          .populate(
+            "prescribedById",
+            "firstName lastName role",
+          )
+          .populate(
+            "frameItemId",
+            "code brand model description sellingPrice",
+          )
+          .populate(
+            "lensItemId",
+            "code brand model description supplier sellingPrice",
+          )
+          .lean();
+
+      if (normalizedSearch) {
+        const searchText =
+          normalizedSearch.toLowerCase();
+
+        list = list.filter(
+          (job) => {
+            const patient =
+              job.patientId || {};
+
+            const patientFullName =
+              [
+                patient.firstName,
+                patient.middleName,
+                patient.lastName,
+              ]
+                .filter(Boolean)
+                .join(" ");
+
+            const frame =
+              job.frame || {};
+
+            const lens =
+              job.lens || {};
+
+            const frameItem =
+              job.frameItemId || {};
+
+            const lensItem =
+              job.lensItemId || {};
+
+            const rightLens =
+              job.lenses
+                ?.right || {};
+
+            const leftLens =
+              job.lenses?.left ||
+              {};
+
+            const haystack = [
+              job.jobNumber,
+
+              patient.patientNumber,
               patient.firstName,
               patient.middleName,
               patient.lastName,
+              patientFullName,
+              patient.phone,
+
+              frame.code,
+              frame.description,
+
+              lens.code,
+              lens.description,
+              lens.supplier,
+
+              rightLens.lensCode,
+              rightLens.lensDescription,
+              leftLens.lensCode,
+              leftLens.lensDescription,
+
+              frameItem.code,
+              frameItem.brand,
+              frameItem.model,
+
+              lensItem.code,
+              lensItem.brand,
+              lensItem.model,
+              lensItem.supplier,
             ]
               .filter(Boolean)
-              .join(" ");
+              .join(" ")
+              .toLowerCase();
 
-          const frame =
-            job.frame || {};
+            return haystack.includes(
+              searchText,
+            );
+          },
+        );
+      }
 
-          const lens =
-            job.lens || {};
+      return res.json({
+        success: true,
 
-          const frameItem =
-            job.frameItemId || {};
+        data:
+          list,
 
-          const lensItem =
-            job.lensItemId || {};
-
-          const haystack = [
-            job.jobNumber,
-
-            patient.patientNumber,
-
-            patient.firstName,
-            patient.middleName,
-            patient.lastName,
-            patientName,
-
-            patient.phone,
-
-            frame.code,
-            frame.description,
-
-            lens.code,
-            lens.description,
-            lens.supplier,
-
-            frameItem.code,
-            frameItem.brand,
-            frameItem.model,
-
-            lensItem.code,
-            lensItem.brand,
-            lensItem.model,
-            lensItem.supplier,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-
-          return haystack.includes(
-            searchText,
-          );
+        pagination: {
+          page:
+            currentPage,
+          limit:
+            pageLimit,
+          count:
+            list.length,
         },
-      );
-    }
-
-    return res.json({
-      success: true,
-
-      data: list,
-
-      pagination: {
-        page: currentPage,
-        limit: pageLimit,
-        count: list.length,
-      },
-    });
-  });
+      });
+    },
+  );

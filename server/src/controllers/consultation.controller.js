@@ -150,6 +150,49 @@ const getConsultationDate = (value) => {
   return date;
 };
 
+// --------------------------------------------------
+// CONSULTATION STATUS WORKFLOW
+// --------------------------------------------------
+const CONSULTATION_STATUSES = [
+  "draft",
+  "in_progress",
+  "completed",
+  "cancelled",
+];
+
+const CONSULTATION_STATUS_TRANSITIONS = {
+  draft: ["in_progress", "completed", "cancelled"],
+  in_progress: ["draft", "completed", "cancelled"],
+  completed: ["draft", "in_progress", "cancelled"],
+  cancelled: ["draft", "in_progress", "completed"],
+};
+
+const validateConsultationStatusTransition = (
+  currentStatus,
+  nextStatus,
+) => {
+  if (!CONSULTATION_STATUSES.includes(nextStatus)) {
+    const error = new Error("Invalid consultation status.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (currentStatus === nextStatus) {
+    return;
+  }
+
+  const allowed =
+    CONSULTATION_STATUS_TRANSITIONS[currentStatus] || [];
+
+  if (!allowed.includes(nextStatus)) {
+    const error = new Error(
+      `Invalid consultation status transition: ${currentStatus} → ${nextStatus}.`,
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 export const getConsultations = asyncHandler(
   async (req, res) => {
     const organizationId = req.user.organizationId;
@@ -1511,18 +1554,17 @@ export const updateConsultation =
     // ----------------------------------------------
     // STATUS
     // ----------------------------------------------
-    consultation.status =
-      "completed";
+    // Status has a dedicated endpoint so clinical edits cannot
+    // accidentally change workflow state.
+    if (req.body.status !== undefined) {
+      res.status(400);
 
-    consultation.completedAt =
-      consultation.completedAt ||
-      new Date();
+      throw new Error(
+        "Use the consultation status endpoint to change consultation status",
+      );
+    }
 
-    consultation.completedBy =
-      req.user._id;
-
-    consultation.updatedBy =
-      req.user._id;
+    consultation.updatedBy = req.user._id;
 
     // ----------------------------------------------
     // SAVE
@@ -1568,6 +1610,100 @@ export const updateConsultation =
       message:
         "Consultation updated successfully",
 
+      data: populated,
+    });
+  });
+
+// ==================================================
+// UPDATE CONSULTATION STATUS
+// ==================================================
+export const updateConsultationStatus =
+  asyncHandler(async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      res.status(400);
+      throw new Error("Invalid consultation ID");
+    }
+
+    const nextStatus = String(req.body?.status || "")
+      .trim()
+      .toLowerCase();
+
+    if (!CONSULTATION_STATUSES.includes(nextStatus)) {
+      res.status(400);
+      throw new Error("Invalid consultation status");
+    }
+
+    const consultation = await Consultation.findOne({
+      _id: req.params.id,
+      organizationId: req.user.organizationId,
+    });
+
+    if (!consultation) {
+      res.status(404);
+      throw new Error("Consultation not found");
+    }
+
+    const patient = await getPatientForUser(
+      req.user,
+      consultation.patientId,
+    );
+
+    if (!patient) {
+      res.status(403);
+      throw new Error(
+        "You do not have access to this consultation",
+      );
+    }
+
+    const currentStatus =
+      consultation.status || "completed";
+
+    validateConsultationStatusTransition(
+      currentStatus,
+      nextStatus,
+    );
+
+    consultation.status = nextStatus;
+    consultation.updatedBy = req.user._id;
+
+    if (nextStatus === "completed") {
+      consultation.completedAt =
+        consultation.completedAt || new Date();
+      consultation.completedBy = req.user._id;
+    } else {
+      consultation.completedAt = null;
+      consultation.completedBy = null;
+    }
+
+    await consultation.save();
+
+    const populated = await Consultation.findById(
+      consultation._id,
+    )
+      .populate(
+        "patientId",
+        "patientNumber firstName middleName lastName dateOfBirth phone",
+      )
+      .populate(
+        "optometristId",
+        "firstName lastName role",
+      )
+      .populate(
+        "createdBy",
+        "firstName lastName",
+      )
+      .populate(
+        "updatedBy",
+        "firstName lastName",
+      )
+      .populate(
+        "completedBy",
+        "firstName lastName",
+      );
+
+    res.json({
+      success: true,
+      message: "Consultation status updated successfully",
       data: populated,
     });
   });

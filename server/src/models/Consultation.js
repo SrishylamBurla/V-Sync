@@ -1892,7 +1892,12 @@ const consultationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["completed"],
+      enum: [
+        "draft",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
       default: "completed",
       index: true,
     },

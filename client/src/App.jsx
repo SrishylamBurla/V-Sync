@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import LoginPage from "./modules/auth/LoginPage";
 import DashboardPage from "./modules/dashboard/DashboardPage";
@@ -16,8 +16,6 @@ import ConsultationPage from "./modules/clinical/pages/ConsultationPage";
 import AppointmentsPage from "./modules/appointments/pages/AppointmentsPage";
 import AppointmentDetailsPage from "./modules/appointments/pages/AppointmentDetailsPage";
 import BookAppointmentPage from "./modules/appointments/pages/BookAppointmentPage";
-
-import OpticalManagementPage from "./modules/optical/pages/OpticalManagementPage";
 
 import NewSpectaclePage from "./modules/optical/pages/NewSpectaclePage";
 import SpectacleDetailsPage from "./modules/optical/pages/SpectacleDetailsPage";
@@ -61,6 +59,26 @@ import AdminOrganizationDetailsPage from "./modules/organization/pages/adminOrga
 import AddOrganizationPage from "./modules/organization/pages/addOrganizationPage";
 import EditOrganizationPage from "./modules/organization/pages/EditOrganizationPage";
 
+function LegacyOpticalSpectacleNewRedirect() {
+  const { patientId } = useParams();
+  return <Navigate to={patientId ? `/dispensing/spectacles/new/${patientId}` : "/dispensing/spectacles/new"} replace />;
+}
+
+function LegacyOpticalSpectacleDetailsRedirect() {
+  const { id } = useParams();
+  return <Navigate to={id ? `/dispensing/spectacles/${id}` : "/dispensing/spectacle-jobs"} replace />;
+}
+
+function LegacyOpticalContactLensNewRedirect() {
+  const { patientId } = useParams();
+  return <Navigate to={patientId ? `/dispensing/contact-lenses/new/${patientId}` : "/dispensing/contact-lenses/new"} replace />;
+}
+
+function LegacyOpticalContactLensDetailsRedirect() {
+  const { id } = useParams();
+  return <Navigate to={id ? `/dispensing/contact-lenses/${id}` : "/dispensing/contact-lenses"} replace />;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -100,39 +118,6 @@ export default function App() {
 
           <Route element={<AccessRoute module="clinical" />}>
             <Route path="/clinical" element={<ClinicalManagementPage />} />
-          </Route>
-
-          <Route element={<AccessRoute module="optical" />}>
-            <Route path="/optical" element={<OpticalManagementPage />} />
-            <Route
-              path="/optical/spectacles/new"
-              element={<NewSpectaclePage />}
-            />
-
-            <Route
-              path="/optical/spectacles/new/:patientId"
-              element={<NewSpectaclePage />}
-            />
-            <Route
-              path="/optical/spectacles/:id"
-              element={<SpectacleDetailsPage />}
-            />
-            <Route
-              path="/optical/contact-lenses"
-              element={<ContactLensPage />}
-            />
-            <Route
-              path="/optical/contact-lenses/new"
-              element={<NewContactLensPage />}
-            />
-            <Route
-              path="/optical/contact-lenses/new/:patientId"
-              element={<NewContactLensPage />}
-            />
-            <Route
-              path="/optical/contact-lenses/:id"
-              element={<ContactLensDetailsPage />}
-            />
           </Route>
 
           <Route element={<AccessRoute module="dispensing" />}>
@@ -183,12 +168,7 @@ export default function App() {
               element={<ContactLensDetailsPage />}
             />
 
-            {/* Workspace */}
-            <Route
-              path="/dispensing/workspace"
-              element={<OpticalManagementPage />}
-            />
-
+            {/* /dispensing is the single dispensing workspace. */}
             {/* Sundry dispensing jobs */}
             <Route path="/dispensing/sundries" element={<SundryJobsPage />} />
             <Route
@@ -228,11 +208,11 @@ export default function App() {
           />
           <Route
             path="/optical/spectacles/new/:patientId"
-            element={<NewSpectaclePage />}
+            element={<LegacyOpticalSpectacleNewRedirect />}
           />
           <Route
             path="/optical/spectacles/:id"
-            element={<Navigate to="/dispensing" replace />}
+            element={<LegacyOpticalSpectacleDetailsRedirect />}
           />
           <Route
             path="/optical/contact-lenses"
@@ -244,11 +224,11 @@ export default function App() {
           />
           <Route
             path="/optical/contact-lenses/new/:patientId"
-            element={<NewContactLensPage />}
+            element={<LegacyOpticalContactLensNewRedirect />}
           />
           <Route
             path="/optical/contact-lenses/:id"
-            element={<Navigate to="/dispensing" replace />}
+            element={<LegacyOpticalContactLensDetailsRedirect />}
           />
 
           <Route element={<AccessRoute module="inventory" />}>

@@ -1,23 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Glasses,
   PackageCheck,
   RefreshCw,
+  ShoppingBag,
   Search,
-  UserRound,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  DocumentShell,
-  Section,
-  Table,
-} from "../../../components/common/DocumentUI";
-
 import { getDispensingList, updateDispensing } from "../dispensing.api";
+import { updateSpectacleStatus } from "../../optical/spectacle.api";
+import {
+  getSundryJobs,
+  updateSundryJobStatus,
+} from "../sundryJob.api";
 
 const statuses = [
+  "draft",
+  "ordered",
+  "not_ready",
+  "ready",
+  "notified",
+  "collected",
+  "cancelled",
+];
+
+const sundryStatuses = [
   "ordered",
   "not_ready",
   "ready",
@@ -27,6 +36,7 @@ const statuses = [
 ];
 
 const next = {
+  draft: "ordered",
   ordered: "not_ready",
   not_ready: "ready",
   ready: "notified",
@@ -64,10 +74,13 @@ const isSpectacle = (row) => normalizeItemType(row?.itemType) === "spectacle";
 const isContactLens = (row) =>
   normalizeItemType(row?.itemType) === "contact_lens";
 
+const isSundry = (row) => row?._dispensingType === "sundry";
+
 export default function DispensingPage() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
+  const [sundryRows, setSundryRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -75,14 +88,41 @@ export default function DispensingPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     setError("");
 
     try {
-      const response = await getDispensingList(status ? { status } : {});
+      const [dispensingResult, sundryResult] = await Promise.allSettled([
+        getDispensingList(status ? { status } : {}),
+        getSundryJobs(status ? { status } : {}),
+      ]);
 
-      setRows(response?.data || []);
+      if (dispensingResult.status === "fulfilled") {
+        setRows(dispensingResult.value?.data || []);
+      } else {
+        setRows([]);
+      }
+
+      if (sundryResult.status === "fulfilled") {
+        const data = sundryResult.value?.data;
+        setSundryRows(Array.isArray(data) ? data : []);
+      } else {
+        setSundryRows([]);
+      }
+
+      const failures = [dispensingResult, sundryResult].filter(
+        (result) => result.status === "rejected",
+      );
+
+      if (failures.length) {
+        const failure = failures[0]?.reason;
+        setError(
+          failure?.response?.data?.message ||
+            failure?.message ||
+            "Unable to load dispensing jobs",
+        );
+      }
     } catch (error) {
       setError(
         error?.response?.data?.message || "Unable to load dispensing jobs",
@@ -90,11 +130,15 @@ export default function DispensingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [status]);
 
   useEffect(() => {
-    load();
-  }, [status]);
+    const timer = window.setTimeout(() => {
+      void load();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   /*
    * Separate the jobs first.
@@ -106,8 +150,34 @@ export default function DispensingPage() {
 
   const contactLensRows = useMemo(() => rows.filter(isContactLens), [rows]);
 
+  const normalizedSundryRows = useMemo(
+    () =>
+      sundryRows.map((row) => ({
+        ...row,
+        _dispensingType: "sundry",
+        recordNumber:
+          row.recordNumber ||
+          row.jobNumber ||
+          row.jobNo ||
+          row.orderNumber ||
+          row._id,
+        dueDate:
+          row.dueDate ||
+          row.expectedDate ||
+          row.deliveryDate,
+      })),
+    [sundryRows],
+  );
+
   const activeRows =
-    activeType === "spectacle" ? spectacleRows : contactLensRows;
+    activeType === "spectacle"
+      ? spectacleRows
+      : activeType === "contact_lens"
+        ? contactLensRows
+        : normalizedSundryRows;
+
+  const activeStatuses =
+    activeType === "sundry" ? sundryStatuses : statuses;
 
   /*
    * Search only inside the currently selected dispensing type.
@@ -174,8 +244,23 @@ export default function DispensingPage() {
     [contactLensRows],
   );
 
+  const sundryCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        sundryStatuses.map((value) => [
+          value,
+          normalizedSundryRows.filter((row) => row.status === value).length,
+        ]),
+      ),
+    [normalizedSundryRows],
+  );
+
   const activeCounts =
-    activeType === "spectacle" ? spectacleCounts : contactLensCounts;
+    activeType === "spectacle"
+      ? spectacleCounts
+      : activeType === "contact_lens"
+        ? contactLensCounts
+        : sundryCounts;
 
   const advance = async (row) => {
     const target = next[row?.status];
@@ -187,11 +272,31 @@ export default function DispensingPage() {
     try {
       setError("");
 
-      const response = await updateDispensing(row._id, target);
+      if (isSundry(row)) {
+        const response = await updateSundryJobStatus(row._id, target);
+        const updatedRow = response?.data || response?.sundryJob || null;
+
+        setSundryRows((currentRows) =>
+          currentRows.map((item) =>
+            item._id === row._id ? updatedRow || { ...item, status: target } : item,
+          ),
+        );
+        return;
+      }
+
+      const response = isSpectacle(row)
+        ? await updateSpectacleStatus(row._id, target)
+        : await updateDispensing(row._id, target);
+
+      const updatedRow =
+        response?.data?.spectacle ||
+        response?.data ||
+        response?.spectacle ||
+        null;
 
       setRows((currentRows) =>
         currentRows.map((item) =>
-          item._id === row._id ? response?.data || item : item,
+          item._id === row._id ? updatedRow || item : item,
         ),
       );
     } catch (error) {
@@ -219,6 +324,11 @@ export default function DispensingPage() {
 
     if (isContactLens(row)) {
       navigate(`/dispensing/contact-lenses/${row._id}`);
+      return;
+    }
+
+    if (isSundry(row)) {
+      navigate(`/dispensing/sundries/${row._id}`);
     }
   };
 
@@ -231,30 +341,43 @@ export default function DispensingPage() {
   };
 
   const activeTitle =
-    activeType === "spectacle" ? "Spectacle Jobs" : "Contact Lens Jobs";
+    activeType === "spectacle"
+      ? "Spectacle Jobs"
+      : activeType === "contact_lens"
+        ? "Contact Lens Jobs"
+        : "Sundry Jobs";
 
   const activeDescription =
     activeType === "spectacle"
       ? "Manage spectacle orders from prescription and frame selection through collection."
-      : "Manage contact lens orders from lens selection and fitting through collection.";
+      : activeType === "contact_lens"
+        ? "Manage contact lens orders from lens selection and fitting through collection."
+        : "Manage sundry dispensing orders from item selection through collection.";
 
   return (
-    <DocumentShell
-      eyebrow="Optical operations"
-      title="Dispensing"
-      subtitle="Manage spectacle and contact-lens dispensing as separate workflows."
-      code="DISPENSING"
-      actions={
-        <button
-          type="button"
-          onClick={load}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
-        >
-          <RefreshCw size={14} />
-          Refresh
-        </button>
-      }
-    >
+    <div className="py-4 sm:py-5">
+      <div className="space-y-3.5">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              Dispensing
+            </div>
+            <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
+              Dispensing
+            </h1>
+            <p className="mt-1 text-[10px] text-slate-400">
+              One dispensing workspace for spectacle, contact-lens and sundry jobs.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={load}
+            className="inline-flex h-8 items-center gap-1.5 self-start rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 sm:self-auto"
+          >
+            <RefreshCw size={12} />
+            Refresh
+          </button>
+        </header>
       {error && (
         <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
@@ -270,7 +393,7 @@ export default function DispensingPage() {
         title="Dispensing"
         description="Choose the type of dispensing work you want to manage."
       >
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           {/* Spectacle */}
           <button
             type="button"
@@ -379,6 +502,57 @@ export default function DispensingPage() {
               </div>
             </div>
           </button>
+
+          {/* Sundry */}
+          <button
+            type="button"
+            onClick={() => switchType("sundry")}
+            className={`group rounded-2xl border p-5 text-left transition ${
+              activeType === "sundry"
+                ? "border-slate-900 bg-slate-900 text-white shadow-lg"
+                : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div
+                className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                  activeType === "sundry"
+                    ? "bg-white/10 text-white"
+                    : "bg-slate-100 text-slate-700"
+                }`}
+              >
+                <ShoppingBag size={20} />
+              </div>
+
+              <span
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                  activeType === "sundry"
+                    ? "bg-white/10 text-slate-200"
+                    : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                {normalizedSundryRows.length} Jobs
+              </span>
+            </div>
+
+            <div className="mt-5">
+              <div
+                className={`text-sm font-bold ${
+                  activeType === "sundry" ? "text-white" : "text-slate-900"
+                }`}
+              >
+                Sundry Jobs
+              </div>
+
+              <div
+                className={`mt-1 text-xs leading-5 ${
+                  activeType === "sundry" ? "text-slate-300" : "text-slate-500"
+                }`}
+              >
+                Non-optical sundry items such as accessories and other dispensing products.
+              </div>
+            </div>
+          </button>
         </div>
       </Section>
 
@@ -392,7 +566,7 @@ export default function DispensingPage() {
         description="Filter this dispensing workflow by its current stage."
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-          {statuses.map((currentStatus) => {
+          {activeStatuses.map((currentStatus) => {
             const count = activeCounts[currentStatus] || 0;
 
             const selected = status === currentStatus;
@@ -442,7 +616,9 @@ export default function DispensingPage() {
               placeholder={
                 activeType === "spectacle"
                   ? "Search spectacle job, patient, frame, lens..."
-                  : "Search contact lens job, patient, brand, model..."
+                  : activeType === "contact_lens"
+                    ? "Search contact lens job, patient, brand, model..."
+                    : "Search sundry job, patient, item..."
               }
               className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
             />
@@ -455,7 +631,7 @@ export default function DispensingPage() {
           >
             <option value="">All statuses</option>
 
-            {statuses.map((currentStatus) => (
+            {activeStatuses.map((currentStatus) => (
               <option key={currentStatus} value={currentStatus}>
                 {label(currentStatus)}
               </option>
@@ -530,7 +706,6 @@ export default function DispensingPage() {
                         </div>
                       ),
                     },
-
                     {
                       key: "lens",
                       label: "Lens",
@@ -539,7 +714,6 @@ export default function DispensingPage() {
                           <div className="text-xs font-semibold text-slate-700">
                             {row.lens?.code || row.lens?.description || "—"}
                           </div>
-
                           {row.lens?.supplier && (
                             <div className="mt-0.5 text-[10px] text-slate-400">
                               {row.lens.supplier}
@@ -549,53 +723,74 @@ export default function DispensingPage() {
                       ),
                     },
                   ]
-                : [
-                    /* -------------------------------------------------
-                       Contact-lens-specific information
-                    -------------------------------------------------- */
-
-                    {
-                      key: "brand",
-                      label: "Brand",
-                      render: (row) => (
-                        <div>
-                          <div className="text-xs font-semibold text-slate-700">
-                            {row.brand || "—"}
-                          </div>
-
-                          {row.model && (
-                            <div className="mt-0.5 text-[10px] text-slate-400">
-                              {row.model}
+                : activeType === "contact_lens"
+                  ? [
+                      {
+                        key: "brand",
+                        label: "Brand",
+                        render: (row) => (
+                          <div>
+                            <div className="text-xs font-semibold text-slate-700">
+                              {row.brand || "—"}
                             </div>
-                          )}
-                        </div>
-                      ),
-                    },
-
-                    {
-                      key: "lensType",
-                      label: "Lens",
-                      render: (row) => (
-                        <div>
-                          <div className="text-xs font-semibold text-slate-700">
-                            {row.lensType || "—"}
+                            {row.model && (
+                              <div className="mt-0.5 text-[10px] text-slate-400">
+                                {row.model}
+                              </div>
+                            )}
                           </div>
-
-                          {row.replacement && (
-                            <div className="mt-0.5 text-[10px] text-slate-400">
-                              {row.replacement}
+                        ),
+                      },
+                      {
+                        key: "lensType",
+                        label: "Lens",
+                        render: (row) => (
+                          <div>
+                            <div className="text-xs font-semibold text-slate-700">
+                              {row.lensType || "—"}
                             </div>
-                          )}
-                        </div>
-                      ),
-                    },
-
-                    {
-                      key: "quantity",
-                      label: "Qty",
-                      render: (row) => row.quantity || "—",
-                    },
-                  ]),
+                            {row.replacement && (
+                              <div className="mt-0.5 text-[10px] text-slate-400">
+                                {row.replacement}
+                              </div>
+                            )}
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "quantity",
+                        label: "Qty",
+                        render: (row) => row.quantity || "—",
+                      },
+                    ]
+                  : [
+                      {
+                        key: "item",
+                        label: "Item",
+                        render: (row) => (
+                          <div>
+                            <div className="text-xs font-semibold text-slate-700">
+                              {row.item?.code ||
+                                row.item?.description ||
+                                row.inventoryItem?.code ||
+                                row.inventoryItem?.description ||
+                                row.itemName ||
+                                "Sundry"}
+                            </div>
+                            {(row.item?.description || row.inventoryItem?.description) && (
+                              <div className="mt-0.5 truncate text-[10px] text-slate-400">
+                                {row.item?.description || row.inventoryItem?.description}
+                              </div>
+                            )}
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "quantity",
+                        label: "Qty",
+                        render: (row) => row.quantity || 1,
+                      },
+                    ]),
 
               {
                 key: "dueDate",
@@ -639,7 +834,9 @@ export default function DispensingPage() {
             empty={
               activeType === "spectacle"
                 ? "No spectacle jobs found."
-                : "No contact lens jobs found."
+                : activeType === "contact_lens"
+                  ? "No contact lens jobs found."
+                  : "No sundry jobs found."
             }
           />
         )}
@@ -680,6 +877,78 @@ export default function DispensingPage() {
           </span>
         </div>
       </Section>
-    </DocumentShell>
+      </div>
+    </div>
+  );
+}
+
+function Section({ number, title, description, children }) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
+      <header className="border-b border-slate-100 px-3.5 py-3">
+        <div className="flex items-start gap-2">
+          <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[8px] font-bold text-slate-500">
+            {number}
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-0.5 text-[9px] leading-4 text-slate-400">
+                {description}
+              </p>
+            )}
+          </div>
+        </div>
+      </header>
+      <div className="p-3 sm:p-3.5">{children}</div>
+    </section>
+  );
+}
+
+function Table({ columns, rows, empty = "No records found." }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[760px] text-left text-[10px]">
+        <thead>
+          <tr className="border-b border-slate-200 text-[8px] uppercase tracking-[0.08em] text-slate-400">
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                className={`px-2.5 py-2 font-bold ${column.align === "right" ? "text-right" : ""}`}
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.length ? (
+            rows.map((row, index) => (
+              <tr key={row._id || row.id || index} className="border-b border-slate-100 last:border-0">
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className={`px-2.5 py-2.5 text-slate-600 ${column.align === "right" ? "text-right" : ""}`}
+                  >
+                    {column.render ? column.render(row) : row[column.key]}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="px-3 py-10 text-center text-[9px] text-slate-400"
+              >
+                {empty}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }

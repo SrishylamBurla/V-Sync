@@ -1584,7 +1584,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CheckCircle2,
   Search,
   Save,
@@ -1947,16 +1946,7 @@ export default function NewContactLensPage() {
       code="CONTACT LENS JOB"
       actions={
         <>
-          <button
-            type="button"
-            onClick={() =>
-              navigate("/dispensing/contact-lenses")
-            }
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-          >
-            <ArrowLeft size={14} />
-            Back
-          </button>
+          
 
           <button
             type="submit"

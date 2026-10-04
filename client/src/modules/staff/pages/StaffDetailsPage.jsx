@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Building2,
   CalendarDays,
   CheckCircle2,
@@ -258,14 +257,7 @@ export default function StaffDetailsPage() {
     return (
       <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl">
-          <button
-            type="button"
-            onClick={() => navigate("/staff")}
-            className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
-          >
-            <ArrowLeft size={17} />
-            Back to Staff
-          </button>
+          
 
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
             <h2 className="text-base font-semibold text-red-800">
@@ -316,18 +308,7 @@ export default function StaffDetailsPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() =>
-                location.state?.from
-                  ? navigate(location.state.from)
-                  : navigate("/staff")
-              }
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-gray-900"
-              title="Back"
-            >
-              <ArrowLeft size={19} />
-            </button>
+            
 
             <div>
               <p className="text-sm text-gray-500">Staff Management</p>

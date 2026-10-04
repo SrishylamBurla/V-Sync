@@ -82,15 +82,15 @@ const CLINICAL_NAV = [
     icon: Stethoscope,
     access: "clinical",
   },
-  {
-    label: "Laboratory",
-    to: "/lab",
-    icon: Activity,
-    access: "laboratory",
-  },
 ];
 
 const DISPENSING_NAV = [
+  {
+    label: "Dispensing overview",
+    to: "/dispensing",
+    icon: ClipboardList,
+    access: "dispensing",
+  },
   {
     label: "Spectacle Jobs",
     to: "/dispensing/spectacle-jobs",
@@ -144,6 +144,12 @@ const INVENTORY_NAV = [
     to: "/catalogue",
     icon: ClipboardList,
     access: "catalogue",
+  },
+  {
+    label: "Laboratory",
+    to: "/lab",
+    icon: Activity,
+    access: "laboratory",
   },
 ];
 
@@ -392,8 +398,12 @@ export default function Topbar() {
   }, []);
 
   useEffect(() => {
-    setMobileOpen(false);
-    setProfileOpen(false);
+    const timer = window.setTimeout(() => {
+      setMobileOpen(false);
+      setProfileOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [location.pathname]);
 
   const closeMenus = () => {
@@ -624,12 +634,23 @@ export default function Topbar() {
               )}
 
               {dispensingNav.length > 0 && (
-                <Dropdown
-                  label="Dispensing"
-                  items={dispensingNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
+                <>
+                  <TopNavLink
+                    to="/dispensing"
+                    onNavigate={closeMenus}
+                  >
+                    Dispensing
+                  </TopNavLink>
+
+                  {dispensingNav.length > 1 && (
+                    <Dropdown
+                      label="Dispensing jobs"
+                      items={dispensingNav.slice(1)}
+                      pathname={location.pathname}
+                      onNavigate={closeMenus}
+                    />
+                  )}
+                </>
               )}
 
               {financeNav.length > 0 && (

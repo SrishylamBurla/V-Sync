@@ -10,15 +10,9 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { getPatients, createPatient } from "../../patients/patient.api";
-
-import {
-  DocumentShell,
-  Section,
-  Field,
-} from "../../../components/common/DocumentUI";
 
 import {
   getAppointments,
@@ -140,6 +134,7 @@ const getPatientRows = (response) => {
 
 export default function AppointmentsPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // ----------------------------------------------------------
   // PAGE STATE
@@ -571,6 +566,27 @@ export default function AppointmentsPage() {
     setShowForm(true);
   };
 
+  // /appointments/book and dashboard Book Appointment both land on
+  // this page so the application has one booking workflow and one UI.
+  useEffect(() => {
+    if (searchParams.get("book") !== "1") return;
+
+    const timer = window.setTimeout(() => {
+      resetBookingForm();
+      setForm((current) => ({
+        ...current,
+        appointmentDate: inputDateTime(selectedDate),
+      }));
+      setShowForm(true);
+
+      const next = new URLSearchParams(searchParams);
+      next.delete("book");
+      setSearchParams(next, { replace: true });
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [searchParams, selectedDate, resetBookingForm, setSearchParams]);
+
   // ==========================================================
   // CLOSE BOOKING MODAL
   // ==========================================================
@@ -698,41 +714,40 @@ export default function AppointmentsPage() {
   // ==========================================================
 
   return (
-    <DocumentShell
-      eyebrow="Front desk"
-      title="Appointments"
-      subtitle="A complete daily appointment register for patient flow, clinician scheduling and visit status."
-      code="APPOINTMENTS"
-      actions={
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={load}
-            disabled={loading}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
-          >
-            <RefreshCw
-              size={14}
-              className={
-                loading
-                  ? "animate-spin"
-                  : ""
-              }
-            />
-            Refresh
-          </button>
-
-          <button
-            type="button"
-            onClick={openBookingModal}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800"
-          >
-            <Plus size={14} />
-            Book Appointment
-          </button>
-        </div>
-      }
-    >
+    <div className="py-4 sm:py-5">
+      <div className="space-y-3.5">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              Front desk
+            </div>
+            <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
+              Appointments
+            </h1>
+            <p className="mt-1 text-[10px] text-slate-400">
+              Daily schedule, patient flow, clinician assignment and visit status.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              onClick={load}
+              disabled={loading}
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
+            >
+              <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={openBookingModal}
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800"
+            >
+              <Plus size={12} />
+              Book Appointment
+            </button>
+          </div>
+        </header>
       {/* ======================================================
           ERROR
       ======================================================= */}
@@ -1289,7 +1304,54 @@ export default function AppointmentsPage() {
           ))}
         </div>
       </Section>
-    </DocumentShell>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// LOCAL COMPACT UI HELPERS
+// ============================================================
+
+function Section({ number, title, description, children }) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
+      <header className="border-b border-slate-100 px-3.5 py-3">
+        <div className="flex items-start gap-2">
+          <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[8px] font-bold text-slate-500">
+            {number}
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-0.5 text-[9px] leading-4 text-slate-400">
+                {description}
+              </p>
+            )}
+          </div>
+        </div>
+      </header>
+      <div className="p-3 sm:p-3.5">{children}</div>
+    </section>
+  );
+}
+
+function Field({ label: title, value, onChange, type = "text", required = false }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        {title}{required && <span className="ml-1 text-red-500">*</span>}
+      </span>
+      <input
+        required={required}
+        type={type}
+        value={value ?? ""}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-[10px] text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white"
+      />
+    </label>
   );
 }
 

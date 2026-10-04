@@ -81,6 +81,12 @@ const eyeLensSchema = new mongoose.Schema(
       default: null,
     },
 
+    tint: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     price: {
       type: Number,
       min: 0,
@@ -123,6 +129,12 @@ const frameSchema = new mongoose.Schema(
     },
 
     type: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    ssi: {
       type: String,
       trim: true,
       default: "",
@@ -514,6 +526,10 @@ const spectacleSchema = new mongoose.Schema(
       default: "",
     },
 
+    /**
+     * Job status is changed through:
+     * PATCH /spectacles/:id/status
+     */
     status: {
       type: String,
 
@@ -547,6 +563,12 @@ const spectacleSchema = new mongoose.Schema(
       default: null,
     },
 
+    readyBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
     lastNotifiedAt: {
       type: Date,
       default: null,
@@ -558,8 +580,55 @@ const spectacleSchema = new mongoose.Schema(
       default: 0,
     },
 
+    notification: {
+      type: String,
+      enum: [
+        "none",
+        "sms",
+        "email",
+        "sms_email",
+      ],
+      default: "none",
+    },
+
+    // Legacy notification compatibility.
+    smsEmail: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    sms: {
+      type: Boolean,
+      default: false,
+    },
+
+    email: {
+      type: Boolean,
+      default: false,
+    },
+
+    electronicOrder: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    // Legacy electronic-order alias.
+    eOrder: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     collectedAt: {
       type: Date,
+      default: null,
+    },
+
+    collectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       default: null,
     },
 

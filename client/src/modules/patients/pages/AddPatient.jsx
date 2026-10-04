@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CheckCircle2,
   FilePlus2,
   Phone,
@@ -161,14 +160,7 @@ export default function AddPatientPage() {
       <header className="overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-cyan-50 shadow-sm">
         <div className="flex flex-col gap-5 p-5 sm:p-7 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/patients")}
-              className="mt-1 rounded-xl border border-white bg-white p-2.5 text-slate-500 shadow-sm hover:bg-slate-50"
-              aria-label="Back to patients"
-            >
-              <ArrowLeft size={17} />
-            </button>
+            
 
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.18em] text-violet-700">

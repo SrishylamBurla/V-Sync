@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CalendarDays,
   ClipboardList,
   Eye,
@@ -339,14 +338,7 @@ export default function ConsultationDetailsPage() {
     return (
       <div className="min-h-[60vh] bg-slate-50 p-6">
         <div className="mx-auto max-w-5xl">
-          <button
-            type="button"
-            onClick={() => navigate("/clinical")}
-            className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
-          >
-            <ArrowLeft size={17} />
-            Back to Clinical
-          </button>
+          
 
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700">
             {error}
@@ -365,14 +357,7 @@ export default function ConsultationDetailsPage() {
       {/* HEADER */}
       <div className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-8">
-          <button
-            type="button"
-            onClick={() => navigate("/clinical")}
-            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900"
-          >
-            <ArrowLeft size={17} />
-            Clinical
-          </button>
+          
 
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-4">

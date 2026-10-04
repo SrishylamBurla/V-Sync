@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CalendarDays,
   CheckCircle2,
   Clock3,
@@ -199,14 +198,7 @@ export default function AppointmentDetailsPage() {
   return (
     <div className="space-y-6 py-5 sm:py-7">
       <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900"
-        >
-          <ArrowLeft size={15} />
-          Back
-        </button>
+        
 
         <div className="flex flex-wrap gap-2">
           <button

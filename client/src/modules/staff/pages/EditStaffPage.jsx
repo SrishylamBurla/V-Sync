@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Building2,
   Check,
   CheckCircle2,
@@ -546,14 +545,7 @@ export default function EditStaffPage() {
     return (
       <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-5xl">
-          <button
-            type="button"
-            onClick={() => navigate(`/staff/${id}`)}
-            className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft size={17} />
-            Back to Staff
-          </button>
+          
 
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
             <h2 className="font-semibold text-red-800">
@@ -584,14 +576,6 @@ export default function EditStaffPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => navigate(`/staff/${id}`)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-gray-900"
-            >
-              <ArrowLeft size={19} />
-            </button>
-
             <div>
               <p className="text-sm text-gray-500">
                 Staff Management

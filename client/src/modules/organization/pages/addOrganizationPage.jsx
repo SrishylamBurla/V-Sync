@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Building2, Save } from "lucide-react";
+import { Building2, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { createOrganization } from "../api/adminOrganization.api";
@@ -71,13 +71,7 @@ export default function AddOrganizationPage() {
     <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
 
-        <button
-          onClick={() => navigate("/admin/organizations")}
-          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900"
-        >
-          <ArrowLeft size={16} />
-          Back to organizations
-        </button>
+        
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 

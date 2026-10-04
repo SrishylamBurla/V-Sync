@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   Check,
   Eye,
   EyeOff,
@@ -325,15 +324,6 @@ export default function AddStaffPage() {
         {/* Header */}
         <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <button
-              type="button"
-              onClick={() => navigate("/staff")}
-              className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 hover:text-slate-900"
-            >
-              <ArrowLeft size={14} />
-              Staff Management
-            </button>
-
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
               Administration
             </p>

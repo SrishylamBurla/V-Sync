@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   CalendarDays,
   Check,
   ChevronDown,
@@ -1070,15 +1069,6 @@ export default function ConsultationPage() {
         <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
           <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
             <div className="flex min-w-0 items-center gap-3">
-              <button
-                type="button"
-                onClick={safeNavigateBack}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
-                title="Back to patient"
-              >
-                <ArrowLeft size={16} />
-              </button>
-
               <div className="min-w-0">
                 <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-blue-600">
                   Clinical workspace

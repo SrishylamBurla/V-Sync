@@ -3,6 +3,8 @@ import {
   Activity,
   ArrowRight,
   CalendarClock,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle2,
   Clock3,
   ContactRound,
@@ -11,26 +13,22 @@ import {
   Plus,
   RefreshCw,
   Search,
-  UserPlus,
+  ShoppingBag,
   Users,
+  ClipboardList,
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
+import { canAccessModule } from "../../config/access";
 
-import {
-  getAppointments,
-  createAppointment,
-  getAppointmentClinicians,
-} from "../appointments/appointment.api";
-
-import { getPatients } from "../patients/patient.api";
-
+import { getAppointments } from "../appointments/appointment.api";
 import { getDispensingList } from "../optical/spectacle.api";
 import { getContactLenses } from "../contactLenses/contactLens.api";
+import { getSundryJobs } from "../dispensing/sundryJob.api";
+import { getConsultations, updateConsultationStatus } from "../clinical/consultation.api";
 
-/* -------------------------------------------------------------------------- */
-/* Helpers                                                                    */
-/* -------------------------------------------------------------------------- */
+const PAGE_SIZE = 10;
 
 const APPOINTMENT_STATUS = {
   booked: "Booked",
@@ -52,20 +50,126 @@ const APPOINTMENT_STATUS_CLASS = {
   no_show: "bg-orange-50 text-orange-700",
 };
 
-const JOB_STATUS = [
-  "draft",
-  "ordered",
-  "not_ready",
-  "ready",
-  "notified",
-  "collected",
-  "cancelled",
+const CONSULTATION_STATUS_OPTIONS = [
+  ["draft", "Draft"],
+  ["in_progress", "In progress"],
+  ["completed", "Completed"],
+  ["cancelled", "Cancelled"],
 ];
 
-const label = (value) =>
-  String(value || "")
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
+const getConsultationStatusClass = (status) => {
+  switch (normalizeStatus(status)) {
+    case "draft":
+      return "bg-slate-100 text-slate-600";
+    case "in_progress":
+      return "bg-blue-50 text-blue-700";
+    case "completed":
+      return "bg-emerald-50 text-emerald-700";
+    case "cancelled":
+      return "bg-rose-50 text-rose-700";
+    default:
+      return "bg-slate-100 text-slate-600";
+  }
+};
+
+const consultationStatusLabel = (status) => {
+  const value = normalizeStatus(status);
+  return (
+    CONSULTATION_STATUS_OPTIONS.find(([key]) => key === value)?.[1] ||
+    (value ? value.replaceAll("_", " ") : "Completed")
+  );
+};
+
+
+const DISPENSING_CATEGORY = {
+  all: {
+    label: "All",
+    shortLabel: "All",
+    icon: PackageCheck,
+  },
+  spectacles: {
+    label: "Spectacles",
+    shortLabel: "Spectacles",
+    icon: Glasses,
+  },
+  contact_lenses: {
+    label: "Contact lenses",
+    shortLabel: "Contact",
+    icon: ContactRound,
+  },
+  sundries: {
+    label: "Sundry",
+    shortLabel: "Sundry",
+    icon: ShoppingBag,
+  },
+};
+
+const DISPENSING_STATUS_OPTIONS = [
+  ["", "All statuses"],
+  ["draft", "Draft"],
+  ["ordered", "Ordered"],
+  ["not_ready", "Not ready"],
+  ["ready", "Ready"],
+  ["notified", "Notified"],
+  ["collected", "Collected"],
+  ["cancelled", "Cancelled"],
+  ["dispensed", "Dispensed"],
+  ["delivered", "Delivered"],
+];
+
+const dateKey = (date) => {
+  const value = new Date(date);
+
+  if (Number.isNaN(value.getTime())) {
+    return "";
+  }
+
+  return `${value.getFullYear()}-${String(
+    value.getMonth() + 1,
+  ).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+};
+
+const formatDate = (value) => {
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+const formatShortDate = (value) => {
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const formatTime = (value) => {
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const fullName = (person) =>
   [
@@ -74,428 +178,974 @@ const fullName = (person) =>
     person?.lastName,
   ]
     .filter(Boolean)
-    .join(" ") || "Unknown";
+    .join(" ") || "Unknown patient";
 
-const dateKey = (date) => {
-  const value = new Date(date);
+const normalizeList = (response, keys = []) => {
+  if (Array.isArray(response?.data)) return response.data;
 
-  return `${value.getFullYear()}-${String(
-    value.getMonth() + 1,
-  ).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
-};
+  for (const key of keys) {
+    if (Array.isArray(response?.data?.[key])) {
+      return response.data[key];
+    }
+  }
 
-const formatTime = (value) => {
-  if (!value) return "—";
+  const fallbackKey = keys[0];
 
-  return new Date(value).toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-const formatDate = (value) => {
-  return new Date(value).toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
-
-const normalizePatients = (response) => {
-  const value = response?.data;
-
-  if (Array.isArray(value)) return value;
-  if (Array.isArray(value?.patients)) return value.patients;
-  if (Array.isArray(value?.data)) return value.data;
-  if (Array.isArray(response)) return response;
+  if (
+    fallbackKey &&
+    Array.isArray(response?.[fallbackKey])
+  ) {
+    return response[fallbackKey];
+  }
 
   return [];
 };
 
-const normalizeRows = (response) => {
-  const value = response?.data;
+const normalizeStatus = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase();
 
-  if (Array.isArray(value)) return value;
-  if (Array.isArray(value?.data)) return value.data;
+const consultationTypeLabel = (value) =>
+  String(value || "consultation")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 
-  return [];
+const getPatientFromRecord = (record) =>
+  record?.patientId ||
+  record?.patient ||
+  {};
+
+const getPatientNumber = (record) => {
+  const patient = getPatientFromRecord(record);
+
+  return (
+    patient?.patientNumber ||
+    patient?.patientNo ||
+    record?.patientNumber ||
+    "No patient number"
+  );
 };
 
-/* -------------------------------------------------------------------------- */
-/* Dashboard                                                                  */
-/* -------------------------------------------------------------------------- */
+const getRecordDate = (record) =>
+  record?.updatedAt ||
+  record?.createdAt ||
+  record?.jobDate ||
+  record?.orderDate ||
+  record?.orderDateTime ||
+  record?.dueDate ||
+  record?.specDueDate ||
+  record?.appointmentDate;
+
+const getRecordDueDate = (record) =>
+  record?.specDueDate ||
+  record?.dueDate ||
+  record?.labDueDate ||
+  record?.expectedDate ||
+  record?.deliveryDate;
+
+const getRecordNumber = (record) =>
+  record?.jobNumber ||
+  record?.jobNo ||
+  record?.orderNumber ||
+  record?.orderNo ||
+  record?.recordNumber ||
+  record?._id?.slice(-8) ||
+  "—";
+
+const getSundryItem = (record) =>
+  record?.item ||
+  record?.inventoryItem ||
+  record?.inventoryItemId ||
+  {};
+
+const getRecordItem = (record, category) => {
+  if (category === "spectacles") {
+    return (
+      record?.frame?.code ||
+      record?.frame?.description ||
+      record?.frameItemId?.code ||
+      record?.frameItemId?.description ||
+      "Spectacle"
+    );
+  }
+
+  if (category === "contact_lenses") {
+    return (
+      record?.item?.code ||
+      record?.item?.description ||
+      record?.lens?.code ||
+      record?.lens?.description ||
+      record?.contactLens?.code ||
+      record?.contactLens?.description ||
+      record?.lensCode ||
+      "Contact lens"
+    );
+  }
+
+  const item = getSundryItem(record);
+
+  return (
+    item?.code ||
+    item?.description ||
+    item?.name ||
+    record?.itemName ||
+    "Sundry"
+  );
+};
+
+const getRecordSecondary = (record, category) => {
+  if (category === "spectacles") {
+    return (
+      record?.frame?.brand ||
+      record?.frame?.model ||
+      record?.frame?.size ||
+      "Spectacle dispensing"
+    );
+  }
+
+  if (category === "contact_lenses") {
+    return (
+      record?.item?.brand ||
+      record?.item?.model ||
+      record?.contactLens?.brand ||
+      record?.contactLens?.model ||
+      "Contact-lens dispensing"
+    );
+  }
+
+  const item = getSundryItem(record);
+
+  return (
+    item?.brand ||
+    item?.model ||
+    `${record?.quantity || 1} item`
+  );
+};
+
+const getCategoryLabel = (category) =>
+  DISPENSING_CATEGORY[category]?.label ||
+  "Dispensing";
+
+const normalizeDispensingRecord = (
+  record,
+  category,
+) => ({
+  ...record,
+  _dashboardCategory: category,
+  _dashboardCategoryLabel:
+    getCategoryLabel(category),
+  _dashboardDate: getRecordDate(record),
+  _dashboardDueDate:
+    getRecordDueDate(record),
+  _dashboardPatient:
+    getPatientFromRecord(record),
+  _dashboardPatientName:
+    fullName(getPatientFromRecord(record)),
+  _dashboardPatientNumber:
+    getPatientNumber(record),
+  _dashboardNumber:
+    getRecordNumber(record),
+  _dashboardItem:
+    getRecordItem(
+      record,
+      category,
+    ),
+  _dashboardSecondary:
+    getRecordSecondary(
+      record,
+      category,
+    ),
+  _dashboardStatus:
+    normalizeStatus(
+      record?.status,
+    ),
+});
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const today = dateKey(new Date());
+  const role = user?.role;
 
-  const [appointments, setAppointments] = useState([]);
-  const [spectacleJobs, setSpectacleJobs] = useState([]);
-  const [contactOrders, setContactOrders] = useState([]);
+  const canAppointments = canAccessModule(
+    "appointments",
+    role,
+  );
+  const canPatients = canAccessModule(
+    "patients",
+    role,
+  );
+  const canClinical = canAccessModule(
+    "clinical",
+    role,
+  );
+  const canDispensing = canAccessModule(
+    "dispensing",
+    role,
+  );
+  const canInventory = canAccessModule(
+    "inventory",
+    role,
+  );
+  const canBilling = canAccessModule(
+    "billing",
+    role,
+  );
 
-  const [clinicians, setClinicians] = useState([]);
+  const [
+    appointments,
+    setAppointments,
+  ] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [opticalLoading, setOpticalLoading] = useState(true);
+  const [
+    spectacleJobs,
+    setSpectacleJobs,
+  ] = useState([]);
 
-  const [error, setError] = useState("");
-  const [opticalError, setOpticalError] = useState("");
+  const [
+    contactOrders,
+    setContactOrders,
+  ] = useState([]);
 
-  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
-  const [showPatientList, setShowPatientList] = useState(false);
+  const [
+    sundryJobs,
+    setSundryJobs,
+  ] = useState([]);
 
-  const [patientQuery, setPatientQuery] = useState("");
-  const [patientResults, setPatientResults] = useState([]);
-  const [patientListLoading, setPatientListLoading] = useState(false);
+  const [consultations, setConsultations] = useState([]);
 
-  const [form, setForm] = useState({
-    patientId: "",
-    appointmentDate: `${today}T09:00`,
-    type: "Eye Examination",
-    durationMinutes: 30,
-    clinicianId: "",
-    reason: "",
-    notes: "",
-  });
+  const [dispensingPage, setDispensingPage] = useState(1);
+  const [consultationsPage, setConsultationsPage] = useState(1);
 
-  /* ---------------------------------------------------------------------- */
-  /* Appointments                                                           */
-  /* ---------------------------------------------------------------------- */
+  const [
+    appointmentsLoading,
+    setAppointmentsLoading,
+  ] = useState(true);
 
-  const loadAppointments = useCallback(async () => {
-    setLoading(true);
-    setError("");
+  const [
+    dispensingLoading,
+    setDispensingLoading,
+  ] = useState(true);
+
+  const [consultationsLoading, setConsultationsLoading] = useState(true);
+  const [updatingConsultationId, setUpdatingConsultationId] = useState("");
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    dispensingCategory,
+    setDispensingCategory,
+  ] = useState("all");
+
+  const [
+    dispensingStatus,
+    setDispensingStatus,
+  ] = useState("");
+
+  const [
+    dispensingSearch,
+    setDispensingSearch,
+  ] = useState("");
+
+  const loadAppointments =
+    useCallback(async () => {
+      if (!canAppointments) {
+        setAppointments([]);
+        setAppointmentsLoading(false);
+        return;
+      }
+
+      setAppointmentsLoading(true);
+
+      try {
+        const response =
+          await getAppointments({
+            date: today,
+          });
+
+        setAppointments(
+          normalizeList(
+            response,
+            ["appointments"],
+          ),
+        );
+      } catch (err) {
+        setAppointments([]);
+
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to load today's appointments.",
+        );
+      } finally {
+        setAppointmentsLoading(false);
+      }
+    }, [canAppointments, today]);
+
+  const loadConsultations = useCallback(async () => {
+    if (!canClinical) {
+      setConsultations([]);
+      setConsultationsLoading(false);
+      return;
+    }
+
+    setConsultationsLoading(true);
 
     try {
-      const response = await getAppointments({
-        date: today,
+      const response = await getConsultations({
+        page: 1,
+        limit: 50,
       });
 
-      setAppointments(
-        Array.isArray(response?.data) ? response.data : [],
+      const data = response?.data ?? response;
+      setConsultations(
+        Array.isArray(data?.consultations)
+          ? data.consultations
+          : Array.isArray(data)
+            ? data
+            : Array.isArray(response?.consultations)
+              ? response.consultations
+              : [],
       );
-    } catch (error) {
+    } catch (err) {
+      setConsultations([]);
       setError(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Unable to load today's appointments.",
+        err?.response?.data?.message ||
+          err?.message ||
+          "Unable to load consultations.",
       );
     } finally {
-      setLoading(false);
+      setConsultationsLoading(false);
     }
-  }, [today]);
+  }, [canClinical]);
 
-  /* ---------------------------------------------------------------------- */
-  /* Optical operations                                                     */
-  /* ---------------------------------------------------------------------- */
+  const updateDashboardConsultationStatus = useCallback(
+    async (consultationId, nextStatus) => {
+      if (!consultationId || !nextStatus) return;
 
-  const loadOpticalOperations = useCallback(async () => {
-    setOpticalLoading(true);
-    setOpticalError("");
+      setUpdatingConsultationId(consultationId);
+      setError("");
 
-    try {
-      const [spectacleResult, contactResult] =
-        await Promise.allSettled([
-          getDispensingList(),
-          getContactLenses(),
-        ]);
+      try {
+        const response = await updateConsultationStatus(
+          consultationId,
+          nextStatus,
+        );
 
-      if (spectacleResult.status === "fulfilled") {
+        const updated = response?.data ?? response;
+        setConsultations((current) =>
+          current.map((item) =>
+            item._id === consultationId
+              ? updated || { ...item, status: nextStatus }
+              : item,
+          ),
+        );
+      } catch (err) {
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to update consultation status.",
+        );
+      } finally {
+        setUpdatingConsultationId("");
+      }
+    },
+    [],
+  );
+
+  const loadDispensing =
+    useCallback(async () => {
+      if (!canDispensing) {
+        setSpectacleJobs([]);
+        setContactOrders([]);
+        setSundryJobs([]);
+        setDispensingLoading(false);
+        return;
+      }
+
+      setDispensingLoading(true);
+
+      const [
+        spectaclesResult,
+        contactsResult,
+        sundriesResult,
+      ] = await Promise.allSettled([
+        getDispensingList({
+          page: 1,
+          limit: 50,
+        }),
+        getContactLenses({
+          page: 1,
+          limit: 50,
+        }),
+        getSundryJobs({
+          page: 1,
+          limit: 50,
+        }),
+      ]);
+
+      if (
+        spectaclesResult.status ===
+        "fulfilled"
+      ) {
         setSpectacleJobs(
-          normalizeRows(spectacleResult.value),
+          normalizeList(
+            spectaclesResult.value,
+            [
+              "spectacles",
+              "jobs",
+            ],
+          ),
         );
       } else {
         setSpectacleJobs([]);
       }
 
-      if (contactResult.status === "fulfilled") {
+      if (
+        contactsResult.status ===
+        "fulfilled"
+      ) {
         setContactOrders(
-          normalizeRows(contactResult.value),
+          normalizeList(
+            contactsResult.value,
+            [
+              "contactLenses",
+              "orders",
+              "jobs",
+            ],
+          ),
         );
       } else {
         setContactOrders([]);
       }
 
+      if (
+        sundriesResult.status ===
+        "fulfilled"
+      ) {
+        setSundryJobs(
+          normalizeList(
+            sundriesResult.value,
+            [
+              "sundryJobs",
+              "jobs",
+            ],
+          ),
+        );
+      } else {
+        setSundryJobs([]);
+      }
+
       const failures = [
-        spectacleResult,
-        contactResult,
+        spectaclesResult,
+        contactsResult,
+        sundriesResult,
       ].filter(
-        (result) => result.status === "rejected",
+        (result) =>
+          result.status ===
+          "rejected",
       );
 
       if (failures.length) {
-        const firstFailure = failures[0]?.reason;
+        const failure =
+          failures[0]?.reason;
 
-        setOpticalError(
-          firstFailure?.response?.data?.message ||
-            firstFailure?.message ||
-            "Some optical information could not be loaded.",
+        setError(
+          failure?.response?.data
+            ?.message ||
+            failure?.message ||
+            "Some dispensing information could not be loaded.",
         );
       }
-    } catch (error) {
-      setOpticalError(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Unable to load optical operations.",
-      );
-    } finally {
-      setOpticalLoading(false);
-    }
-  }, []);
 
-  const refreshDashboard = async () => {
-    await Promise.all([
-      loadAppointments(),
-      loadOpticalOperations(),
+      setDispensingLoading(false);
+    }, [canDispensing]);
+
+  const refresh =
+    useCallback(async () => {
+      setError("");
+
+      await Promise.all([
+        loadAppointments(),
+        loadDispensing(),
+        loadConsultations(),
+      ]);
+    }, [
+      loadAppointments,
+      loadDispensing,
+      loadConsultations,
     ]);
-  };
 
   useEffect(() => {
-    loadAppointments();
+    const timer =
+      window.setTimeout(() => {
+        void refresh();
+      }, 0);
 
-    getAppointmentClinicians()
-      .then((response) => {
-        setClinicians(
-          Array.isArray(response?.data)
-            ? response.data
-            : [],
+    return () =>
+      window.clearTimeout(timer);
+  }, [refresh]);
+
+  const appointmentCounts =
+    useMemo(() => {
+      const total =
+        appointments.length;
+
+      return {
+        total,
+
+        waiting:
+          appointments.filter(
+            (item) =>
+              [
+                "booked",
+                "confirmed",
+                "here",
+              ].includes(
+                normalizeStatus(
+                  item.status,
+                ),
+              ),
+          ).length,
+
+        examining:
+          appointments.filter(
+            (item) =>
+              normalizeStatus(
+                item.status,
+              ) === "examining",
+          ).length,
+
+        completed:
+          appointments.filter(
+            (item) =>
+              normalizeStatus(
+                item.status,
+              ) === "complete",
+          ).length,
+
+        cancelled:
+          appointments.filter(
+            (item) =>
+              [
+                "cancelled",
+                "no_show",
+              ].includes(
+                normalizeStatus(
+                  item.status,
+                ),
+              ),
+          ).length,
+      };
+    }, [appointments]);
+
+  const spectacleCounts =
+    useMemo(() => {
+      const open =
+        spectacleJobs.filter(
+          (job) =>
+            ![
+              "collected",
+              "cancelled",
+            ].includes(
+              normalizeStatus(
+                job.status,
+              ),
+            ),
         );
-      })
-      .catch(() => {
-        setClinicians([]);
-      });
-  }, [loadAppointments]);
 
-  useEffect(() => {
-    loadOpticalOperations();
-  }, [loadOpticalOperations]);
+      return {
+        total:
+          spectacleJobs.length,
 
-  /* ---------------------------------------------------------------------- */
-  /* Patient search                                                         */
-  /* ---------------------------------------------------------------------- */
+        open: open.length,
 
-  useEffect(() => {
-    if (!showPatientList) return;
+        ready:
+          spectacleJobs.filter(
+            (job) =>
+              normalizeStatus(
+                job.status,
+              ) === "ready",
+          ).length,
 
-    const timer = setTimeout(async () => {
-      setPatientListLoading(true);
+        notified:
+          spectacleJobs.filter(
+            (job) =>
+              normalizeStatus(
+                job.status,
+              ) === "notified",
+          ).length,
+      };
+    }, [spectacleJobs]);
 
-      try {
-        const response = await getPatients({
-          page: 1,
-          limit: 30,
-          search: patientQuery.trim(),
-          status: "active",
-        });
+  const contactCounts =
+    useMemo(() => {
+      const closedStatuses =
+        [
+          "collected",
+          "cancelled",
+          "dispensed",
+          "delivered",
+        ];
 
-        setPatientResults(
-          normalizePatients(response),
+      const readyStatuses =
+        [
+          "ready",
+          "collected",
+          "dispensed",
+          "delivered",
+        ];
+
+      return {
+        total:
+          contactOrders.length,
+
+        open:
+          contactOrders.filter(
+            (job) =>
+              !closedStatuses.includes(
+                normalizeStatus(
+                  job.status,
+                ),
+              ),
+          ).length,
+
+        ready:
+          contactOrders.filter(
+            (job) =>
+              readyStatuses.includes(
+                normalizeStatus(
+                  job.status,
+                ),
+              ),
+          ).length,
+      };
+    }, [contactOrders]);
+
+  const sundryCounts =
+    useMemo(() => {
+      const closedStatuses =
+        [
+          "collected",
+          "cancelled",
+        ];
+
+      const open =
+        sundryJobs.filter(
+          (job) =>
+            !closedStatuses.includes(
+              normalizeStatus(
+                job.status,
+              ),
+            ),
         );
-      } catch {
-        setPatientResults([]);
-      } finally {
-        setPatientListLoading(false);
-      }
-    }, 250);
 
-    return () => clearTimeout(timer);
-  }, [patientQuery, showPatientList]);
+      return {
+        total:
+          sundryJobs.length,
 
-  /* ---------------------------------------------------------------------- */
-  /* Appointment statistics                                                 */
-  /* ---------------------------------------------------------------------- */
+        open:
+          open.length,
 
-  const appointmentCounts = useMemo(
-    () => ({
-      total: appointments.length,
+        ready:
+          sundryJobs.filter(
+            (job) =>
+              normalizeStatus(
+                job.status,
+              ) === "ready",
+          ).length,
 
-      waiting: appointments.filter((appointment) =>
-        ["booked", "confirmed", "here"].includes(
-          appointment.status,
+        notified:
+          sundryJobs.filter(
+            (job) =>
+              normalizeStatus(
+                job.status,
+              ) === "notified",
+          ).length,
+      };
+    }, [sundryJobs]);
+
+  const upcomingAppointments =
+    useMemo(
+      () =>
+        [...appointments]
+          .sort(
+            (a, b) =>
+              new Date(
+                a.appointmentDate,
+              ).getTime() -
+              new Date(
+                b.appointmentDate,
+              ).getTime(),
+          )
+          .slice(0, 8),
+      [appointments],
+    );
+
+  const dispensingRecords =
+    useMemo(() => {
+      const records = [
+        ...spectacleJobs.map(
+          (job) =>
+            normalizeDispensingRecord(
+              job,
+              "spectacles",
+            ),
         ),
-      ).length,
 
-      examining: appointments.filter(
-        (appointment) =>
-          appointment.status === "examining",
-      ).length,
-
-      completed: appointments.filter(
-        (appointment) =>
-          appointment.status === "complete",
-      ).length,
-
-      cancelled: appointments.filter((appointment) =>
-        ["cancelled", "no_show"].includes(
-          appointment.status,
+        ...contactOrders.map(
+          (job) =>
+            normalizeDispensingRecord(
+              job,
+              "contact_lenses",
+            ),
         ),
-      ).length,
-    }),
-    [appointments],
-  );
 
-  const upcomingAppointments = useMemo(
-    () =>
-      [...appointments].sort(
+        ...sundryJobs.map(
+          (job) =>
+            normalizeDispensingRecord(
+              job,
+              "sundries",
+            ),
+        ),
+      ];
+
+      const filteredByCategory =
+        dispensingCategory ===
+        "all"
+          ? records
+          : records.filter(
+              (record) =>
+                record._dashboardCategory ===
+                dispensingCategory,
+            );
+
+      const filteredByStatus =
+        dispensingStatus
+          ? filteredByCategory.filter(
+              (record) =>
+                record._dashboardStatus ===
+                dispensingStatus,
+            )
+          : filteredByCategory;
+
+      const search =
+        dispensingSearch
+          .trim()
+          .toLowerCase();
+
+      const filteredBySearch =
+        search
+          ? filteredByStatus.filter(
+              (record) =>
+                [
+                  record._dashboardNumber,
+                  record._dashboardItem,
+                  record._dashboardSecondary,
+                  record._dashboardPatientName,
+                  record._dashboardPatientNumber,
+                  record._dashboardStatus,
+                ]
+                  .filter(Boolean)
+                  .join(" ")
+                  .toLowerCase()
+                  .includes(search),
+            )
+          : filteredByStatus;
+
+      return filteredBySearch.sort(
         (a, b) =>
-          new Date(a.appointmentDate).getTime() -
-          new Date(b.appointmentDate).getTime(),
+          new Date(
+            b._dashboardDate,
+          ).getTime() -
+          new Date(
+            a._dashboardDate,
+          ).getTime(),
+      );
+    }, [
+      spectacleJobs,
+      contactOrders,
+      sundryJobs,
+      dispensingCategory,
+      dispensingStatus,
+      dispensingSearch,
+    ]);
+
+  const dispensingPageCount = Math.max(
+    1,
+    Math.ceil(
+      dispensingRecords.length / PAGE_SIZE,
+    ),
+  );
+
+  const consultationsPageCount = Math.max(
+    1,
+    Math.ceil(
+      consultations.length / PAGE_SIZE,
+    ),
+  );
+
+  useEffect(() => {
+    setDispensingPage(1);
+  }, [
+    dispensingCategory,
+    dispensingStatus,
+    dispensingSearch,
+  ]);
+
+  useEffect(() => {
+    setDispensingPage((current) =>
+      Math.min(
+        current,
+        dispensingPageCount,
       ),
-    [appointments],
-  );
+    );
+  }, [dispensingPageCount]);
 
-  /* ---------------------------------------------------------------------- */
-  /* Optical statistics                                                     */
-  /* ---------------------------------------------------------------------- */
+  useEffect(() => {
+    setConsultationsPage((current) =>
+      Math.min(
+        current,
+        consultationsPageCount,
+      ),
+    );
+  }, [consultationsPageCount]);
 
-  const spectacleCounts = useMemo(
-    () => ({
-      total: spectacleJobs.length,
+  const visibleDispensingRecords =
+    useMemo(() => {
+      const start =
+        (dispensingPage - 1) *
+        PAGE_SIZE;
 
-      open: spectacleJobs.filter(
-        (job) =>
-          !["collected", "cancelled"].includes(
-            job.status,
-          ),
-      ).length,
-
-      ready: spectacleJobs.filter(
-        (job) => job.status === "ready",
-      ).length,
-
-      notified: spectacleJobs.filter(
-        (job) => job.status === "notified",
-      ).length,
-
-      collected: spectacleJobs.filter(
-        (job) => job.status === "collected",
-      ).length,
-    }),
-    [spectacleJobs],
-  );
-
-  const contactCounts = useMemo(
-    () => ({
-      total: contactOrders.length,
-
-      open: contactOrders.filter(
-        (order) =>
-          !["collected", "cancelled"].includes(
-            order.status,
-          ),
-      ).length,
-
-      ready: contactOrders.filter(
-        (order) => order.status === "ready",
-      ).length,
-
-      collected: contactOrders.filter(
-        (order) => order.status === "collected",
-      ).length,
-    }),
-    [contactOrders],
-  );
-
-  /* ---------------------------------------------------------------------- */
-  /* Appointment actions                                                    */
-  /* ---------------------------------------------------------------------- */
-
-  const selectPatientForAppointment = (patient) => {
-    setForm((current) => ({
-      ...current,
-      patientId: patient._id,
-    }));
-
-    setPatientQuery(fullName(patient));
-    setPatientResults([]);
-    setShowPatientList(false);
-    setShowAppointmentForm(true);
-  };
-
-  const saveAppointment = async (event) => {
-    event.preventDefault();
-
-    setError("");
-
-    if (!form.patientId) {
-      setError(
-        "Please select a patient before creating the appointment.",
+      return dispensingRecords.slice(
+        start,
+        start + PAGE_SIZE,
       );
-      return;
-    }
+    }, [
+      dispensingRecords,
+      dispensingPage,
+    ]);
 
-    try {
-      await createAppointment({
-        ...form,
-        durationMinutes: Number(
-          form.durationMinutes,
-        ),
-      });
+  const visibleConsultations =
+    useMemo(() => {
+      const start =
+        (consultationsPage - 1) *
+        PAGE_SIZE;
 
-      setShowAppointmentForm(false);
-      setPatientQuery("");
-
-      setForm({
-        patientId: "",
-        appointmentDate: `${today}T09:00`,
-        type: "Eye Examination",
-        durationMinutes: 30,
-        clinicianId: "",
-        reason: "",
-        notes: "",
-      });
-
-      await loadAppointments();
-    } catch (error) {
-      setError(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Unable to create appointment.",
+      return consultations.slice(
+        start,
+        start + PAGE_SIZE,
       );
-    }
-  };
+    }, [
+      consultations,
+      consultationsPage,
+    ]);
 
-  /* ---------------------------------------------------------------------- */
-  /* Render                                                                 */
-  /* ---------------------------------------------------------------------- */
+  const quickActions = [
+    canAppointments && {
+      icon: CalendarClock,
+      label: "Appointments",
+      description:
+        "Open today's schedule and booking workflow.",
+      onClick: () =>
+        navigate("/appointments"),
+    },
+
+    canPatients && {
+      icon: Users,
+      label: "Patients",
+      description:
+        "Search records and open patient workspaces.",
+      onClick: () =>
+        navigate("/patients"),
+    },
+
+    canClinical && {
+      icon: Activity,
+      label: "Clinical",
+      description:
+        "Open consultation and examination workflow.",
+      onClick: () =>
+        navigate("/clinical"),
+    },
+
+    canDispensing && {
+      icon: Glasses,
+      label: "Dispensing",
+      description:
+        "Manage spectacle, contact-lens and sundry jobs.",
+      onClick: () =>
+        navigate("/dispensing"),
+    },
+
+    canInventory && {
+      icon: PackageCheck,
+      label: "Inventory",
+      description:
+        "Review stock and catalogue operations.",
+      onClick: () =>
+        navigate("/inventory"),
+    },
+
+    canBilling && {
+      icon: CheckCircle2,
+      label: "Billing",
+      description:
+        "Open invoices, payments and billing.",
+      onClick: () =>
+        navigate("/billing"),
+    },
+  ].filter(Boolean);
+
+  const clearDispensingFilters =
+    () => {
+      setDispensingCategory("all");
+      setDispensingStatus("");
+      setDispensingSearch("");
+    };
 
   return (
-    <div className="py-5 sm:py-7">
-      <div className="space-y-6">
-
-        {/* ================================================================ */}
-        {/* Header                                                           */}
-        {/* ================================================================ */}
-
-        <section className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+    <div className="py-4 sm:py-5">
+      <div className="space-y-3.5">
+        {/* SINGLE PAGE HEADING */}
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
               Practice dashboard
-            </p>
+            </div>
 
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-              Today
-            </h1>
+            <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-[26px]">
+                Dashboard
+              </h1>
 
-            <p className="mt-1 text-sm text-slate-500">
-              {formatDate(new Date())}
-              {" · "}
-              appointments, clinical flow and optical operations
-            </p>
+              <span className="text-[10px] font-medium text-slate-400">
+                {formatDate(
+                  new Date(),
+                )}
+              </span>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             <button
               type="button"
-              onClick={refreshDashboard}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+              onClick={() =>
+                void refresh()
+              }
+              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50"
             >
               <RefreshCw
-                size={14}
+                size={12}
                 className={
-                  loading || opticalLoading
+                  appointmentsLoading ||
+                  dispensingLoading ||
+                  consultationsLoading
                     ? "animate-spin"
                     : ""
                 }
@@ -503,970 +1153,893 @@ export default function DashboardPage() {
               Refresh
             </button>
 
-            <button
-              type="button"
-              onClick={() =>
-                setShowPatientList(true)
-              }
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              <Users size={14} />
-              Patient list
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setShowAppointmentForm(true)
-              }
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800"
-            >
-              <Plus size={15} />
-              New appointment
-            </button>
+            {canAppointments && (
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/appointments?book=1",
+                  )
+                }
+                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800"
+              >
+                <Plus size={12} />
+                Book Appointment
+              </button>
+            )}
           </div>
-        </section>
-
-        {/* ================================================================ */}
-        {/* Errors                                                           */}
-        {/* ================================================================ */}
+        </header>
 
         {error && (
-          <div className="flex items-start justify-between gap-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="flex items-center justify-between gap-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-medium text-amber-800">
             <span>{error}</span>
 
             <button
               type="button"
-              onClick={() => setError("")}
-              className="rounded-md p-1 text-red-500 hover:bg-red-100"
+              onClick={() =>
+                setError("")
+              }
+              className="rounded p-1 text-amber-600 hover:bg-amber-100"
+              aria-label="Dismiss"
             >
-              <X size={15} />
+              ×
             </button>
           </div>
         )}
 
-        {opticalError && (
-          <div className="flex items-start justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-            <span>{opticalError}</span>
-
-            <button
-              type="button"
-              onClick={() => setOpticalError("")}
-              className="rounded-md p-1 text-amber-500 hover:bg-amber-100"
-            >
-              <X size={15} />
-            </button>
-          </div>
-        )}
-
-        {/* ================================================================ */}
-        {/* Main metrics                                                      */}
-        {/* ================================================================ */}
-
-        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* KPI STRIP */}
+        <section className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
           <Metric
             icon={CalendarClock}
             label="Appointments"
-            value={appointmentCounts.total}
-            note="Today's schedule"
+            value={
+              appointmentsLoading
+                ? "—"
+                : appointmentCounts.total
+            }
+            note={`${appointmentCounts.completed} completed today`}
             onClick={() =>
-              navigate("/appointments")
+              navigate(
+                "/appointments",
+              )
             }
           />
 
           <Metric
             icon={Clock3}
             label="Waiting / upcoming"
-            value={appointmentCounts.waiting}
-            note="Booked, confirmed or here"
+            value={
+              appointmentsLoading
+                ? "—"
+                : appointmentCounts.waiting
+            }
+            note={`${appointmentCounts.examining} currently examining`}
             onClick={() =>
-              navigate("/appointments")
+              navigate(
+                "/appointments",
+              )
             }
           />
 
           <Metric
             icon={Glasses}
             label="Spectacle jobs"
-            value={spectacleCounts.open}
-            note={`${spectacleCounts.ready} ready for collection`}
+            value={
+              dispensingLoading
+                ? "—"
+                : spectacleCounts.open
+            }
+            note={`${spectacleCounts.ready} ready · ${spectacleCounts.notified} notified`}
             onClick={() =>
-              navigate("/dispensing")
+              navigate(
+                "/dispensing/spectacle-jobs",
+              )
             }
           />
 
           <Metric
             icon={ContactRound}
-            label="Contact lens orders"
-            value={contactCounts.open}
-            note={`${contactCounts.ready} ready`}
+            label="Contact lens jobs"
+            value={
+              dispensingLoading
+                ? "—"
+                : contactCounts.open
+            }
+            note={`${contactCounts.ready} ready / completed`}
             onClick={() =>
-              navigate("/dispensing")
+              navigate(
+                "/dispensing/contact-lenses",
+              )
+            }
+          />
+
+          <Metric
+            icon={ShoppingBag}
+            label="Sundry jobs"
+            value={
+              dispensingLoading
+                ? "—"
+                : sundryCounts.open
+            }
+            note={`${sundryCounts.ready} ready · ${sundryCounts.notified} notified`}
+            onClick={() =>
+              navigate(
+                "/dispensing/sundries",
+              )
             }
           />
         </section>
 
-        {/* ================================================================ */}
-        {/* Main content                                                      */}
-        {/* ================================================================ */}
+        <section className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_360px]">
+          {/* APPOINTMENTS */}
+          <SectionCard
+            eyebrow="Front desk"
+            title="Today's appointments"
+            meta={`${appointmentCounts.total} scheduled · ${appointmentCounts.completed} completed`}
+            actionLabel="Open appointments"
+            onAction={() =>
+              navigate(
+                "/appointments",
+              )
+            }
+          >
+            {appointmentsLoading ? (
+              <LoadingRow text="Loading appointments..." />
+            ) : upcomingAppointments.length ? (
+              <div className="divide-y divide-slate-100">
+                {upcomingAppointments.map(
+                  (appointment) => {
+                    const patient =
+                      appointment.patientId ||
+                      appointment.patient ||
+                      {};
 
-        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_410px]">
+                    const status =
+                      normalizeStatus(
+                        appointment.status,
+                      ) ||
+                      "booked";
 
-          {/* ============================================================ */}
-          {/* Left column                                                    */}
-          {/* ============================================================ */}
-
-          <div className="space-y-5">
-
-            {/* ------------------------------------------------------------ */}
-            {/* Today's appointments                                         */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-600">
-                    Clinical flow
-                  </div>
-
-                  <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                    Today's appointments
-                  </h2>
-
-                  <p className="mt-1 text-xs text-slate-400">
-                    {appointmentCounts.total} scheduled
-                    {" · "}
-                    {appointmentCounts.completed} completed
-                    {" · "}
-                    {appointmentCounts.examining} examining
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/appointments")
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
-                >
-                  View appointments
-                  <ArrowRight size={12} />
-                </button>
-              </header>
-
-              {loading ? (
-                <div className="px-5 py-12 text-center text-xs text-slate-400">
-                  Loading appointments...
-                </div>
-              ) : upcomingAppointments.length === 0 ? (
-                <div className="px-5 py-14 text-center">
-                  <CalendarClock
-                    size={30}
-                    className="mx-auto text-slate-300"
-                  />
-
-                  <p className="mt-3 text-sm font-semibold text-slate-600">
-                    No appointments today
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowAppointmentForm(true)
-                    }
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-[10px] font-bold text-white"
-                  >
-                    <Plus size={12} />
-                    New appointment
-                  </button>
-                </div>
-              ) : (
-                <div className="divide-y divide-slate-100">
-                  {upcomingAppointments
-                    .slice(0, 8)
-                    .map((appointment) => (
+                    return (
                       <button
-                        key={appointment._id}
                         type="button"
+                        key={
+                          appointment._id
+                        }
                         onClick={() =>
-                          appointment.patientId?._id &&
+                          appointment._id &&
                           navigate(
-                            `/patients/${appointment.patientId._id}`,
+                            `/appointments/${appointment._id}`,
                           )
                         }
-                        className="w-full px-5 py-3.5 text-left transition hover:bg-slate-50"
+                        className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition hover:bg-slate-50 sm:px-3.5"
                       >
-                        <div className="flex items-center gap-4">
-
-                          <div className="w-16 shrink-0">
-                            <div className="text-sm font-bold text-slate-900">
-                              {formatTime(
-                                appointment.appointmentDate,
-                              )}
-                            </div>
-
-                            <div className="mt-1 text-[9px] text-slate-400">
-                              {appointment.durationMinutes ||
-                                30}{" "}
-                              min
-                            </div>
-                          </div>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="truncate text-sm font-bold text-slate-800">
-                              {fullName(
-                                appointment.patientId,
-                              )}
-                            </div>
-
-                            <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-[10px] text-slate-400">
-                              <span>
-                                {appointment.type ||
-                                  "Eye Examination"}
-                              </span>
-
-                              {appointment.clinicianId && (
-                                <>
-                                  <span>•</span>
-
-                                  <span>
-                                    {fullName(
-                                      appointment.clinicianId,
-                                    )}
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-
-                          <span
-                            className={`shrink-0 rounded-full px-2.5 py-1 text-[9px] font-bold ${
-                              APPOINTMENT_STATUS_CLASS[
-                                appointment.status
-                              ] ||
-                              "bg-slate-100 text-slate-600"
-                            }`}
-                          >
-                            {APPOINTMENT_STATUS[
-                              appointment.status
-                            ] ||
-                              appointment.status ||
-                              "Booked"}
-                          </span>
+                        <div className="w-14 shrink-0 text-[10px] font-bold text-slate-900 sm:w-16">
+                          {formatTime(
+                            appointment.appointmentDate,
+                          )}
                         </div>
-                      </button>
-                    ))}
 
-                  {upcomingAppointments.length > 8 && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        navigate("/appointments")
-                      }
-                      className="flex w-full items-center justify-center gap-1.5 px-5 py-3 text-[10px] font-bold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
-                    >
-                      View{" "}
-                      {upcomingAppointments.length - 8}{" "}
-                      more
-                      <ArrowRight size={12} />
-                    </button>
-                  )}
-                </div>
-              )}
-            </section>
-
-            {/* ------------------------------------------------------------ */}
-            {/* Optical operations                                            */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                    Optical operations
-                  </div>
-
-                  <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                    Dispensing workflow
-                  </h2>
-
-                  <p className="mt-1 text-xs leading-5 text-slate-400">
-                    Spectacle and contact-lens orders are
-                    handled as separate workflows.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
-                >
-                  Open dispensing
-                  <ArrowRight size={12} />
-                </button>
-              </div>
-
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
-
-                {/* Spectacles */}
-                <OperationCard
-                  icon={Glasses}
-                  title="Spectacle jobs"
-                  eyebrow="Dispensing"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : spectacleCounts.open
-                  }
-                  description="Open spectacle jobs moving through ordering, preparation and collection."
-                  stats={[
-                    {
-                      label: "Ready",
-                      value: spectacleCounts.ready,
-                    },
-                    {
-                      label: "Notified",
-                      value: spectacleCounts.notified,
-                    },
-                    {
-                      label: "Collected",
-                      value: spectacleCounts.collected,
-                    },
-                  ]}
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-
-                {/* Contact lenses */}
-                <OperationCard
-                  icon={ContactRound}
-                  title="Contact lens orders"
-                  eyebrow="Contact lenses"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : contactCounts.open
-                  }
-                  description="Contact lens orders from preparation through collection."
-                  stats={[
-                    {
-                      label: "Ready",
-                      value: contactCounts.ready,
-                    },
-                    {
-                      label: "Collected",
-                      value: contactCounts.collected,
-                    },
-                    {
-                      label: "Total",
-                      value: contactCounts.total,
-                    },
-                  ]}
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-              </div>
-            </section>
-
-            {/* ------------------------------------------------------------ */}
-            {/* Patient operations                                            */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                    Patient operations
-                  </div>
-
-                  <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                    Patient care shortcuts
-                  </h2>
-
-                  <p className="mt-1 text-xs leading-5 text-slate-400">
-                    Common patient actions without duplicating
-                    the individual module pages.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/patients")
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
-                >
-                  Patient directory
-                  <ArrowRight size={12} />
-                </button>
-              </div>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <DashboardAction
-                  icon={Users}
-                  eyebrow="Patient records"
-                  title="Patient directory"
-                  description="Search patients and open their complete record."
-                  onClick={() =>
-                    navigate("/patients")
-                  }
-                />
-
-                <DashboardAction
-                  icon={UserPlus}
-                  eyebrow="Registration"
-                  title="Add patient"
-                  description="Register a new patient."
-                  onClick={() =>
-                    navigate("/patients/new")
-                  }
-                />
-
-                <DashboardAction
-                  icon={Activity}
-                  eyebrow="Clinical"
-                  title="Clinical workspace"
-                  description="Open clinical examination and consultation workflow."
-                  onClick={() =>
-                    navigate("/clinical")
-                  }
-                />
-              </div>
-            </section>
-          </div>
-
-          {/* ============================================================ */}
-          {/* Right column                                                    */}
-          {/* ============================================================ */}
-
-          <aside className="space-y-5">
-
-            {/* ------------------------------------------------------------ */}
-            {/* Appointment status                                            */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                Appointment flow
-              </div>
-
-              <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                Today's status
-              </h2>
-
-              <div className="mt-5 space-y-4">
-                <ProgressRow
-                  label="Waiting / upcoming"
-                  value={appointmentCounts.waiting}
-                  total={appointmentCounts.total}
-                />
-
-                <ProgressRow
-                  label="Examining"
-                  value={appointmentCounts.examining}
-                  total={appointmentCounts.total}
-                />
-
-                <ProgressRow
-                  label="Completed"
-                  value={appointmentCounts.completed}
-                  total={appointmentCounts.total}
-                />
-
-                <ProgressRow
-                  label="Cancelled / no show"
-                  value={appointmentCounts.cancelled}
-                  total={appointmentCounts.total}
-                />
-              </div>
-            </section>
-
-            {/* ------------------------------------------------------------ */}
-            {/* Optical summary                                                */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                Optical summary
-              </div>
-
-              <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                Orders at a glance
-              </h2>
-
-              <div className="mt-4 space-y-3">
-
-                <SummaryRow
-                  icon={Glasses}
-                  label="Spectacle jobs"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : spectacleJobs.length
-                  }
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-
-                <SummaryRow
-                  icon={PackageCheck}
-                  label="Spectacles ready"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : spectacleCounts.ready
-                  }
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-
-                <SummaryRow
-                  icon={ContactRound}
-                  label="Contact lens orders"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : contactOrders.length
-                  }
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-
-                <SummaryRow
-                  icon={CheckCircle2}
-                  label="Contact lenses ready"
-                  value={
-                    opticalLoading
-                      ? "—"
-                      : contactCounts.ready
-                  }
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-              </div>
-            </section>
-
-            {/* ------------------------------------------------------------ */}
-            {/* Quick actions                                                  */}
-            {/* ------------------------------------------------------------ */}
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                Quick actions
-              </div>
-
-              <h2 className="mt-1 text-lg font-bold tracking-tight text-slate-900">
-                Workspace
-              </h2>
-
-              <div className="mt-4 space-y-2">
-                <QuickAction
-                  icon={CalendarClock}
-                  label="Appointments"
-                  description="Manage today's schedule"
-                  onClick={() =>
-                    navigate("/appointments")
-                  }
-                />
-
-                <QuickAction
-                  icon={Glasses}
-                  label="Dispensing"
-                  description="Manage spectacle and lens orders"
-                  onClick={() =>
-                    navigate("/dispensing")
-                  }
-                />
-
-                <QuickAction
-                  icon={PackageCheck}
-                  label="Optical management"
-                  description="Open optical workflow"
-                  onClick={() =>
-                    navigate("/optical")
-                  }
-                />
-
-                <QuickAction
-                  icon={Users}
-                  label="Patients"
-                  description="Search patient records"
-                  onClick={() =>
-                    navigate("/patients")
-                  }
-                />
-              </div>
-            </section>
-          </aside>
-        </section>
-      </div>
-
-      {/* ================================================================== */}
-      {/* Patient selector modal                                             */}
-      {/* ================================================================== */}
-
-      {showPatientList && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          onMouseDown={(event) => {
-            if (
-              event.target ===
-              event.currentTarget
-            ) {
-              setShowPatientList(false);
-            }
-          }}
-        >
-          <div className="flex max-h-[88vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-
-            <header className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                  Patient directory
-                </div>
-
-                <h2 className="mt-1 text-lg font-bold text-slate-900">
-                  Find patient
-                </h2>
-
-                <p className="mt-1 text-xs text-slate-400">
-                  Select a patient for the appointment.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPatientList(false)
-                }
-                className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
-              >
-                <X size={16} />
-              </button>
-            </header>
-
-            <div className="border-b border-slate-100 p-5">
-              <div className="relative">
-                <Search
-                  size={17}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-
-                <input
-                  autoFocus
-                  value={patientQuery}
-                  onChange={(event) =>
-                    setPatientQuery(
-                      event.target.value,
-                    )
-                  }
-                  placeholder="Search by name, patient number or phone..."
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none focus:border-slate-400 focus:bg-white"
-                />
-              </div>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
-              {patientListLoading ? (
-                <div className="flex min-h-[260px] items-center justify-center text-sm text-slate-400">
-                  Searching patients...
-                </div>
-              ) : patientResults.length === 0 ? (
-                <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
-                  <Users
-                    size={30}
-                    className="text-slate-300"
-                  />
-
-                  <p className="mt-3 text-sm font-semibold text-slate-600">
-                    {patientQuery.trim()
-                      ? "No matching patients found"
-                      : "No patients available"}
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-xl border border-slate-200">
-                  {patientResults.map(
-                    (patient) => (
-                      <div
-                        key={patient._id}
-                        className="flex flex-col gap-3 border-b border-slate-100 p-4 last:border-b-0 sm:flex-row sm:items-center"
-                      >
-                        <button
-                          type="button"
-                          onClick={() =>
-                            navigate(
-                              `/patients/${patient._id}`,
-                            )
-                          }
-                          className="min-w-0 flex-1 text-left"
-                        >
-                          <div className="truncate text-sm font-semibold text-slate-900 hover:underline">
-                            {fullName(patient)}
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-[11px] font-bold text-slate-800">
+                            {fullName(
+                              patient,
+                            )}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-0.5 truncate text-[9px] text-slate-400">
                             {patient.patientNumber ||
                               "No patient number"}
-                            {" · "}
-                            {patient.phone ||
-                              patient.mobile ||
-                              "No phone"}
+                            {appointment.type
+                              ? ` · ${appointment.type}`
+                              : ""}
                           </div>
-                        </button>
+                        </div>
 
+                        <StatusBadge
+                          status={status}
+                        />
+
+                        <ArrowRight
+                          size={12}
+                          className="shrink-0 text-slate-300"
+                        />
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+            ) : (
+              <EmptyState
+                icon={CalendarClock}
+                title="No appointments today"
+                actionLabel="Book appointment"
+                onAction={() =>
+                  navigate(
+                    "/appointments?book=1",
+                  )
+                }
+                showAction={
+                  canAppointments
+                }
+              />
+            )}
+          </SectionCard>
+
+          {/* APPOINTMENT STATUS */}
+          <SectionCard
+            eyebrow="Appointment flow"
+            title="Today's status"
+            meta="Patient movement"
+          >
+            <div className="space-y-3 p-3 sm:p-3.5">
+              <ProgressRow
+                label="Waiting / upcoming"
+                value={
+                  appointmentCounts.waiting
+                }
+                total={
+                  appointmentCounts.total
+                }
+              />
+
+              <ProgressRow
+                label="Examining"
+                value={
+                  appointmentCounts.examining
+                }
+                total={
+                  appointmentCounts.total
+                }
+              />
+
+              <ProgressRow
+                label="Completed"
+                value={
+                  appointmentCounts.completed
+                }
+                total={
+                  appointmentCounts.total
+                }
+              />
+
+              <ProgressRow
+                label="Cancelled / no show"
+                value={
+                  appointmentCounts.cancelled
+                }
+                total={
+                  appointmentCounts.total
+                }
+              />
+            </div>
+          </SectionCard>
+        </section>
+
+        {/* DISPENSING */}
+        {canDispensing && (
+          <SectionCard
+            eyebrow="Dispensing"
+            title="Dispensing activity"
+            meta={`${dispensingRecords.length} matching records · Page ${dispensingPage} of ${dispensingPageCount}`}
+            actionLabel="Open dispensing"
+            onAction={() =>
+              navigate(
+                "/dispensing",
+              )
+            }
+          >
+            {/* CATEGORY FILTERS */}
+            <div className="border-b border-slate-100 px-3 py-2.5 sm:px-3.5">
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex min-w-0 flex-wrap items-center gap-1">
+                  {Object.entries(
+                    DISPENSING_CATEGORY,
+                  ).map(
+                    ([
+                      key,
+                      option,
+                    ]) => {
+                      const Icon =
+                        option.icon;
+
+                      const active =
+                        dispensingCategory ===
+                        key;
+
+                      const count =
+                        key ===
+                        "spectacles"
+                          ? spectacleCounts.total
+                          : key ===
+                              "contact_lenses"
+                            ? contactCounts.total
+                            : key ===
+                                "sundries"
+                              ? sundryCounts.total
+                              : spectacleCounts.total +
+                                contactCounts.total +
+                                sundryCounts.total;
+
+                      return (
                         <button
+                          key={key}
                           type="button"
                           onClick={() =>
-                            selectPatientForAppointment(
-                              patient,
+                            setDispensingCategory(
+                              key,
                             )
                           }
-                          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                          className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-[8px] font-bold transition ${
+                            active
+                              ? "border-slate-950 bg-slate-950 text-white"
+                              : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                          }`}
                         >
-                          New appointment
-                          <ArrowRight size={11} />
+                          <Icon
+                            size={11}
+                          />
+                          {option.shortLabel}
+                          <span
+                            className={`rounded-full px-1.5 py-0.5 text-[7px] ${
+                              active
+                                ? "bg-white/10 text-white"
+                                : "bg-slate-100 text-slate-500"
+                            }`}
+                          >
+                            {dispensingLoading
+                              ? "—"
+                              : count}
+                          </span>
                         </button>
-                      </div>
-                    ),
+                      );
+                    },
                   )}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* ================================================================== */}
-      {/* New appointment modal                                              */}
-      {/* ================================================================== */}
+                <div className="flex flex-col gap-1.5 sm:flex-row">
+                  <div className="relative min-w-0 sm:w-52">
+                    <Search
+                      size={11}
+                      className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
 
-      {showAppointmentForm && (
-        <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          onMouseDown={(event) => {
-            if (
-              event.target ===
-              event.currentTarget
-            ) {
-              setShowAppointmentForm(false);
-            }
-          }}
-        >
-          <div className="max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl">
-
-            <header className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                  Appointment
-                </div>
-
-                <h2 className="mt-1 text-lg font-bold text-slate-900">
-                  Schedule a visit
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setShowAppointmentForm(false)
-                }
-                className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
-              >
-                <X size={16} />
-              </button>
-            </header>
-
-            <form
-              onSubmit={saveAppointment}
-              className="p-5 sm:p-6"
-            >
-              <div className="grid gap-4 md:grid-cols-2">
-
-                {/* Patient */}
-                <div className="md:col-span-2">
-                  <label className="block">
-                    <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Patient
-                    </span>
-
-                    <div className="flex gap-2">
-                      <input
-                        value={patientQuery}
-                        readOnly={Boolean(
-                          form.patientId,
-                        )}
-                        placeholder="Select a patient"
-                        className="h-11 min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none"
-                        required
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowPatientList(
-                            true,
-                          )
-                        }
-                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-                      >
-                        <Search size={14} />
-                        Select
-                      </button>
-                    </div>
-                  </label>
-                </div>
-
-                <Field
-                  label="Date & time"
-                  type="datetime-local"
-                  value={form.appointmentDate}
-                  onChange={(value) =>
-                    setForm((current) => ({
-                      ...current,
-                      appointmentDate: value,
-                    }))
-                  }
-                />
-
-                <Field
-                  label="Duration"
-                  type="number"
-                  value={form.durationMinutes}
-                  onChange={(value) =>
-                    setForm((current) => ({
-                      ...current,
-                      durationMinutes: value,
-                    }))
-                  }
-                />
-
-                <Field
-                  label="Visit type"
-                  value={form.type}
-                  onChange={(value) =>
-                    setForm((current) => ({
-                      ...current,
-                      type: value,
-                    }))
-                  }
-                />
-
-                {/* Clinician */}
-                <label className="block">
-                  <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Clinician
-                  </span>
+                    <input
+                      value={
+                        dispensingSearch
+                      }
+                      onChange={(
+                        event,
+                      ) =>
+                        setDispensingSearch(
+                          event.target.value,
+                        )
+                      }
+                      placeholder="Search job, patient, item..."
+                      className="h-7 w-full rounded-md border border-slate-200 bg-white pl-7 pr-2.5 text-[9px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
+                    />
+                  </div>
 
                   <select
-                    value={form.clinicianId}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        clinicianId:
-                          event.target.value,
-                      }))
+                    value={
+                      dispensingStatus
                     }
-                    className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none focus:bg-white"
+                    onChange={(event) =>
+                      setDispensingStatus(
+                        event.target.value,
+                      )
+                    }
+                    className="h-7 rounded-md border border-slate-200 bg-white px-2.5 text-[9px] font-semibold text-slate-600 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
                   >
-                    <option value="">
-                      Unassigned
-                    </option>
-
-                    {clinicians.map(
-                      (clinician) => (
+                    {DISPENSING_STATUS_OPTIONS.map(
+                      ([
+                        value,
+                        label,
+                      ]) => (
                         <option
-                          key={clinician._id}
-                          value={clinician._id}
+                          key={value}
+                          value={
+                            value
+                          }
                         >
-                          {fullName(
-                            clinician,
-                          )}
+                          {label}
                         </option>
                       ),
                     )}
                   </select>
-                </label>
 
-                <Field
-                  label="Reason"
-                  value={form.reason}
-                  onChange={(value) =>
-                    setForm((current) => ({
-                      ...current,
-                      reason: value,
-                    }))
-                  }
+                  {(
+                    dispensingCategory !==
+                      "all" ||
+                    dispensingStatus ||
+                    dispensingSearch
+                  ) && (
+                    <button
+                      type="button"
+                      onClick={
+                        clearDispensingFilters
+                      }
+                      className="inline-flex h-7 items-center justify-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 text-[8px] font-bold text-slate-500 transition hover:bg-slate-50"
+                      title="Clear filters"
+                    >
+                      <X
+                        size={10}
+                      />
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* CATEGORY SUMMARY */}
+            <div className="grid gap-2 border-b border-slate-100 p-3 sm:grid-cols-3 sm:p-3.5">
+              <SummaryMetric
+                icon={Glasses}
+                label="Spectacle jobs"
+                value={
+                  dispensingLoading
+                    ? "—"
+                    : spectacleCounts.total
+                }
+                active={
+                  dispensingCategory ===
+                  "spectacles"
+                }
+                onClick={() =>
+                  setDispensingCategory(
+                    "spectacles",
+                  )
+                }
+              />
+
+              <SummaryMetric
+                icon={ContactRound}
+                label="Contact lens jobs"
+                value={
+                  dispensingLoading
+                    ? "—"
+                    : contactCounts.total
+                }
+                active={
+                  dispensingCategory ===
+                  "contact_lenses"
+                }
+                onClick={() =>
+                  setDispensingCategory(
+                    "contact_lenses",
+                  )
+                }
+              />
+
+              <SummaryMetric
+                icon={ShoppingBag}
+                label="Sundry jobs"
+                value={
+                  dispensingLoading
+                    ? "—"
+                    : sundryCounts.total
+                }
+                active={
+                  dispensingCategory ===
+                  "sundries"
+                }
+                onClick={() =>
+                  setDispensingCategory(
+                    "sundries",
+                  )
+                }
+              />
+            </div>
+
+            {dispensingLoading ? (
+              <LoadingRow text="Loading dispensing jobs..." />
+            ) : dispensingRecords.length ? (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[920px] text-left">
+                  <thead className="bg-slate-50 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                    <tr>
+                      <th className="px-3 py-2.5">
+                        Type
+                      </th>
+
+                      <th className="px-3 py-2.5">
+                        Job
+                      </th>
+
+                      <th className="px-3 py-2.5">
+                        Patient
+                      </th>
+
+                      <th className="px-3 py-2.5">
+                        Item
+                      </th>
+
+                      <th className="px-3 py-2.5">
+                        Status
+                      </th>
+
+                      <th className="px-3 py-2.5">
+                        Updated
+                      </th>
+
+                      <th className="px-3 py-2.5 text-right">
+                        Due
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="text-[10px]">
+                    {visibleDispensingRecords.map(
+                      (record) => {
+                        const category =
+                          record._dashboardCategory;
+
+                        const target =
+                          category ===
+                          "spectacles"
+                            ? `/dispensing/spectacles/${record._id}`
+                            : category ===
+                                "contact_lenses"
+                              ? `/dispensing/contact-lenses/${record._id}`
+                              : `/dispensing/sundries/${record._id}`;
+
+                        return (
+                          <tr
+                            key={`${category}-${record._id}`}
+                            className="border-t border-slate-100 transition hover:bg-slate-50"
+                          >
+                            <td className="px-3 py-2.5">
+                              <CategoryBadge
+                                category={
+                                  category
+                                }
+                              />
+                            </td>
+
+                            <td className="px-3 py-2.5">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  navigate(
+                                    target,
+                                  )
+                                }
+                                className="font-bold text-slate-800 hover:underline"
+                              >
+                                {
+                                  record._dashboardNumber
+                                }
+                              </button>
+                            </td>
+
+                            <td className="px-3 py-2.5">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  record._dashboardPatient
+                                    ? navigate(
+                                        `/patients/${record._dashboardPatient._id}`,
+                                      )
+                                    : null
+                                }
+                                className="text-left"
+                              >
+                                <div className="font-semibold text-slate-700 hover:underline">
+                                  {
+                                    record._dashboardPatientName
+                                  }
+                                </div>
+
+                                <div className="mt-0.5 text-[9px] text-slate-400">
+                                  {
+                                    record._dashboardPatientNumber
+                                  }
+                                </div>
+                              </button>
+                            </td>
+
+                            <td className="px-3 py-2.5">
+                              <div className="font-semibold text-slate-700">
+                                {
+                                  record._dashboardItem
+                                }
+                              </div>
+
+                              <div className="mt-0.5 truncate text-[9px] text-slate-400">
+                                {
+                                  record._dashboardSecondary
+                                }
+                              </div>
+                            </td>
+
+                            <td className="px-3 py-2.5">
+                              <DispensingStatusBadge
+                                status={
+                                  record._dashboardStatus
+                                }
+                              />
+                            </td>
+
+                            <td className="px-3 py-2.5 text-slate-500">
+                              {formatShortDate(
+                                record._dashboardDate,
+                              )}
+                            </td>
+
+                            <td className="px-3 py-2.5 text-right text-slate-500">
+                              {formatShortDate(
+                                record._dashboardDueDate,
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      },
+                    )}
+                  </tbody>
+                </table>
+
+                <Pagination
+                  page={dispensingPage}
+                  totalPages={dispensingPageCount}
+                  totalItems={dispensingRecords.length}
+                  onPageChange={setDispensingPage}
                 />
+              </div>
+            ) : (
+              <EmptyState
+                icon={
+                  dispensingCategory ===
+                  "spectacles"
+                    ? Glasses
+                    : dispensingCategory ===
+                        "contact_lenses"
+                      ? ContactRound
+                      : dispensingCategory ===
+                          "sundries"
+                        ? ShoppingBag
+                        : PackageCheck
+                }
+                title={
+                  dispensingSearch ||
+                  dispensingStatus ||
+                  dispensingCategory !==
+                    "all"
+                    ? "No dispensing jobs match the selected filters"
+                    : "No dispensing jobs"
+                }
+                actionLabel="Open dispensing"
+                onAction={() =>
+                  navigate(
+                    "/dispensing",
+                  )
+                }
+              />
+            )}
+          </SectionCard>
+        )}
 
-                <label className="block md:col-span-2">
-                  <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Notes
-                  </span>
+        {/* CONSULTATION LIST */}
+        {canClinical && (
+          <SectionCard
+            eyebrow="Clinical"
+            title="Consultations"
+            meta={`${consultations.length} records · Page ${consultationsPage} of ${consultationsPageCount}`}
+            actionLabel="Open clinical"
+            onAction={() => navigate("/clinical")}
+          >
+            {consultationsLoading ? (
+              <LoadingRow text="Loading consultations..." />
+            ) : consultations.length ? (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[820px] text-left">
+                  <thead className="bg-slate-50 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                    <tr>
+                      <th className="px-3 py-2.5">Patient</th>
+                      <th className="px-3 py-2.5">Type</th>
+                      <th className="px-3 py-2.5">Date</th>
+                      <th className="px-3 py-2.5">Optometrist</th>
+                      <th className="px-3 py-2.5">Status</th>
+                      <th className="px-3 py-2.5 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-[10px]">
+                    {visibleConsultations.map((consultation) => {
+                      const patient = consultation.patientId || {};
+                      const optometrist = consultation.optometristId || {};
+                      const consultationId = consultation._id;
+                      const currentStatus =
+                        normalizeStatus(consultation.status) || "completed";
 
-                  <textarea
-                    value={form.notes}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        notes:
-                          event.target.value,
-                      }))
+                      return (
+                        <tr
+                          key={consultationId}
+                          className="border-t border-slate-100 transition hover:bg-slate-50"
+                        >
+                          <td className="px-3 py-2.5">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                patient?._id &&
+                                navigate(`/patients/${patient._id}`)
+                              }
+                              className="text-left"
+                            >
+                              <div className="font-semibold text-slate-700 hover:underline">
+                                {fullName(patient)}
+                              </div>
+                              <div className="mt-0.5 text-[9px] text-slate-400">
+                                {getPatientNumber({ patientId: patient })}
+                              </div>
+                            </button>
+                          </td>
+
+                          <td className="px-3 py-2.5">
+                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[8px] font-bold text-slate-600">
+                              {consultationTypeLabel(consultation.consultationType)}
+                            </span>
+                          </td>
+
+                          <td className="px-3 py-2.5 text-slate-500">
+                            {formatShortDate(consultation.consultationDate)}
+                          </td>
+
+                          <td className="px-3 py-2.5 text-slate-600">
+                            {[optometrist.firstName, optometrist.lastName]
+                              .filter(Boolean)
+                              .join(" ") || "—"}
+                          </td>
+
+                          <td className="px-3 py-2.5">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`inline-flex items-center rounded-full px-2 py-1 text-[8px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
+                                  currentStatus,
+                                )}`}
+                              >
+                                {consultationStatusLabel(currentStatus)}
+                              </span>
+
+                              <select
+                                value={currentStatus}
+                                disabled={updatingConsultationId === consultationId}
+                                onChange={(event) =>
+                                  void updateDashboardConsultationStatus(
+                                    consultationId,
+                                    event.target.value,
+                                  )
+                                }
+                                className="h-7 rounded-md border border-slate-200 bg-white px-1.5 text-[8px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                aria-label={`Change status for ${fullName(patient)}`}
+                              >
+                                {CONSULTATION_STATUS_OPTIONS.map(([value, text]) => (
+                                  <option key={value} value={value}>
+                                    {text}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2.5 text-right">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                consultationId &&
+                                navigate(
+                                  `/clinical/consultations/${consultationId}`,
+                                )
+                              }
+                              className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50"
+                            >
+                              View
+                              <ArrowRight size={10} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                <Pagination
+                  page={consultationsPage}
+                  totalPages={consultationsPageCount}
+                  totalItems={consultations.length}
+                  onPageChange={setConsultationsPage}
+                />
+              </div>
+            ) : (
+              <EmptyState
+                icon={ClipboardList}
+                title="No consultations"
+                actionLabel="Open clinical"
+                onAction={() => navigate("/clinical")}
+              />
+            )}
+          </SectionCard>
+        )}
+
+        {/* QUICK ACTIONS */}
+        {quickActions.length >
+          0 && (
+          <SectionCard
+            eyebrow="Workspace"
+            title="Quick actions"
+            meta="Role-based shortcuts"
+          >
+            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-3 sm:p-3.5">
+              {quickActions.map(
+                (action) => (
+                  <QuickAction
+                    key={
+                      action.label
                     }
-                    rows={4}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm outline-none focus:bg-white"
-                    placeholder="Appointment notes..."
+                    {...action}
                   />
-                </label>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-2 border-t border-slate-100 pt-5">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowAppointmentForm(
-                      false,
-                    )
-                  }
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
-                >
-                  <CalendarClock size={14} />
-                  Save appointment
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                ),
+              )}
+            </div>
+          </SectionCard>
+        )}
+      </div>
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Components                                                                 */
-/* -------------------------------------------------------------------------- */
+/* ============================================================
+   SHARED UI
+============================================================ */
+
+function SectionCard({
+  eyebrow,
+  title,
+  meta,
+  actionLabel,
+  onAction,
+  children,
+}) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-3.5 py-3 sm:px-4">
+        <div className="min-w-0">
+          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-slate-400">
+            {eyebrow}
+          </div>
+
+          <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <h2 className="text-[13px] font-bold tracking-tight text-slate-800">
+              {title}
+            </h2>
+
+            {meta && (
+              <span className="text-[9px] text-slate-400">
+                {meta}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {actionLabel && (
+          <button
+            type="button"
+            onClick={onAction}
+            className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50"
+          >
+            {actionLabel}
+            <ArrowRight size={10} />
+          </button>
+        )}
+      </header>
+
+      {children}
+    </section>
+  );
+}
 
 function Metric({
   icon: Icon,
-  label: title,
+  label,
   value,
   note,
   onClick,
@@ -1475,228 +2048,186 @@ function Metric({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+      className="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-slate-300 hover:shadow-sm"
     >
-      <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-          <Icon size={16} />
-        </div>
+      <div className="flex items-center gap-2.5">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-100">
+          <Icon size={14} />
+        </span>
 
-        <div className="min-w-0">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            {title}
-          </div>
+        <span className="min-w-0">
+          <span className="block truncate text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+            {label}
+          </span>
 
-          <div className="mt-1 text-xl font-bold text-slate-900">
+          <span className="mt-0.5 block text-lg font-bold tracking-tight text-slate-900">
             {value}
-          </div>
-        </div>
+          </span>
+        </span>
       </div>
 
-      <div className="mt-3 text-[10px] text-slate-400">
+      <div className="mt-2 truncate text-[9px] text-slate-400">
         {note}
       </div>
     </button>
   );
 }
 
-function OperationCard({
+function SummaryMetric({
   icon: Icon,
-  eyebrow,
-  title,
+  label,
   value,
-  description,
-  stats,
+  active = false,
   onClick,
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-xl border border-slate-200 bg-slate-50/60 p-4 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-sm"
+      className={`rounded-md border px-2.5 py-2 text-left transition ${
+        active
+          ? "border-slate-300 bg-white shadow-sm"
+          : "border-slate-200 bg-slate-50/70 hover:border-slate-300 hover:bg-white"
+      }`}
     >
-      <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-slate-600 shadow-sm ring-1 ring-slate-100">
-          <Icon size={16} />
-        </div>
+      <div className="flex items-center justify-between gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-slate-500 ring-1 ring-slate-100">
+          <Icon size={12} />
+        </span>
 
-        <div className="min-w-0 flex-1">
-          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
-            {eyebrow}
-          </div>
-
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-sm font-bold text-slate-800">
-              {title}
-            </span>
-
-            <ArrowRight
-              size={13}
-              className="shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <div className="text-2xl font-bold text-slate-900">
+        <span className="text-sm font-bold text-slate-900">
           {value}
-        </div>
-
-        <p className="mt-1 text-[10px] leading-4 text-slate-400">
-          {description}
-        </p>
+        </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-200 pt-3">
-        {stats.map((stat) => (
-          <div key={stat.label}>
-            <div className="text-[9px] uppercase tracking-wider text-slate-400">
-              {stat.label}
-            </div>
-
-            <div className="mt-1 text-sm font-bold text-slate-700">
-              {stat.value}
-            </div>
-          </div>
-        ))}
+      <div className="mt-1.5 truncate text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        {label}
       </div>
     </button>
   );
 }
 
-function DashboardAction({
-  icon: Icon,
-  eyebrow,
-  title,
-  description,
-  onClick,
+function CategoryBadge({
+  category,
 }) {
+  const option =
+    DISPENSING_CATEGORY[
+      category
+    ];
+
+  const Icon =
+    option?.icon ||
+    PackageCheck;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group flex min-h-[105px] items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/60 p-4 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-sm"
-    >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-slate-600 shadow-sm ring-1 ring-slate-100">
-        <Icon size={16} />
-      </span>
-
-      <span className="min-w-0 flex-1">
-        <span className="block text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
-          {eyebrow}
-        </span>
-
-        <span className="mt-1 block text-sm font-bold text-slate-800">
-          {title}
-        </span>
-
-        <span className="mt-1 block text-[11px] leading-4 text-slate-400">
-          {description}
-        </span>
-      </span>
-
-      <ArrowRight
-        size={13}
-        className="mt-1 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
-      />
-    </button>
+    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[7px] font-bold uppercase tracking-[0.07em] text-slate-600">
+      <Icon size={9} />
+      {option?.shortLabel ||
+        "Dispensing"}
+    </span>
   );
 }
 
-function SummaryRow({
-  icon: Icon,
-  label: title,
-  value,
-  onClick,
+function DispensingStatusBadge({
+  status,
 }) {
+  const key =
+    normalizeStatus(status);
+
+  const classes = {
+    draft:
+      "bg-slate-100 text-slate-600",
+    ordered:
+      "bg-blue-50 text-blue-700",
+    not_ready:
+      "bg-amber-50 text-amber-700",
+    ready:
+      "bg-emerald-50 text-emerald-700",
+    notified:
+      "bg-violet-50 text-violet-700",
+    collected:
+      "bg-slate-900 text-white",
+    cancelled:
+      "bg-rose-50 text-rose-700",
+    dispensed:
+      "bg-emerald-50 text-emerald-700",
+    delivered:
+      "bg-emerald-50 text-emerald-700",
+  };
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-3 text-left transition hover:border-slate-200 hover:bg-white"
+    <span
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[7px] font-bold uppercase tracking-[0.08em] ${
+        classes[key] ||
+        "bg-slate-100 text-slate-600"
+      }`}
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm">
-        <Icon size={14} />
-      </span>
-
-      <span className="min-w-0 flex-1 truncate text-xs font-semibold text-slate-700">
-        {title}
-      </span>
-
-      <span className="text-sm font-bold text-slate-900">
-        {value}
-      </span>
-
-      <ArrowRight
-        size={12}
-        className="text-slate-300"
-      />
-    </button>
+      <span className="h-1 w-1 rounded-full bg-current" />
+      {key
+        ? key.replaceAll(
+            "_",
+            " ",
+          )
+        : "Draft"}
+    </span>
   );
 }
 
-function QuickAction({
-  icon: Icon,
-  label: title,
-  description,
-  onClick,
+function StatusBadge({
+  status,
 }) {
+  const key =
+    normalizeStatus(status);
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group flex w-full items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-3 text-left transition hover:border-slate-200 hover:bg-white"
+    <span
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[7px] font-bold uppercase tracking-[0.08em] ${
+        APPOINTMENT_STATUS_CLASS[
+          key
+        ] ||
+        "bg-slate-100 text-slate-600"
+      }`}
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm">
-        <Icon size={14} />
-      </span>
-
-      <span className="min-w-0 flex-1">
-        <span className="block text-xs font-semibold text-slate-700">
-          {title}
-        </span>
-
-        <span className="mt-0.5 block truncate text-[10px] text-slate-400">
-          {description}
-        </span>
-      </span>
-
-      <ArrowRight
-        size={12}
-        className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
-      />
-    </button>
+      <span className="h-1 w-1 rounded-full bg-current" />
+      {
+        APPOINTMENT_STATUS[key] ||
+        key ||
+        "Booked"
+      }
+    </span>
   );
 }
 
 function ProgressRow({
-  label: title,
+  label,
   value,
   total,
 }) {
-  const percentage =
+  const percent =
     total > 0
-      ? Math.round((value / total) * 100)
+      ? Math.round(
+          (value / total) *
+            100,
+        )
       : 0;
 
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-medium text-slate-600">
-          {title}
+        <span className="text-[10px] font-medium text-slate-600">
+          {label}
         </span>
 
-        <span className="text-xs font-bold text-slate-700">
+        <span className="text-[10px] font-bold text-slate-700">
           {value}/{total}
         </span>
       </div>
 
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
         <div
           className="h-full rounded-full bg-slate-900 transition-all"
           style={{
-            width: `${percentage}%`,
+            width: `${percent}%`,
           }}
         />
       </div>
@@ -1704,26 +2235,150 @@ function ProgressRow({
   );
 }
 
-function Field({
-  label: title,
-  value,
-  onChange,
-  type = "text",
+function QuickAction({
+  icon: Icon,
+  label,
+  description,
+  onClick,
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-        {title}
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex items-center gap-2.5 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:border-slate-300 hover:bg-slate-50"
+    >
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-100">
+        <Icon size={13} />
       </span>
 
-      <input
-        type={type}
-        value={value}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white"
+      <span className="min-w-0 flex-1">
+        <span className="block text-[10px] font-bold text-slate-700">
+          {label}
+        </span>
+
+        <span className="mt-0.5 block truncate text-[8px] text-slate-400">
+          {description}
+        </span>
+      </span>
+
+      <ArrowRight
+        size={11}
+        className="shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600"
       />
-    </label>
+    </button>
+  );
+}
+
+function EmptyState({
+  icon: Icon,
+  title,
+  actionLabel,
+  onAction,
+  showAction = true,
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+      <span className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-50 text-slate-300">
+        <Icon size={17} />
+      </span>
+
+      <div className="mt-2 text-[10px] font-semibold text-slate-600">
+        {title}
+      </div>
+
+      {showAction &&
+        actionLabel && (
+          <button
+            type="button"
+            onClick={onAction}
+            className="mt-2 inline-flex h-7 items-center gap-1 rounded-md bg-slate-950 px-2.5 text-[8px] font-bold text-white"
+          >
+            {actionLabel}
+            <ArrowRight
+              size={10}
+            />
+          </button>
+        )}
+    </div>
+  );
+}
+
+function Pagination({
+  page,
+  totalPages,
+  totalItems,
+  onPageChange,
+}) {
+  if (totalItems <= PAGE_SIZE) {
+    return null;
+  }
+
+  const start =
+    (page - 1) * PAGE_SIZE + 1;
+
+  const end = Math.min(
+    page * PAGE_SIZE,
+    totalItems,
+  );
+
+  return (
+    <div className="flex flex-col gap-2 border-t border-slate-100 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+      <span className="text-[8px] font-semibold text-slate-400">
+        Showing {start}–{end} of {totalItems}
+      </span>
+
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() =>
+            onPageChange(
+              Math.max(1, page - 1),
+            )
+          }
+          disabled={page <= 1}
+          className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="Previous page"
+        >
+          <ChevronLeft size={10} />
+          Previous
+        </button>
+
+        <span className="inline-flex h-7 min-w-[64px] items-center justify-center rounded-md bg-slate-950 px-2 text-[8px] font-bold text-white">
+          Page {page} / {totalPages}
+        </span>
+
+        <button
+          type="button"
+          onClick={() =>
+            onPageChange(
+              Math.min(
+                totalPages,
+                page + 1,
+              ),
+            )
+          }
+          disabled={page >= totalPages}
+          className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="Next page"
+        >
+          Next
+          <ChevronRight size={10} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LoadingRow({
+  text,
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2 px-4 py-10 text-[10px] text-slate-400">
+      <RefreshCw
+        size={12}
+        className="animate-spin"
+      />
+      {text}
+    </div>
   );
 }

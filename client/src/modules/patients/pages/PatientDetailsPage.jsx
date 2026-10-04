@@ -1,7 +1,6 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   Boxes,
   CalendarDays,
   ChevronLeft,
@@ -653,17 +652,7 @@ export default function PatientDetailsPage() {
         {/* ================================================== */}
 
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="group inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-          >
-            <ArrowLeft
-              size={15}
-              className="transition-transform group-hover:-translate-x-0.5"
-            />
-            Back
-          </button>
+          
 
           <div className="flex flex-wrap gap-2">
             <button

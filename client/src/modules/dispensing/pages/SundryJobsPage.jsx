@@ -1054,6 +1054,7 @@ export default function SundryJobsPage() {
       <header className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
+
             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
               <Boxes size={14} />
               Dispensing
