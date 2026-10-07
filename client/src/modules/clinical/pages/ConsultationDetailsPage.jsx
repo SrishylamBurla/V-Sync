@@ -252,7 +252,7 @@ function PrescriptionTable({
 }
 
 export default function ConsultationDetailsPage() {
-  const { consultationId } = useParams();
+  const { id: consultationId } = useParams();
   const navigate = useNavigate();
 
   const [consultation, setConsultation] = useState(null);

@@ -177,6 +177,11 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.ORDER_UPDATE,
 
     PERMISSIONS.BILLING_VIEW,
+    PERMISSIONS.BILLING_CREATE,
+    PERMISSIONS.BILLING_UPDATE,
+
+    PERMISSIONS.PAYMENT_CREATE,
+    PERMISSIONS.REFUND_CREATE,
   ],
 
   // ============================================================

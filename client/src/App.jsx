@@ -12,6 +12,7 @@ import AddPatientPage from "./modules/patients/pages/AddPatient";
 
 import ClinicalManagementPage from "./modules/clinical/pages/ClinicalManagementPage";
 import ConsultationPage from "./modules/clinical/pages/ConsultationPage";
+import ConsultationDetailsPage from "./modules/clinical/pages/ConsultationDetailsPage";
 
 import AppointmentsPage from "./modules/appointments/pages/AppointmentsPage";
 import AppointmentDetailsPage from "./modules/appointments/pages/AppointmentDetailsPage";
@@ -61,22 +62,52 @@ import EditOrganizationPage from "./modules/organization/pages/EditOrganizationP
 
 function LegacyOpticalSpectacleNewRedirect() {
   const { patientId } = useParams();
-  return <Navigate to={patientId ? `/dispensing/spectacles/new/${patientId}` : "/dispensing/spectacles/new"} replace />;
+  return (
+    <Navigate
+      to={
+        patientId
+          ? `/dispensing/spectacles/new/${patientId}`
+          : "/dispensing/spectacles/new"
+      }
+      replace
+    />
+  );
 }
 
 function LegacyOpticalSpectacleDetailsRedirect() {
   const { id } = useParams();
-  return <Navigate to={id ? `/dispensing/spectacles/${id}` : "/dispensing/spectacle-jobs"} replace />;
+  return (
+    <Navigate
+      to={id ? `/dispensing/spectacles/${id}` : "/dispensing/spectacle-jobs"}
+      replace
+    />
+  );
 }
 
 function LegacyOpticalContactLensNewRedirect() {
   const { patientId } = useParams();
-  return <Navigate to={patientId ? `/dispensing/contact-lenses/new/${patientId}` : "/dispensing/contact-lenses/new"} replace />;
+  return (
+    <Navigate
+      to={
+        patientId
+          ? `/dispensing/contact-lenses/new/${patientId}`
+          : "/dispensing/contact-lenses/new"
+      }
+      replace
+    />
+  );
 }
 
 function LegacyOpticalContactLensDetailsRedirect() {
   const { id } = useParams();
-  return <Navigate to={id ? `/dispensing/contact-lenses/${id}` : "/dispensing/contact-lenses"} replace />;
+  return (
+    <Navigate
+      to={
+        id ? `/dispensing/contact-lenses/${id}` : "/dispensing/contact-lenses"
+      }
+      replace
+    />
+  );
 }
 
 export default function App() {
@@ -118,12 +149,20 @@ export default function App() {
 
           <Route element={<AccessRoute module="clinical" />}>
             <Route path="/clinical" element={<ClinicalManagementPage />} />
+
+            <Route
+              path="/clinical/consultations/:id"
+              element={<ConsultationDetailsPage />}
+            />
           </Route>
 
           <Route element={<AccessRoute module="dispensing" />}>
             {/* Main dispensing register */}
             <Route path="/dispensing" element={<DispensingPage />} />
-            <Route path="/dispensing/spectacle-jobs" element={<SpectacleJobPage />} />
+            <Route
+              path="/dispensing/spectacle-jobs"
+              element={<SpectacleJobPage />}
+            />
 
             {/* General dispensing details, if actually needed */}
             <Route
