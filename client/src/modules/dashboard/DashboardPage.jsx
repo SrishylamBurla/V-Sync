@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { canAccessModule } from "../../config/access";
 
-import { getAppointments } from "../appointments/appointment.api";
+import { getAppointments, updateAppointment } from "../appointments/appointment.api";
 import { getDispensingList } from "../optical/spectacle.api";
 import { getContactLenses } from "../contactLenses/contactLens.api";
 import { getSundryJobs } from "../dispensing/sundryJob.api";
@@ -430,6 +430,7 @@ export default function DashboardPage() {
   ] = useState(true);
 
   const [consultationsLoading, setConsultationsLoading] = useState(true);
+  const [updatingAppointmentId, setUpdatingAppointmentId] = useState("");
   const [updatingConsultationId, setUpdatingConsultationId] = useState("");
 
   const [
@@ -486,6 +487,61 @@ export default function DashboardPage() {
         setAppointmentsLoading(false);
       }
     }, [canAppointments, today]);
+
+  // Appointment status is intentionally editable from the dashboard only.
+  const updateDashboardAppointmentStatus = useCallback(
+    async (appointmentId, nextStatus, previousStatus) => {
+      if (!appointmentId || !nextStatus || nextStatus === previousStatus) return;
+
+      setUpdatingAppointmentId(appointmentId);
+      setError("");
+
+      // Update the visible row immediately; roll it back if the server rejects the change.
+      setAppointments((current) =>
+        current.map((item) =>
+          item._id === appointmentId
+            ? { ...item, status: nextStatus }
+            : item,
+        ),
+      );
+
+      try {
+        const response = await updateAppointment(appointmentId, {
+          status: nextStatus,
+          statusNote: `Status changed from ${previousStatus || "booked"} to ${nextStatus} from the dashboard`,
+        });
+        const updated = response?.data?.appointment ?? response?.data ?? response?.appointment ?? response;
+
+        setAppointments((current) =>
+          current.map((item) =>
+            item._id === appointmentId
+              ? {
+                  ...item,
+                  ...(updated && typeof updated === "object" && updated._id === appointmentId ? updated : {}),
+                  status: nextStatus,
+                }
+              : item,
+          ),
+        );
+      } catch (err) {
+        setAppointments((current) =>
+          current.map((item) =>
+            item._id === appointmentId
+              ? { ...item, status: previousStatus || "booked" }
+              : item,
+          ),
+        );
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to update appointment status.",
+        );
+      } finally {
+        setUpdatingAppointmentId("");
+      }
+    },
+    [],
+  );
 
   const loadConsultations = useCallback(async () => {
     if (!canClinical) {
@@ -1110,12 +1166,12 @@ export default function DashboardPage() {
     };
 
   return (
-    <div className="py-4 sm:py-5">
-      <div className="space-y-4 sm:space-y-5">
+    <div className="py-5 sm:py-6">
+      <div className="space-y-5 sm:space-y-6">
         {/* SINGLE PAGE HEADING */}
         <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/90 bg-white px-4 py-5 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
+            <div className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Practice dashboard
             </div>
@@ -1170,7 +1226,7 @@ export default function DashboardPage() {
         </header>
 
         {error && (
-          <div className="flex items-center justify-between gap-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-medium text-amber-800">
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] font-medium text-amber-800">
             <span>{error}</span>
 
             <button
@@ -1178,7 +1234,7 @@ export default function DashboardPage() {
               onClick={() =>
                 setError("")
               }
-              className="rounded p-1 text-amber-600 hover:bg-amber-100"
+              className="rounded-lg p-1 text-amber-600 hover:bg-amber-100"
               aria-label="Dismiss"
             >
               ×
@@ -1187,7 +1243,7 @@ export default function DashboardPage() {
         )}
 
         {/* KPI STRIP */}
-        <section className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <Metric
             icon={CalendarClock}
             label="Appointments"
@@ -1269,7 +1325,7 @@ export default function DashboardPage() {
           />
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
           {/* PREMIUM APPOINTMENT SCHEDULE */}
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
             <header className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
@@ -1278,14 +1334,14 @@ export default function DashboardPage() {
                   <CalendarClock size={19} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
+                  <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
                     Front desk · Daily schedule
                   </div>
                   <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h2 className="text-lg font-bold tracking-tight text-slate-950">
                       Today’s appointments
                     </h2>
-                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[12px] font-semibold text-slate-500">
                       {appointmentsLoading ? "Loading" : `${appointmentCounts.total} scheduled`}
                     </span>
                   </div>
@@ -1323,7 +1379,7 @@ export default function DashboardPage() {
               </div>
             ) : upcomingAppointments.length ? (
               <>
-                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
+                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
                   <span>Time</span>
                   <span>Patient & visit</span>
                   <span className="pr-8">Status</span>
@@ -1337,34 +1393,39 @@ export default function DashboardPage() {
                     const appointmentType = appointment.type || "Comprehensive";
                     const duration = appointment.durationMinutes || 30;
 
+                    const isUpdatingStatus = updatingAppointmentId === appointment._id;
+
                     return (
-                      <button
-                        type="button"
+                      <div
                         key={appointment._id}
-                        onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
-                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 focus:outline-none focus-visible:bg-violet-50/60 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
+                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
                       >
                         <div className="flex min-h-[58px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/90 px-2 py-2 transition group-hover:border-violet-100 group-hover:bg-white">
                           <span className="text-sm font-bold tracking-tight text-slate-900">
                             {formatTime(appointment.appointmentDate)}
                           </span>
-                          <span className="mt-0.5 text-[9px] font-medium text-slate-400">
+                          <span className="mt-0.5 text-[11px] font-medium text-slate-400">
                             {duration} min
                           </span>
                         </div>
 
                         <div className="min-w-0">
                           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                            <span className="max-w-full truncate text-sm font-bold text-slate-900 transition group-hover:text-violet-700">
+                            <button
+                              type="button"
+                              onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
+                              className="max-w-full truncate text-left text-sm font-bold text-slate-900 transition hover:text-violet-700 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-violet-300"
+                              aria-label={`Open appointment for ${patientName}`}
+                            >
                               {patientName}
-                            </span>
+                            </button>
                             {patient.patientNumber && (
-                              <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] font-semibold text-slate-500">
+                              <span className="rounded-lg border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-500">
                                 {patient.patientNumber}
                               </span>
                             )}
                           </div>
-                          <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[10px] text-slate-500">
+                          <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-slate-500">
                             <span className="inline-flex min-w-0 items-center gap-1.5">
                               <ClipboardList size={12} className="shrink-0 text-violet-500" />
                               <span className="truncate">{appointmentType}</span>
@@ -1382,24 +1443,58 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="col-start-2 flex items-center justify-between gap-3 sm:col-start-auto sm:justify-end">
-                          <StatusBadge status={status} />
-                          <span className="hidden h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition group-hover:border-violet-200 group-hover:text-violet-600 sm:inline-flex">
+                        <div className="col-start-2 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:col-start-auto sm:justify-end">
+                          <div className="flex min-w-0 items-center gap-2">
+                            <StatusBadge status={status} />
+                            <select
+                              value={status}
+                              disabled={!canAppointments || Boolean(updatingAppointmentId)}
+                              onChange={(event) => {
+                                const nextStatus = event.target.value;
+                                if (nextStatus !== status) {
+                                  void updateDashboardAppointmentStatus(
+                                    appointment._id,
+                                    nextStatus,
+                                    status,
+                                  );
+                                }
+                              }}
+                              className={`h-9 max-w-[145px] rounded-xl border border-slate-200 px-2.5 text-[11px] font-bold outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-wait disabled:opacity-60 ${APPOINTMENT_STATUS_CLASS[status] || "bg-white text-slate-600"}`}
+                              aria-label={`Change appointment status for ${patientName}`}
+                              title="Change appointment status"
+                            >
+                              {Object.entries(APPOINTMENT_STATUS).map(([value, label]) => (
+                                <option key={value} value={value}>
+                                  {label}
+                                </option>
+                              ))}
+                            </select>
+                            {isUpdatingStatus && (
+                              <RefreshCw size={13} className="shrink-0 animate-spin text-violet-600" aria-label="Saving status" />
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
+                            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:border-violet-200 hover:text-violet-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
+                            aria-label={`Open appointment for ${patientName}`}
+                            title="Open appointment"
+                          >
                             <ArrowRight size={14} />
-                          </span>
+                          </button>
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
                 <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-[12px] text-slate-500">
                     {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
                   </span>
                   <button
                     type="button"
                     onClick={() => navigate("/appointments")}
-                    className="inline-flex items-center gap-1.5 self-start text-[10px] font-bold text-violet-700 transition hover:text-violet-900 sm:self-auto"
+                    className="inline-flex items-center gap-1.5 self-start text-[12px] font-bold text-violet-700 transition hover:text-violet-900 sm:self-auto"
                   >
                     Manage all appointments <ArrowRight size={12} />
                   </button>
@@ -1531,7 +1626,7 @@ export default function DashboardPage() {
                               key,
                             )
                           }
-                          className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-[8px] font-bold transition ${
+                          className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[10px] font-bold transition ${
                             active
                               ? "border-slate-950 bg-slate-950 text-white"
                               : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
@@ -1542,7 +1637,7 @@ export default function DashboardPage() {
                           />
                           {option.shortLabel}
                           <span
-                            className={`rounded-full px-1.5 py-0.5 text-[7px] ${
+                            className={`rounded-full px-1.5 py-0.5 text-[9px] ${
                               active
                                 ? "bg-white/10 text-white"
                                 : "bg-slate-100 text-slate-500"
@@ -1577,7 +1672,7 @@ export default function DashboardPage() {
                         )
                       }
                       placeholder="Search job, patient, item..."
-                      className="h-7 w-full rounded-md border border-slate-200 bg-white pl-7 pr-2.5 text-[9px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
+                      className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-7 pr-2.5 text-[11px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                     />
                   </div>
 
@@ -1590,7 +1685,7 @@ export default function DashboardPage() {
                         event.target.value,
                       )
                     }
-                    className="h-7 rounded-md border border-slate-200 bg-white px-2.5 text-[9px] font-semibold text-slate-600 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
+                    className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-600 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                   >
                     {DISPENSING_STATUS_OPTIONS.map(
                       ([
@@ -1620,7 +1715,7 @@ export default function DashboardPage() {
                       onClick={
                         clearDispensingFilters
                       }
-                      className="inline-flex h-7 items-center justify-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 text-[8px] font-bold text-slate-500 transition hover:bg-slate-50"
+                      className="inline-flex h-8 items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-[10px] font-bold text-slate-500 transition hover:bg-slate-50"
                       title="Clear filters"
                     >
                       <X
@@ -1698,7 +1793,7 @@ export default function DashboardPage() {
             ) : dispensingRecords.length ? (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[920px] text-left">
-                  <thead className="bg-slate-50 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
                     <tr>
                       <th className="px-3 py-2.5">
                         Type
@@ -1730,7 +1825,7 @@ export default function DashboardPage() {
                     </tr>
                   </thead>
 
-                  <tbody className="text-[10px]">
+                  <tbody className="text-[12px]">
                     {visibleDispensingRecords.map(
                       (record) => {
                         const category =
@@ -1748,7 +1843,7 @@ export default function DashboardPage() {
                         return (
                           <tr
                             key={`${category}-${record._id}`}
-                            className="border-t border-slate-100 transition hover:bg-slate-50"
+                            className="border-t border-slate-100 transition-colors hover:bg-violet-50/30"
                           >
                             <td className="px-3 py-2.5">
                               <CategoryBadge
@@ -1792,7 +1887,7 @@ export default function DashboardPage() {
                                   }
                                 </div>
 
-                                <div className="mt-0.5 text-[9px] text-slate-400">
+                                <div className="mt-0.5 text-[11px] text-slate-400">
                                   {
                                     record._dashboardPatientNumber
                                   }
@@ -1807,7 +1902,7 @@ export default function DashboardPage() {
                                 }
                               </div>
 
-                              <div className="mt-0.5 truncate text-[9px] text-slate-400">
+                              <div className="mt-0.5 truncate text-[11px] text-slate-400">
                                 {
                                   record._dashboardSecondary
                                 }
@@ -1894,7 +1989,7 @@ export default function DashboardPage() {
             ) : consultations.length ? (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[820px] text-left">
-                  <thead className="bg-slate-50 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
                     <tr>
                       <th className="px-3 py-2.5">Patient</th>
                       <th className="px-3 py-2.5">Type</th>
@@ -1904,7 +1999,7 @@ export default function DashboardPage() {
                       <th className="px-3 py-2.5 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="text-[10px]">
+                  <tbody className="text-[12px]">
                     {visibleConsultations.map((consultation) => {
                       const patient = consultation.patientId || {};
                       const optometrist = consultation.optometristId || {};
@@ -1915,7 +2010,7 @@ export default function DashboardPage() {
                       return (
                         <tr
                           key={consultationId}
-                          className="border-t border-slate-100 transition hover:bg-slate-50"
+                          className="border-t border-slate-100 transition-colors hover:bg-violet-50/30"
                         >
                           <td className="px-3 py-2.5">
                             <button
@@ -1929,14 +2024,14 @@ export default function DashboardPage() {
                               <div className="font-semibold text-slate-700 hover:underline">
                                 {fullName(patient)}
                               </div>
-                              <div className="mt-0.5 text-[9px] text-slate-400">
+                              <div className="mt-0.5 text-[11px] text-slate-400">
                                 {getPatientNumber({ patientId: patient })}
                               </div>
                             </button>
                           </td>
 
                           <td className="px-3 py-2.5">
-                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[8px] font-bold text-slate-600">
+                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600">
                               {consultationTypeLabel(consultation.consultationType)}
                             </span>
                           </td>
@@ -1954,7 +2049,7 @@ export default function DashboardPage() {
                           <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2">
                               <span
-                                className={`inline-flex items-center rounded-full px-2 py-1 text-[8px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
+                                className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
                                   currentStatus,
                                 )}`}
                               >
@@ -1970,7 +2065,7 @@ export default function DashboardPage() {
                                     event.target.value,
                                   )
                                 }
-                                className="h-7 rounded-md border border-slate-200 bg-white px-1.5 text-[8px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="h-8 rounded-lg border border-slate-200 bg-white px-1.5 text-[10px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
                                 aria-label={`Change status for ${fullName(patient)}`}
                               >
                                 {CONSULTATION_STATUS_OPTIONS.map(([value, text]) => (
@@ -1991,7 +2086,7 @@ export default function DashboardPage() {
                                   `/clinical/consultations/${consultationId}`,
                                 )
                               }
-                              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[10px] font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
                             >
                               View
                               <ArrowRight size={12} />
@@ -2064,7 +2159,7 @@ function SectionCard({
     <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-4 py-4 sm:px-5">
         <div className="min-w-0">
-          <div className="text-[9px] font-bold uppercase tracking-[0.17em] text-violet-600">
+          <div className="text-[11px] font-bold uppercase tracking-[0.17em] text-violet-600">
             {eyebrow}
           </div>
 
@@ -2074,7 +2169,7 @@ function SectionCard({
             </h2>
 
             {meta && (
-              <span className="text-[10px] text-slate-500">
+              <span className="text-[12px] text-slate-500">
                 {meta}
               </span>
             )}
@@ -2085,7 +2180,7 @@ function SectionCard({
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50"
+            className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
           >
             {actionLabel}
             <ArrowRight size={10} />
@@ -2117,7 +2212,7 @@ function Metric({
         </span>
 
         <span className="min-w-0">
-          <span className="block truncate text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">
+          <span className="block truncate text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
             {label}
           </span>
 
@@ -2127,7 +2222,7 @@ function Metric({
         </span>
       </div>
 
-      <div className="mt-3 truncate text-[10px] text-slate-500">
+      <div className="mt-3 truncate text-[12px] text-slate-500">
         {note}
       </div>
     </button>
@@ -2145,14 +2240,14 @@ function SummaryMetric({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md border px-2.5 py-2 text-left transition ${
+      className={`rounded-xl border px-3 py-2.5 text-left transition ${
         active
-          ? "border-slate-300 bg-white shadow-sm"
-          : "border-slate-200 bg-slate-50/70 hover:border-slate-300 hover:bg-white"
+          ? "border-violet-200 bg-white shadow-sm ring-1 ring-violet-100"
+          : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/30"
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-slate-500 ring-1 ring-slate-100">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-700 ring-1 ring-violet-100">
           <Icon size={12} />
         </span>
 
@@ -2161,7 +2256,7 @@ function SummaryMetric({
         </span>
       </div>
 
-      <div className="mt-1.5 truncate text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+      <div className="mt-1.5 truncate text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
     </button>
@@ -2181,7 +2276,7 @@ function CategoryBadge({
     PackageCheck;
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[7px] font-bold uppercase tracking-[0.07em] text-slate-600">
+    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.07em] text-slate-600">
       <Icon size={9} />
       {option?.shortLabel ||
         "Dispensing"}
@@ -2218,7 +2313,7 @@ function DispensingStatusBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[7px] font-bold uppercase tracking-[0.08em] ${
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] ${
         classes[key] ||
         "bg-slate-100 text-slate-600"
       }`}
@@ -2242,7 +2337,7 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[9px] font-bold tracking-[0.02em] ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-bold tracking-[0.02em] ${
         APPOINTMENT_STATUS_CLASS[
           key
         ] ||
@@ -2275,11 +2370,11 @@ function ProgressRow({
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[10px] font-medium text-slate-600">
+        <span className="text-[12px] font-medium text-slate-600">
           {label}
         </span>
 
-        <span className="text-[10px] font-bold text-slate-700">
+        <span className="text-[12px] font-bold text-slate-700">
           {value}/{total}
         </span>
       </div>
@@ -2306,18 +2401,18 @@ function QuickAction({
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-2.5 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:border-slate-300 hover:bg-slate-50"
+      className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-100">
+      <span className="flex h-9 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-100">
         <Icon size={13} />
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="block text-[10px] font-bold text-slate-700">
+        <span className="block text-[12px] font-bold text-slate-700">
           {label}
         </span>
 
-        <span className="mt-0.5 block truncate text-[8px] text-slate-400">
+        <span className="mt-0.5 block truncate text-[10px] text-slate-400">
           {description}
         </span>
       </span>
@@ -2339,11 +2434,11 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
-      <span className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-50 text-slate-300">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300">
         <Icon size={17} />
       </span>
 
-      <div className="mt-2 text-[10px] font-semibold text-slate-600">
+      <div className="mt-2 text-[12px] font-semibold text-slate-600">
         {title}
       </div>
 
@@ -2352,7 +2447,7 @@ function EmptyState({
           <button
             type="button"
             onClick={onAction}
-            className="mt-2 inline-flex h-7 items-center gap-1 rounded-md bg-slate-950 px-2.5 text-[8px] font-bold text-white"
+            className="mt-2 inline-flex h-8 items-center gap-1 rounded-lg bg-slate-950 px-2.5 text-[10px] font-bold text-white"
           >
             {actionLabel}
             <ArrowRight
@@ -2384,7 +2479,7 @@ function Pagination({
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-100 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
-      <span className="text-[8px] font-semibold text-slate-400">
+      <span className="text-[10px] font-semibold text-slate-400">
         Showing {start}–{end} of {totalItems}
       </span>
 
@@ -2397,14 +2492,14 @@ function Pagination({
             )
           }
           disabled={page <= 1}
-          className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Previous page"
         >
           <ChevronLeft size={10} />
           Previous
         </button>
 
-        <span className="inline-flex h-7 min-w-[64px] items-center justify-center rounded-md bg-slate-950 px-2 text-[8px] font-bold text-white">
+        <span className="inline-flex h-8 min-w-[64px] items-center justify-center rounded-lg bg-slate-950 px-2 text-[10px] font-bold text-white">
           Page {page} / {totalPages}
         </span>
 
@@ -2419,7 +2514,7 @@ function Pagination({
             )
           }
           disabled={page >= totalPages}
-          className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Next page"
         >
           Next
@@ -2434,7 +2529,7 @@ function LoadingRow({
   text,
 }) {
   return (
-    <div className="flex items-center justify-center gap-2 px-4 py-10 text-[10px] text-slate-400">
+    <div className="flex items-center justify-center gap-2 px-4 py-10 text-[12px] text-slate-400">
       <RefreshCw
         size={12}
         className="animate-spin"
