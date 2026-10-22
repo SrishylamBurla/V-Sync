@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -24,6 +25,15 @@ import {
 // ============================================================
 // CONSTANTS
 // ============================================================
+
+const appointmentTypeOptions = [
+  ["Comprehensive", "Comprehensive"],
+  ["Short consult", "Short consult"],
+  ["Contact lens evaluation", "Contact lens evaluation"],
+  ["Binocular vision evaluation", "Binocular vision evaluation"],
+  ["Pediatric eye test", "Pediatric eye test"],
+  ["Vision therapy", "Vision therapy"],
+];
 
 const statusOptions = [
   "booked",
@@ -182,7 +192,7 @@ export default function AppointmentsPage() {
   const [form, setForm] = useState({
     patientId: "",
     appointmentDate: inputDateTime(dateKey(new Date())),
-    type: "Eye Examination",
+    type: "Comprehensive",
     durationMinutes: 30,
     clinicianId: "",
     reason: "",
@@ -526,7 +536,7 @@ export default function AppointmentsPage() {
         patientId: "",
         appointmentDate:
           inputDateTime(selectedDate),
-        type: "Eye Examination",
+        type: "Comprehensive",
         durationMinutes: 30,
         clinicianId: "",
         reason: "",
@@ -714,46 +724,91 @@ export default function AppointmentsPage() {
   // ==========================================================
 
   return (
-    <div className="py-4 sm:py-5">
-      <div className="space-y-3.5">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
-              Front desk
+    <div className="mx-auto w-full max-w-[1700px] space-y-5 pb-8 pt-6">
+      <div className="space-y-5">
+        <header className="relative isolate overflow-hidden rounded-[26px] border border-slate-200/80 bg-white px-5 py-6 shadow-[0_4px_24px_rgba(15,23,42,0.045)] sm:px-7 sm:py-7">
+          <div className="pointer-events-none absolute -right-10 -top-14 -z-10 h-48 w-48 rounded-full bg-violet-100/70 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 right-[26%] -z-10 h-32 w-32 rounded-full bg-blue-50 blur-3xl" />
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200 sm:flex">
+                <CalendarDays size={22} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-700">
+                    Front desk · Scheduling
+                  </div>
+                </div>
+                <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950 sm:text-[27px]">
+                  Appointments
+                </h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                  A clear view of your clinic schedule, bookings and clinician assignments.
+                </p>
+              </div>
             </div>
-            <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
-              Appointments
-            </h1>
-            <p className="mt-1 text-[10px] text-slate-400">
-              Daily schedule, patient flow, clinician assignment and visit status.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={load}
               disabled={loading}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
             >
-              <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
               Refresh
             </button>
             <button
               type="button"
               onClick={openBookingModal}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-violet-700"
             >
-              <Plus size={12} />
-              Book Appointment
+              <Plus size={15} />
+              Book appointment
             </button>
+            </div>
           </div>
         </header>
+
+        {/* DAILY OVERVIEW */}
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <OverviewMetric
+            icon={CalendarDays}
+            label="Appointments in view"
+            value={filtered.length}
+            caption="For the selected date and filters"
+            tone="violet"
+          />
+          <OverviewMetric
+            icon={CheckCircle2}
+            label="Confirmed"
+            value={counts.confirmed || 0}
+            caption="Confirmed bookings"
+            tone="blue"
+          />
+          <OverviewMetric
+            icon={Clock3}
+            label="In clinic"
+            value={(counts.here || 0) + (counts.examining || 0)}
+            caption="Arrived or being examined"
+            tone="amber"
+          />
+          <OverviewMetric
+            icon={CheckCircle2}
+            label="Completed"
+            value={counts.complete || 0}
+            caption="Visits marked complete"
+            tone="emerald"
+          />
+        </section>
+
       {/* ======================================================
           ERROR
       ======================================================= */}
 
       {error && (
-        <div className="mb-5 flex items-start justify-between gap-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="flex items-start justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5 text-sm text-red-700 shadow-sm">
           <span>{error}</span>
 
           <button
@@ -773,7 +828,8 @@ export default function AppointmentsPage() {
 
       <Section
         number="01"
-        title="Appointment date"
+        title="Schedule controls"
+        description="Choose a day to review, create or manage appointments."
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-2">
@@ -822,12 +878,11 @@ export default function AppointmentsPage() {
             </button>
           </div>
 
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">
+          <div className="min-w-[245px] rounded-2xl border border-violet-100/80 bg-gradient-to-r from-violet-50/80 to-blue-50/60 px-4 py-3.5">
+            <div className="text-[9px] font-black uppercase tracking-[.18em] text-violet-600">
               Selected day
             </div>
-
-            <div className="mt-1 text-lg font-bold text-slate-900">
+            <div className="mt-1 text-sm font-extrabold text-slate-900 sm:text-base">
               {prettyDate(selectedDate)}
             </div>
           </div>
@@ -863,12 +918,13 @@ export default function AppointmentsPage() {
       ======================================================= */}
 
       <Section
-        number={showForm ? "03" : "02"}
+        number="02"
         title="Daily appointment register"
+        description={`${prettyDate(selectedDate)} · ${filtered.length} appointment${filtered.length === 1 ? "" : "s"} shown`}
       >
         {/* FILTER BAR */}
 
-        <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_auto_auto]">
+        <div className="mb-5 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4 lg:grid-cols-[minmax(260px,1fr)_210px_230px]">
           <div className="relative">
             <Search
               size={15}
@@ -886,7 +942,7 @@ export default function AppointmentsPage() {
                 }
               }}
               placeholder="Search patient, patient number or phone..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none transition focus:border-violet-300 focus:bg-white focus:ring-2 focus:ring-violet-50"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
             />
           </div>
 
@@ -895,7 +951,7 @@ export default function AppointmentsPage() {
             onChange={(event) =>
               setStatus(event.target.value)
             }
-            className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 outline-none transition focus:border-violet-300"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
           >
             <option value="">
               All statuses
@@ -918,7 +974,7 @@ export default function AppointmentsPage() {
             onChange={(event) =>
               setClinicianId(event.target.value)
             }
-            className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 outline-none transition focus:border-violet-300"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
           >
             <option value="">
               All clinicians
@@ -955,7 +1011,7 @@ export default function AppointmentsPage() {
         ) : filtered.length === 0 ? (
           /* EMPTY */
 
-          <div className="py-16 text-center">
+          <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-5 py-12 text-center">
             <CalendarDays
               className="mx-auto text-slate-300"
               size={30}
@@ -973,7 +1029,7 @@ export default function AppointmentsPage() {
             <button
               type="button"
               onClick={openBookingModal}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-violet-700 hover:to-blue-700"
             >
               <Plus size={14} />
               Book appointment
@@ -982,10 +1038,10 @@ export default function AppointmentsPage() {
         ) : (
           /* TABLE */
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
-            <table className="w-full min-w-[1250px] text-left">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+            <table className="w-full min-w-[1180px] text-left">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
                   <th className="px-4 py-3">
                     Time
                   </th>
@@ -1041,7 +1097,7 @@ export default function AppointmentsPage() {
                   return (
                     <tr
                       key={appointmentId}
-                      className="border-b border-slate-100 last:border-0 transition hover:bg-slate-50/70"
+                      className="border-b border-slate-100 last:border-0 transition-colors hover:bg-violet-50/30"
                     >
                       {/* TIME */}
 
@@ -1279,25 +1335,26 @@ export default function AppointmentsPage() {
       ======================================================= */}
 
       <Section
-        number={showForm ? "04" : "03"}
-        title="Daily workflow summary"
+        number="03"
+        title="Appointment status"
+        description="A quick breakdown of the current schedule by workflow status."
       >
-        <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs text-blue-700">
+        <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50/80 px-4 py-3 text-xs leading-5 text-blue-700">
           Appointment status is managed from the
           Dashboard only.
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
+        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
           {statusOptions.map((statusValue) => (
             <div
               key={statusValue}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:bg-white"
+              className="rounded-xl border border-slate-200/80 bg-white p-3.5 transition hover:border-violet-200 hover:bg-violet-50/20"
             >
-              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
                 {statusLabel(statusValue)}
               </div>
 
-              <div className="mt-2 text-2xl font-bold text-slate-900">
+              <div className="mt-1.5 text-xl font-extrabold tabular-nums text-slate-900">
                 {counts[statusValue] || 0}
               </div>
             </div>
@@ -1310,47 +1367,105 @@ export default function AppointmentsPage() {
 }
 
 // ============================================================
-// LOCAL COMPACT UI HELPERS
+// LOCAL UI HELPERS
 // ============================================================
+
+function OverviewMetric({ icon: Icon, label, value, caption, tone = "violet" }) {
+  const toneStyles = {
+    violet: { icon: "bg-violet-50 text-violet-700", line: "bg-violet-500" },
+    blue: { icon: "bg-blue-50 text-blue-700", line: "bg-blue-500" },
+    amber: { icon: "bg-amber-50 text-amber-700", line: "bg-amber-500" },
+    emerald: { icon: "bg-emerald-50 text-emerald-700", line: "bg-emerald-500" },
+  };
+  const style = toneStyles[tone] || toneStyles.violet;
+
+  return (
+    <article className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_2px_12px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_10px_28px_rgba(15,23,42,0.07)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="text-[10px] font-black uppercase tracking-[0.13em] text-slate-500">
+          {label}
+        </div>
+        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${style.icon}`}>
+          <Icon size={17} strokeWidth={2} />
+        </div>
+      </div>
+      <div className="mt-3 flex items-baseline gap-2">
+        <span className="text-3xl font-black tracking-tight tabular-nums text-slate-950">{value}</span>
+        <span className="text-[10px] font-semibold text-slate-400">visits</span>
+      </div>
+      <p className="mt-1 text-[11px] leading-4 text-slate-500">{caption}</p>
+      <div className={`absolute inset-x-0 bottom-0 h-[2px] opacity-60 ${style.line}`} />
+    </article>
+  );
+}
 
 function Section({ number, title, description, children }) {
   return (
-    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
-      <header className="border-b border-slate-100 px-3.5 py-3">
-        <div className="flex items-start gap-2">
-          <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[8px] font-bold text-slate-500">
+    <section className="overflow-hidden rounded-[22px] border border-slate-200/90 bg-white shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
+      <header className="border-b border-slate-100 bg-slate-50/55 px-5 py-4 sm:px-6">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 flex h-7 min-w-7 items-center justify-center rounded-lg bg-violet-50 px-1.5 text-[10px] font-black text-violet-600 ring-1 ring-violet-100">
             {number}
           </span>
           <div className="min-w-0">
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+            <h2 className="text-sm font-black tracking-tight text-slate-900 sm:text-base">
               {title}
             </h2>
             {description && (
-              <p className="mt-0.5 text-[9px] leading-4 text-slate-400">
+              <p className="mt-1.5 max-w-xl text-sm leading-5 text-slate-500">
                 {description}
               </p>
             )}
           </div>
         </div>
       </header>
-      <div className="p-3 sm:p-3.5">{children}</div>
+      <div className="p-4 sm:p-5 lg:p-6">{children}</div>
     </section>
   );
 }
 
-function Field({ label: title, value, onChange, type = "text", required = false }) {
+function Field({
+  label: title,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+  min,
+  max,
+  step,
+  placeholder,
+  className = "",
+}) {
+  const controlClassName =
+    "w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50";
+
   return (
-    <label className="block">
-      <span className="mb-1 block text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+    <label className={`block min-w-0 ${className}`}>
+      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
         {title}{required && <span className="ml-1 text-red-500">*</span>}
       </span>
-      <input
-        required={required}
-        type={type}
-        value={value ?? ""}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-[10px] text-slate-700 outline-none transition focus:border-slate-400 focus:bg-white"
-      />
+      {type === "textarea" ? (
+        <textarea
+          required={required}
+          value={value ?? ""}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          rows={4}
+          className={`${controlClassName} min-h-[104px] resize-y py-3 leading-5`}
+        />
+      ) : (
+        <input
+          required={required}
+          type={type}
+          min={min}
+          max={max}
+          step={step}
+          value={value ?? ""}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          className={`${controlClassName} h-11`}
+        />
+      )}
     </label>
   );
 }
@@ -1378,24 +1493,25 @@ function BookingModal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm sm:p-5"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/55 p-2 backdrop-blur-md sm:p-5"
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"
     >
-      <div className="flex max-h-[94vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+      <div className="flex max-h-[95vh] w-full max-w-6xl flex-col overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_30px_100px_rgba(2,6,23,0.28)]">
         {/* HEADER */}
 
-        <header className="shrink-0 border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-5 py-4 sm:px-6">
+        <header className="shrink-0 border-b border-slate-200 bg-gradient-to-r from-violet-50/90 via-white to-blue-50/80 px-5 py-5 sm:px-7">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[.18em] text-blue-600">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-violet-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 Appointment booking
               </div>
 
               <h2
                 id="booking-modal-title"
-                className="mt-1 text-xl font-bold tracking-tight text-slate-900"
+                className="mt-1 text-2xl font-black tracking-tight text-slate-950"
               >
                 Book Appointment
               </h2>
@@ -1428,14 +1544,14 @@ function BookingModal({
                 PATIENT
             =================================================== */}
 
-            <section className="border-b border-slate-200 p-5 sm:p-6 xl:border-b-0 xl:border-r">
+            <section className="border-b border-slate-200 bg-slate-50/45 p-5 sm:p-6 lg:p-7 xl:border-b-0 xl:border-r">
               <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[.18em] text-blue-600">
-                    Step 01
+                  <div className="text-[10px] font-black uppercase tracking-[.18em] text-blue-600">
+                    Step 01 · Patient
                   </div>
 
-                  <h3 className="mt-1 text-base font-bold text-slate-900">
+                  <h3 className="mt-1 text-lg font-black tracking-tight text-slate-900">
                     {bookingMode ===
                     "existing"
                       ? "Select existing patient"
@@ -1495,7 +1611,7 @@ function BookingModal({
               "existing" ? (
                 <div>
                   <label className="block">
-                    <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                       Search patient
                     </span>
 
@@ -1830,13 +1946,13 @@ function BookingModal({
                 VISIT DETAILS
             =================================================== */}
 
-            <section className="p-5 sm:p-6">
+            <section className="p-5 sm:p-6 lg:p-7">
               <div className="mb-5">
-                <div className="text-[10px] font-bold uppercase tracking-[.18em] text-violet-600">
-                  Step 02
+                <div className="text-[10px] font-black uppercase tracking-[.18em] text-violet-600">
+                  Step 02 · Schedule
                 </div>
 
-                <h3 className="mt-1 text-base font-bold text-slate-900">
+                <h3 className="mt-1 text-lg font-black tracking-tight text-slate-900">
                   Visit details
                 </h3>
               </div>
@@ -1880,18 +1996,16 @@ function BookingModal({
                   required
                 />
 
-                <Field
+                <Select
                   label="Visit type"
                   value={form.type}
                   onChange={(value) =>
-                    setForm(
-                      (current) => ({
-                        ...current,
-                        type: value,
-                      }),
-                    )
+                    setForm((current) => ({
+                      ...current,
+                      type: value,
+                    }))
                   }
-                  required
+                  options={appointmentTypeOptions}
                 />
 
                 <label className="block">
@@ -1986,7 +2100,7 @@ function BookingModal({
 
           {/* FOOTER */}
 
-          <footer className="sticky bottom-0 flex flex-col-reverse gap-2 border-t border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <footer className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-7">
             <span className="text-[10px] text-slate-400">
               Verify patient, time and clinician
               before booking.
@@ -2003,7 +2117,7 @@ function BookingModal({
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-3 text-xs font-black text-white shadow-lg shadow-violet-100 transition hover:from-violet-700 hover:to-blue-700"
               >
                 <CalendarDays size={14} />
                 Book Appointment
@@ -2048,7 +2162,7 @@ function Input({
           onChange(event.target.value)
         }
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-2 focus:ring-violet-50"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
       />
     </label>
   );
@@ -2075,7 +2189,7 @@ function Select({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-2 focus:ring-violet-50"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
       >
         {options.map(
           ([valueOption, labelOption]) => (

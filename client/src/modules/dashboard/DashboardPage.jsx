@@ -1111,20 +1111,21 @@ export default function DashboardPage() {
 
   return (
     <div className="py-4 sm:py-5">
-      <div className="space-y-3.5">
+      <div className="space-y-4 sm:space-y-5">
         {/* SINGLE PAGE HEADING */}
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/90 bg-white px-4 py-5 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
-            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Practice dashboard
             </div>
 
-            <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-[26px]">
+            <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
                 Dashboard
               </h1>
 
-              <span className="text-[10px] font-medium text-slate-400">
+              <span className="text-xs font-medium text-slate-500">
                 {formatDate(
                   new Date(),
                 )}
@@ -1132,16 +1133,16 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() =>
                 void refresh()
               }
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
             >
               <RefreshCw
-                size={12}
+                size={14}
                 className={
                   appointmentsLoading ||
                   dispensingLoading ||
@@ -1157,13 +1158,11 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() =>
-                  navigate(
-                    "/appointments?book=1",
-                  )
+                  navigate("/appointments?book=1")
                 }
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-4 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
               >
-                <Plus size={12} />
+                <Plus size={14} />
                 Book Appointment
               </button>
             )}
@@ -1270,101 +1269,163 @@ export default function DashboardPage() {
           />
         </section>
 
-        <section className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_360px]">
-          {/* APPOINTMENTS */}
-          <SectionCard
-            eyebrow="Front desk"
-            title="Today's appointments"
-            meta={`${appointmentCounts.total} scheduled · ${appointmentCounts.completed} completed`}
-            actionLabel="Open appointments"
-            onAction={() =>
-              navigate(
-                "/appointments",
-              )
-            }
-          >
-            {appointmentsLoading ? (
-              <LoadingRow text="Loading appointments..." />
-            ) : upcomingAppointments.length ? (
-              <div className="divide-y divide-slate-100">
-                {upcomingAppointments.map(
-                  (appointment) => {
-                    const patient =
-                      appointment.patientId ||
-                      appointment.patient ||
-                      {};
+        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+          {/* PREMIUM APPOINTMENT SCHEDULE */}
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
+            <header className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
+                  <CalendarClock size={19} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
+                    Front desk · Daily schedule
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <h2 className="text-lg font-bold tracking-tight text-slate-950">
+                      Today’s appointments
+                    </h2>
+                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                      {appointmentsLoading ? "Loading" : `${appointmentCounts.total} scheduled`}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Review patient visits, assigned clinicians, and appointment status.
+                  </p>
+                </div>
+              </div>
 
-                    const status =
-                      normalizeStatus(
-                        appointment.status,
-                      ) ||
-                      "booked";
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate("/appointments")}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                >
+                  View schedule
+                  <ArrowRight size={14} />
+                </button>
+                {canAppointments && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/appointments?book=1")}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
+                  >
+                    <Plus size={14} />
+                    Book appointment
+                  </button>
+                )}
+              </div>
+            </header>
+
+            {appointmentsLoading ? (
+              <div className="p-4 sm:p-5">
+                <LoadingRow text="Loading today’s schedule..." />
+              </div>
+            ) : upcomingAppointments.length ? (
+              <>
+                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
+                  <span>Time</span>
+                  <span>Patient & visit</span>
+                  <span className="pr-8">Status</span>
+                </div>
+                <div className="divide-y divide-slate-100">
+                  {upcomingAppointments.map((appointment) => {
+                    const patient = appointment.patientId || appointment.patient || {};
+                    const clinician = appointment.clinicianId || appointment.optometristId || {};
+                    const status = normalizeStatus(appointment.status) || "booked";
+                    const patientName = fullName(patient);
+                    const appointmentType = appointment.type || "Comprehensive";
+                    const duration = appointment.durationMinutes || 30;
 
                     return (
                       <button
                         type="button"
-                        key={
-                          appointment._id
-                        }
-                        onClick={() =>
-                          appointment._id &&
-                          navigate(
-                            `/appointments/${appointment._id}`,
-                          )
-                        }
-                        className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition hover:bg-slate-50 sm:px-3.5"
+                        key={appointment._id}
+                        onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
+                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 focus:outline-none focus-visible:bg-violet-50/60 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
                       >
-                        <div className="w-14 shrink-0 text-[10px] font-bold text-slate-900 sm:w-16">
-                          {formatTime(
-                            appointment.appointmentDate,
-                          )}
+                        <div className="flex min-h-[58px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/90 px-2 py-2 transition group-hover:border-violet-100 group-hover:bg-white">
+                          <span className="text-sm font-bold tracking-tight text-slate-900">
+                            {formatTime(appointment.appointmentDate)}
+                          </span>
+                          <span className="mt-0.5 text-[9px] font-medium text-slate-400">
+                            {duration} min
+                          </span>
                         </div>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-[11px] font-bold text-slate-800">
-                            {fullName(
-                              patient,
+                        <div className="min-w-0">
+                          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="max-w-full truncate text-sm font-bold text-slate-900 transition group-hover:text-violet-700">
+                              {patientName}
+                            </span>
+                            {patient.patientNumber && (
+                              <span className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] font-semibold text-slate-500">
+                                {patient.patientNumber}
+                              </span>
                             )}
                           </div>
-
-                          <div className="mt-0.5 truncate text-[9px] text-slate-400">
-                            {patient.patientNumber ||
-                              "No patient number"}
-                            {appointment.type
-                              ? ` · ${appointment.type}`
-                              : ""}
+                          <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[10px] text-slate-500">
+                            <span className="inline-flex min-w-0 items-center gap-1.5">
+                              <ClipboardList size={12} className="shrink-0 text-violet-500" />
+                              <span className="truncate">{appointmentType}</span>
+                            </span>
+                            <span className="inline-flex min-w-0 items-center gap-1.5">
+                              <Users size={12} className="shrink-0 text-slate-400" />
+                              <span className="truncate">{[clinician.firstName, clinician.lastName].filter(Boolean).join(" ") || "Clinician unassigned"}</span>
+                            </span>
+                            {patient.phone && (
+                              <span className="hidden items-center gap-1.5 text-slate-400 md:inline-flex">
+                                <Clock3 size={11} />
+                                {patient.phone}
+                              </span>
+                            )}
                           </div>
                         </div>
 
-                        <StatusBadge
-                          status={status}
-                        />
-
-                        <ArrowRight
-                          size={12}
-                          className="shrink-0 text-slate-300"
-                        />
+                        <div className="col-start-2 flex items-center justify-between gap-3 sm:col-start-auto sm:justify-end">
+                          <StatusBadge status={status} />
+                          <span className="hidden h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition group-hover:border-violet-200 group-hover:text-violet-600 sm:inline-flex">
+                            <ArrowRight size={14} />
+                          </span>
+                        </div>
                       </button>
                     );
-                  },
+                  })}
+                </div>
+                <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                  <span className="text-[10px] text-slate-500">
+                    {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/appointments")}
+                    className="inline-flex items-center gap-1.5 self-start text-[10px] font-bold text-violet-700 transition hover:text-violet-900 sm:self-auto"
+                  >
+                    Manage all appointments <ArrowRight size={12} />
+                  </button>
+                </footer>
+              </>
+            ) : (
+              <div className="flex flex-col items-center px-5 py-12 text-center sm:py-14">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 ring-1 ring-violet-100">
+                  <CalendarClock size={24} />
+                </div>
+                <h3 className="mt-4 text-sm font-bold text-slate-900">No appointments scheduled today</h3>
+                <p className="mt-1 max-w-sm text-xs leading-5 text-slate-500">
+                  New bookings will appear here with their visit type, scheduled time, and assigned clinician.
+                </p>
+                {canAppointments && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/appointments?book=1")}
+                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-violet-700"
+                  >
+                    <Plus size={14} /> Book appointment
+                  </button>
                 )}
               </div>
-            ) : (
-              <EmptyState
-                icon={CalendarClock}
-                title="No appointments today"
-                actionLabel="Book appointment"
-                onAction={() =>
-                  navigate(
-                    "/appointments?book=1",
-                  )
-                }
-                showAction={
-                  canAppointments
-                }
-              />
             )}
-          </SectionCard>
+          </section>
 
           {/* APPOINTMENT STATUS */}
           <SectionCard
@@ -1930,10 +1991,10 @@ export default function DashboardPage() {
                                   `/clinical/consultations/${consultationId}`,
                                 )
                               }
-                              className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 transition hover:bg-slate-50"
+                              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[10px] font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
                             >
                               View
-                              <ArrowRight size={10} />
+                              <ArrowRight size={12} />
                             </button>
                           </td>
                         </tr>
@@ -2000,20 +2061,20 @@ function SectionCard({
   children,
 }) {
   return (
-    <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
-      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-3.5 py-3 sm:px-4">
+    <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-4 py-4 sm:px-5">
         <div className="min-w-0">
-          <div className="text-[8px] font-bold uppercase tracking-[0.16em] text-slate-400">
+          <div className="text-[9px] font-bold uppercase tracking-[0.17em] text-violet-600">
             {eyebrow}
           </div>
 
-          <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            <h2 className="text-[13px] font-bold tracking-tight text-slate-800">
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <h2 className="text-sm font-bold tracking-tight text-slate-900 sm:text-[15px]">
               {title}
             </h2>
 
             {meta && (
-              <span className="text-[9px] text-slate-400">
+              <span className="text-[10px] text-slate-500">
                 {meta}
               </span>
             )}
@@ -2048,25 +2109,25 @@ function Metric({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-slate-300 hover:shadow-sm"
+      className="group rounded-2xl border border-slate-200/90 bg-white p-4 text-left shadow-[0_4px_18px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_10px_28px_rgba(109,40,217,0.08)] focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
     >
       <div className="flex items-center gap-2.5">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-100">
-          <Icon size={14} />
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-700 ring-1 ring-violet-100/80 transition group-hover:from-violet-100 group-hover:to-blue-100">
+          <Icon size={17} />
         </span>
 
         <span className="min-w-0">
-          <span className="block truncate text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+          <span className="block truncate text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">
             {label}
           </span>
 
-          <span className="mt-0.5 block text-lg font-bold tracking-tight text-slate-900">
+          <span className="mt-0.5 block text-2xl font-bold tracking-tight text-slate-950">
             {value}
           </span>
         </span>
       </div>
 
-      <div className="mt-2 truncate text-[9px] text-slate-400">
+      <div className="mt-3 truncate text-[10px] text-slate-500">
         {note}
       </div>
     </button>
@@ -2181,14 +2242,14 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[7px] font-bold uppercase tracking-[0.08em] ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[9px] font-bold tracking-[0.02em] ${
         APPOINTMENT_STATUS_CLASS[
           key
         ] ||
         "bg-slate-100 text-slate-600"
       }`}
     >
-      <span className="h-1 w-1 rounded-full bg-current" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {
         APPOINTMENT_STATUS[key] ||
         key ||
