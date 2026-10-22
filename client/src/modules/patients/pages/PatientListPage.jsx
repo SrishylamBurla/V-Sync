@@ -235,225 +235,120 @@ export default function PatientListPage() {
   };
 
   const totalPages = pagination?.totalPages || 1;
-  const totalPatients =
-    pagination?.total ?? patients.length;
+  const totalPatients = pagination?.total ?? patients.length;
 
   return (
-    <div className="mx-auto w-full max-w-[1700px] space-y-6 pb-8">
-      {/* ======================================================
-          PREMIUM HEADER
-      ====================================================== */}
-
-      <section className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.07)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.10),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(14,165,233,0.08),transparent_30%)]" />
-
-        <div className="relative px-5 py-6 sm:px-7 sm:py-8 lg:px-9">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-lg shadow-violet-200 sm:flex">
-                <Users size={25} />
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-violet-600">
-                    Patient management
-                  </p>
-                </div>
-
-                <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-                  Patients
-                </h1>
-
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-                  Manage patient records, access clinical history,
-                  start consultations and maintain patient information
-                  from one workspace.
-                </p>
-              </div>
+    <div className="mx-auto w-full max-w-[1600px] space-y-4 pb-6 pt-6 text-slate-800">
+      {/* Page header */}
+      <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-1 ring-blue-100">
+            <Users size={21} />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700">
+              Patient management
             </div>
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={loadPatients}
-                disabled={loading}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:opacity-50"
-              >
-                <RefreshCw
-                  size={14}
-                  className={loading ? "animate-spin" : ""}
-                />
-                Refresh
-              </button>
-
-              <button
-                type="button"
-                onClick={() => navigate("/patients/new")}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-violet-700"
-              >
-                <Plus size={15} />
-                Add patient
-              </button>
-            </div>
+            <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950 sm:text-[27px]">
+              Patients
+            </h1>
+            <p className="mt-1 text-xs leading-5 text-slate-500">
+              Manage patient records and start consultations from one workspace.
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* ======================================================
-          ERROR
-      ====================================================== */}
-
-      {error && (
-        <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-red-500" />
-            <span>{error}</span>
-          </div>
-
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setError("")}
-            className="rounded-lg p-1 hover:bg-red-100"
+            onClick={loadPatients}
+            disabled={loading}
+            className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            Refresh
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/patients/new")}
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-blue-700 px-4 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-100"
+          >
+            <Plus size={15} />
+            Add patient
+          </button>
+        </div>
+      </header>
+
+      {error && (
+        <div role="alert" className="flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="flex items-start gap-2">
+            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-red-500" />
+            <span>{error}</span>
+          </div>
+          <button type="button" onClick={() => setError("")} aria-label="Dismiss error" className="rounded-md p-1 hover:bg-red-100">
             <X size={15} />
           </button>
         </div>
       )}
 
-      {/* ======================================================
-          METRICS
-      ====================================================== */}
-
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Metric
-          icon={Users}
-          label="Records on page"
-          value={stats.current}
-          accent="violet"
-        />
-
-        <Metric
-          icon={ShieldCheck}
-          label="Active patients"
-          value={stats.activeCount}
-          accent="emerald"
-        />
-
-        <Metric
-          icon={Phone}
-          label="Contact available"
-          value={stats.withPhone}
-          accent="blue"
-        />
-
-        <Metric
-          icon={CalendarPlus}
-          label="Recall scheduled"
-          value={stats.withRecall}
-          accent="amber"
-        />
+      {/* Summary metrics */}
+      <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        <Metric icon={Users} label="Records on page" value={stats.current} accent="blue" />
+        <Metric icon={ShieldCheck} label="Active on page" value={stats.activeCount} accent="emerald" />
+        <Metric icon={Phone} label="With phone" value={stats.withPhone} accent="violet" />
+        <Metric icon={CalendarPlus} label="Recall scheduled" value={stats.withRecall} accent="amber" />
       </section>
 
-      {/* ======================================================
-          SEARCH / FILTER BAR
-      ====================================================== */}
-
-      <section className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="relative flex-1">
-            <Search
-              size={17}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-
-            <input
-              value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
-              placeholder="Search patient, phone, email or patient number..."
-              aria-label="Search patients"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
-            />
-
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-              >
-                <X size={14} />
-              </button>
-            )}
-          </div>
-
-          <select
-            value={status}
-            onChange={(event) => {
-              setStatus(event.target.value);
-              setPage(1);
-            }}
-            className="h-12 min-w-[190px] rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
-          >
-            <option value="active">
-              Active patients
-            </option>
-            <option value="inactive">
-              Inactive patients
-            </option>
-            <option value="">
-              All patients
-            </option>
-          </select>
-        </div>
-
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <div className="text-[11px] font-medium text-slate-400">
-            {search
-              ? `Searching for "${search}"`
-              : "Showing patient records"}
-          </div>
-
-          <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-400">
-            <Clock3 size={13} />
-            Page {page} of {totalPages}
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================
-          PATIENT REGISTER
-      ====================================================== */}
-
-      <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
-        <header className="border-b border-slate-200 bg-gradient-to-r from-slate-50 via-white to-violet-50/50 px-5 py-5 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-500">
-                Patient directory
-              </div>
-
-              <div className="mt-1 flex items-center gap-3">
-                <h2 className="text-xl font-black tracking-tight text-slate-900">
-                  Patient register
-                </h2>
-
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                  {totalPatients}
-                </span>
-              </div>
+      {/* Search and register */}
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 p-4 sm:p-5">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="relative min-w-0 flex-1">
+              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by name, phone, email or patient number"
+                aria-label="Search patients"
+                className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-9 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-3 focus:ring-blue-50"
+              />
+              {search && (
+                <button type="button" onClick={() => setSearch("")} aria-label="Clear search" className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
+                  <X size={14} />
+                </button>
+              )}
             </div>
-
-            {pagination && (
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-semibold text-slate-500 shadow-sm">
-                Page {pagination.page || page} of{" "}
-                {pagination.totalPages || 1}
-              </div>
-            )}
+            <select
+              value={status}
+              onChange={(event) => {
+                setStatus(event.target.value);
+                setPage(1);
+              }}
+              aria-label="Filter by patient status"
+              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:ring-3 focus:ring-blue-50 md:w-48"
+            >
+              <option value="active">Active patients</option>
+              <option value="inactive">Inactive patients</option>
+              <option value="">All patients</option>
+            </select>
           </div>
-        </header>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+            <span>{search ? `Results for “${search}”` : "Patient directory"}</span>
+            <span className="inline-flex items-center gap-1.5"><Clock3 size={13} /> Page {page} of {totalPages}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900">Patient register</h2>
+            <p className="mt-0.5 text-[11px] text-slate-500">{totalPatients} patient record{totalPatients === 1 ? "" : "s"}</p>
+          </div>
+          {pagination && (
+            <span className="rounded-md bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
+              Page {pagination.page || page} / {pagination.totalPages || 1}
+            </span>
+          )}
+        </div>
 
         {loading ? (
           <PatientTableSkeleton />
@@ -467,302 +362,143 @@ export default function PatientListPage() {
             }}
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1120px] text-left">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/80 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
-                  <th className="px-5 py-3.5">
-                    Patient
-                  </th>
-                  <th className="px-5 py-3.5">
-                    Contact
-                  </th>
-                  <th className="px-5 py-3.5">
-                    Source
-                  </th>
-                  <th className="px-5 py-3.5">
-                    Last consult
-                  </th>
-                  <th className="px-5 py-3.5">
-                    Recall
-                  </th>
-                  <th className="px-5 py-3.5">
-                    Status
-                  </th>
-                  <th className="px-5 py-3.5 text-right">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {patients.map((patient) => {
-                  const initials =
-                    (
-                      (patient.firstName?.[0] || "") +
-                      (patient.lastName?.[0] || "")
-                    ).toUpperCase() || "?";
-
-                  return (
-                    <tr
-                      key={patient._id}
-                      className="group border-b border-slate-100 last:border-0 transition hover:bg-violet-50/30"
-                    >
-                      {/* PATIENT */}
-
-                      <td className="px-5 py-4">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            navigate(
-                              `/patients/${patient._id}`,
-                            )
-                          }
-                          className="group/patient flex items-center gap-3 text-left"
-                        >
-                          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-100 to-blue-100 text-xs font-black text-violet-700">
-                            {initials}
-
-                            {patient.status !==
-                              "inactive" && (
-                              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
-                            )}
-                          </div>
-
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="truncate text-sm font-bold text-slate-900 transition group-hover/patient:text-violet-700">
-                                {fullName(patient) ||
-                                  "Unnamed patient"}
-                              </span>
-
-                              <ArrowUpRight
-                                size={13}
-                                className="text-slate-300 opacity-0 transition group-hover/patient:text-violet-500 group-hover/patient:opacity-100"
-                              />
-                            </div>
-
-                            <div className="mt-0.5 text-[10px] font-medium text-slate-400">
-                              {patient.patientNumber ||
-                                "No patient number"}
-                            </div>
-                          </div>
-                        </button>
-                      </td>
-
-                      {/* CONTACT */}
-
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                          <Phone
-                            size={13}
-                            className="text-slate-400"
-                          />
-                          {patient.phone || "—"}
-                        </div>
-
-                        <div className="mt-1 flex max-w-[240px] items-center gap-2 truncate text-[10px] text-slate-400">
-                          <Mail size={12} />
-                          <span className="truncate">
-                            {patient.email || "No email"}
+          <>
+            {/* Mobile patient cards */}
+            <div className="divide-y divide-slate-100 md:hidden">
+              {patients.map((patient) => {
+                const initials = ((patient.firstName?.[0] || "") + (patient.lastName?.[0] || "")).toUpperCase() || "?";
+                return (
+                  <article key={patient._id} className="p-4 transition hover:bg-slate-50/70">
+                    <div className="flex items-start gap-3">
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/patients/${patient._id}`)}
+                        aria-label={`Open ${fullName(patient) || "patient"}`}
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xs font-bold text-blue-700 ring-1 ring-blue-100"
+                      >
+                        {initials}
+                      </button>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button type="button" onClick={() => navigate(`/patients/${patient._id}`)} className="truncate text-sm font-bold text-slate-900 hover:text-blue-700">
+                            {fullName(patient) || "Unnamed patient"}
+                          </button>
+                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${patient.status === "inactive" ? "bg-slate-100 text-slate-500" : "bg-emerald-50 text-emerald-700"}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${patient.status === "inactive" ? "bg-slate-400" : "bg-emerald-500"}`} />
+                            {patient.status === "inactive" ? "Inactive" : "Active"}
                           </span>
                         </div>
-                      </td>
-
-                      {/* SOURCE */}
-
-                      <td className="px-5 py-4">
-                        <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-[10px] font-bold capitalize text-blue-700">
-                          {patient.source
-                            ? patient.source.replaceAll(
-                                "_",
-                                " ",
-                              )
-                            : "Not recorded"}
-                        </span>
-                      </td>
-
-                      {/* LAST CONSULT */}
-
-                      <td className="px-5 py-4">
-                        <span className="text-xs font-semibold text-slate-600">
-                          {formatDate(
-                            patient.lastConsultationAt,
-                          )}
-                        </span>
-                      </td>
-
-                      {/* RECALL */}
-
-                      <td className="px-5 py-4">
-                        <span
-                          className={`text-xs font-semibold ${
-                            patient.nextRecallAt
-                              ? "text-amber-700"
-                              : "text-slate-400"
-                          }`}
-                        >
-                          {formatDate(patient.nextRecallAt)}
-                        </span>
-                      </td>
-
-                      {/* STATUS */}
-
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide ${
-                            patient.status ===
-                            "inactive"
-                              ? "bg-slate-100 text-slate-500"
-                              : "bg-emerald-50 text-emerald-700"
-                          }`}
-                        >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${
-                              patient.status ===
-                              "inactive"
-                                ? "bg-slate-400"
-                                : "bg-emerald-500"
-                            }`}
-                          />
-
-                          {patient.status ===
-                          "inactive"
-                            ? "Inactive"
-                            : "Active"}
-                        </span>
-                      </td>
-
-                      {/* ACTIONS */}
-
-                      <td className="px-5 py-4 text-right">
-                        <div
-                          className="relative inline-flex items-center gap-1"
-                          data-patient-actions
-                        >
-                          <button
-                            type="button"
-                            onClick={() =>
-                              navigate(
-                                `/patients/${patient._id}/consultations/new`,
-                              )
-                            }
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-2 text-[10px] font-black text-white transition hover:bg-violet-700"
-                          >
-                            <CalendarPlus size={12} />
-                            Consult
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setMenuId((current) =>
-                                current === patient._id
-                                  ? null
-                                  : patient._id,
-                              )
-                            }
-                            className="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800"
-                            aria-label={`Actions for ${fullName(
-                              patient,
-                            )}`}
-                          >
-                            <MoreHorizontal size={17} />
-                          </button>
-
-                          {menuId === patient._id && (
-                            <PatientActionsMenu
-                              patient={patient}
-                              onPreview={() => {
-                                setMenuId(null);
-                                setPreviewPatient(patient);
-                              }}
-                              onOpen={() => {
-                                setMenuId(null);
-                                navigate(
-                                  `/patients/${patient._id}`,
-                                );
-                              }}
-                              onEdit={() =>
-                                openEdit(patient)
-                              }
-                              onDeactivate={() =>
-                                requestDeactivate(
-                                  patient,
-                                )
-                              }
-                              busy={
-                                actionBusy ===
-                                patient._id
-                              }
-                            />
-                          )}
+                        <p className="mt-0.5 text-[11px] text-slate-500">{patient.patientNumber || "No patient number"}</p>
+                        <div className="mt-2 grid grid-cols-1 gap-1.5 text-xs text-slate-600">
+                          <span className="flex min-w-0 items-center gap-2"><Phone size={12} className="shrink-0 text-slate-400" />{patient.phone || "No phone recorded"}</span>
+                          {patient.email && <span className="flex min-w-0 items-center gap-2"><Mail size={12} className="shrink-0 text-slate-400" /><span className="truncate">{patient.email}</span></span>}
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-[10px] text-slate-500">Recall: {formatDate(patient.nextRecallAt)}</span>
+                          <div className="relative flex items-center gap-1.5" data-patient-actions>
+                            <button type="button" onClick={() => navigate(`/patients/${patient._id}/consultations/new`)} className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-700 px-2.5 text-[11px] font-semibold text-white hover:bg-blue-800"><CalendarPlus size={12} />Consult</button>
+                            <button type="button" onClick={() => setMenuId((current) => current === patient._id ? null : patient._id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-slate-50" aria-label={`Actions for ${fullName(patient)}`}><MoreHorizontal size={16} /></button>
+                            {menuId === patient._id && (
+                              <PatientActionsMenu
+                                patient={patient}
+                                onPreview={() => { setMenuId(null); setPreviewPatient(patient); }}
+                                onOpen={() => { setMenuId(null); navigate(`/patients/${patient._id}`); }}
+                                onEdit={() => openEdit(patient)}
+                                onDeactivate={() => requestDeactivate(patient)}
+                                busy={actionBusy === patient._id}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            {/* Desktop / tablet register */}
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full min-w-[980px] text-left">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                    <th className="px-5 py-3">Patient</th>
+                    <th className="px-5 py-3">Contact</th>
+                    <th className="px-5 py-3">Source</th>
+                    <th className="px-5 py-3">Last consultation</th>
+                    <th className="px-5 py-3">Next recall</th>
+                    <th className="px-5 py-3">Status</th>
+                    <th className="px-5 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {patients.map((patient) => {
+                    const initials = ((patient.firstName?.[0] || "") + (patient.lastName?.[0] || "")).toUpperCase() || "?";
+                    return (
+                      <tr key={patient._id} className="group transition hover:bg-blue-50/30">
+                        <td className="px-5 py-3.5">
+                          <button type="button" onClick={() => navigate(`/patients/${patient._id}`)} className="group/patient flex items-center gap-3 text-left">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[11px] font-bold text-blue-700 ring-1 ring-blue-100">{initials}</div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className="max-w-[220px] truncate text-sm font-semibold text-slate-800 group-hover/patient:text-blue-700">{fullName(patient) || "Unnamed patient"}</span>
+                                <ArrowUpRight size={12} className="text-slate-300 opacity-0 transition group-hover/patient:text-blue-600 group-hover/patient:opacity-100" />
+                              </div>
+                              <div className="mt-0.5 text-[10px] text-slate-500">{patient.patientNumber || "No patient number"}</div>
+                            </div>
+                          </button>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2 text-xs font-medium text-slate-700"><Phone size={12} className="text-slate-400" />{patient.phone || "—"}</div>
+                          <div className="mt-1 flex max-w-[220px] items-center gap-2 truncate text-[10px] text-slate-500"><Mail size={11} className="shrink-0 text-slate-400" /><span className="truncate">{patient.email || "No email"}</span></div>
+                        </td>
+                        <td className="px-5 py-3.5"><span className="inline-flex rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-medium capitalize text-slate-600">{patient.source ? patient.source.replaceAll("_", " ") : "Not recorded"}</span></td>
+                        <td className="px-5 py-3.5 text-xs text-slate-600">{formatDate(patient.lastConsultationAt)}</td>
+                        <td className={`px-5 py-3.5 text-xs ${patient.nextRecallAt ? "font-semibold text-amber-700" : "text-slate-400"}`}>{formatDate(patient.nextRecallAt)}</td>
+                        <td className="px-5 py-3.5">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${patient.status === "inactive" ? "bg-slate-100 text-slate-500" : "bg-emerald-50 text-emerald-700"}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${patient.status === "inactive" ? "bg-slate-400" : "bg-emerald-500"}`} />
+                            {patient.status === "inactive" ? "Inactive" : "Active"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 text-right">
+                          <div className="relative inline-flex items-center gap-1.5" data-patient-actions>
+                            <button type="button" onClick={() => navigate(`/patients/${patient._id}/consultations/new`)} className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-700 px-3 text-[11px] font-semibold text-white transition hover:bg-blue-800"><CalendarPlus size={12} />Consult</button>
+                            <button type="button" onClick={() => setMenuId((current) => current === patient._id ? null : patient._id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800" aria-label={`Actions for ${fullName(patient)}`}><MoreHorizontal size={16} /></button>
+                            {menuId === patient._id && (
+                              <PatientActionsMenu
+                                patient={patient}
+                                onPreview={() => { setMenuId(null); setPreviewPatient(patient); }}
+                                onOpen={() => { setMenuId(null); navigate(`/patients/${patient._id}`); }}
+                                onEdit={() => openEdit(patient)}
+                                onDeactivate={() => requestDeactivate(patient)}
+                                busy={actionBusy === patient._id}
+                              />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
-        {/* ====================================================
-            PAGINATION
-        ==================================================== */}
-
-        {!loading &&
-          pagination &&
-          (pagination.totalPages || 1) > 1 && (
-            <footer className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="text-xs font-medium text-slate-500">
-                Showing{" "}
-                <span className="font-bold text-slate-700">
-                  {patients.length}
-                </span>{" "}
-                of{" "}
-                <span className="font-bold text-slate-700">
-                  {pagination.total ?? patients.length}
-                </span>{" "}
-                patients
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() =>
-                    setPage((current) => current - 1)
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <ChevronLeft size={13} />
-                  Previous
-                </button>
-
-                <div className="flex h-9 min-w-9 items-center justify-center rounded-xl bg-slate-950 px-3 text-xs font-black text-white">
-                  {page}
-                </div>
-
-                <button
-                  type="button"
-                  disabled={
-                    page >= pagination.totalPages
-                  }
-                  onClick={() =>
-                    setPage((current) => current + 1)
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Next
-                  <ChevronRight size={13} />
-                </button>
-              </div>
-            </footer>
-          )}
+        {!loading && pagination && (pagination.totalPages || 1) > 1 && (
+          <footer className="flex flex-col gap-3 border-t border-slate-200 bg-white px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div className="text-xs text-slate-500">
+              Showing <span className="font-semibold text-slate-800">{patients.length}</span> of <span className="font-semibold text-slate-800">{pagination.total ?? patients.length}</span> patients
+            </div>
+            <div className="flex items-center gap-2">
+              <button type="button" disabled={page <= 1} onClick={() => setPage((current) => current - 1)} className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={14} />Previous</button>
+              <span className="flex h-9 min-w-9 items-center justify-center rounded-lg bg-blue-700 px-3 text-xs font-bold text-white">{page}</span>
+              <button type="button" disabled={page >= pagination.totalPages} onClick={() => setPage((current) => current + 1)} className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40">Next<ChevronRight size={14} /></button>
+            </div>
+          </footer>
+        )}
       </section>
-
-      {/* MODALS */}
 
       {previewPatient && (
         <PatientPreviewModal
@@ -776,9 +512,7 @@ export default function PatientListPage() {
           onConsult={() => {
             const id = previewPatient._id;
             setPreviewPatient(null);
-            navigate(
-              `/patients/${id}/consultations/new`,
-            );
+            navigate(`/patients/${id}/consultations/new`);
           }}
         />
       )}
@@ -820,7 +554,7 @@ function PatientActionsMenu({
   return (
     <div
       role="menu"
-      className="absolute right-0 top-11 z-40 w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 text-left shadow-[0_20px_50px_rgba(15,23,42,0.16)]"
+      className="absolute right-0 top-10 z-40 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 text-left shadow-lg"
     >
       <button
         type="button"
@@ -869,12 +603,12 @@ function PatientActionsMenu({
 
 function EmptyPatients({ search, onAdd, onClear }) {
   return (
-    <div className="flex min-h-[360px] flex-col items-center justify-center px-5 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-600">
+    <div className="flex min-h-[280px] flex-col items-center justify-center px-5 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
         <Users size={27} />
       </div>
 
-      <h3 className="mt-5 text-base font-bold text-slate-800">
+      <h3 className="mt-4 text-sm font-bold text-slate-800">
         No patients found
       </h3>
 
@@ -898,7 +632,7 @@ function EmptyPatients({ search, onAdd, onClear }) {
         <button
           type="button"
           onClick={onAdd}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-700"
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800"
         >
           <Plus size={14} />
           Add patient
@@ -915,26 +649,17 @@ function EmptyPatients({ search, onAdd, onClear }) {
 function PatientTableSkeleton() {
   return (
     <div className="divide-y divide-slate-100">
-      {Array.from({ length: 7 }).map((_, index) => (
-        <div
-          key={index}
-          className="flex min-w-[1100px] items-center gap-6 px-5 py-5"
-        >
-          <div className="flex flex-1 items-center gap-3">
-            <div className="h-10 w-10 animate-pulse rounded-xl bg-slate-100" />
-
-            <div className="space-y-2">
-              <div className="h-3 w-36 animate-pulse rounded bg-slate-100" />
-              <div className="h-2.5 w-24 animate-pulse rounded bg-slate-100" />
-            </div>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="flex items-center gap-3 px-4 py-4 sm:px-5">
+          <div className="h-9 w-9 shrink-0 animate-pulse rounded-lg bg-slate-100" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="h-3 w-36 max-w-full animate-pulse rounded bg-slate-100" />
+            <div className="h-2.5 w-24 max-w-full animate-pulse rounded bg-slate-100" />
           </div>
-
-          <div className="h-3 w-32 animate-pulse rounded bg-slate-100" />
-          <div className="h-5 w-20 animate-pulse rounded-full bg-slate-100" />
-          <div className="h-3 w-24 animate-pulse rounded bg-slate-100" />
-          <div className="h-3 w-24 animate-pulse rounded bg-slate-100" />
-          <div className="h-5 w-16 animate-pulse rounded-full bg-slate-100" />
-          <div className="h-8 w-28 animate-pulse rounded-lg bg-slate-100" />
+          <div className="hidden h-3 w-28 animate-pulse rounded bg-slate-100 sm:block" />
+          <div className="hidden h-3 w-24 animate-pulse rounded bg-slate-100 lg:block" />
+          <div className="hidden h-5 w-16 animate-pulse rounded-full bg-slate-100 md:block" />
+          <div className="h-8 w-16 shrink-0 animate-pulse rounded-lg bg-slate-100" />
         </div>
       ))}
     </div>
@@ -948,30 +673,30 @@ function PatientTableSkeleton() {
 function Metric({ icon: Icon, label, value, accent = "violet" }) {
   const styles = {
     violet:
-      "from-violet-50 to-purple-50 text-violet-600",
+      "bg-blue-50 text-blue-700",
     emerald:
-      "from-emerald-50 to-teal-50 text-emerald-600",
+      "bg-emerald-50 text-emerald-700",
     blue:
-      "from-blue-50 to-cyan-50 text-blue-600",
+      "bg-sky-50 text-sky-700",
     amber:
-      "from-amber-50 to-orange-50 text-amber-600",
+      "bg-amber-50 text-amber-700",
   };
 
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm transition-colors hover:border-slate-300">
       <div className="flex items-center gap-3">
         <div
-          className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${styles[accent]}`}
+          className={`flex h-9 w-9 items-center justify-center rounded-lg ${styles[accent]}`}
         >
           <Icon size={17} />
         </div>
 
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
             {label}
           </div>
 
-          <div className="mt-1 text-xl font-black tracking-tight text-slate-900">
+          <div className="mt-1 text-lg font-bold tracking-tight text-slate-900">
             {value}
           </div>
         </div>
@@ -1044,7 +769,7 @@ function ConfirmDeactivateModal({
           </p>
 
           <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <div className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">
               Patient
             </div>
 
@@ -1113,12 +838,12 @@ function PatientPreviewModal({
         <header className="border-b border-slate-200 bg-gradient-to-r from-violet-50 via-white to-cyan-50 px-5 py-5 sm:px-7">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-lg font-black text-white shadow-lg">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-700 to-blue-600 text-lg font-black text-white shadow-lg">
                 {initials}
               </div>
 
               <div className="min-w-0">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-600">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-700">
                   Patient snapshot
                 </p>
 
@@ -1272,7 +997,7 @@ function PatientPreviewModal({
               <button
                 type="button"
                 onClick={onConsult}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-700"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800"
               >
                 Start consultation
               </button>
@@ -1280,7 +1005,7 @@ function PatientPreviewModal({
               <button
                 type="button"
                 onClick={onOpen}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:from-violet-500 hover:to-blue-500"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:from-violet-500 hover:to-blue-500"
               >
                 Open patient record
                 <ArrowUpRight size={14} />
@@ -1363,7 +1088,7 @@ function EditPatientModal({
       <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[30px] border border-slate-200 bg-white shadow-2xl">
         <header className="sticky top-0 z-10 flex items-start justify-between border-b border-slate-200 bg-white/95 px-5 py-5 backdrop-blur sm:px-6">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-violet-600">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-blue-700">
               Patient maintenance
             </div>
 
@@ -1491,7 +1216,7 @@ function EditPatientModal({
                   notes: event.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50"
             />
           </label>
 
@@ -1507,7 +1232,7 @@ function EditPatientModal({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-2.5 text-xs font-bold text-white hover:bg-violet-700 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-2.5 text-xs font-bold text-white hover:bg-blue-800 disabled:opacity-50"
             >
               <Edit3 size={14} />
               {saving
@@ -1551,7 +1276,7 @@ function EditInput({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50"
       />
     </label>
   );
