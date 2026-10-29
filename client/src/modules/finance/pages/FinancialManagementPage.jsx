@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Plus,
   RefreshCw,
@@ -24,18 +25,30 @@ import {
   createBulkAccount,
   getBulkBillings,
   createBulkBilling,
-  addBulkPayment,
 } from "../finance.api";
 const money = (v) =>
   `₹${Number(v || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => {
+  // Use the browser's local calendar date; UTC ISO strings can shift a day
+  // for practices in India and other non-UTC time zones.
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+const FINANCIAL_TABS = ["expenses", "petty", "accounts", "bulk", "outstanding"];
 export default function FinancialManagementPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [summary, setSummary] = useState({});
   const [expenses, setExpenses] = useState([]);
   const [petty, setPetty] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [bulk, setBulk] = useState([]);
-  const [tab, setTab] = useState("expenses");
+  const [tab, setTab] = useState(() => {
+    const requested = searchParams.get("tab");
+    return FINANCIAL_TABS.includes(requested) ? requested : "expenses";
+  });
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -99,6 +112,24 @@ export default function FinancialManagementPage() {
   useEffect(() => {
     load();
   }, []);
+
+  // Navigation shortcuts can open a specific financial register directly.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const requested = searchParams.get("tab");
+      setTab(FINANCIAL_TABS.includes(requested) ? requested : "expenses");
+      setShow(false);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [searchParams]);
+  const selectFinancialTab = (nextTab) => {
+    setTab(nextTab);
+    setShow(false);
+    const next = new URLSearchParams(searchParams);
+    next.set("tab", nextTab);
+    setSearchParams(next, { replace: true });
+  };
+
   const notice = (m) => {
     setMessage(m);
     setTimeout(() => setMessage(""), 2200);
@@ -247,7 +278,7 @@ export default function FinancialManagementPage() {
         >
           <form
             onSubmit={submit}
-            className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+            className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
           >
             {tab === "expenses" && (
               <>
@@ -434,7 +465,7 @@ export default function FinancialManagementPage() {
               </>
             )}
             <div className="md:col-span-4">
-              <button className="rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 Save record
               </button>
             </div>
@@ -442,7 +473,7 @@ export default function FinancialManagementPage() {
         </Section>
       )}
       <Section number="03" title="Financial registers">
-        <div className="mb-5 flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           {[
             ["expenses", "Expenses"],
             ["petty", "Petty Cash"],
@@ -453,8 +484,7 @@ export default function FinancialManagementPage() {
             <button
               key={k}
               onClick={() => {
-                setTab(k);
-                setShow(false);
+                selectFinancialTab(k);
               }}
               className={`rounded-xl px-3.5 py-2 text-xs font-semibold ${tab === k ? "bg-slate-900 text-white" : "border border-slate-200 bg-white text-slate-600"}`}
             >
@@ -490,8 +520,8 @@ export default function FinancialManagementPage() {
         )}
         {tab === "petty" && (
           <>
-            <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
                 Current recorded movement
               </span>
               <div className="mt-1 text-xl font-bold">{money(netPetty)}</div>
@@ -595,7 +625,7 @@ export default function FinancialManagementPage() {
           />
         )}
         {tab === "outstanding" && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
             <div className="text-xs font-semibold text-slate-500">
               Outstanding patient invoices
             </div>
@@ -636,9 +666,9 @@ export default function FinancialManagementPage() {
 }
 function Metric({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
       {Icon && <Icon size={16} className="text-slate-500" />}
-      <div className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+      <div className="mt-2 text-[12px] font-semibold uppercase tracking-wider text-slate-400">
         {label}
       </div>
       <div className="mt-1 text-lg font-bold text-slate-900">{value}</div>

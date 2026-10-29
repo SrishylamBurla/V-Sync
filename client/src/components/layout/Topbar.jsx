@@ -2,16 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Activity,
+  BarChart3,
   Bell,
   Boxes,
   Building2,
   CalendarDays,
+  CheckCircle2,
   ChevronDown,
   ClipboardList,
   FileBarChart,
+  Glasses,
   LogOut,
   Menu,
-  Search,
   Settings,
   ShieldCheck,
   Stethoscope,
@@ -36,46 +38,43 @@ const ROLE_LABELS = {
   receptionist: "Receptionist",
 };
 
-const PLATFORM_NAV = [
-  { label: "Dashboard", to: "/dashboard" },
-  { label: "Organizations", to: "/admin/organizations" },
-  { label: "Reports", to: "/reports" },
-  { label: "Settings", to: "/settings" },
-];
-
 const PATIENT_NAV = [
   {
-    label: "Patients",
+    label: "Patient Details",
     to: "/patients",
     icon: Users,
     access: "patients",
   },
   {
     label: "Appointments",
-    to: "/appointments",
     icon: CalendarDays,
     access: "appointments",
+    children: [
+      { label: "Make", to: "/appointments?book=1", access: "appointments" },
+      { label: "Move", to: "/appointments?mode=move", access: "appointments" },
+      { label: "Modify", to: "/appointments?mode=modify", access: "appointments" },
+      { label: "Setup", to: "/settings?section=appointments", access: "settings" },
+    ],
   },
   {
-    label: "Recall list",
+    label: "Recall List",
     to: "/recall",
     icon: Activity,
     access: "recall",
   },
   {
     label: "SMS / Email",
-    to: "/communications",
+    to: "/newsletters",
     icon: Bell,
-    access: "communications",
+    access: "newsletters",
   },
-];
-
-/*
- * Clinical contains clinical workflows only.
- * Optical/dispensing is intentionally kept out of this group so there
- * is only one clear global entry point for dispensing work.
- */
-const CLINICAL_NAV = [
+  {
+    label: "Merge records",
+    icon: Users,
+    access: "patients",
+    disabled: true,
+    hint: "Not available yet",
+  },
   {
     label: "Clinical Management",
     to: "/clinical",
@@ -84,94 +83,59 @@ const CLINICAL_NAV = [
   },
 ];
 
-const DISPENSING_NAV = [
-  {
-    label: "Dispensing overview",
-    to: "/dispensing",
-    icon: ClipboardList,
-    access: "dispensing",
-  },
-  {
-    label: "Spectacle Jobs",
-    to: "/dispensing/spectacle-jobs",
-    icon: ClipboardList,
-    access: "dispensing",
-  },
-  {
-    label: "Contact Lens Jobs",
-    to: "/dispensing/contact-lenses",
-    icon: ClipboardList,
-    access: "dispensing",
-  },
-  {
-    label: "Sundry Jobs",
-    to: "/dispensing/sundries",
-    icon: Boxes,
-    access: "dispensing",
-  },
-];
-
 const FINANCE_NAV = [
+  { label: "Billing", to: "/billing", icon: WalletCards, access: "billing" },
+  { label: "Outstanding", to: "/finance?tab=outstanding", icon: WalletCards, access: "finance" },
+  { label: "Petty Cash", to: "/finance?tab=petty", icon: WalletCards, access: "finance" },
+  { label: "Expenses", to: "/finance?tab=expenses", icon: WalletCards, access: "finance" },
   {
-    label: "Billing",
-    to: "/billing",
-    icon: WalletCards,
-    access: "billing",
-  },
-  {
-    label: "Finance",
-    to: "/finance",
-    icon: WalletCards,
-    access: "finance",
-  },
-  {
-    label: "Reports",
-    to: "/reports",
+    label: "Business Activity Statement",
     icon: FileBarChart,
     access: "reports",
+    disabled: true,
+    hint: "Report not available yet",
   },
+  { label: "Financial Year", to: "/reports?period=financial-year", icon: FileBarChart, access: "reports" },
+  { label: "Reports", to: "/reports", icon: BarChart3, access: "reports" },
 ];
 
 const INVENTORY_NAV = [
+  { label: "Frame Details List", to: "/inventory?category=frame", icon: Boxes, access: "inventory" },
+  { label: "Frame Stock-take", to: "/inventory?category=frame&action=stocktake", icon: CheckCircle2, access: "inventory" },
+  { label: "Sundry Details", to: "/inventory?category=sundry", icon: Boxes, access: "inventory" },
   {
-    label: "Inventory",
-    to: "/inventory",
-    icon: Boxes,
+    label: "Adjustment Report",
+    icon: FileBarChart,
     access: "inventory",
+    disabled: true,
+    hint: "Report not available yet",
   },
+  { label: "Lens List", to: "/inventory?category=lens", icon: Glasses, access: "inventory" },
+  { label: "Contact Lens List", to: "/catalogue?tab=contact-lenses", icon: Glasses, access: "catalogue" },
   {
-    label: "Catalogue",
-    to: "/catalogue",
+    label: "Dispensing",
     icon: ClipboardList,
-    access: "catalogue",
+    access: "dispensing",
+    children: [
+      { label: "Dispensing Overview", to: "/dispensing", access: "dispensing" },
+      { label: "Spectacle Jobs", to: "/dispensing/spectacle-jobs", access: "dispensing" },
+      { label: "Prescription History", to: "/dispensing/spectacle-history", access: "dispensing" },
+      { label: "Contact Lens Jobs", to: "/dispensing/contact-lenses", access: "dispensing" },
+      { label: "Sundry Jobs", to: "/dispensing/sundries", access: "dispensing" },
+    ],
   },
-  {
-    label: "Laboratory",
-    to: "/lab",
-    icon: Activity,
-    access: "laboratory",
-  },
+  { label: "Optical Catalogue", to: "/catalogue", icon: ClipboardList, access: "catalogue" },
+  { label: "Laboratory", to: "/lab", icon: Activity, access: "laboratory" },
 ];
 
 const MAINTENANCE_NAV = [
-  {
-    label: "Staff",
-    to: "/staff",
-    icon: Users,
-    access: "staff",
-  },
-  {
-    label: "Branches",
-    to: "/branches",
-    icon: Building2,
-    access: "branches",
-  },
-  {
-    label: "Settings",
-    to: "/settings",
-    icon: Settings,
-    access: "settings",
-  },
+  { label: "Setup Frame", to: "/inventory?category=frame&create=1", icon: Boxes, access: "inventory" },
+  { label: "Setup Lens", to: "/catalogue?tab=lens&new=1", icon: Glasses, access: "catalogue" },
+  { label: "Staff", to: "/staff", icon: Users, access: "staff" },
+  { label: "Branches", to: "/branches", icon: Building2, access: "branches" },
+  { label: "Practice Settings", to: "/settings", icon: Settings, access: "settings" },
+  { label: "Franchise enquiries", to: "/admin/leads", icon: Users, access: "organizations" },
+  { label: "Organizations", to: "/admin/organizations", icon: Building2, access: "organizations" },
 ];
 
 const idOf = (value) => {
@@ -190,12 +154,13 @@ const idOf = (value) => {
 
 const pathMatches = (pathname, path) => {
   if (!path) return false;
+  const cleanPath = String(path).split("?")[0];
 
-  if (path === "/dashboard") {
+  if (cleanPath === "/dashboard") {
     return pathname === "/dashboard";
   }
 
-  return pathname === path || pathname.startsWith(`${path}/`);
+  return pathname === cleanPath || pathname.startsWith(`${cleanPath}/`);
 };
 
 const sectionActive = (pathname, items = []) =>
@@ -223,7 +188,7 @@ function TopNavLink({ to, children, onNavigate }) {
           <span>{children}</span>
 
           {isActive && (
-            <span className="absolute inset-x-3.5 bottom-0 h-0.5 rounded-full bg-slate-950" />
+            <span className="absolute inset-x-3.5 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-indigo-600 to-blue-500" />
           )}
         </>
       )}
@@ -231,77 +196,128 @@ function TopNavLink({ to, children, onNavigate }) {
   );
 }
 
+function MenuItems({ items, pathname, onNavigate, mobile = false }) {
+  return (
+    <div className={mobile ? "space-y-1" : "space-y-1"}>
+      {items.map((item) => {
+        const Icon = item.icon;
+
+        if (item.children?.length) {
+          return (
+            <section key={item.label} className={mobile ? "rounded-lg bg-white/70 p-2" : "py-1"}>
+              <div className={`flex items-center gap-2 px-3 py-2 text-[12px] font-bold uppercase tracking-[.12em] ${mobile ? "text-slate-500" : "text-slate-400"}`}>
+                {Icon ? <Icon size={13} strokeWidth={1.9} /> : null}
+                <span>{item.label}</span>
+              </div>
+              <div className={`space-y-0.5 ${mobile ? "ml-2 border-l border-slate-200 pl-2" : "ml-3 border-l border-slate-100 pl-2"}`}>
+                <MenuItems items={item.children} pathname={pathname} onNavigate={onNavigate} mobile={mobile} />
+              </div>
+            </section>
+          );
+        }
+
+        if (item.disabled) {
+          return (
+            <div
+              key={item.label}
+              title={item.hint || "Not available yet"}
+              aria-disabled="true"
+              className={`flex min-h-9 cursor-not-allowed items-center gap-2 rounded-lg px-3 ${mobile ? "text-[12px]" : "text-[12px]"} font-medium text-slate-400`}
+            >
+              {Icon ? <Icon size={14} strokeWidth={1.8} className="shrink-0" /> : null}
+              <span className="min-w-0 flex-1">{item.label}</span>
+              <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[12px] font-bold uppercase tracking-wide text-slate-400">Planned</span>
+            </div>
+          );
+        }
+
+        if (!item.to) return null;
+        const activeItem = pathMatches(pathname, item.to.split("?")[0]);
+
+        return (
+          <NavLink
+            key={`${item.label}-${item.to}`}
+            to={item.to}
+            onClick={onNavigate}
+            className={[
+              "flex min-h-9 items-center gap-2 rounded-lg px-3",
+              mobile ? "text-[12px]" : "text-[12px]",
+              "font-medium transition-colors duration-150",
+              activeItem
+                ? "bg-slate-100 text-slate-950"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
+            ].join(" ")}
+          >
+            {Icon ? <Icon size={14} strokeWidth={1.8} className="shrink-0" /> : null}
+            <span>{item.label}</span>
+          </NavLink>
+        );
+      })}
+    </div>
+  );
+}
+
 function Dropdown({ label, items, pathname, onNavigate }) {
-  const active = sectionActive(pathname, items);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const location = useLocation();
+  const active = sectionActive(pathname, items.flatMap((item) => [item, ...(item.children || [])]));
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const onPointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   if (!items?.length) return null;
 
+  const navigateFromMenu = () => {
+    setOpen(false);
+    onNavigate?.();
+  };
+
   return (
-    <div className="group relative">
+    <div ref={rootRef} className="group relative">
       <button
         type="button"
+        onClick={() => setOpen((current) => !current)}
         className={[
-          "relative inline-flex h-11 shrink-0 items-center justify-center gap-1.5",
-          "px-3.5 text-[13px] font-medium leading-none whitespace-nowrap",
+          "relative inline-flex h-10 shrink-0 items-center justify-center gap-1.5",
+          "px-3 text-[13px] font-medium leading-none whitespace-nowrap",
           "transition-colors duration-150",
-          active
-            ? "text-slate-950"
-            : "text-slate-500 hover:text-slate-900",
+          active || open ? "text-slate-950" : "text-slate-500 hover:text-slate-900",
         ].join(" ")}
+        aria-haspopup="true"
+        aria-expanded={open}
+        aria-label={`${label} menu`}
       >
         <span>{label}</span>
-
-        <ChevronDown
-          size={13}
-          strokeWidth={1.8}
-          className="transition-transform duration-150 group-hover:rotate-180"
-        />
-
-        {active && (
-          <span className="absolute inset-x-3.5 bottom-0 h-0.5 rounded-full bg-slate-950" />
-        )}
+        <ChevronDown size={13} strokeWidth={1.8} className={`transition-transform duration-150 ${open ? "rotate-180" : ""}`} />
+        {(active || open) && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-indigo-600 to-blue-500" />}
       </button>
 
-      <div
-        className={[
-          "invisible absolute left-0 top-full z-50 mt-1 w-60 translate-y-1",
-          "overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5",
-          "opacity-0 shadow-[0_12px_40px_rgba(15,23,42,0.12)]",
-          "transition-all duration-150",
-          "group-hover:visible group-hover:translate-y-0",
-          "group-hover:opacity-100",
-        ].join(" ")}
-      >
-        {items.map((item) => {
-          const Icon = item.icon;
-          const activeItem = pathMatches(pathname, item.to);
-
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={onNavigate}
-              className={[
-                "flex h-10 items-center gap-3 rounded-lg px-3",
-                "text-[13px] font-medium leading-none",
-                "transition-colors duration-150",
-                activeItem
-                  ? "bg-slate-100 text-slate-950"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
-              ].join(" ")}
-            >
-              {Icon ? (
-                <Icon
-                  size={15}
-                  strokeWidth={1.8}
-                  className="shrink-0"
-                />
-              ) : null}
-
-              <span>{item.label}</span>
-            </NavLink>
-          );
-        })}
+      <div className={[
+        "absolute left-0 top-full z-50 mt-1 w-72 max-w-[min(22rem,90vw)]",
+        "max-h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5",
+        "shadow-[0_12px_40px_rgba(15,23,42,0.12)] transition duration-150",
+        open
+          ? "visible translate-y-0 opacity-100"
+          : "invisible pointer-events-none translate-y-1 opacity-0",
+      ].join(" ")}>
+        <MenuItems items={items} pathname={pathname} onNavigate={navigateFromMenu} />
       </div>
     </div>
   );
@@ -312,34 +328,10 @@ function MobileSection({ label, items, pathname, onNavigate }) {
 
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-2">
-      <div className="px-2 pb-1.5 pt-1 text-[9px] font-bold uppercase tracking-[.16em] text-slate-400">
+      <div className="px-2 pb-1.5 pt-1 text-[12px] font-bold uppercase tracking-[.16em] text-slate-400">
         {label}
       </div>
-
-      <div className="grid gap-1">
-        {items.map((item) => {
-          const Icon = item.icon;
-          const active = pathMatches(pathname, item.to);
-
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={onNavigate}
-              className={[
-                "flex items-center gap-3 rounded-lg px-3 py-2.5",
-                "text-[13px] font-medium",
-                active
-                  ? "bg-white text-slate-950 shadow-sm"
-                  : "text-slate-600 hover:bg-white hover:text-slate-950",
-              ].join(" ")}
-            >
-              {Icon ? <Icon size={16} strokeWidth={1.8} /> : null}
-              <span>{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </div>
+      <MenuItems items={items} pathname={pathname} onNavigate={onNavigate} mobile />
     </section>
   );
 }
@@ -357,11 +349,17 @@ export default function Topbar() {
   const isSuperAdmin = role === "super_admin";
 
   const filterItems = (items) =>
-    items.filter((item) => canAccessModule(item.access, role));
+    items
+      .map((item) => ({
+        ...item,
+        children: item.children ? filterItems(item.children) : undefined,
+      }))
+      .filter((item) => {
+        const hasAccess = !item.access || canAccessModule(item.access, role);
+        return hasAccess && (item.disabled || item.to || item.children?.length);
+      });
 
   const patientNav = filterItems(PATIENT_NAV);
-  const clinicalNav = filterItems(CLINICAL_NAV);
-  const dispensingNav = filterItems(DISPENSING_NAV);
   const financeNav = filterItems(FINANCE_NAV);
   const inventoryNav = filterItems(INVENTORY_NAV);
   const maintenanceNav = filterItems(MAINTENANCE_NAV);
@@ -412,30 +410,10 @@ export default function Topbar() {
   };
 
   const mobileSections = [
-    {
-      label: "Patients & Care",
-      items: patientNav,
-    },
-    {
-      label: "Clinical",
-      items: clinicalNav,
-    },
-    {
-      label: "Dispensing",
-      items: dispensingNav,
-    },
-    {
-      label: "Financial",
-      items: financeNav,
-    },
-    {
-      label: "Inventory",
-      items: inventoryNav,
-    },
-    {
-      label: "Maintenance",
-      items: maintenanceNav,
-    },
+    { label: "Patients", items: patientNav },
+    { label: "Financial", items: financeNav },
+    { label: "Inventory", items: inventoryNav },
+    { label: "Maintenance", items: maintenanceNav },
   ].filter((section) => section.items.length);
 
   return (
@@ -443,13 +421,13 @@ export default function Topbar() {
       ref={rootRef}
       className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur"
     >
-      <div className="mx-auto flex h-16 w-full max-w-[1500px] items-center gap-4 px-3 sm:px-5 lg:px-7">
+      <div className="mx-auto flex h-16 w-full max-w-[1500px] items-center gap-3 px-3 sm:px-3 lg:px-4">
         <NavLink
           to="/dashboard"
           className="flex shrink-0 items-center gap-2.5"
           onClick={closeMenus}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-sm">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 text-white shadow-sm shadow-indigo-100">
             <Activity size={18} strokeWidth={2.2} />
           </span>
 
@@ -458,28 +436,13 @@ export default function Topbar() {
               V-Sync
             </span>
 
-            <span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <span className="block text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400">
               Vision Platform
             </span>
           </span>
         </NavLink>
 
         <div className="hidden h-7 w-px bg-slate-200 lg:block" />
-
-        <div className="hidden min-w-0 flex-1 items-center lg:flex">
-          <div className="relative w-full max-w-[330px]">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-              size={16}
-            />
-
-            <input
-              type="search"
-              placeholder="Search patients, appointments..."
-              className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-[12px] text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white"
-            />
-          </div>
-        </div>
 
         <div className="ml-auto flex items-center gap-2">
           {!isSuperAdmin && (
@@ -490,26 +453,16 @@ export default function Topbar() {
               />
 
               <div className="min-w-0">
-                <div className="truncate text-[11px] font-semibold text-slate-800">
+                <div className="truncate text-[12px] font-semibold text-slate-800">
                   {organizationName}
                 </div>
 
-                <div className="truncate text-[10px] text-slate-400">
+                <div className="truncate text-[12px] text-slate-400">
                   {currentBranch?.name || "Default branch"}
                 </div>
               </div>
             </div>
           )}
-
-          <button
-            type="button"
-            className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-            aria-label="Notifications"
-          >
-            <Bell size={18} strokeWidth={1.8} />
-
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-white" />
-          </button>
 
           <div className="relative">
             <button
@@ -518,7 +471,7 @@ export default function Topbar() {
               className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition hover:bg-slate-50"
               aria-expanded={profileOpen}
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[11px] font-bold text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[12px] font-bold text-white">
                 {(user?.firstName?.[0] || "U").toUpperCase()}
                 {(user?.lastName?.[0] || "").toUpperCase()}
               </span>
@@ -530,7 +483,7 @@ export default function Topbar() {
                     .join(" ") || "User"}
                 </span>
 
-                <span className="block text-[10px] text-slate-400">
+                <span className="block text-[12px] text-slate-400">
                   {roleLabel}
                 </span>
               </span>
@@ -543,14 +496,14 @@ export default function Topbar() {
 
             {profileOpen && (
               <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,23,42,0.12)]">
-                <div className="border-b border-slate-100 px-4 py-3">
+                <div className="border-b border-slate-100 px-3 py-3">
                   <div className="text-[13px] font-semibold text-slate-900">
                     {[user?.firstName, user?.lastName]
                       .filter(Boolean)
                       .join(" ") || "User"}
                   </div>
 
-                  <div className="mt-0.5 truncate text-[11px] text-slate-400">
+                  <div className="mt-0.5 truncate text-[12px] text-slate-400">
                     {user?.email || ""}
                   </div>
                 </div>
@@ -595,94 +548,48 @@ export default function Topbar() {
       </div>
 
       <div className="hidden border-t border-slate-100 lg:block">
-        <nav className="mx-auto flex h-11 w-full max-w-[1500px] items-center overflow-visible px-3 sm:px-5 lg:px-7">
-          {isSuperAdmin ? (
-            PLATFORM_NAV.map((item) => (
-              <TopNavLink
-                key={item.to}
-                to={item.to}
-                onNavigate={closeMenus}
-              >
-                {item.label}
-              </TopNavLink>
-            ))
-          ) : (
-            <>
-              <TopNavLink
-                to="/dashboard"
-                onNavigate={closeMenus}
-              >
-                Dashboard
-              </TopNavLink>
+        <nav className="mx-auto flex h-11 w-full max-w-[1500px] items-center overflow-visible px-3 sm:px-3 lg:px-4">
+          <TopNavLink to="/dashboard" onNavigate={closeMenus}>
+            Dashboard
+          </TopNavLink>
 
-              {patientNav.length > 0 && (
-                <Dropdown
-                  label="Patients & Care"
-                  items={patientNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
-              )}
-
-              {clinicalNav.length > 0 && (
-                <Dropdown
-                  label="Clinical"
-                  items={clinicalNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
-              )}
-
-              {dispensingNav.length > 0 && (
-                <>
-                  <TopNavLink
-                    to="/dispensing"
-                    onNavigate={closeMenus}
-                  >
-                    Dispensing
-                  </TopNavLink>
-
-                  {dispensingNav.length > 1 && (
-                    <Dropdown
-                      label="Dispensing jobs"
-                      items={dispensingNav.slice(1)}
-                      pathname={location.pathname}
-                      onNavigate={closeMenus}
-                    />
-                  )}
-                </>
-              )}
-
-              {financeNav.length > 0 && (
-                <Dropdown
-                  label="Financial"
-                  items={financeNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
-              )}
-
-              {inventoryNav.length > 0 && (
-                <Dropdown
-                  label="Inventory"
-                  items={inventoryNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
-              )}
-
-              {maintenanceNav.length > 0 && (
-                <Dropdown
-                  label="Maintenance"
-                  items={maintenanceNav}
-                  pathname={location.pathname}
-                  onNavigate={closeMenus}
-                />
-              )}
-            </>
+          {patientNav.length > 0 && (
+            <Dropdown
+              label="Patients"
+              items={patientNav}
+              pathname={location.pathname}
+              onNavigate={closeMenus}
+            />
           )}
 
-          <div className="ml-auto flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
+          {financeNav.length > 0 && (
+            <Dropdown
+              label="Financial"
+              items={financeNav}
+              pathname={location.pathname}
+              onNavigate={closeMenus}
+            />
+          )}
+
+          {inventoryNav.length > 0 && (
+            <Dropdown
+              label="Inventory"
+              items={inventoryNav}
+              pathname={location.pathname}
+              onNavigate={closeMenus}
+            />
+          )}
+
+          {maintenanceNav.length > 0 && (
+            <Dropdown
+              label="Maintenance"
+              items={maintenanceNav}
+              pathname={location.pathname}
+              onNavigate={closeMenus}
+            />
+          )}
+
+          <div className="ml-auto flex items-center gap-1 text-[12px] font-medium uppercase tracking-[0.14em] text-slate-400">
             <Wrench size={13} />
             <span>
               {isSuperAdmin ? "Platform" : "Workspace"}
@@ -693,70 +600,34 @@ export default function Topbar() {
 
       {mobileOpen && (
         <div className="border-t border-slate-200 bg-white lg:hidden">
-          <nav className="mx-auto max-h-[calc(100vh-64px)] overflow-y-auto px-3 py-3 sm:px-5">
-            <div className="relative mb-3">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                size={16}
-              />
+          <nav className="mx-auto max-h-[calc(100vh-64px)] overflow-y-auto px-3 py-3 sm:px-3">
+            <div className="space-y-2">
+              <NavLink
+                to="/dashboard"
+                end
+                onClick={closeMenus}
+                className={({ isActive }) =>
+                  [
+                    "flex items-center rounded-xl px-3 py-3 text-[13px] font-bold",
+                    isActive
+                      ? "bg-slate-950 text-white"
+                      : "border border-slate-200 text-slate-700",
+                  ].join(" ")
+                }
+              >
+                Dashboard
+              </NavLink>
 
-              <input
-                type="search"
-                placeholder="Search patients, appointments..."
-                className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-[12px] outline-none"
-              />
+              {mobileSections.map((section) => (
+                <MobileSection
+                  key={section.label}
+                  label={section.label}
+                  items={section.items}
+                  pathname={location.pathname}
+                  onNavigate={closeMenus}
+                />
+              ))}
             </div>
-
-            {isSuperAdmin ? (
-              <div className="grid gap-1">
-                {PLATFORM_NAV.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.to === "/dashboard"}
-                    onClick={closeMenus}
-                    className={({ isActive }) =>
-                      [
-                        "rounded-lg px-3 py-2.5 text-[13px] font-medium",
-                        isActive
-                          ? "bg-slate-100 text-slate-950"
-                          : "text-slate-600 hover:bg-slate-50",
-                      ].join(" ")
-                    }
-                  >
-                    {item.label}
-                  </NavLink>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <NavLink
-                  to="/dashboard"
-                  end
-                  onClick={closeMenus}
-                  className={({ isActive }) =>
-                    [
-                      "flex items-center rounded-xl px-3 py-3 text-[13px] font-bold",
-                      isActive
-                        ? "bg-slate-950 text-white"
-                        : "border border-slate-200 text-slate-700",
-                    ].join(" ")
-                  }
-                >
-                  Dashboard
-                </NavLink>
-
-                {mobileSections.map((section) => (
-                  <MobileSection
-                    key={section.label}
-                    label={section.label}
-                    items={section.items}
-                    pathname={location.pathname}
-                    onNavigate={closeMenus}
-                  />
-                ))}
-              </div>
-            )}
           </nav>
         </div>
       )}

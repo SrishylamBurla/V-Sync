@@ -156,14 +156,14 @@ export default function AddPatientPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 py-5 sm:py-7">
-      <header className="overflow-hidden rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-cyan-50 shadow-sm">
-        <div className="flex flex-col gap-5 p-5 sm:p-7 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-start gap-4">
+    <div className="mx-auto max-w-5xl space-y-3 py-3 sm:py-4">
+      <header className="overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-cyan-50 shadow-sm">
+        <div className="flex flex-col gap-3 p-3 sm:p-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-3">
             
 
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.18em] text-violet-700">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-[12px] font-bold uppercase tracking-[.18em] text-violet-700">
                 <FilePlus2 size={12} />
                 Patient intake
               </div>
@@ -179,7 +179,7 @@ export default function AddPatientPage() {
             </div>
           </div>
 
-          <div className="hidden items-center gap-2 rounded-2xl border border-white/80 bg-white/75 px-4 py-3 text-xs text-slate-500 md:flex">
+          <div className="hidden items-center gap-2 rounded-xl border border-white/80 bg-white/75 px-3 py-3 text-xs text-slate-500 md:flex">
             <ShieldCheck size={15} className="text-emerald-600" />
             Ready for consultation, appointments and optical workflows
           </div>
@@ -187,13 +187,13 @@ export default function AddPatientPage() {
       </header>
 
       {error && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
       {warning && (
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-800">
           <Search size={16} className="mt-0.5 shrink-0" />
           <div className="flex-1">{warning}</div>
           <button
@@ -207,15 +207,15 @@ export default function AddPatientPage() {
       )}
 
       {saved && (
-        <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700">
           <CheckCircle2 size={17} />
           Patient created successfully.
         </div>
       )}
 
-      <form onSubmit={submit} className="space-y-5">
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <header className="border-b border-slate-100 bg-gradient-to-r from-blue-50 via-cyan-50 to-white px-5 py-4 sm:px-6">
+      <form onSubmit={submit} className="space-y-3">
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <header className="border-b border-slate-100 bg-gradient-to-r from-blue-50 via-cyan-50 to-white px-3 py-3 sm:px-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
                 <UserRound size={18} />
@@ -231,7 +231,7 @@ export default function AddPatientPage() {
             </div>
           </header>
 
-          <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-3">
+          <div className="grid gap-3 p-3 sm:p-3 lg:grid-cols-3">
             <Input
               label="First name"
               value={form.firstName}
@@ -271,7 +271,7 @@ export default function AddPatientPage() {
                 type="button"
                 onClick={checkDuplicate}
                 disabled={checking || form.phone.replace(/\D/g, "").length < 10}
-                className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 disabled:opacity-40"
+                className="mt-2 inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-700 disabled:opacity-40"
               >
                 <Search size={12} />
                 {checking ? "Checking..." : "Check existing patient"}
@@ -292,8 +292,8 @@ export default function AddPatientPage() {
               onChange={(value) => change("email", value)}
             />
 
-            <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
+            <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-3">
+              <div className="text-[12px] font-bold uppercase tracking-wider text-blue-700">
                 Record preview
               </div>
               <div className="mt-2 text-sm font-semibold text-slate-800">
@@ -306,8 +306,8 @@ export default function AddPatientPage() {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <header className="border-b border-slate-100 bg-gradient-to-r from-amber-50 via-orange-50 to-white px-5 py-4 sm:px-6">
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <header className="border-b border-slate-100 bg-gradient-to-r from-amber-50 via-orange-50 to-white px-3 py-3 sm:px-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-amber-600 shadow-sm">
                 <Phone size={18} />
@@ -323,7 +323,7 @@ export default function AddPatientPage() {
             </div>
           </header>
 
-          <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-2">
+          <div className="grid gap-3 p-3 sm:p-3 lg:grid-cols-2">
             <Select
               label="Patient source"
               value={form.source}
@@ -331,8 +331,8 @@ export default function AddPatientPage() {
               options={sourceOptions}
             />
 
-            <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/60 p-4">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
+            <div className="rounded-xl border border-dashed border-amber-200 bg-amber-50/60 p-3">
+              <div className="text-[12px] font-bold uppercase tracking-wider text-amber-700">
                 Workflow note
               </div>
               <div className="mt-1 text-xs leading-5 text-slate-600">
@@ -343,7 +343,7 @@ export default function AddPatientPage() {
             </div>
 
             <label className="block lg:col-span-2">
-              <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
                 Patient notes
               </span>
 
@@ -352,18 +352,18 @@ export default function AddPatientPage() {
                 value={form.notes}
                 onChange={(event) => change("notes", event.target.value)}
                 placeholder="Front-desk notes, preferences, accessibility needs, communication instructions..."
-                className="w-full resize-y rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+                className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
               />
             </label>
           </div>
         </section>
 
-        <footer className="sticky bottom-0 z-20 -mx-1 border-t border-slate-200 bg-white/95 px-1 py-4 backdrop-blur sm:static sm:bg-transparent sm:px-0">
+        <footer className="sticky bottom-0 z-20 -mx-1 border-t border-slate-200 bg-white/95 px-1 py-3 backdrop-blur sm:static sm:bg-transparent sm:px-0">
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate("/patients")}
-              className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-50"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -371,7 +371,7 @@ export default function AddPatientPage() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Save size={16} />
               {saving ? "Creating patient..." : "Create patient"}
@@ -394,7 +394,7 @@ function Input({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </span>
@@ -414,7 +414,7 @@ function Input({
 function Select({ label, value, onChange, options }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </span>
 

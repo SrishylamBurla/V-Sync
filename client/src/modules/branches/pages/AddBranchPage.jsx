@@ -99,10 +99,10 @@ export default function AddBranchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto w-full max-w-[1100px] px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <div className="mt-5 flex items-center gap-3">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto w-full max-w-[1100px] px-3 py-3 sm:px-3 lg:px-4">
+        <div className="mb-4">
+          <div className="mt-4 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
               <Building2 size={20} />
             </div>
@@ -120,15 +120,15 @@ export default function AddBranchPage() {
         </div>
 
         {error && (
-          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Basic information */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 px-5 py-4">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-200 px-3 py-3">
               <h2 className="font-semibold text-slate-900">
                 Branch information
               </h2>
@@ -138,7 +138,7 @@ export default function AddBranchPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 p-5 md:grid-cols-2">
+            <div className="grid gap-3 p-3 md:grid-cols-2">
               <Field
                 label="Branch name"
                 required
@@ -199,8 +199,8 @@ export default function AddBranchPage() {
           </section>
 
           {/* Address */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 px-5 py-4">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-200 px-3 py-3">
               <h2 className="font-semibold text-slate-900">
                 Branch address
               </h2>
@@ -210,7 +210,7 @@ export default function AddBranchPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 p-5 md:grid-cols-2">
+            <div className="grid gap-3 p-3 md:grid-cols-2">
               <div className="md:col-span-2">
                 <Field
                   label="Address line 1"
@@ -275,7 +275,7 @@ export default function AddBranchPage() {
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link
               to="/branches"
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               Cancel
             </Link>
@@ -283,7 +283,7 @@ export default function AddBranchPage() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Save size={17} />
 

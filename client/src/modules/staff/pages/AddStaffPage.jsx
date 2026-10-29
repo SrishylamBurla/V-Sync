@@ -319,12 +319,12 @@ export default function AddStaffPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto max-w-[1200px] px-3 py-4 sm:px-3 lg:px-4">
         {/* Header */}
-        <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+            <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.22em] text-slate-400">
               Administration
             </p>
 
@@ -341,7 +341,7 @@ export default function AddStaffPage() {
           <button
             type="button"
             onClick={() => navigate("/staff")}
-            className="inline-flex h-10 items-center justify-center border border-slate-200 bg-white px-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center border border-slate-200 bg-white px-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
           >
             Cancel
           </button>
@@ -349,25 +349,25 @@ export default function AddStaffPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5"
+          className="space-y-3"
         >
           {/* Server error */}
           {serverError && (
-            <div className="border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="border border-rose-200 bg-rose-50 px-3 py-3 text-sm text-rose-700">
               {serverError}
             </div>
           )}
 
           {success && (
-            <div className="border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            <div className="border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700">
               {success}
             </div>
           )}
 
           {/* Personal information */}
           <section className="border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 01
               </p>
 
@@ -381,7 +381,7 @@ export default function AddStaffPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-7 lg:grid-cols-3">
+            <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-3">
               <Field
                 label="First name"
                 required
@@ -448,7 +448,7 @@ export default function AddStaffPage() {
               />
 
               <div>
-                <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                   Account status
                 </label>
 
@@ -475,8 +475,8 @@ export default function AddStaffPage() {
 
           {/* Role */}
           <section className="border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 02
               </p>
 
@@ -490,7 +490,7 @@ export default function AddStaffPage() {
               </p>
             </div>
 
-            <div className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4 sm:p-7">
+            <div className="grid gap-3 p-3 sm:grid-cols-2 lg:grid-cols-4 sm:p-4">
               {ROLES.map((role) => {
                 const selected =
                   form.role === role.value;
@@ -505,7 +505,7 @@ export default function AddStaffPage() {
                         role.value,
                       )
                     }
-                    className={`relative min-h-[125px] border p-4 text-left transition ${
+                    className={`relative min-h-[125px] border p-3 text-left transition ${
                       selected
                         ? "border-slate-950 bg-slate-950 text-white"
                         : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
@@ -517,7 +517,7 @@ export default function AddStaffPage() {
                       </span>
                     )}
 
-                    <p className="pr-5 text-sm font-semibold">
+                    <p className="pr-4 text-sm font-semibold">
                       {role.label}
                     </p>
 
@@ -536,13 +536,13 @@ export default function AddStaffPage() {
             </div>
 
             {errors.role && (
-              <p className="px-5 pb-5 text-xs text-rose-600 sm:px-7">
+              <p className="px-3 pb-4 text-xs text-rose-600 sm:px-4">
                 {errors.role}
               </p>
             )}
 
             {selectedRole && (
-              <div className="mx-5 mb-5 flex gap-3 border border-slate-200 bg-slate-50 p-4 sm:mx-7">
+              <div className="mx-4 mb-4 flex gap-3 border border-slate-200 bg-slate-50 p-3 sm:mx-6">
                 <Info
                   size={16}
                   className="mt-0.5 shrink-0 text-slate-500"
@@ -564,8 +564,8 @@ export default function AddStaffPage() {
 
           {/* Branch access */}
           <section className="border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 03
               </p>
 
@@ -579,7 +579,7 @@ export default function AddStaffPage() {
               </p>
             </div>
 
-            <div className="p-5 sm:p-7">
+            <div className="p-3 sm:p-4">
               {loadingBranches ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((item) => (
@@ -606,7 +606,7 @@ export default function AddStaffPage() {
                             branch._id,
                           )
                         }
-                        className={`flex w-full items-center justify-between border p-4 text-left transition ${
+                        className={`flex w-full items-center justify-between border p-3 text-left transition ${
                           selected
                             ? "border-slate-950 bg-slate-50"
                             : "border-slate-200 hover:border-slate-400"
@@ -641,7 +641,7 @@ export default function AddStaffPage() {
                         </div>
 
                         {selected && (
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                          <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                             Assigned
                           </span>
                         )}
@@ -650,7 +650,7 @@ export default function AddStaffPage() {
                   })}
                 </div>
               ) : (
-                <div className="border border-slate-200 px-5 py-10 text-center">
+                <div className="border border-slate-200 px-3 py-6 text-center">
                   <p className="text-sm font-medium text-slate-600">
                     No active branches found
                   </p>
@@ -669,8 +669,8 @@ export default function AddStaffPage() {
               )}
 
               {form.branchIds.length > 0 && (
-                <div className="mt-6">
-                  <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                <div className="mt-4">
+                  <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                     Default branch
                   </label>
 
@@ -719,8 +719,8 @@ export default function AddStaffPage() {
 
           {/* Credentials */}
           <section className="border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 04
               </p>
 
@@ -734,7 +734,7 @@ export default function AddStaffPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
+            <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4">
               <PasswordField
                 label="Password"
                 required
@@ -780,13 +780,13 @@ export default function AddStaffPage() {
           </section>
 
           {/* Submit */}
-          <div className="sticky bottom-4 z-20 flex items-center justify-between gap-4 border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur">
+          <div className="sticky bottom-4 z-20 flex items-center justify-between gap-3 border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
             <div className="hidden sm:block">
               <p className="text-xs font-semibold text-slate-700">
                 Ready to create staff account?
               </p>
 
-              <p className="mt-0.5 text-[11px] text-slate-400">
+              <p className="mt-0.5 text-[12px] text-slate-400">
                 Review role and branch access before
                 saving.
               </p>
@@ -799,7 +799,7 @@ export default function AddStaffPage() {
                 onClick={() =>
                   navigate("/staff")
                 }
-                className="h-10 border border-slate-200 px-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                className="h-10 border border-slate-200 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -807,7 +807,7 @@ export default function AddStaffPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex h-10 items-center gap-2 bg-slate-950 px-5 text-xs font-semibold uppercase tracking-[0.08em] text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 items-center gap-2 bg-slate-950 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Save size={14} />
 
@@ -837,7 +837,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+      <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">
         {label}
 
         {required && (
@@ -880,7 +880,7 @@ function PasswordField({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+      <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">
         {label}
 
         {required && (

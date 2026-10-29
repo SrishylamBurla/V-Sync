@@ -32,8 +32,9 @@ export const listInventory = asyncHandler(async (req, res) => {
   const { category, search = "", status = "active", lowStock } = req.query;
   const query = { organizationId: req.user.organizationId, status };
   if (category && allowedCategory.includes(category)) query.category = category;
-  if (search.trim()) {
-    const regex = new RegExp(search.trim(), "i");
+  if (String(search || "").trim()) {
+    const escapedSearch = String(search).trim().slice(0, 120).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(escapedSearch, "i");
     query.$or = [
       { code: regex },
       { barcode: regex },

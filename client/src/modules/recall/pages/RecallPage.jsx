@@ -276,7 +276,7 @@ export default function RecallPage() {
       }
     >
       {error && (
-        <div className="mx-5 mt-5 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:mx-7">
+        <div className="mx-4 mt-4 flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700 sm:mx-6">
           <span>{error}</span>
           <button
             type="button"
@@ -290,7 +290,7 @@ export default function RecallPage() {
       )}
 
       {notice && (
-        <div className="mx-5 mt-5 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 sm:mx-7">
+        <div className="mx-4 mt-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700 sm:mx-6">
           <CheckCircle2 size={16} />
           {notice}
         </div>
@@ -334,17 +334,17 @@ export default function RecallPage() {
           />
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
+        <div className="mt-4 overflow-hidden rounded-xl border border-slate-200">
+          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-3 py-3">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
+              <div className="text-[12px] font-bold uppercase tracking-[.16em] text-slate-400">
                 Recall list history
               </div>
               <div className="mt-1 text-sm font-bold text-slate-800">
                 Generated lists
               </div>
             </div>
-            <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-slate-500">
+            <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-bold text-slate-500">
               {summary.length} list{summary.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -395,7 +395,7 @@ export default function RecallPage() {
           description="Build an inclusive date-range list of patients whose recall is due. Exclusion months can be used to prevent recent contacts from being selected."
         >
           <form onSubmit={create}>
-            <div className="grid gap-4 lg:grid-cols-4">
+            <div className="grid gap-3 lg:grid-cols-4">
               <Field
                 label="Start date"
                 type="date"
@@ -433,7 +433,7 @@ export default function RecallPage() {
                 <button
                   type="submit"
                   disabled={working}
-                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-4 text-xs font-bold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-3 text-xs font-bold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <CalendarDays size={14} />
                   {working ? "Creating..." : "Create list"}
@@ -451,7 +451,7 @@ export default function RecallPage() {
           description="Configure the first five recall periods used by the practice."
         >
           <form onSubmit={saveSettings}>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
               <Field
                 label="First recall (months)"
                 type="number"
@@ -514,7 +514,7 @@ export default function RecallPage() {
               />
             </div>
 
-            <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto]">
+            <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_auto]">
               <Field
                 label="Default recall letter"
                 value={settings.defaultLetter || ""}
@@ -530,7 +530,7 @@ export default function RecallPage() {
                 <button
                   type="submit"
                   disabled={working}
-                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-4 text-xs font-bold text-white disabled:opacity-60"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-3 text-xs font-bold text-white disabled:opacity-60"
                 >
                   <CheckCircle2 size={14} />
                   {working ? "Saving..." : "Save settings"}
@@ -546,7 +546,7 @@ export default function RecallPage() {
         title="Current recall list"
         description="Search the active recall list, review patients and process each recall action."
       >
-        <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto]">
+        <div className="mb-4 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto]">
           <div className="relative">
             <UserRound
               size={15}
@@ -556,7 +556,7 @@ export default function RecallPage() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search patient, patient number, phone or email..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
             />
           </div>
 
@@ -578,7 +578,7 @@ export default function RecallPage() {
               setQuery("");
               setStatusFilter("");
             }}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
             <Filter size={14} />
             Clear
@@ -588,7 +588,7 @@ export default function RecallPage() {
             <button
               type="button"
               onClick={printList}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 print:hidden"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50 print:hidden"
             >
               <Printer size={14} />
               Print list
@@ -627,7 +627,7 @@ export default function RecallPage() {
                     <span className="block text-sm font-semibold text-slate-900 hover:underline">
                       {entry.patientName || "Unknown patient"}
                     </span>
-                    <span className="mt-0.5 block text-[10px] text-slate-400">
+                    <span className="mt-0.5 block text-[12px] text-slate-400">
                       {entry.patientNumber || "No number"} ·{" "}
                       {entry.phone || "No phone"}
                     </span>
@@ -660,7 +660,7 @@ export default function RecallPage() {
                 label: "Status",
                 render: (entry) => (
                   <span
-                    className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                    className={`inline-flex rounded-full border px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider ${
                       entry.status === "pending"
                         ? "border-amber-100 bg-amber-50 text-amber-700"
                         : entry.status === "phoned"
@@ -687,7 +687,7 @@ export default function RecallPage() {
                           `/patients/${entry.patientId?._id || entry.patientId}`,
                         )
                       }
-                      className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                      className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
                     >
                       Patient
                     </button>
@@ -698,7 +698,7 @@ export default function RecallPage() {
                           type="button"
                           disabled={working}
                           onClick={() => act(entry, "printed")}
-                          className="inline-flex items-center rounded-lg bg-slate-900 px-2.5 py-1.5 text-[10px] font-bold text-white disabled:opacity-50"
+                          className="inline-flex items-center rounded-lg bg-slate-900 px-2.5 py-1.5 text-[12px] font-bold text-white disabled:opacity-50"
                         >
                           <Printer size={11} className="mr-1" />
                           Printed
@@ -708,7 +708,7 @@ export default function RecallPage() {
                           type="button"
                           disabled={working}
                           onClick={() => act(entry, "phoned")}
-                          className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-600 disabled:opacity-50"
+                          className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-bold text-slate-600 disabled:opacity-50"
                         >
                           <Phone size={11} className="mr-1" />
                           Phoned
@@ -718,7 +718,7 @@ export default function RecallPage() {
                           type="button"
                           disabled={working}
                           onClick={() => act(entry, "held")}
-                          className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[10px] font-bold text-amber-700 disabled:opacity-50"
+                          className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[12px] font-bold text-amber-700 disabled:opacity-50"
                         >
                           Hold
                         </button>
@@ -730,7 +730,7 @@ export default function RecallPage() {
                         type="button"
                         disabled={working}
                         onClick={() => act(entry, "pending")}
-                        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-600 disabled:opacity-50"
+                        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-bold text-slate-600 disabled:opacity-50"
                       >
                         Release
                       </button>
@@ -760,9 +760,9 @@ export default function RecallPage() {
           ].map(([number, title, description]) => (
             <div
               key={number}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
             >
-              <div className="text-[10px] font-bold tracking-[.18em] text-slate-400">
+              <div className="text-[12px] font-bold tracking-[.18em] text-slate-400">
                 {number}
               </div>
               <div className="mt-2 text-sm font-bold text-slate-800">
@@ -790,7 +790,7 @@ function SummaryCard({ icon: Icon, label, value, accent = "slate" }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div
           className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${
@@ -799,12 +799,12 @@ function SummaryCard({ icon: Icon, label, value, accent = "slate" }) {
         >
           <Icon size={17} />
         </div>
-        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-300">
+        <span className="text-[12px] font-bold uppercase tracking-wider text-slate-300">
           KPI
         </span>
       </div>
 
-      <div className="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="mt-3 text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </div>
       <div className="mt-1 text-2xl font-bold tracking-tight text-slate-900">

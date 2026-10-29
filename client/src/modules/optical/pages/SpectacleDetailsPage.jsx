@@ -1141,9 +1141,9 @@ export default function SpectacleDetailsPage() {
 
   if (!job) {
     return (
-      <div className="min-h-full bg-slate-50 p-4">
+      <div className="min-h-full bg-slate-50 p-3">
         <div className="mx-auto max-w-5xl">
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs font-medium text-red-700">
             {error ||
               "Spectacle job not found."}
           </div>
@@ -1153,7 +1153,7 @@ export default function SpectacleDetailsPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f6f8fb] p-2.5 sm:p-4 lg:p-5 print:bg-white print:p-0">
+    <div className="min-h-full bg-[#f6f8fb] p-2.5 sm:p-3 lg:p-3 print:bg-white print:p-0">
       <div className="mx-auto max-w-[1380px]">
         {/* TOP BAR */}
         <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 print:hidden">
@@ -1167,7 +1167,7 @@ export default function SpectacleDetailsPage() {
               onClick={() =>
                 window.print()
               }
-              className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
             >
               <Printer size={12} />
               Print
@@ -1179,7 +1179,7 @@ export default function SpectacleDetailsPage() {
                   type="button"
                   onClick={cancelEditing}
                   disabled={saving}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
                 >
                   <X size={12} />
                   Cancel
@@ -1189,7 +1189,7 @@ export default function SpectacleDetailsPage() {
                   type="button"
                   onClick={saveChanges}
                   disabled={saving}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800 disabled:opacity-60"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-slate-950 px-3 text-[12px] font-bold text-white transition hover:bg-slate-800 disabled:opacity-60"
                 >
                   {saving ? (
                     <RefreshCw
@@ -1210,7 +1210,7 @@ export default function SpectacleDetailsPage() {
                 onClick={
                   startEditing
                 }
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[10px] font-bold text-white transition hover:bg-slate-800"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-slate-950 px-3 text-[12px] font-bold text-white transition hover:bg-slate-800"
               >
                 <Edit3 size={12} />
                 Edit job
@@ -1221,7 +1221,7 @@ export default function SpectacleDetailsPage() {
 
         <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.05)] print:rounded-none print:border-0 print:shadow-none">
           {/* HEADER */}
-          <header className="bg-slate-950 px-4 py-4 text-white sm:px-5">
+          <header className="bg-slate-950 px-3 py-3 text-white sm:px-3">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/10">
@@ -1229,7 +1229,7 @@ export default function SpectacleDetailsPage() {
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                  <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                     Dispensing / Spectacle
                   </div>
 
@@ -1237,7 +1237,7 @@ export default function SpectacleDetailsPage() {
                     <h1 className="text-lg font-bold">
                       Spectacle Job
                     </h1>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[12px] text-slate-400">
                       {jobNumber}
                     </span>
                   </div>
@@ -1272,7 +1272,7 @@ export default function SpectacleDetailsPage() {
           </header>
 
           {error && (
-            <div className="mx-3 mt-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[10px] font-medium text-red-700 sm:mx-4">
+            <div className="mx-3 mt-2.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-700 sm:mx-3">
               {error}
             </div>
           )}
@@ -1488,7 +1488,7 @@ export default function SpectacleDetailsPage() {
                                     value,
                                   )
                                 }
-                                className={`inline-flex h-7 items-center gap-1 rounded-md border px-2 text-[8px] font-bold transition ${
+                                className={`inline-flex h-7 items-center gap-1 rounded-lg border px-2 text-[12px] font-bold transition ${
                                   checked
                                     ? "border-slate-950 bg-slate-950 text-white"
                                     : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
@@ -1588,7 +1588,7 @@ export default function SpectacleDetailsPage() {
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      <span className="text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+                      <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
                         Use
                       </span>
                       {(
@@ -1600,13 +1600,13 @@ export default function SpectacleDetailsPage() {
                       ).map((item) => (
                         <span
                           key={item}
-                          className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[8px] font-semibold text-slate-600"
+                          className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[12px] font-semibold text-slate-600"
                         >
                           {pretty(item)}
                         </span>
                       ))}
                       {!job.use?.length && (
-                        <span className="text-[8px] text-slate-400">
+                        <span className="text-[12px] text-slate-400">
                           No use selected
                         </span>
                       )}
@@ -1621,7 +1621,7 @@ export default function SpectacleDetailsPage() {
                 title="Prescription & measurements"
                 right={
                   consultationLinked ? (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-[8px] font-bold text-emerald-700">
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[12px] font-bold text-emerald-700">
                       <Check size={10} />
                       Consultation linked
                     </span>
@@ -2086,7 +2086,7 @@ export default function SpectacleDetailsPage() {
                     <button
                       type="button"
                       onClick={addExtra}
-                      className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2 text-[8px] font-bold text-slate-600 hover:bg-slate-50"
+                      className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
                     >
                       <Plus size={11} />
                       Add extra
@@ -2096,8 +2096,8 @@ export default function SpectacleDetailsPage() {
               >
                 {editing ? (
                   <div className="grid gap-2.5 lg:grid-cols-[1.1fr_.9fr]">
-                    <div className="overflow-x-auto rounded-md border border-slate-200">
-                      <table className="w-full min-w-[520px] text-[9px]">
+                    <div className="overflow-x-auto rounded-lg border border-slate-200">
+                      <table className="w-full min-w-[520px] text-[12px]">
                         <thead className="bg-slate-50 uppercase tracking-[0.08em] text-slate-400">
                           <tr>
                             <th className="px-2 py-2 text-left">
@@ -2209,7 +2209,7 @@ export default function SpectacleDetailsPage() {
                                           index,
                                         )
                                       }
-                                      className="inline-flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                                      className="inline-flex h-6 w-6 items-center justify-center rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600"
                                       title="Remove extra"
                                     >
                                       <Trash2
@@ -2228,7 +2228,7 @@ export default function SpectacleDetailsPage() {
                                 colSpan={
                                   5
                                 }
-                                className="px-2 py-5 text-center text-[9px] text-slate-400"
+                                className="px-2 py-3 text-center text-[12px] text-slate-400"
                               >
                                 No extras.
                               </td>
@@ -2413,7 +2413,7 @@ export default function SpectacleDetailsPage() {
                     </div>
 
                     <div className="rounded-lg bg-slate-950 p-3 text-white">
-                      <div className="flex items-center justify-between text-[9px] text-slate-400">
+                      <div className="flex items-center justify-between text-[12px] text-slate-400">
                         <span>
                           Subtotal
                         </span>
@@ -2425,7 +2425,7 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center justify-between text-[9px] text-red-300">
+                      <div className="mt-1 flex items-center justify-between text-[12px] text-red-300">
                         <span>
                           Discount
                         </span>
@@ -2440,7 +2440,7 @@ export default function SpectacleDetailsPage() {
                       <div className="my-2 border-t border-white/10" />
 
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-300">
+                        <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-300">
                           Net Total
                         </span>
                         <span className="text-lg font-bold">
@@ -2451,7 +2451,7 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center justify-between text-[9px] text-slate-400">
+                      <div className="mt-1 flex items-center justify-between text-[12px] text-slate-400">
                         <span>
                           GST Amount
                         </span>
@@ -2463,8 +2463,8 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-between rounded-md bg-white/10 px-2.5 py-2">
-                        <span className="text-[9px] font-semibold text-slate-300">
+                      <div className="mt-2 flex items-center justify-between rounded-lg bg-white/10 px-2.5 py-2">
+                        <span className="text-[12px] font-semibold text-slate-300">
                           Bill Total
                         </span>
                         <span className="text-sm font-bold">
@@ -2506,7 +2506,7 @@ export default function SpectacleDetailsPage() {
                     </div>
 
                     <div className="rounded-lg bg-slate-950 p-3 text-white">
-                      <div className="flex items-center justify-between text-[9px] text-slate-400">
+                      <div className="flex items-center justify-between text-[12px] text-slate-400">
                         <span>
                           Subtotal
                         </span>
@@ -2518,7 +2518,7 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center justify-between text-[9px] text-red-300">
+                      <div className="mt-1 flex items-center justify-between text-[12px] text-red-300">
                         <span>
                           Discount
                         </span>
@@ -2533,7 +2533,7 @@ export default function SpectacleDetailsPage() {
                       <div className="my-2 border-t border-white/10" />
 
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-300">
+                        <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-300">
                           Net Total
                         </span>
                         <span className="text-lg font-bold">
@@ -2544,7 +2544,7 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center justify-between text-[9px] text-slate-400">
+                      <div className="mt-1 flex items-center justify-between text-[12px] text-slate-400">
                         <span>
                           GST
                           {displayedGstRate
@@ -2559,8 +2559,8 @@ export default function SpectacleDetailsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-between rounded-md bg-white/10 px-2.5 py-2">
-                        <span className="text-[9px] font-semibold text-slate-300">
+                      <div className="mt-2 flex items-center justify-between rounded-lg bg-white/10 px-2.5 py-2">
+                        <span className="text-[12px] font-semibold text-slate-300">
                           Bill Total
                         </span>
                         <span className="text-sm font-bold">
@@ -2619,7 +2619,7 @@ export default function SpectacleDetailsPage() {
 
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                    <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">
                       Current stage
                     </span>
                     <StatusBadge
@@ -2648,7 +2648,7 @@ export default function SpectacleDetailsPage() {
                               nextStatus,
                             )
                           }
-                          className="inline-flex h-7 items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 text-[9px] font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-wait disabled:opacity-50"
+                          className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-wait disabled:opacity-50"
                         >
                           {updating ? (
                             <RefreshCw
@@ -2696,7 +2696,7 @@ export default function SpectacleDetailsPage() {
                 )}
 
                 {editing && (
-                  <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[9px] font-medium text-amber-800">
+                  <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] font-medium text-amber-800">
                     Status is changed only through the
                     dispensing status endpoint.
                     Save job details first, then use
@@ -2733,7 +2733,7 @@ export default function SpectacleDetailsPage() {
             </div>
           </main>
 
-          <footer className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-[8px] text-slate-400 sm:px-5">
+          <footer className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-3 py-2.5 text-[12px] text-slate-400 sm:px-3">
             <span className="font-semibold text-slate-500">
               V-Sync · Spectacle Dispensing
             </span>
@@ -2746,10 +2746,10 @@ export default function SpectacleDetailsPage() {
         {editing && (
           <div className="sticky bottom-2 z-20 mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white/95 p-2 shadow-lg backdrop-blur print:hidden">
             <div className="min-w-0">
-              <div className="truncate text-[9px] font-bold text-slate-700">
+              <div className="truncate text-[12px] font-bold text-slate-700">
                 Editing spectacle job
               </div>
-              <div className="truncate text-[8px] text-slate-400">
+              <div className="truncate text-[12px] text-slate-400">
                 {jobNumber} · {name}
               </div>
             </div>
@@ -2759,7 +2759,7 @@ export default function SpectacleDetailsPage() {
                 type="button"
                 onClick={cancelEditing}
                 disabled={saving}
-                className="inline-flex h-8 items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 text-[9px] font-semibold text-slate-600 disabled:opacity-50"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-semibold text-slate-600 disabled:opacity-50"
               >
                 <X size={11} />
                 Cancel
@@ -2768,7 +2768,7 @@ export default function SpectacleDetailsPage() {
                 type="button"
                 onClick={saveChanges}
                 disabled={saving}
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-slate-950 px-3 text-[9px] font-bold text-white disabled:opacity-60"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-slate-950 px-3 text-[12px] font-bold text-white disabled:opacity-60"
               >
                 {saving ? (
                   <RefreshCw
@@ -2795,13 +2795,13 @@ export default function SpectacleDetailsPage() {
 ============================================================ */
 
 const inputClass =
-  "h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-medium text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200";
+  "h-8 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-medium text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200";
 
 function FieldLabel({
   children,
 }) {
   return (
-    <label className="mb-1 block text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+    <label className="mb-1 block text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
       {children}
     </label>
   );
@@ -2963,7 +2963,7 @@ function TextAreaField({
         placeholder={
           placeholder
         }
-        className="w-full resize-y rounded-md border border-slate-200 bg-white px-2.5 py-2 text-[10px] font-medium leading-4 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
+        className="w-full resize-y rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-[12px] font-medium leading-4 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
       />
     </div>
   );
@@ -2979,7 +2979,7 @@ function CheckboxField({
       <FieldLabel>
         {label}
       </FieldLabel>
-      <label className="flex h-8 cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-medium text-slate-600">
+      <label className="flex h-8 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-medium text-slate-600">
         <input
           type="checkbox"
           checked={Boolean(
@@ -3006,12 +3006,12 @@ function ReadOnlyInline({
 }) {
   return (
     <div
-      className={`flex min-h-8 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 ${className}`}
+      className={`flex min-h-8 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 ${className}`}
     >
-      <span className="shrink-0 text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+      <span className="shrink-0 text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </span>
-      <span className="min-w-0 truncate text-[10px] font-semibold text-slate-700">
+      <span className="min-w-0 truncate text-[12px] font-semibold text-slate-700">
         {displayText(value)}
       </span>
     </div>
@@ -3032,18 +3032,18 @@ function RxEditor({
     rx?.left || {};
 
   return (
-    <div className="overflow-x-auto rounded-md border border-slate-200">
-      <table className="w-full min-w-[650px] border-collapse text-[9px]">
+    <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <table className="w-full min-w-[650px] border-collapse text-[12px]">
         <thead className="bg-slate-50">
           <tr>
-            <th className="border-b border-slate-200 px-2 py-2 text-left text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+            <th className="border-b border-slate-200 px-2 py-2 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
               Eye
             </th>
             {RX_COLUMNS.map(
               ([, label]) => (
                 <th
                   key={label}
-                  className="border-b border-slate-200 px-1.5 py-2 text-left text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400"
+                  className="border-b border-slate-200 px-1.5 py-2 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400"
                 >
                   {label}
                 </th>
@@ -3110,7 +3110,7 @@ function EditableRxRow({
                     .value,
                 )
               }
-              className="h-7 w-full min-w-[58px] rounded border border-slate-200 bg-white px-1.5 text-[9px] font-medium text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
+              className="h-7 w-full min-w-[58px] rounded border border-slate-200 bg-white px-1.5 text-[12px] font-medium text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-200"
             />
           </td>
         ),
@@ -3129,8 +3129,8 @@ function EyeLensEditor({
   onChange,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50/70 p-2.5">
-      <div className="mb-2 text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-2.5">
+      <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
         {title}
       </div>
 
@@ -3313,8 +3313,8 @@ function LensView({
   value,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50/70 p-2.5">
-      <div className="mb-2 text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-2.5">
+      <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
         {title}
       </div>
 
@@ -3416,10 +3416,10 @@ function Panel({
     <section className="overflow-visible rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.02)]">
       <div className="flex min-h-9 items-center justify-between border-b border-slate-100 px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[8px] font-bold text-slate-500">
+          <span className="flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[12px] font-bold text-slate-500">
             {number}
           </span>
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-700">
+          <h2 className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-700">
             {title}
           </h2>
         </div>
@@ -3438,11 +3438,11 @@ function HeaderMetric({
   value,
 }) {
   return (
-    <div className="min-w-0 rounded-md border border-white/10 bg-white/5 px-2.5 py-2">
-      <div className="truncate text-[7px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+    <div className="min-w-0 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+      <div className="truncate text-[12px] font-semibold uppercase tracking-[0.1em] text-slate-500">
         {label}
       </div>
-      <div className="mt-0.5 truncate text-[10px] font-semibold text-white">
+      <div className="mt-0.5 truncate text-[12px] font-semibold text-white">
         {displayText(value)}
       </div>
     </div>
@@ -3454,11 +3454,11 @@ function Info({
   value,
 }) {
   return (
-    <div className="min-w-0 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
-      <div className="truncate text-[7px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+    <div className="min-w-0 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
+      <div className="truncate text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
-      <div className="mt-0.5 break-words text-[10px] font-semibold text-slate-700">
+      <div className="mt-0.5 break-words text-[12px] font-semibold text-slate-700">
         {displayText(value)}
       </div>
     </div>
@@ -3470,11 +3470,11 @@ function MoneyInfo({
   value,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
-      <div className="text-[7px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
+      <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
-      <div className="mt-0.5 text-[10px] font-bold text-slate-800">
+      <div className="mt-0.5 text-[12px] font-bold text-slate-800">
         ₹{money(value)}
       </div>
     </div>
@@ -3486,11 +3486,11 @@ function Measure({
   value,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-2.5 py-2">
-      <div className="text-[7px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-white px-2.5 py-2">
+      <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
-      <div className="mt-0.5 text-[11px] font-bold text-slate-800">
+      <div className="mt-0.5 text-[12px] font-bold text-slate-800">
         {displayText(value)}
       </div>
     </div>
@@ -3502,12 +3502,12 @@ function WorkflowDate({
   value,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-2.5 py-2">
-      <div className="text-[7px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+    <div className="rounded-lg border border-slate-200 bg-white px-2.5 py-2">
+      <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
       <div
-        className={`mt-0.5 text-[10px] font-bold ${
+        className={`mt-0.5 text-[12px] font-bold ${
           value
             ? "text-slate-700"
             : "text-slate-300"
@@ -3524,13 +3524,13 @@ function Note({
   value,
 }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
       {label ? (
-        <div className="mb-0.5 text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        <div className="mb-0.5 text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
           {label}
         </div>
       ) : null}
-      <div className="whitespace-pre-wrap text-[9px] leading-4 text-slate-600">
+      <div className="whitespace-pre-wrap text-[12px] leading-4 text-slate-600">
         {displayText(
           value,
           "No notes recorded.",
@@ -3544,8 +3544,8 @@ function ExtrasView({
   extras,
 }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-slate-200">
-      <table className="w-full min-w-[420px] text-[9px]">
+    <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <table className="w-full min-w-[420px] text-[12px]">
         <thead className="bg-slate-50 uppercase tracking-[0.08em] text-slate-400">
           <tr>
             <th className="px-2.5 py-2 text-left font-bold">
@@ -3603,7 +3603,7 @@ function ExtrasView({
             <tr>
               <td
                 colSpan={4}
-                className="px-2.5 py-5 text-center text-[9px] text-slate-400"
+                className="px-2.5 py-3 text-center text-[12px] text-slate-400"
               >
                 No extras recorded.
               </td>
@@ -3637,7 +3637,7 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[7px] font-bold uppercase tracking-[0.08em] ${
+      className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[12px] font-bold uppercase tracking-[0.08em] ${
         styles[status] ||
         styles.draft
       }`}
@@ -3657,18 +3657,18 @@ function RxTable({
     rx?.left || {};
 
   return (
-    <div className="overflow-x-auto rounded-md border border-slate-200">
-      <table className="w-full min-w-[620px] border-collapse text-[9px]">
+    <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <table className="w-full min-w-[620px] border-collapse text-[12px]">
         <thead className="bg-slate-50">
           <tr>
-            <th className="border-b border-slate-200 px-2 py-2 text-left text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400">
+            <th className="border-b border-slate-200 px-2 py-2 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
               Eye
             </th>
             {RX_COLUMNS.map(
               ([, label]) => (
                 <th
                   key={label}
-                  className="border-b border-slate-200 px-2 py-2 text-left text-[7px] font-bold uppercase tracking-[0.08em] text-slate-400"
+                  className="border-b border-slate-200 px-2 py-2 text-left text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400"
                 >
                   {label}
                 </th>
@@ -3721,7 +3721,7 @@ function EmptyState({
   text,
 }) {
   return (
-    <div className="flex h-16 items-center justify-center rounded-md border border-dashed border-slate-200 bg-slate-50 text-[9px] text-slate-400">
+    <div className="flex h-16 items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-[12px] text-slate-400">
       {text}
     </div>
   );

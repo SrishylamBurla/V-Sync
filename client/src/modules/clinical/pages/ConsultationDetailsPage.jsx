@@ -234,14 +234,14 @@
 // }) {
 //   return (
 //     <div className="flex min-w-0 items-start gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5">
-//       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500">
+//       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500">
 //         <Icon size={13} />
 //       </div>
 //       <div className="min-w-0">
-//         <div className="text-[8px] font-bold uppercase tracking-[0.11em] text-slate-400">
+//         <div className="text-[12px] font-bold uppercase tracking-[0.11em] text-slate-400">
 //           {label}
 //         </div>
-//         <div className="mt-1 truncate text-[10px] font-bold text-slate-700" title={String(value ?? "")}>
+//         <div className="mt-1 truncate text-[12px] font-bold text-slate-700" title={String(value ?? "")}>
 //           {value || "—"}
 //         </div>
 //       </div>
@@ -259,7 +259,7 @@
 //       id={sectionIdFromTitle(title)}
 //       className="min-w-0 scroll-mt-36 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.035)]"
 //     >
-//       <div className="flex min-h-12 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5 sm:px-4">
+//       <div className="flex min-h-12 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5 sm:px-3">
 //         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-[0_1px_1px_rgba(15,23,42,0.03)]">
 //           <Icon size={15} />
 //         </div>
@@ -269,12 +269,12 @@
 //             {title}
 //           </h2>
 //         </div>
-//         <span className="hidden text-[8px] font-bold uppercase tracking-[0.14em] text-slate-300 sm:inline">
+//         <span className="hidden text-[12px] font-bold uppercase tracking-[0.14em] text-slate-300 sm:inline">
 //           Clinical record
 //         </span>
 //       </div>
 
-//       <div className="min-w-0 p-3.5 sm:p-4">
+//       <div className="min-w-0 p-3.5 sm:p-3">
 //         {children}
 //       </div>
 //     </section>
@@ -336,7 +336,7 @@
 //           {items.map((item, index) => (
 //             <span
 //               key={`${String(item)}-${index}`}
-//               className="inline-flex max-w-full items-center rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600"
+//               className="inline-flex max-w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600"
 //             >
 //               <span className="break-words">{String(item)}</span>
 //             </span>
@@ -417,7 +417,7 @@
 //           >
 //             <div className="mb-2 flex items-center gap-2">
 //               <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-//               <h4 className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+//               <h4 className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-500">
 //                 {humanizeKey(key)}
 //               </h4>
 //             </div>
@@ -442,7 +442,7 @@
 //               nested ? "sm:col-span-2" : ""
 //             }`}
 //           >
-//             <dt className="mb-1 text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">
+//             <dt className="mb-1 text-[12px] font-bold uppercase tracking-[0.09em] text-slate-400">
 //               {humanizeKey(key)}
 //             </dt>
 //             <dd className="min-w-0">
@@ -464,7 +464,7 @@
 // }) {
 //   return (
 //     <div className="min-w-0">
-//       <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+//       <div className="mb-1.5 text-[12px] font-semibold uppercase tracking-[0.12em] text-slate-400">
 //         {label}
 //       </div>
 
@@ -483,7 +483,7 @@
 
 //   return (
 //     <div className="overflow-hidden rounded-xl border border-slate-200">
-//       <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
+//       <div className="border-b border-slate-200 bg-slate-50 px-3 py-3">
 //         <h3 className="text-sm font-semibold text-slate-800">
 //           {title}
 //         </h3>
@@ -493,15 +493,15 @@
 //         <table className="min-w-full text-sm">
 //           <thead>
 //             <tr className="border-b border-slate-200 bg-white text-left text-xs text-slate-400">
-//               <th className="px-4 py-3">Eye</th>
-//               <th className="px-4 py-3">Sphere</th>
-//               <th className="px-4 py-3">Cylinder</th>
-//               <th className="px-4 py-3">Axis</th>
-//               <th className="px-4 py-3">VA</th>
-//               <th className="px-4 py-3">Near VA</th>
-//               <th className="px-4 py-3">Add</th>
-//               <th className="px-4 py-3">Prism</th>
-//               <th className="px-4 py-3">Base</th>
+//               <th className="px-3 py-3">Eye</th>
+//               <th className="px-3 py-3">Sphere</th>
+//               <th className="px-3 py-3">Cylinder</th>
+//               <th className="px-3 py-3">Axis</th>
+//               <th className="px-3 py-3">VA</th>
+//               <th className="px-3 py-3">Near VA</th>
+//               <th className="px-3 py-3">Add</th>
+//               <th className="px-3 py-3">Prism</th>
+//               <th className="px-3 py-3">Base</th>
 //             </tr>
 //           </thead>
 
@@ -514,39 +514,39 @@
 //                   key={eye}
 //                   className="border-b border-slate-100 last:border-0"
 //                 >
-//                   <td className="px-4 py-3 font-semibold text-slate-700">
+//                   <td className="px-3 py-3 font-semibold text-slate-700">
 //                     {eye === "right" ? "OD" : "OS"}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.sphere)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.cylinder)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.axis)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.va)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.nearVa)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.add)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.prism)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.base)}
 //                   </td>
 //                 </tr>
@@ -883,7 +883,7 @@
 //     return (
 //       <div className="space-y-2">
 //         {normalizedValue.length === 0 && (
-//           <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs text-slate-400">
+//           <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
 //             No records added yet.
 //           </div>
 //         )}
@@ -894,7 +894,7 @@
 //             className="rounded-lg border border-slate-200 bg-white p-3"
 //           >
 //             <div className="mb-2 flex items-center justify-between gap-2">
-//               <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+//               <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500">
 //                 {label} {index + 1}
 //               </span>
 //               <button
@@ -905,7 +905,7 @@
 //                     normalizedValue.filter((_, itemIndex) => itemIndex !== index),
 //                   )
 //                 }
-//                 className="rounded-md px-2 py-1 text-[10px] font-semibold text-rose-600 hover:bg-rose-50"
+//                 className="rounded-lg px-2 py-1 text-[12px] font-semibold text-rose-600 hover:bg-rose-50"
 //               >
 //                 Remove
 //               </button>
@@ -936,7 +936,7 @@
 //               ],
 //             )
 //           }
-//           className="inline-flex h-8 items-center gap-1 rounded-md border border-dashed border-slate-300 bg-white px-3 text-[10px] font-semibold text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+//           className="inline-flex h-8 items-center gap-1 rounded-lg border border-dashed border-slate-300 bg-white px-3 text-[12px] font-semibold text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
 //         >
 //           + Add {label.replace(/s$/, "")}
 //         </button>
@@ -974,7 +974,7 @@
 //                 nested ? "sm:col-span-2" : ""
 //               }`}
 //             >
-//               <label className="mb-1.5 block text-[9px] font-bold uppercase tracking-[0.08em] text-slate-500">
+//               <label className="mb-1.5 block text-[12px] font-bold uppercase tracking-[0.08em] text-slate-500">
 //                 {humanizeKey(key)}
 //               </label>
 //               <EditableValue
@@ -999,11 +999,11 @@
 //       : String(normalizedValue);
 
 //   const controlClass =
-//     "w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50";
+//     "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50";
 
 //   if (typeof normalizedValue === "boolean") {
 //     return (
-//       <label className="inline-flex min-h-9 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-xs text-slate-700">
+//       <label className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700">
 //         <input
 //           type="checkbox"
 //           checked={normalizedValue}
@@ -1074,8 +1074,8 @@
 //   onChange,
 // }) {
 //   return (
-//     <div className="space-y-4">
-//       <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3">
+//     <div className="space-y-3">
+//       <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-3">
 //         <div className="text-sm font-semibold text-blue-900">
 //           Edit consultation record
 //         </div>
@@ -1102,7 +1102,7 @@
 //               </h2>
 //             </header>
 
-//             <div className="grid min-w-0 grid-cols-1 gap-4 p-4 lg:grid-cols-2">
+//             <div className="grid min-w-0 grid-cols-1 gap-3 p-3 lg:grid-cols-2">
 //               {group.fields.map(([key, label]) => {
 //                 const value = data[key];
 //                 const nested =
@@ -1116,7 +1116,7 @@
 //                       nested ? "lg:col-span-2" : ""
 //                     }`}
 //                   >
-//                     <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+//                     <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500">
 //                       {label}
 //                     </div>
 //                     <EditableValue
@@ -1388,7 +1388,7 @@
 //   if (loading) {
 //     return (
 //       <div className="flex min-h-[60vh] items-center justify-center bg-[#f4f7fb]">
-//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
 //           <Loader2
 //             size={20}
 //             className="animate-spin"
@@ -1401,11 +1401,11 @@
 
 //   if (error) {
 //     return (
-//       <div className="min-h-[60vh] bg-[#f4f7fb] p-6">
+//       <div className="min-h-[60vh] bg-[#f4f7fb] p-3">
 //         <div className="mx-auto max-w-5xl">
           
 
-//           <div className="rounded-xl border border-rose-200 bg-white p-6 text-rose-700 shadow-sm">
+//           <div className="rounded-xl border border-rose-200 bg-white p-3 text-rose-700 shadow-sm">
 //             {error}
 //           </div>
 //         </div>
@@ -1421,10 +1421,10 @@
 //     <div className="min-h-screen bg-[#f4f7fb] text-slate-800">
 //       {/* APPLICATION WORKSPACE HEADER */}
 //       <div className="border-b border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.025)]">
-//         <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-5 lg:px-6">
+//         <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
           
 
-//           <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
+//           <div className="mb-2 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.15em] text-slate-400">
 //             <span>Clinical workspace</span>
 //             <span className="text-slate-300">/</span>
 //             <span>Patient records</span>
@@ -1432,7 +1432,7 @@
 //             <span className="text-blue-600">Consultation</span>
 //           </div>
 
-//           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+//           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 //             <div className="flex min-w-0 items-start gap-3">
 //               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 text-white shadow-sm">
 //                 <Stethoscope size={19} />
@@ -1444,19 +1444,19 @@
 //                     Consultation Details
 //                   </h1>
 
-//                   <span className="rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[9px] font-bold text-blue-700">
+//                   <span className="rounded-lg border border-blue-100 bg-blue-50 px-2 py-1 text-[12px] font-bold text-blue-700">
 //                     {typeLabel(
 //                       consultation.consultationType,
 //                     )}
 //                   </span>
 
-//                   <span className="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-700">
+//                   <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-100 bg-emerald-50 px-2 py-1 text-[12px] font-bold text-emerald-700">
 //                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
 //                     {statusLabel(consultation.status)}
 //                   </span>
 //                 </div>
 
-//                 <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+//                 <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-slate-500">
 //                   <span className="inline-flex items-center gap-1.5">
 //                     <UserRound size={14} />
 //                     {patientName}
@@ -1484,7 +1484,7 @@
 //                     type="button"
 //                     onClick={cancelEditing}
 //                     disabled={saving}
-//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
 //                   >
 //                     <X size={15} />
 //                     Cancel
@@ -1493,7 +1493,7 @@
 //                     type="button"
 //                     onClick={handleSaveEdits}
 //                     disabled={saving}
-//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
 //                   >
 //                     {saving ? (
 //                       <Loader2 size={15} className="animate-spin" />
@@ -1508,7 +1508,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={startEditing}
-//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-700"
+//                     className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-700"
 //                   >
 //                     <Pencil size={15} />
 //                     Edit Consultation
@@ -1519,7 +1519,7 @@
 //                       onClick={() =>
 //                         navigate(`/patients/${patient._id}`)
 //                       }
-//                       className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50"
+//                       className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
 //                     >
 //                       <UserRound size={15} />
 //                       Open Patient
@@ -1530,7 +1530,7 @@
 //             </div>
 //           </div>
 
-//           <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3 sm:grid-cols-4">
+//           <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3 sm:grid-cols-4">
 //             <SummaryItem
 //               icon={Hash}
 //               label="Patient number"
@@ -1560,14 +1560,14 @@
 //       </div>
 
 //       {(saveError || saveSuccess) && (
-//         <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-5 lg:px-6">
+//         <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-3 lg:px-3">
 //           {saveError && (
-//             <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+//             <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-3 text-sm text-rose-700">
 //               {saveError}
 //             </div>
 //           )}
 //           {saveSuccess && (
-//             <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+//             <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm font-medium text-emerald-700">
 //               <Check size={15} />
 //               {saveSuccess}
 //             </div>
@@ -1576,10 +1576,10 @@
 //       )}
 
 //       {/* RECORD WORKSPACE */}
-//       <div className="mx-auto max-w-[1800px] px-3 py-4 sm:px-5 lg:px-6">
+//       <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
 //         <nav
 //           aria-label="Consultation sections"
-//           className="mb-4 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.025)]"
+//           className="mb-3 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.025)]"
 //         >
 //           <div className="flex gap-1 overflow-x-auto">
 //             {sectionNavItems.map((item) => {
@@ -1592,7 +1592,7 @@
 //                   key={item.title}
 //                   type="button"
 //                   onClick={() => navigateToSection(item.title)}
-//                   className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-[10px] font-bold transition ${
+//                   className={`inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-[12px] font-bold transition ${
 //                     active
 //                       ? "border-slate-900 bg-slate-900 text-white shadow-sm"
 //                       : "border-transparent bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-800"
@@ -1614,8 +1614,8 @@
 //                 data={editData || {}}
 //                 onChange={handleEditChange}
 //               />
-//               <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-lg shadow-slate-900/10 backdrop-blur">
-//                 <div className="text-[10px] font-medium text-slate-500">
+//               <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 px-3 py-3 shadow-lg shadow-slate-900/10 backdrop-blur">
+//                 <div className="text-[12px] font-medium text-slate-500">
 //                   {editDirty ? "You have unsaved changes" : "No unsaved changes"}
 //                 </div>
 //                 <div className="flex items-center gap-2">
@@ -1623,7 +1623,7 @@
 //                     type="button"
 //                     onClick={cancelEditing}
 //                     disabled={saving}
-//                     className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+//                     className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
 //                   >
 //                     <X size={14} />
 //                     Cancel
@@ -1632,7 +1632,7 @@
 //                     type="button"
 //                     onClick={handleSaveEdits}
 //                     disabled={saving || !editDirty}
-//                     className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+//                     className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[12px] font-bold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
 //                   >
 //                     {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
 //                     {saving ? "Saving..." : "Save Changes"}
@@ -1647,7 +1647,7 @@
 //           title="Consultation Information"
 //           icon={ClipboardList}
 //         >
-//           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+//           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //             <Field
 //               label="Consultation Date"
 //               value={formatDateTime(
@@ -1718,7 +1718,7 @@
 //           title="Refraction & Prescription"
 //           icon={Glasses}
 //         >
-//           <div className="space-y-5">
+//           <div className="space-y-3">
 //             <PrescriptionTable
 //               title="Previous Rx"
 //               prescription={consultation.previousRx}
@@ -1744,7 +1744,7 @@
 //               prescription={consultation.givenRx}
 //             />
 
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               <Field
 //                 label="PD"
 //                 value={consultation.pd}
@@ -1766,7 +1766,7 @@
 //             title="Binocular Vision"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.binocularVision,
 //               ).map(([key, value]) => (
@@ -1785,7 +1785,7 @@
 //           title="Clinical Management & Tests"
 //           icon={Stethoscope}
 //         >
-//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //             <Field
 //               label="Slit Lamp"
 //               value={consultation.slitLamp}
@@ -1854,7 +1854,7 @@
 //             title="Low Vision Management"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.lowVision,
 //               ).map(([key, value]) => (
@@ -1875,7 +1875,7 @@
 //             title="Contact Lens Management"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.contactLens ||
 //                   consultation.contactLenses ||
@@ -1897,7 +1897,7 @@
 //             title="Dispensing"
 //             icon={Glasses}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.dispensing,
 //               ).map(([key, value]) => (
@@ -1916,7 +1916,7 @@
 //           title="Clinical Notes & Instructions"
 //           icon={FileText}
 //         >
-//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //             <Field
 //               label="Clinical Notes"
 //               value={consultation.clinicalNotes}
@@ -1958,7 +1958,7 @@
 //         </Section>
 
 //         {/* FOOTER */}
-//         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+//         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3">
 //           <div className="text-xs text-slate-400">
 //             Created:{" "}
 //             {formatDateTime(
@@ -2216,15 +2216,15 @@ function SummaryItem({
   value,
 }) {
   return (
-    <div className="flex min-w-0 items-start gap-2 rounded-md border border-slate-100 bg-slate-50/70 px-2.5 py-2">
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500">
+    <div className="flex min-w-0 items-start gap-2 rounded-lg border border-slate-100 bg-slate-50/70 px-2.5 py-2">
+      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500">
         <Icon size={13} />
       </div>
       <div className="min-w-0">
-        <div className="text-[8px] font-bold uppercase tracking-[0.11em] text-slate-400">
+        <div className="text-[12px] font-bold uppercase tracking-[0.11em] text-slate-400">
           {label}
         </div>
-        <div className="mt-0.5 truncate text-[10px] font-bold text-slate-700" title={String(value ?? "")}>
+        <div className="mt-0.5 truncate text-[12px] font-bold text-slate-700" title={String(value ?? "")}>
           {value || "—"}
         </div>
       </div>
@@ -2243,16 +2243,16 @@ function Section({
       className="min-w-0 scroll-mt-28 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.035)]"
     >
       <div className="flex min-h-10 items-center gap-2 border-b border-slate-100 bg-slate-50/70 px-3 py-1.5">
-        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600">
           <Icon size={15} />
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="text-[11px] font-bold tracking-tight text-slate-800">
+          <h2 className="text-[12px] font-bold tracking-tight text-slate-800">
             {title}
           </h2>
         </div>
-        <span className="hidden text-[8px] font-bold uppercase tracking-[0.14em] text-slate-300 sm:inline">
+        <span className="hidden text-[12px] font-bold uppercase tracking-[0.14em] text-slate-300 sm:inline">
           Clinical record
         </span>
       </div>
@@ -2272,7 +2272,7 @@ function ValueDisplay({
 
   if (isEmptyValue(value)) {
     return (
-      <span className="text-[11px] text-slate-300">
+      <span className="text-[12px] text-slate-300">
         —
       </span>
     );
@@ -2280,7 +2280,7 @@ function ValueDisplay({
 
   if (typeof value === "boolean") {
     return (
-      <span className="text-[11px] font-medium text-slate-700">
+      <span className="text-[12px] font-medium text-slate-700">
         {value ? "Yes" : "No"}
       </span>
     );
@@ -2288,7 +2288,7 @@ function ValueDisplay({
 
   if (typeof value !== "object") {
     return (
-      <span className="whitespace-pre-wrap break-words text-[11px] leading-4 text-slate-700">
+      <span className="whitespace-pre-wrap break-words text-[12px] leading-4 text-slate-700">
         {String(value)}
       </span>
     );
@@ -2296,7 +2296,7 @@ function ValueDisplay({
 
   if (depth > 5) {
     return (
-      <span className="whitespace-pre-wrap break-words text-[11px] text-slate-600">
+      <span className="whitespace-pre-wrap break-words text-[12px] text-slate-600">
         Details recorded
       </span>
     );
@@ -2306,7 +2306,7 @@ function ValueDisplay({
     const items = value.filter((item) => !isEmptyValue(item));
 
     if (!items.length) {
-      return <span className="text-[11px] text-slate-300">—</span>;
+      return <span className="text-[12px] text-slate-300">—</span>;
     }
 
     const containsObjects = items.some(
@@ -2319,7 +2319,7 @@ function ValueDisplay({
           {items.map((item, index) => (
             <span
               key={`${String(item)}-${index}`}
-              className="inline-flex max-w-full items-center rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-600"
+              className="inline-flex max-w-full items-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[12px] font-medium text-slate-600"
             >
               <span className="break-words">{String(item)}</span>
             </span>
@@ -2335,7 +2335,7 @@ function ValueDisplay({
             return (
               <div
                 key={`item-${index}`}
-                className="rounded-md border border-slate-100 bg-slate-50 px-2.5 py-1.5"
+                className="rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-1.5"
               >
                 <ValueDisplay value={item} depth={depth + 1} />
               </div>
@@ -2358,9 +2358,9 @@ function ValueDisplay({
           return (
             <div
               key={`${title}-${index}`}
-              className="rounded-md border border-slate-200 bg-white p-2.5"
+              className="rounded-lg border border-slate-200 bg-white p-2.5"
             >
-              <div className="mb-1.5 text-[11px] font-semibold text-slate-800">
+              <div className="mb-1.5 text-[12px] font-semibold text-slate-800">
                 {title}
               </div>
               {Object.keys(details).length > 0 ? (
@@ -2382,7 +2382,7 @@ function ValueDisplay({
   );
 
   if (!entries.length) {
-    return <span className="text-[11px] text-slate-300">—</span>;
+    return <span className="text-[12px] text-slate-300">—</span>;
   }
 
   const eyeKeys = new Set(["right", "left", "od", "os"]);
@@ -2400,7 +2400,7 @@ function ValueDisplay({
           >
             <div className="mb-2 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-              <h4 className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+              <h4 className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-500">
                 {humanizeKey(key)}
               </h4>
             </div>
@@ -2421,11 +2421,11 @@ function ValueDisplay({
         return (
           <div
             key={key}
-            className={`min-w-0 rounded-md border border-slate-100 bg-slate-50/60 px-2.5 py-2 ${
+            className={`min-w-0 rounded-lg border border-slate-100 bg-slate-50/60 px-2.5 py-2 ${
               nested ? "sm:col-span-2" : ""
             }`}
           >
-            <dt className="mb-1 text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">
+            <dt className="mb-1 text-[12px] font-bold uppercase tracking-[0.09em] text-slate-400">
               {humanizeKey(key)}
             </dt>
             <dd className="min-w-0">
@@ -2447,7 +2447,7 @@ function Field({
 }) {
   return (
     <div className="min-w-0">
-      <div className="mb-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-slate-400">
+      <div className="mb-1 text-[12px] font-semibold uppercase tracking-[0.1em] text-slate-400">
         {label}
       </div>
 
@@ -2467,15 +2467,15 @@ function PrescriptionTable({
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200">
       <div className="border-b border-slate-200 bg-slate-50 px-3 py-2">
-        <h3 className="text-[11px] font-semibold text-slate-800">
+        <h3 className="text-[12px] font-semibold text-slate-800">
           {title}
         </h3>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full text-[11px]">
+        <table className="min-w-full text-[12px]">
           <thead>
-            <tr className="border-b border-slate-200 bg-white text-left text-[9px] text-slate-400">
+            <tr className="border-b border-slate-200 bg-white text-left text-[12px] text-slate-400">
               <th className="px-2.5 py-1.5">Eye</th>
               <th className="px-2.5 py-1.5">Sphere</th>
               <th className="px-2.5 py-1.5">Cylinder</th>
@@ -2866,7 +2866,7 @@ function EditableValue({
     return (
       <div className="space-y-2">
         {normalizedValue.length === 0 && (
-          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs text-slate-400">
+          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
             No records added yet.
           </div>
         )}
@@ -2874,10 +2874,10 @@ function EditableValue({
         {normalizedValue.map((item, index) => (
           <div
             key={`${rootKey}-${index}`}
-            className="rounded-md border border-slate-200 bg-white p-2.5"
+            className="rounded-lg border border-slate-200 bg-white p-2.5"
           >
             <div className="mb-2 flex items-center justify-between gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+              <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500">
                 {label} {index + 1}
               </span>
               <button
@@ -2888,7 +2888,7 @@ function EditableValue({
                     normalizedValue.filter((_, itemIndex) => itemIndex !== index),
                   )
                 }
-                className="rounded-md px-2 py-1 text-[10px] font-semibold text-rose-600 hover:bg-rose-50"
+                className="rounded-lg px-2 py-1 text-[12px] font-semibold text-rose-600 hover:bg-rose-50"
               >
                 Remove
               </button>
@@ -2919,7 +2919,7 @@ function EditableValue({
               ],
             )
           }
-          className="inline-flex h-7 items-center gap-1 rounded-md border border-dashed border-slate-300 bg-white px-2.5 text-[10px] font-semibold text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+          className="inline-flex h-7 items-center gap-1 rounded-lg border border-dashed border-slate-300 bg-white px-2.5 text-[12px] font-semibold text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
         >
           + Add {label.replace(/s$/, "")}
         </button>
@@ -2957,7 +2957,7 @@ function EditableValue({
                 nested ? "sm:col-span-2" : ""
               }`}
             >
-              <label className="mb-1.5 block text-[9px] font-bold uppercase tracking-[0.08em] text-slate-500">
+              <label className="mb-1.5 block text-[12px] font-bold uppercase tracking-[0.08em] text-slate-500">
                 {humanizeKey(key)}
               </label>
               <EditableValue
@@ -2982,11 +2982,11 @@ function EditableValue({
       : String(normalizedValue);
 
   const controlClass =
-    "w-full rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50";
+    "w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50";
 
   if (typeof normalizedValue === "boolean") {
     return (
-      <label className="inline-flex min-h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 text-[11px] text-slate-700">
+      <label className="inline-flex min-h-8 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] text-slate-700">
         <input
           type="checkbox"
           checked={normalizedValue}
@@ -3062,7 +3062,7 @@ function ConsultationEditor({
         <div className="text-xs font-semibold text-blue-900">
           Edit consultation record
         </div>
-        <p className="mt-0.5 text-[11px] leading-4 text-blue-700">
+        <p className="mt-0.5 text-[12px] leading-4 text-blue-700">
           Update clinical fields below. Workflow status is managed separately and is not changed when saving these edits.
         </p>
       </div>
@@ -3077,7 +3077,7 @@ function ConsultationEditor({
             className="scroll-mt-28 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.035)]"
           >
             <header className="flex min-h-10 items-center gap-2 border-b border-slate-100 bg-slate-50/70 px-3 py-1.5">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600">
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600">
                 <Icon size={15} />
               </span>
               <h2 className="text-[12px] font-bold text-slate-800">
@@ -3099,7 +3099,7 @@ function ConsultationEditor({
                       nested ? "lg:col-span-2" : ""
                     }`}
                   >
-                    <div className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-500">
+                    <div className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500">
                       {label}
                     </div>
                     <EditableValue
@@ -3371,7 +3371,7 @@ export default function ConsultationDetailsPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center bg-[#f4f7fb]">
-        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs font-medium text-slate-500 shadow-sm">
+        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-xs font-medium text-slate-500 shadow-sm">
           <Loader2
             size={20}
             className="animate-spin"
@@ -3384,11 +3384,11 @@ export default function ConsultationDetailsPage() {
 
   if (error) {
     return (
-      <div className="min-h-[60vh] bg-[#f4f7fb] p-6">
+      <div className="min-h-[60vh] bg-[#f4f7fb] p-3">
         <div className="mx-auto max-w-5xl">
           
 
-          <div className="rounded-xl border border-rose-200 bg-white p-6 text-rose-700 shadow-sm">
+          <div className="rounded-xl border border-rose-200 bg-white p-3 text-rose-700 shadow-sm">
             {error}
           </div>
         </div>
@@ -3401,13 +3401,13 @@ export default function ConsultationDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7fb] text-slate-800">
+    <div className="min-h-screen bg-transparent text-slate-800">
       {/* APPLICATION WORKSPACE HEADER */}
       <div className="border-b border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.025)]">
-        <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-5 lg:px-6">
+        <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
           
 
-          <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
+          <div className="mb-2 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.15em] text-slate-400">
             <span>Clinical workspace</span>
             <span className="text-slate-300">/</span>
             <span>Patient records</span>
@@ -3427,19 +3427,19 @@ export default function ConsultationDetailsPage() {
                     Consultation Details
                   </h1>
 
-                  <span className="rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[9px] font-bold text-blue-700">
+                  <span className="rounded-lg border border-blue-100 bg-blue-50 px-2 py-1 text-[12px] font-bold text-blue-700">
                     {typeLabel(
                       consultation.consultationType,
                     )}
                   </span>
 
-                  <span className="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-700">
+                  <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-100 bg-emerald-50 px-2 py-1 text-[12px] font-bold text-emerald-700">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     {statusLabel(consultation.status)}
                   </span>
                 </div>
 
-                <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-slate-500">
                   <span className="inline-flex items-center gap-1.5">
                     <UserRound size={14} />
                     {patientName}
@@ -3467,7 +3467,7 @@ export default function ConsultationDetailsPage() {
                     type="button"
                     onClick={cancelEditing}
                     disabled={saving}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
                   >
                     <X size={15} />
                     Cancel
@@ -3476,7 +3476,7 @@ export default function ConsultationDetailsPage() {
                     type="button"
                     onClick={handleSaveEdits}
                     disabled={saving}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {saving ? (
                       <Loader2 size={15} className="animate-spin" />
@@ -3491,7 +3491,7 @@ export default function ConsultationDetailsPage() {
                   <button
                     type="button"
                     onClick={startEditing}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-700"
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-700"
                   >
                     <Pencil size={15} />
                     Edit Consultation
@@ -3502,7 +3502,7 @@ export default function ConsultationDetailsPage() {
                       onClick={() =>
                         navigate(`/patients/${patient._id}`)
                       }
-                      className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50"
+                      className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
                     >
                       <UserRound size={15} />
                       Open Patient
@@ -3543,7 +3543,7 @@ export default function ConsultationDetailsPage() {
       </div>
 
       {(saveError || saveSuccess) && (
-        <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-5 lg:px-6">
+        <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-3 lg:px-3">
           {saveError && (
             <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
               {saveError}
@@ -3559,7 +3559,7 @@ export default function ConsultationDetailsPage() {
       )}
 
       {/* RECORD WORKSPACE */}
-      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-4 lg:px-5">
+      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
         <nav
           aria-label="Consultation sections"
           className="mb-3 rounded-lg border border-slate-200 bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.025)]"
@@ -3575,7 +3575,7 @@ export default function ConsultationDetailsPage() {
                   key={item.title}
                   type="button"
                   onClick={() => navigateToSection(item.title)}
-                  className={`inline-flex min-h-8 shrink-0 items-center gap-1 rounded-md border px-2.5 text-[10px] font-bold transition ${
+                  className={`inline-flex min-h-8 shrink-0 items-center gap-1 rounded-lg border px-2.5 text-[12px] font-bold transition ${
                     active
                       ? "border-slate-900 bg-slate-900 text-white shadow-sm"
                       : "border-transparent bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-800"
@@ -3598,7 +3598,7 @@ export default function ConsultationDetailsPage() {
                 onChange={handleEditChange}
               />
               <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 shadow-lg shadow-slate-900/10 backdrop-blur">
-                <div className="text-[10px] font-medium text-slate-500">
+                <div className="text-[12px] font-medium text-slate-500">
                   {editDirty ? "You have unsaved changes" : "No unsaved changes"}
                 </div>
                 <div className="flex items-center gap-2">
@@ -3606,7 +3606,7 @@ export default function ConsultationDetailsPage() {
                     type="button"
                     onClick={cancelEditing}
                     disabled={saving}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
                   >
                     <X size={14} />
                     Cancel
@@ -3615,7 +3615,7 @@ export default function ConsultationDetailsPage() {
                     type="button"
                     onClick={handleSaveEdits}
                     disabled={saving || !editDirty}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[12px] font-bold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                     {saving ? "Saving..." : "Save Changes"}

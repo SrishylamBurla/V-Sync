@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import LoginPage from "./modules/auth/LoginPage";
+import PublicLandingPage from "./modules/public/pages/PublicLandingPage";
+import FranchiseLeadsPage from "./modules/public/pages/FranchiseLeadsPage";
+import RoleRoute from "./components/common/RoleRoute";
 import DashboardPage from "./modules/dashboard/DashboardPage";
 import AppLayout from "./layouts/AppLayout";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -27,6 +30,7 @@ import ContactLensDetailsPage from "./modules/contactLenses/pages/ContactLensDet
 
 import DispensingPage from "./modules/dispensing/pages/DispensingPage";
 import SpectacleJobPage from "./modules/dispensing/pages/SpectacleJobPage";
+import SpectacleHistoryPage from "./modules/dispensing/pages/SpectacleHistoryPage";
 import SundryJobsPage from "./modules/dispensing/pages/SundryJobsPage";
 import SundryJobDetailsPage from "./modules/dispensing/pages/SundryJobDetailsPage";
 import DispensingDetailsPage from "./modules/dispensing/pages/DispensingDetailsPage";
@@ -113,11 +117,17 @@ function LegacyOpticalContactLensDetailsRedirect() {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<PublicLandingPage />} />
+      <Route path="/pricing" element={<PublicLandingPage />} />
+      <Route path="/franchise" element={<PublicLandingPage />} />
       <Route path="/login" element={<LoginPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<RoleRoute roles={["super_admin"]} />}>
+            <Route path="/admin/leads" element={<FranchiseLeadsPage />} />
+          </Route>
 
           {/* Patient workspace + consultation initiation are intentionally
               grouped together. Any role with patient access can initiate
@@ -162,6 +172,10 @@ export default function App() {
             <Route
               path="/dispensing/spectacle-jobs"
               element={<SpectacleJobPage />}
+            />
+            <Route
+              path="/dispensing/spectacle-history"
+              element={<SpectacleHistoryPage />}
             />
 
             {/* General dispensing details, if actually needed */}
@@ -346,8 +360,7 @@ export default function App() {
         </Route>
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

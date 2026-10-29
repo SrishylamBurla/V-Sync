@@ -157,7 +157,8 @@ export const getStaff = asyncHandler(async (req, res) => {
   }
 
   if (search.trim()) {
-    const searchRegex = new RegExp(search.trim(), "i");
+    const safeSearch = String(search).trim().slice(0, 120).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(safeSearch, "i");
 
     filter.$or = [
       { firstName: searchRegex },

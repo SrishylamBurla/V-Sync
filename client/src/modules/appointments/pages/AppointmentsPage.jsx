@@ -145,6 +145,7 @@ const getPatientRows = (response) => {
 export default function AppointmentsPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const actionMode = searchParams.get("mode") || "";
 
   // ----------------------------------------------------------
   // PAGE STATE
@@ -724,20 +725,20 @@ export default function AppointmentsPage() {
   // ==========================================================
 
   return (
-    <div className="mx-auto w-full max-w-[1700px] space-y-5 pb-8 pt-6">
-      <div className="space-y-5">
-        <header className="relative isolate overflow-hidden rounded-[26px] border border-slate-200/80 bg-white px-5 py-6 shadow-[0_4px_24px_rgba(15,23,42,0.045)] sm:px-7 sm:py-7">
+    <div className="mx-auto w-full max-w-[1700px] space-y-3 pb-6 pt-4">
+      <div className="space-y-3">
+        <header className="relative isolate overflow-hidden rounded-2xl border border-slate-200/80 bg-white px-3 py-3 shadow-[0_4px_24px_rgba(15,23,42,0.045)] sm:px-4 sm:py-4">
           <div className="pointer-events-none absolute -right-10 -top-14 -z-10 h-48 w-48 rounded-full bg-violet-100/70 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 right-[26%] -z-10 h-32 w-32 rounded-full bg-blue-50 blur-3xl" />
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200 sm:flex">
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white shadow-lg shadow-slate-200 sm:flex">
                 <CalendarDays size={22} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-700">
+                  <div className="text-[12px] font-bold uppercase tracking-[0.2em] text-violet-700">
                     Front desk · Scheduling
                   </div>
                 </div>
@@ -754,7 +755,7 @@ export default function AppointmentsPage() {
               type="button"
               onClick={load}
               disabled={loading}
-              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
             >
               <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
               Refresh
@@ -762,7 +763,7 @@ export default function AppointmentsPage() {
             <button
               type="button"
               onClick={openBookingModal}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-violet-700"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white shadow-lg shadow-slate-200 transition hover:bg-violet-700"
             >
               <Plus size={15} />
               Book appointment
@@ -770,6 +771,28 @@ export default function AppointmentsPage() {
             </div>
           </div>
         </header>
+
+        {actionMode && (
+          <div className="flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50/80 px-3 py-3 text-xs text-blue-800">
+            <CalendarDays size={15} className="mt-0.5 shrink-0" />
+            <div>
+              <div className="font-bold">
+                {actionMode === "move"
+                  ? "Move an appointment"
+                  : actionMode === "modify"
+                    ? "Modify an appointment"
+                    : "Appointment setup"}
+              </div>
+              <p className="mt-0.5 leading-5">
+                {actionMode === "move"
+                  ? "Choose an appointment and open its record to update the scheduled date and time."
+                  : actionMode === "modify"
+                    ? "Choose an appointment and open its record to update visit details or clinician assignment."
+                    : "Appointment configuration is managed from Practice Settings."}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* DAILY OVERVIEW */}
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -808,7 +831,7 @@ export default function AppointmentsPage() {
       ======================================================= */}
 
       {error && (
-        <div className="flex items-start justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5 text-sm text-red-700 shadow-sm">
+        <div className="flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3.5 text-sm text-red-700 shadow-sm">
           <span>{error}</span>
 
           <button
@@ -831,7 +854,7 @@ export default function AppointmentsPage() {
         title="Schedule controls"
         description="Choose a day to review, create or manage appointments."
       >
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
@@ -856,7 +879,7 @@ export default function AppointmentsPage() {
                     event.target.value,
                   )
                 }
-                className="h-11 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-50"
+                className="h-11 rounded-xl border border-slate-200 bg-white pl-8 pr-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-50"
               />
             </label>
 
@@ -878,8 +901,8 @@ export default function AppointmentsPage() {
             </button>
           </div>
 
-          <div className="min-w-[245px] rounded-2xl border border-violet-100/80 bg-gradient-to-r from-violet-50/80 to-blue-50/60 px-4 py-3.5">
-            <div className="text-[9px] font-black uppercase tracking-[.18em] text-violet-600">
+          <div className="min-w-[245px] rounded-xl border border-violet-100/80 bg-gradient-to-r from-violet-50/80 to-blue-50/60 px-3 py-3.5">
+            <div className="text-[12px] font-black uppercase tracking-[.18em] text-violet-600">
               Selected day
             </div>
             <div className="mt-1 text-sm font-extrabold text-slate-900 sm:text-base">
@@ -924,7 +947,7 @@ export default function AppointmentsPage() {
       >
         {/* FILTER BAR */}
 
-        <div className="mb-5 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:p-4 lg:grid-cols-[minmax(260px,1fr)_210px_230px]">
+        <div className="mb-4 grid gap-3 rounded-xl border border-slate-100 bg-slate-50/80 p-3 sm:p-3 lg:grid-cols-[minmax(260px,1fr)_210px_230px]">
           <div className="relative">
             <Search
               size={15}
@@ -942,7 +965,7 @@ export default function AppointmentsPage() {
                 }
               }}
               placeholder="Search patient, patient number or phone..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
             />
           </div>
 
@@ -994,7 +1017,7 @@ export default function AppointmentsPage() {
         {/* LOADING */}
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-16">
+          <div className="flex flex-col items-center justify-center py-8">
             <RefreshCw
               size={24}
               className="animate-spin text-violet-500"
@@ -1011,7 +1034,7 @@ export default function AppointmentsPage() {
         ) : filtered.length === 0 ? (
           /* EMPTY */
 
-          <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-5 py-12 text-center">
+          <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-3 py-6 text-center">
             <CalendarDays
               className="mx-auto text-slate-300"
               size={30}
@@ -1029,7 +1052,7 @@ export default function AppointmentsPage() {
             <button
               type="button"
               onClick={openBookingModal}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-violet-700 hover:to-blue-700"
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:from-violet-700 hover:to-blue-700"
             >
               <Plus size={14} />
               Book appointment
@@ -1038,35 +1061,35 @@ export default function AppointmentsPage() {
         ) : (
           /* TABLE */
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
             <table className="w-full min-w-[1180px] text-left">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/90 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
-                  <th className="px-4 py-3">
+                <tr className="border-b border-slate-200 bg-slate-50/90 text-[12px] font-black uppercase tracking-[0.14em] text-slate-400">
+                  <th className="px-3 py-3">
                     Time
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Patient
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Visit
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Clinician
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Reason / Notes
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Status
                   </th>
 
-                  <th className="px-4 py-3">
+                  <th className="px-3 py-3">
                     Open
                   </th>
                 </tr>
@@ -1101,7 +1124,7 @@ export default function AppointmentsPage() {
                     >
                       {/* TIME */}
 
-                      <td className="px-4 py-4">
+                      <td className="px-3 py-3">
                         <div className="text-sm font-bold text-slate-800">
                           {appointment.appointmentDate
                             ? new Date(
@@ -1116,7 +1139,7 @@ export default function AppointmentsPage() {
                             : "—"}
                         </div>
 
-                        <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
+                        <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-400">
                           <Clock3 size={11} />
 
                           {appointment.durationMinutes ||
@@ -1127,7 +1150,7 @@ export default function AppointmentsPage() {
 
                       {/* PATIENT */}
 
-                      <td className="px-4 py-4">
+                      <td className="px-3 py-3">
                         <button
                           type="button"
                           onClick={() => {
@@ -1148,7 +1171,7 @@ export default function AppointmentsPage() {
                               "Unknown patient"}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-1 text-[12px] text-slate-400">
                             {appointment.patientId
                               ?.patientNumber ||
                               "—"}{" "}
@@ -1162,14 +1185,14 @@ export default function AppointmentsPage() {
 
                       {/* VISIT */}
 
-                      <td className="px-4 py-4 text-sm text-slate-700">
+                      <td className="px-3 py-3 text-sm text-slate-700">
                         <div className="font-semibold">
                           {appointment.type ||
                             "Eye Examination"}
                         </div>
 
                         {appointment.reason && (
-                          <div className="mt-1 max-w-[160px] truncate text-[10px] text-slate-400">
+                          <div className="mt-1 max-w-[160px] truncate text-[12px] text-slate-400">
                             {appointment.reason}
                           </div>
                         )}
@@ -1177,7 +1200,7 @@ export default function AppointmentsPage() {
 
                       {/* CLINICIAN */}
 
-                      <td className="px-4 py-4">
+                      <td className="px-3 py-3">
                         <div className="min-w-[235px]">
                           <div className="flex items-center gap-2">
                             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-700">
@@ -1194,7 +1217,7 @@ export default function AppointmentsPage() {
                                   "Unassigned"}
                               </div>
 
-                              <div className="text-[10px] text-slate-400">
+                              <div className="text-[12px] text-slate-400">
                                 {appointment
                                   .clinicianId
                                   ?.role ||
@@ -1220,7 +1243,7 @@ export default function AppointmentsPage() {
                               disabled={
                                 isReassigning
                               }
-                              className="h-8 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-semibold text-slate-600 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-50 disabled:cursor-wait disabled:bg-slate-50 disabled:opacity-70"
+                              className="h-8 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-semibold text-slate-600 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-50 disabled:cursor-wait disabled:bg-slate-50 disabled:opacity-70"
                               aria-label={`Assign clinician for ${fullName(
                                 appointment.patientId,
                               )}`}
@@ -1259,14 +1282,14 @@ export default function AppointmentsPage() {
                                       appointment,
                                     )
                                   }
-                                  className="rounded-lg bg-violet-600 px-2.5 py-1.5 text-[10px] font-bold text-white transition hover:bg-violet-700"
+                                  className="rounded-lg bg-violet-600 px-2.5 py-1.5 text-[12px] font-bold text-white transition hover:bg-violet-700"
                                 >
                                   Save
                                 </button>
                               )}
 
                             {isReassigning && (
-                              <span className="whitespace-nowrap text-[10px] font-semibold text-violet-600">
+                              <span className="whitespace-nowrap text-[12px] font-semibold text-violet-600">
                                 Saving...
                               </span>
                             )}
@@ -1276,13 +1299,13 @@ export default function AppointmentsPage() {
 
                       {/* REASON / NOTES */}
 
-                      <td className="max-w-[260px] px-4 py-4">
+                      <td className="max-w-[260px] px-3 py-3">
                         <div className="text-xs font-medium text-slate-600">
                           {appointment.reason ||
                             "Routine visit"}
                         </div>
 
-                        <div className="mt-1 truncate text-[10px] text-slate-400">
+                        <div className="mt-1 truncate text-[12px] text-slate-400">
                           {appointment.notes ||
                             "No notes"}
                         </div>
@@ -1290,9 +1313,9 @@ export default function AppointmentsPage() {
 
                       {/* STATUS */}
 
-                      <td className="px-4 py-4">
+                      <td className="px-3 py-3">
                         <span
-                          className={`inline-flex rounded-full px-3 py-1.5 text-[10px] font-bold ${
+                          className={`inline-flex rounded-full px-3 py-1.5 text-[12px] font-bold ${
                             statusClass[
                               appointment.status
                             ] ||
@@ -1308,17 +1331,21 @@ export default function AppointmentsPage() {
 
                       {/* OPEN */}
 
-                      <td className="px-4 py-4">
+                      <td className="px-3 py-3">
                         <button
                           type="button"
                           onClick={() =>
                             navigate(
-                              `/appointments/${appointmentId}`,
+                              `/appointments/${appointmentId}${actionMode ? `?mode=${actionMode}` : ""}`,
                             )
                           }
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[12px] font-bold text-slate-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
                         >
-                          Open record
+                          {actionMode === "move"
+                            ? "Reschedule"
+                            : actionMode === "modify"
+                              ? "Modify record"
+                              : "Open record"}
                         </button>
                       </td>
                     </tr>
@@ -1339,7 +1366,7 @@ export default function AppointmentsPage() {
         title="Appointment status"
         description="A quick breakdown of the current schedule by workflow status."
       >
-        <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50/80 px-4 py-3 text-xs leading-5 text-blue-700">
+        <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/80 px-3 py-3 text-xs leading-5 text-blue-700">
           Appointment status is managed from the
           Dashboard only.
         </div>
@@ -1350,7 +1377,7 @@ export default function AppointmentsPage() {
               key={statusValue}
               className="rounded-xl border border-slate-200/80 bg-white p-3.5 transition hover:border-violet-200 hover:bg-violet-50/20"
             >
-              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="text-[12px] font-bold uppercase tracking-wider text-slate-500">
                 {statusLabel(statusValue)}
               </div>
 
@@ -1380,9 +1407,9 @@ function OverviewMetric({ icon: Icon, label, value, caption, tone = "violet" }) 
   const style = toneStyles[tone] || toneStyles.violet;
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_2px_12px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_10px_28px_rgba(15,23,42,0.07)]">
+    <article className="group relative overflow-hidden rounded-xl border border-slate-200/90 bg-white p-3 shadow-[0_2px_12px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_10px_28px_rgba(15,23,42,0.07)]">
       <div className="flex items-start justify-between gap-3">
-        <div className="text-[10px] font-black uppercase tracking-[0.13em] text-slate-500">
+        <div className="text-[12px] font-black uppercase tracking-[0.13em] text-slate-500">
           {label}
         </div>
         <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${style.icon}`}>
@@ -1391,9 +1418,9 @@ function OverviewMetric({ icon: Icon, label, value, caption, tone = "violet" }) 
       </div>
       <div className="mt-3 flex items-baseline gap-2">
         <span className="text-3xl font-black tracking-tight tabular-nums text-slate-950">{value}</span>
-        <span className="text-[10px] font-semibold text-slate-400">visits</span>
+        <span className="text-[12px] font-semibold text-slate-400">visits</span>
       </div>
-      <p className="mt-1 text-[11px] leading-4 text-slate-500">{caption}</p>
+      <p className="mt-1 text-[12px] leading-4 text-slate-500">{caption}</p>
       <div className={`absolute inset-x-0 bottom-0 h-[2px] opacity-60 ${style.line}`} />
     </article>
   );
@@ -1401,10 +1428,10 @@ function OverviewMetric({ icon: Icon, label, value, caption, tone = "violet" }) 
 
 function Section({ number, title, description, children }) {
   return (
-    <section className="overflow-hidden rounded-[22px] border border-slate-200/90 bg-white shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
-      <header className="border-b border-slate-100 bg-slate-50/55 px-5 py-4 sm:px-6">
+    <section className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
+      <header className="border-b border-slate-100 bg-slate-50/55 px-3 py-3 sm:px-3">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-7 min-w-7 items-center justify-center rounded-lg bg-violet-50 px-1.5 text-[10px] font-black text-violet-600 ring-1 ring-violet-100">
+          <span className="mt-0.5 flex h-7 min-w-7 items-center justify-center rounded-lg bg-violet-50 px-1.5 text-[12px] font-black text-violet-600 ring-1 ring-violet-100">
             {number}
           </span>
           <div className="min-w-0">
@@ -1419,7 +1446,7 @@ function Section({ number, title, description, children }) {
           </div>
         </div>
       </header>
-      <div className="p-4 sm:p-5 lg:p-6">{children}</div>
+      <div className="p-3 sm:p-3 lg:p-3">{children}</div>
     </section>
   );
 }
@@ -1441,7 +1468,7 @@ function Field({
 
   return (
     <label className={`block min-w-0 ${className}`}>
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-500">
         {title}{required && <span className="ml-1 text-red-500">*</span>}
       </span>
       {type === "textarea" ? (
@@ -1493,18 +1520,18 @@ function BookingModal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/55 p-2 backdrop-blur-md sm:p-5"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/55 p-2 backdrop-blur-md sm:p-3"
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"
     >
-      <div className="flex max-h-[95vh] w-full max-w-6xl flex-col overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_30px_100px_rgba(2,6,23,0.28)]">
+      <div className="flex max-h-[95vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_30px_100px_rgba(2,6,23,0.28)]">
         {/* HEADER */}
 
-        <header className="shrink-0 border-b border-slate-200 bg-gradient-to-r from-violet-50/90 via-white to-blue-50/80 px-5 py-5 sm:px-7">
-          <div className="flex items-start justify-between gap-4">
+        <header className="shrink-0 border-b border-slate-200 bg-gradient-to-r from-violet-50/90 via-white to-blue-50/80 px-3 py-3 sm:px-4">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-violet-600">
+              <div className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[.18em] text-violet-600">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 Appointment booking
               </div>
@@ -1544,10 +1571,10 @@ function BookingModal({
                 PATIENT
             =================================================== */}
 
-            <section className="border-b border-slate-200 bg-slate-50/45 p-5 sm:p-6 lg:p-7 xl:border-b-0 xl:border-r">
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <section className="border-b border-slate-200 bg-slate-50/45 p-3 sm:p-3 lg:p-4 xl:border-b-0 xl:border-r">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-[.18em] text-blue-600">
+                  <div className="text-[12px] font-black uppercase tracking-[.18em] text-blue-600">
                     Step 01 · Patient
                   </div>
 
@@ -1569,7 +1596,7 @@ function BookingModal({
 
                       setPatientResults([]);
                     }}
-                    className={`rounded-lg px-3 py-2 text-[10px] font-bold transition ${
+                    className={`rounded-lg px-3 py-2 text-[12px] font-bold transition ${
                       bookingMode ===
                       "existing"
                         ? "bg-blue-600 text-white shadow-sm"
@@ -1594,7 +1621,7 @@ function BookingModal({
                         }),
                       );
                     }}
-                    className={`rounded-lg px-3 py-2 text-[10px] font-bold transition ${
+                    className={`rounded-lg px-3 py-2 text-[12px] font-bold transition ${
                       bookingMode === "new"
                         ? "bg-violet-600 text-white shadow-sm"
                         : "text-slate-500 hover:bg-white"
@@ -1611,7 +1638,7 @@ function BookingModal({
               "existing" ? (
                 <div>
                   <label className="block">
-                    <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-500">
                       Search patient
                     </span>
 
@@ -1639,7 +1666,7 @@ function BookingModal({
                           );
                         }}
                         placeholder="Name, phone or patient number"
-                        className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-10 text-sm outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+                        className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-8 text-sm outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
                       />
 
                       {patientQuery && (
@@ -1674,7 +1701,7 @@ function BookingModal({
 
                   {patientResults.length >
                     0 && (
-                    <div className="mt-2 max-h-60 overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-lg">
+                    <div className="mt-2 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg">
                       {patientResults.map(
                         (patient) => (
                           <button
@@ -1687,7 +1714,7 @@ function BookingModal({
                                 patient,
                               )
                             }
-                            className="flex w-full items-center gap-3 border-b border-slate-100 px-4 py-3 text-left transition last:border-0 hover:bg-blue-50/60"
+                            className="flex w-full items-center gap-3 border-b border-slate-100 px-3 py-3 text-left transition last:border-0 hover:bg-blue-50/60"
                           >
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                               <UserRound
@@ -1703,7 +1730,7 @@ function BookingModal({
                                   "Unnamed patient"}
                               </div>
 
-                              <div className="mt-0.5 truncate text-[10px] text-slate-400">
+                              <div className="mt-0.5 truncate text-[12px] text-slate-400">
                                 {patient.patientNumber ||
                                   "No number"}{" "}
                                 ·{" "}
@@ -1720,7 +1747,7 @@ function BookingModal({
                   {/* SEARCHING */}
 
                   {patientSearching && (
-                    <div className="mt-2 text-[10px] text-slate-400">
+                    <div className="mt-2 text-[12px] text-slate-400">
                       Searching patients...
                     </div>
                   )}
@@ -1728,8 +1755,8 @@ function BookingModal({
                   {/* SELECTED */}
 
                   {form.patientId ? (
-                    <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/70 p-3">
+                      <div className="text-[12px] font-bold uppercase tracking-wider text-emerald-600">
                         Patient selected
                       </div>
 
@@ -1737,13 +1764,13 @@ function BookingModal({
                         {patientQuery}
                       </div>
 
-                      <div className="mt-1 text-[10px] text-emerald-700">
+                      <div className="mt-1 text-[12px] text-emerald-700">
                         Existing patient is ready
                         for booking.
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-5 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center">
+                    <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-3 text-center">
                       <UserRound
                         className="mx-auto text-slate-300"
                         size={24}
@@ -1759,7 +1786,7 @@ function BookingModal({
               ) : (
                 /* NEW PATIENT */
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <Input
                     label="First name"
                     value={
@@ -1915,7 +1942,7 @@ function BookingModal({
                   />
 
                   <label className="sm:col-span-2">
-                    <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
                       Patient notes
                     </span>
 
@@ -1946,9 +1973,9 @@ function BookingModal({
                 VISIT DETAILS
             =================================================== */}
 
-            <section className="p-5 sm:p-6 lg:p-7">
-              <div className="mb-5">
-                <div className="text-[10px] font-black uppercase tracking-[.18em] text-violet-600">
+            <section className="p-3 sm:p-3 lg:p-4">
+              <div className="mb-4">
+                <div className="text-[12px] font-black uppercase tracking-[.18em] text-violet-600">
                   Step 02 · Schedule
                 </div>
 
@@ -1957,7 +1984,7 @@ function BookingModal({
                 </h3>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <Field
                   label="Date & time"
                   type="datetime-local"
@@ -2009,7 +2036,7 @@ function BookingModal({
                 />
 
                 <label className="block">
-                  <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
                     Clinician
                   </span>
 
@@ -2068,7 +2095,7 @@ function BookingModal({
                 />
 
                 <div className="rounded-xl border border-violet-100 bg-violet-50/70 px-3 py-2.5">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-violet-600">
+                  <div className="text-[12px] font-bold uppercase tracking-wider text-violet-600">
                     Assignment
                   </div>
 
@@ -2100,8 +2127,8 @@ function BookingModal({
 
           {/* FOOTER */}
 
-          <footer className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-7">
-            <span className="text-[10px] text-slate-400">
+          <footer className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-slate-200 bg-white/95 px-3 py-3 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-4">
+            <span className="text-[12px] text-slate-400">
               Verify patient, time and clinician
               before booking.
             </span>
@@ -2110,14 +2137,14 @@ function BookingModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
               >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-5 py-3 text-xs font-black text-white shadow-lg shadow-violet-100 transition hover:from-violet-700 hover:to-blue-700"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-3 text-xs font-black text-white shadow-lg shadow-violet-100 transition hover:from-violet-700 hover:to-blue-700"
               >
                 <CalendarDays size={14} />
                 Book Appointment
@@ -2144,7 +2171,7 @@ function Input({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
 
         {required && (
@@ -2180,7 +2207,7 @@ function Select({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </span>
 

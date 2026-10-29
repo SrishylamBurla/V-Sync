@@ -166,7 +166,8 @@ export const getPatients = asyncHandler(async (req, res) => {
 
 
   if (search.trim()) {
-    const regex = new RegExp(search.trim(), "i");
+    const safeSearch = String(search).trim().slice(0, 120).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(safeSearch, "i");
 
     query.$or = [
       {

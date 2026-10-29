@@ -626,7 +626,7 @@
 //   if (loading) {
 //     return (
 //       <div className="flex min-h-[70vh] items-center justify-center bg-[#f6f8fb]">
-//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
+//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-500 shadow-sm">
 //           <Loader2 size={18} className="animate-spin text-blue-600" />
 //           Loading patient workspace...
 //         </div>
@@ -636,8 +636,8 @@
 
 //   if (!patient) {
 //     return (
-//       <div className="mx-auto max-w-3xl px-4 py-16">
-//         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+//       <div className="mx-auto max-w-3xl px-3 py-8">
+//         <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 //           {error || "Patient record not found."}
 //         </div>
 //       </div>
@@ -646,7 +646,7 @@
 
 //   return (
 //     <div className="min-h-screen bg-[#f6f8fb] pb-12 text-slate-800">
-//       <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-4 lg:px-5">
+//       <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
 //         {/* ================================================== */}
 //         {/* TOP TOOLBAR */}
 //         {/* ================================================== */}
@@ -693,7 +693,7 @@
 //         </div>
 
 //         {error && (
-//           <div className="mb-5 flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-medium text-red-700 shadow-sm">
+//           <div className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-700 shadow-sm">
 //             <span>{error}</span>
 
 //             <button
@@ -712,15 +712,15 @@
 //         {/* ================================================== */}
 
 //         <header className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
-//           <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/70 px-4 py-4 sm:px-5">
+//           <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/70 px-3 py-3 sm:px-3">
 //             <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-100/40 blur-3xl" />
 
 //             <div className="pointer-events-none absolute -bottom-32 left-1/3 h-56 w-56 rounded-full bg-violet-100/30 blur-3xl" />
 
-//             <div className="relative flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+//             <div className="relative flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
 //               {/* Identity */}
 
-//               <div className="flex min-w-0 items-start gap-4">
+//               <div className="flex min-w-0 items-start gap-3">
 //                 <div className="relative">
 //                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-slate-950 to-slate-700 text-lg font-bold text-white shadow-xl shadow-slate-900/15">
 //                     {(patient.firstName?.[0] || "P").toUpperCase()}
@@ -738,12 +738,12 @@
 
 //                 <div className="min-w-0">
 //                   <div className="flex flex-wrap items-center gap-2">
-//                     <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-blue-700">
+//                     <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[12px] font-bold uppercase tracking-[0.16em] text-blue-700">
 //                       Patient
 //                     </span>
 
 //                     {patient.patientNumber && (
-//                       <span className="font-mono text-[10px] font-semibold text-slate-400">
+//                       <span className="font-mono text-[12px] font-semibold text-slate-400">
 //                         #{patient.patientNumber}
 //                       </span>
 //                     )}
@@ -849,7 +849,7 @@
 //                 key={id}
 //                 type="button"
 //                 onClick={() => setActiveSection(id)}
-//                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-[9px] font-bold transition-all duration-200 ${
+//                 className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-[12px] font-bold transition-all duration-200 ${
 //                   activeSection === id
 //                     ? "bg-slate-950 text-white shadow-sm"
 //                     : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
@@ -859,7 +859,7 @@
 
 //                 {id !== "overview" && (
 //                   <span
-//                     className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[8px] ${
+//                     className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[12px] ${
 //                       activeSection === id
 //                         ? "bg-white/15 text-white"
 //                         : "bg-slate-100 text-slate-400"
@@ -889,7 +889,7 @@
 //           {activeSection === "overview" && (
 //             <section className="grid gap-3 xl:grid-cols-[1.2fr_.8fr]">
 //               <Panel title="Patient overview" icon={UserRound}>
-//                 <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+//                 <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
 //                   <Info
 //                     label="Date of birth"
 //                     value={formatDate(patient.dateOfBirth)}
@@ -934,8 +934,8 @@
 //                 </div>
 
 //                 {patient.notes && (
-//                   <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-//                     <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+//                   <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+//                     <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
 //                       Patient notes
 //                     </div>
 
@@ -982,7 +982,7 @@
 //     ===================================================== */}
 
 //                   <div className="pt-3">
-//                     <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+//                     <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-slate-400">
 //                       Specialized clinical consultations
 //                     </div>
 
@@ -1030,7 +1030,7 @@
 //     ===================================================== */}
 
 //                   <div className="pt-3">
-//                     <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+//                     <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-slate-400">
 //                       Dispensing
 //                     </div>
 
@@ -1083,7 +1083,7 @@
 //                     <button
 //                       type="button"
 //                       onClick={startShortConsultation}
-//                       className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+//                       className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
 //                     >
 //                       <Plus size={13} />
 //                       Short
@@ -1092,7 +1092,7 @@
 //                     <button
 //                       type="button"
 //                       onClick={startComprehensiveConsultation}
-//                       className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+//                       className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
 //                     >
 //                       <Plus size={13} />
 //                       New consultation
@@ -1116,14 +1116,14 @@
 //                         <button
 //                           type="button"
 //                           onClick={() => void openConsultation(item)}
-//                           className={`group w-full rounded-2xl border p-4 text-left transition-all duration-200 ${
+//                           className={`group w-full rounded-xl border p-3 text-left transition-all duration-200 ${
 //                             index === 0
 //                               ? "border-blue-200 bg-blue-50/70 shadow-sm"
 //                               : "border-slate-200 bg-white hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
 //                           }`}
 //                         >
 //                           <div className="flex items-center justify-between gap-2">
-//                             <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+//                             <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
 //                               {index === 0 ? "Latest" : "Consultation"}
 //                             </span>
 
@@ -1138,14 +1138,14 @@
 //                           </div>
 
 //                           <div
-//                             className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${toneClass(
+//                             className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[12px] font-bold ${toneClass(
 //                               consultationTone(item),
 //                             )}`}
 //                           >
 //                             {consultationLabel(item)}
 //                           </div>
 
-//                           <div className="mt-3 text-[9px] text-slate-400">
+//                           <div className="mt-3 text-[12px] text-slate-400">
 //                             {item.optometristId
 //                               ? [
 //                                   item.optometristId.firstName,
@@ -1210,7 +1210,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={startSpectacleJob}
-//                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+//                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
 //                   >
 //                     New spectacle job
 //                   </button>
@@ -1225,7 +1225,7 @@
 //                       onClick={() =>
 //                         navigate(`/dispensing/spectacles/${item._id}`)
 //                       }
-//                       className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+//                       className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
 //                     >
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -1237,7 +1237,7 @@
 //                             {item.jobNumber || "Spectacle Job"}
 //                           </div>
 
-//                           <div className="mt-1 text-[10px] text-slate-400">
+//                           <div className="mt-1 text-[12px] text-slate-400">
 //                             {formatDate(item.jobDate)} ·{" "}
 //                             {item.frame?.description ||
 //                               item.frame?.code ||
@@ -1284,7 +1284,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={startContactLensOrder}
-//                     className="rounded-xl bg-slate-950 px-3 py-2 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+//                     className="rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
 //                   >
 //                     New contact lens order
 //                   </button>
@@ -1299,7 +1299,7 @@
 //                       onClick={() =>
 //                         navigate(`/dispensing/contact-lenses/${item._id}`)
 //                       }
-//                       className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+//                       className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
 //                     >
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
@@ -1311,7 +1311,7 @@
 //                             {item.orderNumber || "Contact Lens Order"}
 //                           </div>
 
-//                           <div className="mt-1 text-[10px] text-slate-400">
+//                           <div className="mt-1 text-[12px] text-slate-400">
 //                             {formatDate(item.orderDate)} ·{" "}
 //                             {item.brand || item.lensType || "Lens"}
 //                           </div>
@@ -1350,7 +1350,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={startSundryJob}
-//                     className="rounded-xl bg-slate-950 px-3 py-2 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+//                     className="rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
 //                   >
 //                     New sundry record
 //                   </button>
@@ -1363,7 +1363,7 @@
 //                     <button
 //                       type="button"
 //                       onClick={() => navigate(`/dispensing/sundries/${item._id}`)}
-//                       className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+//                       className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
 //                     >
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
@@ -1371,7 +1371,7 @@
 //                         </div>
 //                         <div className="min-w-0">
 //                           <div className="truncate text-xs font-bold text-slate-900">{item.jobNumber || "Sundry Job"}</div>
-//                           <div className="mt-1 text-[10px] text-slate-400">{formatDate(item.jobDate || item.createdAt)} · {item.item?.description || item.item?.code || "Sundry"}</div>
+//                           <div className="mt-1 text-[12px] text-slate-400">{formatDate(item.jobDate || item.createdAt)} · {item.item?.description || item.item?.code || "Sundry"}</div>
 //                         </div>
 //                       </div>
 //                       <div className="flex shrink-0 items-center gap-3">
@@ -1399,7 +1399,7 @@
 //                     onClick={() =>
 //                       navigate(`/appointments/book?patientId=${patientId}`)
 //                     }
-//                     className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+//                     className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
 //                   >
 //                     <Plus size={13} />
 //                     Book appointment
@@ -1407,8 +1407,8 @@
 //                 }
 //               >
 //                 {upcomingAppointments.length > 0 && (
-//                   <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
-//                     <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-blue-600">
+//                   <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
+//                     <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-blue-600">
 //                       Next appointment
 //                     </div>
 
@@ -1447,7 +1447,7 @@
 //                     <button
 //                       type="button"
 //                       onClick={() => navigate(`/appointments/${item._id}`)}
-//                       className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+//                       className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
 //                     >
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
@@ -1459,7 +1459,7 @@
 //                             {formatDate(item.appointmentDate)}
 //                           </div>
 
-//                           <div className="mt-1 text-[10px] text-slate-400">
+//                           <div className="mt-1 text-[12px] text-slate-400">
 //                             {item.type || "Eye Examination"} ·{" "}
 //                             {item.reason || "Routine visit"}
 //                           </div>
@@ -1507,7 +1507,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={() => navigate(`/billing?patientId=${patientId}`)}
-//                     className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+//                     className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
 //                   >
 //                     <Plus size={13} />
 //                     Create bill
@@ -1533,7 +1533,7 @@
 //                     <button
 //                       type="button"
 //                       onClick={() => navigate(`/billing/${item._id}`)}
-//                       className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+//                       className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
 //                     >
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
@@ -1545,7 +1545,7 @@
 //                             {item.invoiceNumber || "Invoice"}
 //                           </div>
 
-//                           <div className="mt-1 text-[10px] text-slate-400">
+//                           <div className="mt-1 text-[12px] text-slate-400">
 //                             {formatDate(item.invoiceDate)} ·{" "}
 //                             {item.items?.length || 0} item(s)
 //                           </div>
@@ -1558,7 +1558,7 @@
 //                             {formatMoney(item.total)}
 //                           </div>
 
-//                           <div className="mt-1 text-[9px] font-semibold text-slate-500">
+//                           <div className="mt-1 text-[12px] font-semibold text-slate-500">
 //                             Paid {formatMoney(item.paidAmount)} · Balance{" "}
 //                             {formatMoney(item.balance)}
 //                           </div>
@@ -1591,7 +1591,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={() => setDocumentOpen(true)}
-//                     className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-[10px] font-bold text-blue-700 transition hover:bg-blue-100"
+//                     className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-[12px] font-bold text-blue-700 transition hover:bg-blue-100"
 //                   >
 //                     Upload
 //                   </button>
@@ -1601,7 +1601,7 @@
 //                   rows={documents}
 //                   empty="No documents uploaded for this patient."
 //                   render={(item) => (
-//                     <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 transition hover:border-slate-300 hover:bg-slate-50/60">
+//                     <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 transition hover:border-slate-300 hover:bg-slate-50/60">
 //                       <div className="flex min-w-0 items-center gap-3">
 //                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
 //                           <FileText size={15} />
@@ -1614,7 +1614,7 @@
 //                               "Patient document"}
 //                           </div>
 
-//                           <div className="mt-1 flex flex-wrap gap-x-2 text-[10px] text-slate-400">
+//                           <div className="mt-1 flex flex-wrap gap-x-2 text-[12px] text-slate-400">
 //                             <span>{roleLabel(item.category || "other")}</span>
 
 //                             <span>·</span>
@@ -1625,7 +1625,7 @@
 //                           </div>
 
 //                           {item.note && (
-//                             <div className="mt-1 truncate text-[10px] text-slate-500">
+//                             <div className="mt-1 truncate text-[12px] text-slate-500">
 //                               {item.note}
 //                             </div>
 //                           )}
@@ -1692,7 +1692,7 @@
 //           onClose={() => !saving && setEditOpen(false)}
 //         >
 //           <form onSubmit={savePatient} className="space-y-3">
-//             <div className="grid gap-4 sm:grid-cols-2">
+//             <div className="grid gap-3 sm:grid-cols-2">
 //               <Field
 //                 label="First name"
 //                 value={editForm.firstName}
@@ -1799,12 +1799,12 @@
 //               }
 //             />
 
-//             <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
+//             <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
 //               <button
 //                 type="button"
 //                 onClick={() => setEditOpen(false)}
 //                 disabled={saving}
-//                 className="rounded-xl border border-slate-200 px-4 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+//                 className="rounded-xl border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
 //               >
 //                 Cancel
 //               </button>
@@ -1812,7 +1812,7 @@
 //               <button
 //                 type="submit"
 //                 disabled={saving}
-//                 className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
+//                 className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
 //               >
 //                 {saving && <Loader2 size={14} className="animate-spin" />}
 //                 Save changes
@@ -1840,11 +1840,11 @@
 //             />
 
 //             <label className="block">
-//               <span className="mb-1 block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+//               <span className="mb-1 block text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">
 //                 Files
 //               </span>
 
-//               <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-3 transition hover:border-blue-300 hover:bg-blue-50/30">
+//               <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-3 transition hover:border-blue-300 hover:bg-blue-50/30">
 //                 <input
 //                   type="file"
 //                   multiple
@@ -1855,7 +1855,7 @@
 //                 />
 
 //                 {documentFiles.length > 0 && (
-//                   <div className="mt-3 text-[10px] font-medium text-slate-500">
+//                   <div className="mt-3 text-[12px] font-medium text-slate-500">
 //                     {documentFiles.length} file
 //                     {documentFiles.length === 1 ? "" : "s"} selected
 //                   </div>
@@ -1869,12 +1869,12 @@
 //               onChange={setDocumentNote}
 //             />
 
-//             <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
+//             <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
 //               <button
 //                 type="button"
 //                 onClick={() => setDocumentOpen(false)}
 //                 disabled={uploading}
-//                 className="rounded-xl border border-slate-200 px-4 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+//                 className="rounded-xl border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
 //               >
 //                 Cancel
 //               </button>
@@ -1882,7 +1882,7 @@
 //               <button
 //                 type="submit"
 //                 disabled={!documentFiles.length || uploading}
-//                 className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+//                 className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
 //               >
 //                 {uploading && <Loader2 size={14} className="animate-spin" />}
 //                 Upload
@@ -1902,9 +1902,9 @@
 // function Panel({ title, icon: Icon, action, children }) {
 //   return (
 //     <section className="group overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
-//       <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+//       <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3">
 //         <div className="flex items-center gap-2">
-//           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-200/70">
+//           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-200/70">
 //             <Icon size={14} strokeWidth={1.8} />
 //           </div>
 
@@ -1916,7 +1916,7 @@
 //         {action}
 //       </div>
 
-//       <div className="p-4">{children}</div>
+//       <div className="p-3">{children}</div>
 //     </section>
 //   );
 // }
@@ -1937,14 +1937,14 @@
 //       type="button"
 //       onClick={onClick}
 //       disabled={disabled}
-//       className={`group relative inline-flex min-h-[40px] items-center justify-center gap-2 rounded-lg px-2.5 text-[9px] font-bold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
+//       className={`group relative inline-flex min-h-[40px] items-center justify-center gap-2 rounded-lg px-2.5 text-[12px] font-bold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
 //         primary
 //           ? "bg-slate-950 text-white shadow-lg shadow-slate-950/10 hover:-translate-y-0.5 hover:bg-slate-800"
 //           : "border border-slate-200 bg-white text-slate-700 shadow-sm hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
 //       }`}
 //     >
 //       <span
-//         className={`flex h-6 w-6 items-center justify-center rounded-md ${
+//         className={`flex h-6 w-6 items-center justify-center rounded-lg ${
 //           primary
 //             ? "bg-white/10"
 //             : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
@@ -1966,7 +1966,7 @@
 //   const content = (
 //     <>
 //       <div
-//         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+//         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${
 //           done
 //             ? "bg-emerald-100 text-emerald-700"
 //             : "bg-slate-100 text-slate-400"
@@ -1978,7 +1978,7 @@
 //       <div className="min-w-0 flex-1">
 //         <div className="text-xs font-bold text-slate-900">{title}</div>
 
-//         <div className="mt-1 text-[10px] leading-5 text-slate-400">
+//         <div className="mt-1 text-[12px] leading-5 text-slate-400">
 //           {description}
 //         </div>
 //       </div>
@@ -2019,7 +2019,7 @@
 // function Stat({ label, value, warning = false }) {
 //   return (
 //     <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-3">
-//       <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+//       <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
 //         {label}
 //       </div>
 
@@ -2041,7 +2041,7 @@
 // function Info({ label, value }) {
 //   return (
 //     <div className="min-w-0">
-//       <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+//       <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
 //         {label}
 //       </div>
 
@@ -2059,7 +2059,7 @@
 // function Badge({ label, tone = "slate" }) {
 //   return (
 //     <span
-//       className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[8px] font-bold ${toneClass(
+//       className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[12px] font-bold ${toneClass(
 //         tone,
 //       )}`}
 //     >
@@ -2111,7 +2111,7 @@
 
 //   return (
 //     <span
-//       className={`mt-1 inline-flex rounded-full border px-1.5 py-0.5 text-[8px] font-bold uppercase ${
+//       className={`mt-1 inline-flex rounded-full border px-1.5 py-0.5 text-[12px] font-bold uppercase ${
 //         isPositive
 //           ? "border-emerald-100 bg-emerald-50 text-emerald-700"
 //           : isWarning
@@ -2144,7 +2144,7 @@
 
 //   if (!safeRows.length) {
 //     return (
-//       <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-9 text-center text-xs text-slate-400">
+//       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-4 text-center text-xs text-slate-400">
 //         {empty}
 //       </div>
 //     );
@@ -2203,8 +2203,8 @@
 //   });
 
 //   return (
-//     <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-//       <div className="text-[10px] font-medium text-slate-400">
+//     <div className="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
+//       <div className="text-[12px] font-medium text-slate-400">
 //         Showing <span className="font-bold text-slate-600">{start}</span>–
 //         <span className="font-bold text-slate-600">{end}</span> of{" "}
 //         <span className="font-bold text-slate-600">{totalItems}</span>
@@ -2225,7 +2225,7 @@
 //           typeof item === "string" ? (
 //             <span
 //               key={item}
-//               className="flex h-8 w-6 items-center justify-center text-[10px] text-slate-400"
+//               className="flex h-8 w-6 items-center justify-center text-[12px] text-slate-400"
 //             >
 //               …
 //             </span>
@@ -2234,7 +2234,7 @@
 //               key={item}
 //               type="button"
 //               onClick={() => onPageChange(item)}
-//               className={`h-8 min-w-8 rounded-lg px-2 text-[10px] font-bold transition ${
+//               className={`h-8 min-w-8 rounded-lg px-2 text-[12px] font-bold transition ${
 //                 item === page
 //                   ? "bg-slate-950 text-white"
 //                   : "border border-transparent text-slate-500 hover:border-slate-200 hover:bg-slate-50"
@@ -2265,7 +2265,7 @@
 
 // function Empty({ title, description, action }) {
 //   return (
-//     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-7 text-center">
+//     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-3 py-4 text-center">
 //       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm ring-1 ring-slate-200">
 //         <FileText size={19} />
 //       </div>
@@ -2306,7 +2306,7 @@
 //     >
 //       <div className="space-y-3">
 //         {loading ? (
-//           <div className="flex items-center justify-center gap-2 py-12 text-xs text-slate-400">
+//           <div className="flex items-center justify-center gap-2 py-6 text-xs text-slate-400">
 //             <Loader2 size={15} className="animate-spin" />
 //             Loading consultation...
 //           </div>
@@ -2334,7 +2334,7 @@
 //             </div>
 
 //             <div className="overflow-hidden rounded-xl border border-slate-200">
-//               <div className="border-b border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+//               <div className="border-b border-slate-200 bg-slate-50 px-3 py-2 text-[12px] font-bold uppercase tracking-[0.14em] text-slate-500">
 //                 Prescription
 //               </div>
 
@@ -2367,7 +2367,7 @@
 //               </div>
 //             </div>
 
-//             <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+//             <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
 //               <Info
 //                 label="Notes"
 //                 value={
@@ -2390,9 +2390,9 @@
 
 // function Modal({ title, onClose, children }) {
 //   return (
-//     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-md sm:p-5">
-//       <div className="max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.25)]">
-//         <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-4 py-3">
+//     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-md sm:p-3">
+//       <div className="max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-xl border border-white/60 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.25)]">
+//         <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-3 py-3">
 //           <h2 className="text-base font-bold tracking-tight text-slate-900">
 //             {title}
 //           </h2>
@@ -2407,7 +2407,7 @@
 //           </button>
 //         </div>
 
-//         <div className="max-h-[calc(92vh-64px)] overflow-y-auto p-4">
+//         <div className="max-h-[calc(92vh-64px)] overflow-y-auto p-3">
 //           {children}
 //         </div>
 //       </div>
@@ -2428,7 +2428,7 @@
 //   required = false,
 // }) {
 //   const labelClass =
-//     "mb-1 block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400";
+//     "mb-1 block text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400";
 
 //   const inputClass =
 //     "w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50";
@@ -3117,7 +3117,7 @@ export default function PatientDetailsPage() {
   if (loading) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center bg-[#f6f8fb]">
-        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-500 shadow-sm">
           <Loader2 size={18} className="animate-spin text-blue-600" />
           Loading patient workspace...
         </div>
@@ -3127,8 +3127,8 @@ export default function PatientDetailsPage() {
 
   if (!patient) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-16">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+      <div className="mx-auto max-w-3xl px-3 py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error || "Patient record not found."}
         </div>
       </div>
@@ -3136,8 +3136,8 @@ export default function PatientDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] pb-12 text-slate-800">
-      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-4 lg:px-5">
+    <div className="min-h-screen bg-transparent pb-12 text-slate-800">
+      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
         {/* ================================================== */}
         {/* TOP TOOLBAR */}
         {/* ================================================== */}
@@ -3184,7 +3184,7 @@ export default function PatientDetailsPage() {
         </div>
 
         {error && (
-          <div className="mb-5 flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[11px] font-medium text-red-700 shadow-sm">
+          <div className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-700 shadow-sm">
             <span>{error}</span>
 
             <button
@@ -3203,15 +3203,15 @@ export default function PatientDetailsPage() {
         {/* ================================================== */}
 
         <header className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/70 px-4 py-4 sm:px-5">
+          <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/70 px-3 py-3 sm:px-3">
             <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-100/40 blur-3xl" />
 
             <div className="pointer-events-none absolute -bottom-32 left-1/3 h-56 w-56 rounded-full bg-violet-100/30 blur-3xl" />
 
-            <div className="relative flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div className="relative flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               {/* Identity */}
 
-              <div className="flex min-w-0 items-start gap-4">
+              <div className="flex min-w-0 items-start gap-3">
                 <div className="relative">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-slate-950 to-slate-700 text-lg font-bold text-white shadow-xl shadow-slate-900/15">
                     {(patient.firstName?.[0] || "P").toUpperCase()}
@@ -3229,12 +3229,12 @@ export default function PatientDetailsPage() {
 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-blue-700">
+                    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[12px] font-bold uppercase tracking-[0.16em] text-blue-700">
                       Patient
                     </span>
 
                     {patient.patientNumber && (
-                      <span className="font-mono text-[10px] font-semibold text-slate-400">
+                      <span className="font-mono text-[12px] font-semibold text-slate-400">
                         #{patient.patientNumber}
                       </span>
                     )}
@@ -3340,7 +3340,7 @@ export default function PatientDetailsPage() {
                 key={id}
                 type="button"
                 onClick={() => setActiveSection(id)}
-                className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-[9px] font-bold transition-all duration-200 ${
+                className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-[12px] font-bold transition-all duration-200 ${
                   activeSection === id
                     ? "bg-slate-950 text-white shadow-sm"
                     : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
@@ -3350,7 +3350,7 @@ export default function PatientDetailsPage() {
 
                 {id !== "overview" && (
                   <span
-                    className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[8px] ${
+                    className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[12px] ${
                       activeSection === id
                         ? "bg-white/15 text-white"
                         : "bg-slate-100 text-slate-400"
@@ -3380,7 +3380,7 @@ export default function PatientDetailsPage() {
           {activeSection === "overview" && (
             <section className="grid gap-3 xl:grid-cols-[1.2fr_.8fr]">
               <Panel title="Patient overview" icon={UserRound}>
-                <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
                   <Info
                     label="Date of birth"
                     value={formatDate(patient.dateOfBirth)}
@@ -3425,8 +3425,8 @@ export default function PatientDetailsPage() {
                 </div>
 
                 {patient.notes && (
-                  <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                    <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                  <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                    <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
                       Patient notes
                     </div>
 
@@ -3473,7 +3473,7 @@ export default function PatientDetailsPage() {
     ===================================================== */}
 
                   <div className="pt-3">
-                    <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                    <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-slate-400">
                       Specialized clinical consultations
                     </div>
 
@@ -3521,7 +3521,7 @@ export default function PatientDetailsPage() {
     ===================================================== */}
 
                   <div className="pt-3">
-                    <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                    <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-slate-400">
                       Dispensing
                     </div>
 
@@ -3574,7 +3574,7 @@ export default function PatientDetailsPage() {
                     <button
                       type="button"
                       onClick={startShortConsultation}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50"
                     >
                       <Plus size={13} />
                       Short
@@ -3583,7 +3583,7 @@ export default function PatientDetailsPage() {
                     <button
                       type="button"
                       onClick={startComprehensiveConsultation}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
                     >
                       <Plus size={13} />
                       New consultation
@@ -3607,14 +3607,14 @@ export default function PatientDetailsPage() {
                         <button
                           type="button"
                           onClick={() => void openConsultation(item)}
-                          className={`group w-full rounded-2xl border p-4 text-left transition-all duration-200 ${
+                          className={`group w-full rounded-xl border p-3 text-left transition-all duration-200 ${
                             index === 0
                               ? "border-blue-200 bg-blue-50/70 shadow-sm"
                               : "border-slate-200 bg-white hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                            <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
                               {index === 0 ? "Latest" : "Consultation"}
                             </span>
 
@@ -3629,14 +3629,14 @@ export default function PatientDetailsPage() {
                           </div>
 
                           <div
-                            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${toneClass(
+                            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[12px] font-bold ${toneClass(
                               consultationTone(item),
                             )}`}
                           >
                             {consultationLabel(item)}
                           </div>
 
-                          <div className="mt-3 text-[9px] text-slate-400">
+                          <div className="mt-3 text-[12px] text-slate-400">
                             {item.optometristId
                               ? [
                                   item.optometristId.firstName,
@@ -3701,7 +3701,7 @@ export default function PatientDetailsPage() {
                   <button
                     type="button"
                     onClick={startSpectacleJob}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
                   >
                     New spectacle job
                   </button>
@@ -3716,7 +3716,7 @@ export default function PatientDetailsPage() {
                       onClick={() =>
                         navigate(`/dispensing/spectacles/${item._id}`)
                       }
-                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+                      className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -3728,7 +3728,7 @@ export default function PatientDetailsPage() {
                             {item.jobNumber || "Spectacle Job"}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-1 text-[12px] text-slate-400">
                             {formatDate(item.jobDate)} ·{" "}
                             {item.frame?.description ||
                               item.frame?.code ||
@@ -3775,7 +3775,7 @@ export default function PatientDetailsPage() {
                   <button
                     type="button"
                     onClick={startContactLensOrder}
-                    className="rounded-xl bg-slate-950 px-3 py-2 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+                    className="rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
                   >
                     New contact lens order
                   </button>
@@ -3790,7 +3790,7 @@ export default function PatientDetailsPage() {
                       onClick={() =>
                         navigate(`/dispensing/contact-lenses/${item._id}`)
                       }
-                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+                      className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
@@ -3802,7 +3802,7 @@ export default function PatientDetailsPage() {
                             {item.orderNumber || "Contact Lens Order"}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-1 text-[12px] text-slate-400">
                             {formatDate(item.orderDate)} ·{" "}
                             {item.brand || item.lensType || "Lens"}
                           </div>
@@ -3841,7 +3841,7 @@ export default function PatientDetailsPage() {
                   <button
                     type="button"
                     onClick={startSundryJob}
-                    className="rounded-xl bg-slate-950 px-3 py-2 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+                    className="rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
                   >
                     New sundry record
                   </button>
@@ -3854,7 +3854,7 @@ export default function PatientDetailsPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`/dispensing/sundries/${item._id}`)}
-                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+                      className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
@@ -3862,7 +3862,7 @@ export default function PatientDetailsPage() {
                         </div>
                         <div className="min-w-0">
                           <div className="truncate text-xs font-bold text-slate-900">{item.jobNumber || "Sundry Job"}</div>
-                          <div className="mt-1 text-[10px] text-slate-400">{formatDate(item.jobDate || item.createdAt)} · {item.item?.description || item.item?.code || "Sundry"}</div>
+                          <div className="mt-1 text-[12px] text-slate-400">{formatDate(item.jobDate || item.createdAt)} · {item.item?.description || item.item?.code || "Sundry"}</div>
                         </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
@@ -3890,7 +3890,7 @@ export default function PatientDetailsPage() {
                     onClick={() =>
                       navigate(`/appointments/book?patientId=${patientId}`)
                     }
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
                   >
                     <Plus size={13} />
                     Book appointment
@@ -3898,8 +3898,8 @@ export default function PatientDetailsPage() {
                 }
               >
                 {upcomingAppointments.length > 0 && (
-                  <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
-                    <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-blue-600">
+                  <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
+                    <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-blue-600">
                       Next appointment
                     </div>
 
@@ -3938,7 +3938,7 @@ export default function PatientDetailsPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`/appointments/${item._id}`)}
-                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+                      className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
@@ -3950,7 +3950,7 @@ export default function PatientDetailsPage() {
                             {formatDate(item.appointmentDate)}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-1 text-[12px] text-slate-400">
                             {item.type || "Eye Examination"} ·{" "}
                             {item.reason || "Routine visit"}
                           </div>
@@ -3998,7 +3998,7 @@ export default function PatientDetailsPage() {
                   <button
                     type="button"
                     onClick={() => navigate(`/billing?patientId=${patientId}`)}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-slate-800"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-950 px-3.5 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800"
                   >
                     <Plus size={13} />
                     Create bill
@@ -4024,7 +4024,7 @@ export default function PatientDetailsPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`/billing/${item._id}`)}
-                      className="group flex w-full items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
+                      className="group flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 text-left transition-all duration-200 hover:-translate-y-[1px] hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-sm"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
@@ -4036,7 +4036,7 @@ export default function PatientDetailsPage() {
                             {item.invoiceNumber || "Invoice"}
                           </div>
 
-                          <div className="mt-1 text-[10px] text-slate-400">
+                          <div className="mt-1 text-[12px] text-slate-400">
                             {formatDate(item.invoiceDate)} ·{" "}
                             {item.items?.length || 0} item(s)
                           </div>
@@ -4049,7 +4049,7 @@ export default function PatientDetailsPage() {
                             {formatMoney(item.total)}
                           </div>
 
-                          <div className="mt-1 text-[9px] font-semibold text-slate-500">
+                          <div className="mt-1 text-[12px] font-semibold text-slate-500">
                             Paid {formatMoney(item.paidAmount)} · Balance{" "}
                             {formatMoney(item.balance)}
                           </div>
@@ -4082,7 +4082,7 @@ export default function PatientDetailsPage() {
                   <button
                     type="button"
                     onClick={() => setDocumentOpen(true)}
-                    className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-[10px] font-bold text-blue-700 transition hover:bg-blue-100"
+                    className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-[12px] font-bold text-blue-700 transition hover:bg-blue-100"
                   >
                     Upload
                   </button>
@@ -4092,7 +4092,7 @@ export default function PatientDetailsPage() {
                   rows={documents}
                   empty="No documents uploaded for this patient."
                   render={(item) => (
-                    <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-3 transition hover:border-slate-300 hover:bg-slate-50/60">
+                    <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-3 transition hover:border-slate-300 hover:bg-slate-50/60">
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
                           <FileText size={15} />
@@ -4105,7 +4105,7 @@ export default function PatientDetailsPage() {
                               "Patient document"}
                           </div>
 
-                          <div className="mt-1 flex flex-wrap gap-x-2 text-[10px] text-slate-400">
+                          <div className="mt-1 flex flex-wrap gap-x-2 text-[12px] text-slate-400">
                             <span>{roleLabel(item.category || "other")}</span>
 
                             <span>·</span>
@@ -4116,7 +4116,7 @@ export default function PatientDetailsPage() {
                           </div>
 
                           {item.note && (
-                            <div className="mt-1 truncate text-[10px] text-slate-500">
+                            <div className="mt-1 truncate text-[12px] text-slate-500">
                               {item.note}
                             </div>
                           )}
@@ -4183,7 +4183,7 @@ export default function PatientDetailsPage() {
           onClose={() => !saving && setEditOpen(false)}
         >
           <form onSubmit={savePatient} className="space-y-3">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field
                 label="First name"
                 value={editForm.firstName}
@@ -4290,12 +4290,12 @@ export default function PatientDetailsPage() {
               }
             />
 
-            <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
               <button
                 type="button"
                 onClick={() => setEditOpen(false)}
                 disabled={saving}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -4303,7 +4303,7 @@ export default function PatientDetailsPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
               >
                 {saving && <Loader2 size={14} className="animate-spin" />}
                 Save changes
@@ -4331,11 +4331,11 @@ export default function PatientDetailsPage() {
             />
 
             <label className="block">
-              <span className="mb-1 block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+              <span className="mb-1 block text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">
                 Files
               </span>
 
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-3 transition hover:border-blue-300 hover:bg-blue-50/30">
+              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-3 transition hover:border-blue-300 hover:bg-blue-50/30">
                 <input
                   type="file"
                   multiple
@@ -4346,7 +4346,7 @@ export default function PatientDetailsPage() {
                 />
 
                 {documentFiles.length > 0 && (
-                  <div className="mt-3 text-[10px] font-medium text-slate-500">
+                  <div className="mt-3 text-[12px] font-medium text-slate-500">
                     {documentFiles.length} file
                     {documentFiles.length === 1 ? "" : "s"} selected
                   </div>
@@ -4360,12 +4360,12 @@ export default function PatientDetailsPage() {
               onChange={setDocumentNote}
             />
 
-            <div className="flex justify-end gap-2 border-t border-slate-100 pt-5">
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
               <button
                 type="button"
                 onClick={() => setDocumentOpen(false)}
                 disabled={uploading}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 px-3 py-2 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -4373,7 +4373,7 @@ export default function PatientDetailsPage() {
               <button
                 type="submit"
                 disabled={!documentFiles.length || uploading}
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-[12px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {uploading && <Loader2 size={14} className="animate-spin" />}
                 Upload
@@ -4393,9 +4393,9 @@ export default function PatientDetailsPage() {
 function Panel({ title, icon: Icon, action, children }) {
   return (
     <section className="group overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-50 text-slate-600 ring-1 ring-slate-200/70">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-200/70">
             <Icon size={14} strokeWidth={1.8} />
           </div>
 
@@ -4407,7 +4407,7 @@ function Panel({ title, icon: Icon, action, children }) {
         {action}
       </div>
 
-      <div className="p-4">{children}</div>
+      <div className="p-3">{children}</div>
     </section>
   );
 }
@@ -4428,14 +4428,14 @@ function QuickAction({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`group relative inline-flex min-h-[40px] items-center justify-center gap-2 rounded-lg px-2.5 text-[9px] font-bold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`group relative inline-flex min-h-[40px] items-center justify-center gap-2 rounded-lg px-2.5 text-[12px] font-bold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
         primary
           ? "bg-slate-950 text-white shadow-lg shadow-slate-950/10 hover:-translate-y-0.5 hover:bg-slate-800"
           : "border border-slate-200 bg-white text-slate-700 shadow-sm hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
       }`}
     >
       <span
-        className={`flex h-6 w-6 items-center justify-center rounded-md ${
+        className={`flex h-6 w-6 items-center justify-center rounded-lg ${
           primary
             ? "bg-white/10"
             : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
@@ -4457,7 +4457,7 @@ function PathStep({ done, title, description, onClick, disabled = false }) {
   const content = (
     <>
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold ${
           done
             ? "bg-emerald-100 text-emerald-700"
             : "bg-slate-100 text-slate-400"
@@ -4469,7 +4469,7 @@ function PathStep({ done, title, description, onClick, disabled = false }) {
       <div className="min-w-0 flex-1">
         <div className="text-xs font-bold text-slate-900">{title}</div>
 
-        <div className="mt-1 text-[10px] leading-5 text-slate-400">
+        <div className="mt-1 text-[12px] leading-5 text-slate-400">
           {description}
         </div>
       </div>
@@ -4510,7 +4510,7 @@ function PathStep({ done, title, description, onClick, disabled = false }) {
 function Stat({ label, value, warning = false }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-3">
-      <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+      <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
         {label}
       </div>
 
@@ -4532,7 +4532,7 @@ function Stat({ label, value, warning = false }) {
 function Info({ label, value }) {
   return (
     <div className="min-w-0">
-      <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">
+      <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
         {label}
       </div>
 
@@ -4550,7 +4550,7 @@ function Info({ label, value }) {
 function Badge({ label, tone = "slate" }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[8px] font-bold ${toneClass(
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[12px] font-bold ${toneClass(
         tone,
       )}`}
     >
@@ -4602,7 +4602,7 @@ function Status({ status }) {
 
   return (
     <span
-      className={`mt-1 inline-flex rounded-full border px-1.5 py-0.5 text-[8px] font-bold uppercase ${
+      className={`mt-1 inline-flex rounded-full border px-1.5 py-0.5 text-[12px] font-bold uppercase ${
         isPositive
           ? "border-emerald-100 bg-emerald-50 text-emerald-700"
           : isWarning
@@ -4635,7 +4635,7 @@ function RecordList({
 
   if (!safeRows.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-9 text-center text-xs text-slate-400">
+      <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-4 text-center text-xs text-slate-400">
         {empty}
       </div>
     );
@@ -4694,8 +4694,8 @@ function Pagination({ page, totalPages, totalItems, pageSize, onPageChange }) {
   });
 
   return (
-    <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="text-[10px] font-medium text-slate-400">
+    <div className="mt-3 flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="text-[12px] font-medium text-slate-400">
         Showing <span className="font-bold text-slate-600">{start}</span>–
         <span className="font-bold text-slate-600">{end}</span> of{" "}
         <span className="font-bold text-slate-600">{totalItems}</span>
@@ -4716,7 +4716,7 @@ function Pagination({ page, totalPages, totalItems, pageSize, onPageChange }) {
           typeof item === "string" ? (
             <span
               key={item}
-              className="flex h-8 w-6 items-center justify-center text-[10px] text-slate-400"
+              className="flex h-8 w-6 items-center justify-center text-[12px] text-slate-400"
             >
               …
             </span>
@@ -4725,7 +4725,7 @@ function Pagination({ page, totalPages, totalItems, pageSize, onPageChange }) {
               key={item}
               type="button"
               onClick={() => onPageChange(item)}
-              className={`h-8 min-w-8 rounded-lg px-2 text-[10px] font-bold transition ${
+              className={`h-8 min-w-8 rounded-lg px-2 text-[12px] font-bold transition ${
                 item === page
                   ? "bg-slate-950 text-white"
                   : "border border-transparent text-slate-500 hover:border-slate-200 hover:bg-slate-50"
@@ -4756,7 +4756,7 @@ function Pagination({ page, totalPages, totalItems, pageSize, onPageChange }) {
 
 function Empty({ title, description, action }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-7 text-center">
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-3 py-4 text-center">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm ring-1 ring-slate-200">
         <FileText size={19} />
       </div>
@@ -4935,7 +4935,7 @@ function ConsultationHistoryValue({ value, depth = 0 }) {
           {items.map((item, index) => (
             <span
               key={`${String(item)}-${index}`}
-              className="max-w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600"
+              className="max-w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600"
             >
               <span className="break-words">{String(item)}</span>
             </span>
@@ -4952,7 +4952,7 @@ function ConsultationHistoryValue({ value, depth = 0 }) {
             className="rounded-lg border border-slate-200 bg-white p-3"
           >
             {item && typeof item === "object" && !Array.isArray(item) && (
-              <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+              <div className="mb-2 text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500">
                 {item.name || item.title || item.testName || item.test || `Record ${index + 1}`}
               </div>
             )}
@@ -4992,7 +4992,7 @@ function ConsultationHistoryValue({ value, depth = 0 }) {
             key={key}
             className={`min-w-0 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 ${nested ? "sm:col-span-2" : ""}`}
           >
-            <div className="mb-1 text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">
+            <div className="mb-1 text-[12px] font-bold uppercase tracking-[0.09em] text-slate-400">
               {consultationHistoryLabel(key)}
             </div>
             <div className="min-w-0">
@@ -5011,7 +5011,7 @@ function ConsultationHistoryValue({ value, depth = 0 }) {
 function ConsultationHistoryField({ label, value }) {
   return (
     <div className="min-w-0">
-      <div className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+      <div className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">
         {label}
       </div>
       <div className="min-w-0">
@@ -5048,7 +5048,7 @@ function ConsultationPrescriptionHistory({ title, prescription }) {
     return (
       <div className="overflow-hidden rounded-xl border border-slate-200">
         <div className="border-b border-slate-200 bg-slate-50 px-3 py-2">
-          <h3 className="text-[10px] font-bold text-slate-700">{title}</h3>
+          <h3 className="text-[12px] font-bold text-slate-700">{title}</h3>
         </div>
         <div className="p-3">
           <ConsultationHistoryValue value={normalized} />
@@ -5080,10 +5080,10 @@ function ConsultationPrescriptionHistory({ title, prescription }) {
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200">
       <div className="border-b border-slate-200 bg-slate-50 px-3 py-2">
-        <h3 className="text-[10px] font-bold text-slate-700">{title}</h3>
+        <h3 className="text-[12px] font-bold text-slate-700">{title}</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-[760px] w-full text-left text-[10px]">
+        <table className="min-w-[760px] w-full text-left text-[12px]">
           <thead>
             <tr className="border-b border-slate-200 bg-white text-slate-400">
               <th className="px-3 py-2 font-bold">Eye</th>
@@ -5146,7 +5146,7 @@ function ConsultationModal({ consultation, loading, onClose }) {
       size="max-w-7xl"
     >
       {loading ? (
-        <div className="flex items-center justify-center gap-2 py-12 text-xs text-slate-400">
+        <div className="flex items-center justify-center gap-2 py-6 text-xs text-slate-400">
           <Loader2 size={15} className="animate-spin" />
           Loading consultation...
         </div>
@@ -5155,26 +5155,26 @@ function ConsultationModal({ consultation, loading, onClose }) {
           {/* SUMMARY */}
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Consultation type</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Consultation type</div>
               <div className="mt-1 text-xs font-bold text-slate-800">{consultationLabel(consultation)}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Visit date</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Visit date</div>
               <div className="mt-1 text-xs font-bold text-slate-800">{formatConsultationDateTime(consultation?.consultationDate)}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Optometrist / doctor</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Optometrist / doctor</div>
               <div className="mt-1 text-xs font-bold text-slate-800">{clinician}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Status</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Status</div>
               <div className="mt-1 text-xs font-bold text-slate-800">{roleLabel(consultation?.status || "completed")}</div>
             </div>
           </div>
 
           {/* CONSULTATION INFORMATION */}
           <Panel title="Consultation Information" icon={ClipboardPlus}>
-            <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
               <ConsultationHistoryField label="Reason for Visit" value={consultation?.reasonForVisit} />
               <ConsultationHistoryField label="Symptoms" value={consultation?.symptoms} />
               <ConsultationHistoryField label="Medical History" value={consultation?.medicalHistory} />
@@ -5201,11 +5201,11 @@ function ConsultationModal({ consultation, loading, onClose }) {
                   <ConsultationPrescriptionHistory key={title} title={title} prescription={value} />
                 )).filter(Boolean)
               ) : (
-                <div className="rounded-lg border border-dashed border-slate-200 px-3 py-4 text-xs text-slate-400">
+                <div className="rounded-lg border border-dashed border-slate-200 px-3 py-3 text-xs text-slate-400">
                   No prescription history recorded.
                 </div>
               )}
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <ConsultationHistoryField label="Pupillary Distance (PD)" value={consultation?.pd} />
                 <ConsultationHistoryField label="Refraction Notes" value={consultation?.refractionNotes} />
               </div>
@@ -5221,7 +5221,7 @@ function ConsultationModal({ consultation, loading, onClose }) {
 
           {/* CLINICAL TESTS, DIAGNOSIS AND TREATMENT */}
           <Panel title="Clinical Management & Tests" icon={Stethoscope}>
-            <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
               <ConsultationHistoryField label="Slit Lamp" value={consultation?.slitLamp} />
               <ConsultationHistoryField label="Fundus" value={consultation?.fundus} />
               <ConsultationHistoryField label="Ophthalmoscopy" value={consultation?.ophthalmoscopy} />
@@ -5256,7 +5256,7 @@ function ConsultationModal({ consultation, loading, onClose }) {
 
           {/* CLINICAL NOTES, INSTRUCTIONS AND RECALL */}
           <Panel title="Clinical Notes & Recall" icon={FileText}>
-            <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+            <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
               <ConsultationHistoryField label="Clinical Notes" value={consultation?.clinicalNotes} />
               <ConsultationHistoryField label="Patient Instructions" value={consultation?.patientInstructions} />
               <ConsultationHistoryField label="Internal Notes" value={consultation?.internalNotes} />
@@ -5272,14 +5272,14 @@ function ConsultationModal({ consultation, loading, onClose }) {
           </Panel>
 
           {/* RECORD TIMESTAMPS */}
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3">
             <div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Created</div>
-              <div className="mt-1 text-[10px] font-semibold text-slate-600">{formatConsultationDateTime(consultation?.createdAt)}</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Created</div>
+              <div className="mt-1 text-[12px] font-semibold text-slate-600">{formatConsultationDateTime(consultation?.createdAt)}</div>
             </div>
             <div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">Last updated</div>
-              <div className="mt-1 text-[10px] font-semibold text-slate-600">{formatConsultationDateTime(consultation?.updatedAt)}</div>
+              <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">Last updated</div>
+              <div className="mt-1 text-[12px] font-semibold text-slate-600">{formatConsultationDateTime(consultation?.updatedAt)}</div>
             </div>
           </div>
         </div>
@@ -5294,9 +5294,9 @@ function ConsultationModal({ consultation, loading, onClose }) {
 
 function Modal({ title, onClose, children, size = "max-w-4xl" }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-md sm:p-5">
-      <div className={`max-h-[92vh] w-full ${size} overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.25)]`}>
-        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-4 py-3">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-md sm:p-3">
+      <div className={`max-h-[92vh] w-full ${size} overflow-hidden rounded-xl border border-white/60 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.25)]`}>
+        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-3 py-3">
           <h2 className="text-base font-bold tracking-tight text-slate-900">
             {title}
           </h2>
@@ -5311,7 +5311,7 @@ function Modal({ title, onClose, children, size = "max-w-4xl" }) {
           </button>
         </div>
 
-        <div className="max-h-[calc(92vh-64px)] overflow-y-auto p-4">
+        <div className="max-h-[calc(92vh-64px)] overflow-y-auto p-3">
           {children}
         </div>
       </div>
@@ -5332,7 +5332,7 @@ function Field({
   required = false,
 }) {
   const labelClass =
-    "mb-1 block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400";
+    "mb-1 block text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400";
 
   const inputClass =
     "w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50";

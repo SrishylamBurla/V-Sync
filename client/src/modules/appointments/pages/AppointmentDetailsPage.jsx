@@ -10,7 +10,7 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   getAppointment,
   getAppointmentClinicians,
@@ -73,6 +73,15 @@ const parseDate = (value) => {
 
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const toDateTimeLocalInput = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
 };
 
 const formatDateTime = (value) => {
@@ -148,11 +157,14 @@ const normalizeVisitType = (value) => {
 export default function AppointmentDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const actionMode = searchParams.get("mode") || "";
 
   const [appointment, setAppointment] = useState(null);
   const [clinicians, setClinicians] = useState([]);
   const [selectedClinicianId, setSelectedClinicianId] = useState("");
   const [selectedVisitType, setSelectedVisitType] = useState("");
+  const [selectedAppointmentDateTime, setSelectedAppointmentDateTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [savingChanges, setSavingChanges] = useState(false);
   const [error, setError] = useState("");
@@ -186,6 +198,7 @@ export default function AppointmentDetailsPage() {
         setAppointment(record);
         setSelectedClinicianId(getId(record?.clinicianId));
         setSelectedVisitType(normalizeVisitType(record?.type));
+        setSelectedAppointmentDateTime(toDateTimeLocalInput(record?.appointmentDate));
         if (!record) setError("Appointment not found.");
       })
       .catch((err) => {
@@ -220,7 +233,10 @@ export default function AppointmentDetailsPage() {
   const originalVisitType = normalizeVisitType(appointment?.type);
   const clinicianChanged = Boolean(selectedClinicianId) && selectedClinicianId !== originalClinicianId;
   const visitTypeChanged = Boolean(selectedVisitType) && selectedVisitType !== originalVisitType;
-  const hasPendingChanges = clinicianChanged || visitTypeChanged;
+  const appointmentDateChanged =
+    Boolean(selectedAppointmentDateTime) &&
+    selectedAppointmentDateTime !== toDateTimeLocalInput(appointment?.appointmentDate);
+  const hasPendingChanges = clinicianChanged || visitTypeChanged || appointmentDateChanged;
 
   const saveAppointmentChanges = async (event) => {
     event.preventDefault();
@@ -229,6 +245,9 @@ export default function AppointmentDetailsPage() {
     const payload = {};
     if (clinicianChanged) payload.clinicianId = selectedClinicianId;
     if (visitTypeChanged) payload.type = selectedVisitType;
+    if (appointmentDateChanged) {
+      payload.appointmentDate = new Date(selectedAppointmentDateTime).toISOString();
+    }
 
     setSavingChanges(true);
     setError("");
@@ -242,6 +261,9 @@ export default function AppointmentDetailsPage() {
         ...current,
         ...(updated && typeof updated === "object" ? updated : {}),
         ...(visitTypeChanged ? { type: selectedVisitType } : {}),
+        ...(appointmentDateChanged
+          ? { appointmentDate: new Date(selectedAppointmentDateTime).toISOString() }
+          : {}),
         ...(clinicianChanged
           ? {
               clinicianId:
@@ -252,6 +274,11 @@ export default function AppointmentDetailsPage() {
           : {}),
       }));
       if (visitTypeChanged) setSelectedVisitType(selectedVisitType);
+      if (appointmentDateChanged) {
+        setSelectedAppointmentDateTime(
+          toDateTimeLocalInput(updated?.appointmentDate || new Date(selectedAppointmentDateTime).toISOString()),
+        );
+      }
       setSuccess("Appointment changes saved.");
     } catch (err) {
       setError(
@@ -275,15 +302,15 @@ export default function AppointmentDetailsPage() {
 
   if (!appointment) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10">
+      <div className="mx-auto max-w-3xl px-3 py-6">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft size={16} /> Back
         </button>
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
           {error || "Appointment not found."}
         </div>
       </div>
@@ -297,8 +324,8 @@ export default function AppointmentDetailsPage() {
     : "PT";
 
   return (
-    <div className="min-h-full bg-slate-50/70 px-3 py-4 sm:px-5 sm:py-6 lg:px-7">
-      <div className="mx-auto max-w-6xl space-y-4">
+    <div className="min-h-full bg-slate-50/70 px-3 py-3 sm:px-3 sm:py-3 lg:px-4">
+      <div className="mx-auto max-w-6xl space-y-3">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-start gap-3">
             <button
@@ -312,9 +339,13 @@ export default function AppointmentDetailsPage() {
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
-                  Appointment details
+                  {actionMode === "move"
+                    ? "Move appointment"
+                    : actionMode === "modify"
+                      ? "Modify appointment"
+                      : "Appointment details"}
                 </h1>
-                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold ${statusStyles[status] || statusStyles.booked}`}>
+                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-bold ${statusStyles[status] || statusStyles.booked}`}>
                   <span className="h-1.5 w-1.5 rounded-full bg-current" />
                   {statusLabel(status)}
                 </span>
@@ -347,20 +378,20 @@ export default function AppointmentDetailsPage() {
           </div>
         )}
 
-        <main className="grid items-start gap-4 lg:grid-cols-2">
+        <main className="grid items-start gap-3 lg:grid-cols-2">
           {/* 01 — Patient */}
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                 <UserRound size={17} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700">01</p>
+                <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-blue-700">01</p>
                 <h2 className="text-sm font-bold text-slate-900">Patient</h2>
               </div>
             </div>
 
-            <div className="space-y-4 p-4 sm:p-5">
+            <div className="space-y-3 p-3 sm:p-3">
               <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3.5">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
                   {initials}
@@ -375,14 +406,14 @@ export default function AppointmentDetailsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-3">
                 <Info label="Patient number" value={patient?.patientNumber} />
                 <Info label="Date of birth" value={formatDate(patientDob)} />
                 <Info label="Age" value={age === null ? "—" : `${age} ${age === 1 ? "year" : "years"}`} />
                 <Info label="Phone number" value={patientPhone || "—"} />
               </div>
 
-              <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+              <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
                 {patient?._id && (
                   <button
                     type="button"
@@ -406,21 +437,21 @@ export default function AppointmentDetailsPage() {
 
           {/* 02 — Schedule */}
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 text-violet-700">
                 <CalendarDays size={17} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-violet-700">02</p>
+                <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-violet-700">02</p>
                 <h2 className="text-sm font-bold text-slate-900">Schedule</h2>
               </div>
             </div>
 
-            <div className="space-y-4 p-4 sm:p-5">
+            <div className="space-y-3 p-3 sm:p-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2 rounded-lg border border-blue-100 bg-blue-50/70 p-3.5">
-                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-blue-700">
-                    <CalendarClock size={14} /> Appointment date &amp; time
+                  <div className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-wide text-blue-700">
+                    <CalendarClock size={14} /> Current appointment date &amp; time
                   </div>
                   <p className="mt-1.5 text-sm font-bold text-slate-900">
                     {formatDateTime(appointment.appointmentDate)}
@@ -428,7 +459,28 @@ export default function AppointmentDetailsPage() {
                 </div>
 
                 <div className="col-span-2 min-w-0">
-                  <label htmlFor="appointment-visit-type" className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  <label htmlFor="appointment-date-time" className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-slate-400">
+                    {actionMode === "move" ? "New appointment date & time" : "Appointment date & time"}
+                  </label>
+                  <input
+                    id="appointment-date-time"
+                    type="datetime-local"
+                    value={selectedAppointmentDateTime}
+                    onChange={(event) => {
+                      setSelectedAppointmentDateTime(event.target.value);
+                      setSuccess("");
+                    }}
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-800 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                  />
+                  {appointmentDateChanged && (
+                    <p className="mt-1 text-[12px] font-medium text-blue-700">
+                      The new date and time will be saved with the appointment changes.
+                    </p>
+                  )}
+                </div>
+
+                <div className="col-span-2 min-w-0">
+                  <label htmlFor="appointment-visit-type" className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-slate-400">
                     Visit type
                   </label>
                   <select
@@ -456,12 +508,12 @@ export default function AppointmentDetailsPage() {
 
               {appointment.notes && (
                 <div className="rounded-lg border border-slate-200 px-3.5 py-3">
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Appointment notes</p>
+                  <p className="text-[12px] font-bold uppercase tracking-wide text-slate-400">Appointment notes</p>
                   <p className="mt-1.5 whitespace-pre-wrap text-xs leading-5 text-slate-700">{appointment.notes}</p>
                 </div>
               )}
 
-              <form onSubmit={saveAppointmentChanges} className="space-y-3 border-t border-slate-100 pt-4">
+              <form onSubmit={saveAppointmentChanges} className="space-y-3 border-t border-slate-100 pt-3">
                 <div>
                   <label htmlFor="appointment-clinician" className="mb-1.5 block text-xs font-semibold text-slate-700">
                     Assign optometrist / doctor
@@ -485,7 +537,7 @@ export default function AppointmentDetailsPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[12px] text-slate-400">
                     {hasPendingChanges ? "You have unsaved changes" : "All changes are saved"}
                   </p>
                   <button
@@ -509,7 +561,7 @@ export default function AppointmentDetailsPage() {
 function Info({ label, value }) {
   return (
     <div className="min-w-0">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-400">{label}</p>
       <p className="mt-1 break-words text-xs font-semibold leading-5 text-slate-800">
         {value === 0 ? "0" : value || "—"}
       </p>

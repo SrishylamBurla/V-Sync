@@ -12,10 +12,10 @@ export function DocumentShell({
   aside,
 }) {
   return (
-    <div className="py-5 sm:py-7">
-      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="py-3 sm:py-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-[.2em] text-slate-400">
+          <div className="text-[12px] font-bold uppercase tracking-[.2em] text-slate-400">
             {eyebrow}
           </div>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
@@ -27,17 +27,17 @@ export function DocumentShell({
         </div>
         <div className="flex flex-wrap gap-2 print:hidden">{actions}</div>
       </div>
-      <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
-        <header className="border-b-2 border-slate-900 px-5 py-5 sm:px-8">
+      <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
+        <header className="border-b-2 border-slate-900 px-3 py-3 sm:px-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">
+              <div className="text-[12px] font-bold uppercase tracking-[.18em] text-slate-400">
                 {code || "V-Sync record"}
               </div>
               <h2 className="mt-1 text-lg font-bold text-slate-900">{title}</h2>
             </div>
             {status && (
-              <span className="inline-flex w-fit rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600">
+              <span className="inline-flex w-fit rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-slate-600">
                 {status}
               </span>
             )}
@@ -46,12 +46,12 @@ export function DocumentShell({
         <div className={aside ? "grid lg:grid-cols-[minmax(0,1fr)_280px]" : ""}>
           <div>{children}</div>
           {aside && (
-            <aside className="border-l border-slate-200 bg-slate-50/70 p-5 sm:p-7">
+            <aside className="border-l border-slate-200 bg-slate-50/70 p-3 sm:p-4">
               {aside}
             </aside>
           )}
         </div>
-        <footer className="border-t-2 border-slate-900 bg-slate-50 px-5 py-4 text-xs text-slate-400 sm:px-8">
+        <footer className="border-t-2 border-slate-900 bg-slate-50 px-3 py-3 text-xs text-slate-400 sm:px-4">
           V-Sync · Practice Management
         </footer>
       </article>
@@ -61,9 +61,9 @@ export function DocumentShell({
 
 export function Section({ number, title, description, children }) {
   return (
-    <section className="border-b border-slate-200 p-5 sm:p-7 last:border-b-0">
-      <div className="mb-5 flex items-start gap-3">
-        <span className="pt-0.5 text-[10px] font-bold tracking-widest text-slate-400">
+    <section className="border-b border-slate-200 p-3 sm:p-4 last:border-b-0">
+      <div className="mb-4 flex items-start gap-3">
+        <span className="pt-0.5 text-[12px] font-bold tracking-widest text-slate-400">
           {number}
         </span>
         <div>
@@ -92,7 +92,7 @@ export function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </span>
       {options ? (
@@ -133,10 +133,10 @@ export function Field({
 
 export function InfoGrid({ items }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       {items.map((x, i) => (
         <div key={i}>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">
             {x.label}
           </div>
           <div className="mt-1 text-sm font-semibold text-slate-700">
@@ -153,11 +153,11 @@ export function Table({ columns, rows, empty = "No records found." }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[760px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-400">
+          <tr className="border-b border-slate-200 text-[12px] uppercase tracking-wider text-slate-400">
             {columns.map((c) => (
               <th
                 key={c.key}
-                className={`pb-3 pr-4 ${c.align === "right" ? "text-right" : ""}`}
+                className={`pb-3 pr-3 ${c.align === "right" ? "text-right" : ""}`}
               >
                 {c.label}
               </th>
@@ -174,7 +174,7 @@ export function Table({ columns, rows, empty = "No records found." }) {
                 {columns.map((c) => (
                   <td
                     key={c.key}
-                    className={`py-3 pr-4 ${c.align === "right" ? "text-right" : ""}`}
+                    className={`py-3 pr-3 ${c.align === "right" ? "text-right" : ""}`}
                   >
                     {c.render ? c.render(r) : r[c.key]}
                   </td>
@@ -185,7 +185,7 @@ export function Table({ columns, rows, empty = "No records found." }) {
             <tr>
               <td
                 colSpan={columns.length}
-                className="py-10 text-center text-xs text-slate-400"
+                className="py-6 text-center text-xs text-slate-400"
               >
                 {empty}
               </td>
@@ -202,7 +202,7 @@ export function ActionBar({ onSave, onPrint, saveLabel = "Save" }) {
     <div className="flex flex-wrap gap-2">
       <button
         onClick={onSave}
-        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
       >
         <Save size={14} />
         {saveLabel}
@@ -210,7 +210,7 @@ export function ActionBar({ onSave, onPrint, saveLabel = "Save" }) {
       {onPrint && (
         <button
           onClick={onPrint}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600"
         >
           <Printer size={14} />
           Print
@@ -244,7 +244,7 @@ export function RepeatableRows({ rows, setRows, fields }) {
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, i) => i !== index))}
-              className="mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-red-100 text-red-500 hover:bg-red-50"
+              className="mt-4 inline-flex h-10 items-center justify-center rounded-xl border border-red-100 text-red-500 hover:bg-red-50"
             >
               <Trash2 size={15} />
             </button>

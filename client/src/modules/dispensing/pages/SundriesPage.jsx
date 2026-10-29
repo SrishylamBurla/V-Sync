@@ -363,26 +363,26 @@ export default function SundriesPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] space-y-6 py-5 sm:py-7">
+    <div className="mx-auto w-full max-w-[1600px] space-y-3 py-3 sm:py-4">
       {/* ======================================================
           HEADER
       ====================================================== */}
 
-      <header className="overflow-hidden rounded-[28px] border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-cyan-50 shadow-sm">
-        <div className="p-5 sm:p-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <header className="overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-cyan-50 shadow-sm">
+        <div className="p-3 sm:p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="flex items-center gap-2">
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm">
                   <Package size={17} />
                 </span>
 
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
+                <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-violet-600">
                   Dispensing
                 </span>
               </div>
 
-              <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+              <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
                 Sundries
               </h1>
 
@@ -405,7 +405,7 @@ export default function SundriesPage() {
               <button
                 type="button"
                 onClick={openCreate}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
               >
                 <Plus size={15} />
                 Add sundry
@@ -420,7 +420,7 @@ export default function SundriesPage() {
       ====================================================== */}
 
       {error && (
-        <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
           <span>{error}</span>
 
           <button
@@ -474,7 +474,7 @@ export default function SundriesPage() {
           FILTERS
       ====================================================== */}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
           <div className="relative flex-1">
             <Search
@@ -489,7 +489,7 @@ export default function SundriesPage() {
                 setPage(1);
               }}
               placeholder="Search code, barcode, brand, model, supplier..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
             />
           </div>
 
@@ -512,7 +512,7 @@ export default function SundriesPage() {
               setLowStockOnly((current) => !current);
               setPage(1);
             }}
-            className={`inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-4 text-xs font-semibold transition ${
+            className={`inline-flex h-11 items-center justify-center gap-2 rounded-xl border px-3 text-xs font-semibold transition ${
               lowStockOnly
                 ? "border-amber-200 bg-amber-50 text-amber-700"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -528,11 +528,11 @@ export default function SundriesPage() {
           REGISTER
       ====================================================== */}
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <header className="border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-5 py-5 sm:px-6">
+      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <header className="border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-3 py-3 sm:px-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Dispensing catalogue
               </div>
 
@@ -560,15 +560,15 @@ export default function SundriesPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1100px] text-left">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                  <th className="px-5 py-3">Sundry</th>
-                  <th className="px-5 py-3">Barcode</th>
-                  <th className="px-5 py-3">Supplier</th>
-                  <th className="px-5 py-3">Cost</th>
-                  <th className="px-5 py-3">Selling</th>
-                  <th className="px-5 py-3">Stock</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
+                <tr className="border-b border-slate-200 bg-slate-50 text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                  <th className="px-3 py-3">Sundry</th>
+                  <th className="px-3 py-3">Barcode</th>
+                  <th className="px-3 py-3">Supplier</th>
+                  <th className="px-3 py-3">Cost</th>
+                  <th className="px-3 py-3">Selling</th>
+                  <th className="px-3 py-3">Stock</th>
+                  <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3 text-right">Actions</th>
                 </tr>
               </thead>
 
@@ -583,7 +583,7 @@ export default function SundriesPage() {
                       key={item._id}
                       className="border-b border-slate-100 last:border-0 transition hover:bg-slate-50/80"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-100 to-blue-100 text-violet-700">
                             <Package size={17} />
@@ -597,7 +597,7 @@ export default function SundriesPage() {
                                 "Unnamed sundry"}
                             </div>
 
-                            <div className="mt-0.5 flex flex-wrap gap-x-2 text-[10px] text-slate-400">
+                            <div className="mt-0.5 flex flex-wrap gap-x-2 text-[12px] text-slate-400">
                               <span>{item.code || "No code"}</span>
 
                               {item.brand && <span>{item.brand}</span>}
@@ -608,23 +608,23 @@ export default function SundriesPage() {
                         </div>
                       </td>
 
-                      <td className="px-5 py-4 text-xs font-medium text-slate-600">
+                      <td className="px-3 py-3 text-xs font-medium text-slate-600">
                         {item.barcode || "—"}
                       </td>
 
-                      <td className="px-5 py-4 text-xs text-slate-600">
+                      <td className="px-3 py-3 text-xs text-slate-600">
                         {item.supplier || "—"}
                       </td>
 
-                      <td className="px-5 py-4 text-xs font-semibold text-slate-700">
+                      <td className="px-3 py-3 text-xs font-semibold text-slate-700">
                         {formatCurrency(item.costPrice)}
                       </td>
 
-                      <td className="px-5 py-4 text-xs font-semibold text-slate-800">
+                      <td className="px-3 py-3 text-xs font-semibold text-slate-800">
                         {formatCurrency(item.sellingPrice)}
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-center gap-2">
                           <span
                             className={`text-sm font-bold ${
@@ -637,20 +637,20 @@ export default function SundriesPage() {
                           </span>
 
                           {isLow && (
-                            <span className="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-bold uppercase text-amber-700">
+                            <span className="rounded-full bg-amber-50 px-2 py-1 text-[12px] font-bold uppercase text-amber-700">
                               Low
                             </span>
                           )}
                         </div>
 
-                        <div className="mt-0.5 text-[10px] text-slate-400">
+                        <div className="mt-0.5 text-[12px] text-slate-400">
                           Reorder at {Number(item.reorderLevel || 0)}
                         </div>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <span
-                          className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${
+                          className={`rounded-full px-2.5 py-1 text-[12px] font-bold ${
                             item.status === "inactive"
                               ? "bg-slate-100 text-slate-600"
                               : "bg-emerald-50 text-emerald-700"
@@ -662,7 +662,7 @@ export default function SundriesPage() {
                         </span>
                       </td>
 
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-3 py-3 text-right">
                         <div
                           className="relative inline-flex items-center gap-1"
                           data-sundry-actions
@@ -737,7 +737,7 @@ export default function SundriesPage() {
         ==================================================== */}
 
         {!loading && items.length > 0 && (
-          <footer className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <footer className="flex flex-col gap-3 border-t border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-xs text-slate-500">
               Showing {(page - 1) * PAGE_SIZE + 1}–
               {Math.min(page * PAGE_SIZE, items.length)} of {items.length}
@@ -827,7 +827,7 @@ export default function SundriesPage() {
 
 function Metric({ icon: Icon, label, value, danger = false }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:shadow-md">
       <div className="flex items-center gap-3">
         <div
           className={`flex h-10 w-10 items-center justify-center rounded-xl ${
@@ -840,7 +840,7 @@ function Metric({ icon: Icon, label, value, danger = false }) {
         </div>
 
         <div className="min-w-0">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
             {label}
           </div>
 
@@ -859,12 +859,12 @@ function Metric({ icon: Icon, label, value, danger = false }) {
 
 function EmptyState({ onAdd }) {
   return (
-    <div className="flex min-h-[360px] flex-col items-center justify-center px-5 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
+    <div className="flex min-h-[360px] flex-col items-center justify-center px-3 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
         <Package size={24} />
       </div>
 
-      <p className="mt-4 text-sm font-semibold text-slate-700">
+      <p className="mt-3 text-sm font-semibold text-slate-700">
         No sundries found
       </p>
 
@@ -875,7 +875,7 @@ function EmptyState({ onAdd }) {
       <button
         type="button"
         onClick={onAdd}
-        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+        className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
       >
         <Plus size={14} />
         Add sundry
@@ -907,7 +907,7 @@ function SundryFormModal({
   return (
     <ModalShell title={title} onClose={onClose} size="xl">
       <form onSubmit={onSubmit}>
-        <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
+        <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-3 lg:grid-cols-3">
           <Field
             label="Sundry code"
             value={form.code}
@@ -1013,7 +1013,7 @@ function SundryFormModal({
           />
 
           <label className="block">
-            <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
               Status
             </span>
 
@@ -1028,7 +1028,7 @@ function SundryFormModal({
           </label>
 
           <label className="block lg:col-span-3">
-            <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
               Description
             </span>
 
@@ -1039,12 +1039,12 @@ function SundryFormModal({
                 update("description", event.target.value)
               }
               placeholder="Describe the sundry..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
             />
           </label>
 
           <label className="block lg:col-span-3">
-            <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
               Notes
             </span>
 
@@ -1053,17 +1053,17 @@ function SundryFormModal({
               value={form.notes}
               onChange={(event) => update("notes", event.target.value)}
               placeholder="Internal notes..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
             />
           </label>
         </div>
 
-        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 px-3 py-3 sm:flex-row sm:justify-end sm:px-3">
           <button
             type="button"
             disabled={saving}
             onClick={onClose}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -1071,7 +1071,7 @@ function SundryFormModal({
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving && (
               <RefreshCw size={14} className="animate-spin" />
@@ -1101,14 +1101,14 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
 
   return (
     <ModalShell title="Sundry details" onClose={onClose} size="lg">
-      <div className="p-5 sm:p-6">
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 sm:flex-row sm:items-center">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-white">
+      <div className="p-3 sm:p-3">
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-3 sm:flex-row sm:items-center">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white">
             <Package size={23} />
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-violet-600">
+            <div className="text-[12px] font-bold uppercase tracking-[0.16em] text-violet-600">
               {item.code || "No code"}
             </div>
 
@@ -1126,7 +1126,7 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           </div>
 
           <span
-            className={`rounded-full px-3 py-1.5 text-[10px] font-bold ${
+            className={`rounded-full px-3 py-1.5 text-[12px] font-bold ${
               item.status === "inactive"
                 ? "bg-slate-100 text-slate-600"
                 : "bg-emerald-50 text-emerald-700"
@@ -1136,7 +1136,7 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           </span>
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Info label="Barcode" value={item.barcode || "—"} />
           <Info label="Supplier" value={item.supplier || "—"} />
           <Info label="Colour" value={item.colour || "—"} />
@@ -1165,7 +1165,7 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           />
         </div>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <InfoPanel
             title="Description"
             value={item.description || "No description recorded."}
@@ -1177,11 +1177,11 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           />
         </div>
 
-        <div className="mt-6 flex flex-col-reverse gap-2 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+        <div className="mt-4 flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
             Close
           </button>
@@ -1189,7 +1189,7 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           <button
             type="button"
             onClick={onAdjust}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
           >
             <Package size={14} />
             Adjust stock
@@ -1198,7 +1198,7 @@ function SundryDetailsModal({ item, onClose, onEdit, onAdjust }) {
           <button
             type="button"
             onClick={onEdit}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
           >
             <Edit3 size={14} />
             Edit sundry
@@ -1224,9 +1224,9 @@ function StockAdjustmentModal({
   return (
     <ModalShell title="Adjust stock" onClose={onClose} size="md">
       <form onSubmit={onSubmit}>
-        <div className="p-5 sm:p-6">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="p-3 sm:p-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
               Sundry
             </div>
 
@@ -1245,7 +1245,7 @@ function StockAdjustmentModal({
             </div>
           </div>
 
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 space-y-3">
             <Field
               label="Quantity adjustment"
               type="number"
@@ -1260,7 +1260,7 @@ function StockAdjustmentModal({
               required
             />
 
-            <p className="text-[11px] leading-5 text-slate-400">
+            <p className="text-[12px] leading-5 text-slate-400">
               Use a positive number to add stock and a negative number to
               remove stock.
             </p>
@@ -1292,12 +1292,12 @@ function StockAdjustmentModal({
           </div>
         </div>
 
-        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 px-3 py-3 sm:flex-row sm:justify-end sm:px-3">
           <button
             type="button"
             disabled={saving}
             onClick={onClose}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
             Cancel
           </button>
@@ -1305,7 +1305,7 @@ function StockAdjustmentModal({
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
           >
             {saving && (
               <RefreshCw size={14} className="animate-spin" />
@@ -1332,7 +1332,7 @@ function ModalShell({ title, onClose, children, size = "lg" }) {
 
   return (
     <div
-      className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[3px]"
+      className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-950/45 p-3 backdrop-blur-[3px]"
       role="dialog"
       aria-modal="true"
       onMouseDown={(event) => {
@@ -1342,12 +1342,12 @@ function ModalShell({ title, onClose, children, size = "lg" }) {
       }}
     >
       <div
-        className={`max-h-[92vh] w-full ${width} overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-2xl`}
+        className={`max-h-[92vh] w-full ${width} overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl`}
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <header className="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-violet-50 via-white to-cyan-50 px-5 py-4 sm:px-6">
+        <header className="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-violet-50 via-white to-cyan-50 px-3 py-3 sm:px-3">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-600">
+            <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
               Dispensing
             </div>
 
@@ -1392,7 +1392,7 @@ function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </span>
@@ -1418,8 +1418,8 @@ function Field({
 
 function Info({ label, value, danger = false }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
+      <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </div>
 
@@ -1440,7 +1440,7 @@ function Info({ label, value, danger = false }) {
 
 function InfoPanel({ title, value }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
       <h3 className="text-sm font-bold text-slate-900">{title}</h3>
 
       <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">

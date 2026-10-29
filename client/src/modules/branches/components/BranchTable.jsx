@@ -26,7 +26,7 @@ export default function BranchTable({
 }) {
   if (loading) {
     return (
-      <div className="border border-slate-200 bg-white p-5">
+      <div className="border border-slate-200 bg-white p-3">
         <div className="space-y-3">
           {[1, 2, 3, 4].map((item) => (
             <div
@@ -41,7 +41,7 @@ export default function BranchTable({
 
   if (!branches.length) {
     return (
-      <div className="border border-slate-200 bg-white px-6 py-16 text-center">
+      <div className="border border-slate-200 bg-white px-3 py-8 text-center">
         <p className="text-sm font-medium text-slate-700">
           No branches found
         </p>
@@ -59,27 +59,27 @@ export default function BranchTable({
         <table className="w-full min-w-[850px] border-collapse">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50">
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Branch
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Code
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Location
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Contact
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Status
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Updated
               </th>
 
@@ -93,7 +93,7 @@ export default function BranchTable({
                 key={branch._id}
                 className="border-b border-slate-100 hover:bg-slate-50/70"
               >
-                <td className="px-5 py-4">
+                <td className="px-3 py-3">
                   <button
                     type="button"
                     onClick={() =>
@@ -115,11 +115,11 @@ export default function BranchTable({
                   </button>
                 </td>
 
-                <td className="px-5 py-4 text-sm text-slate-600">
+                <td className="px-3 py-3 text-sm text-slate-600">
                   {branch.code || "—"}
                 </td>
 
-                <td className="px-5 py-4">
+                <td className="px-3 py-3">
                   <p className="text-sm text-slate-600">
                     {branch.city || "—"}
                   </p>
@@ -129,7 +129,7 @@ export default function BranchTable({
                   </p>
                 </td>
 
-                <td className="px-5 py-4">
+                <td className="px-3 py-3">
                   <p className="text-sm text-slate-600">
                     {branch.phone || "—"}
                   </p>
@@ -139,20 +139,20 @@ export default function BranchTable({
                   </p>
                 </td>
 
-                <td className="px-5 py-4">
+                <td className="px-3 py-3">
                   <BranchStatusBadge
                     status={branch.status}
                   />
                 </td>
 
-                <td className="px-5 py-4 text-sm text-slate-500">
+                <td className="px-3 py-3 text-sm text-slate-500">
                   {formatDate(
                     branch.updatedAt ||
                       branch.createdAt,
                   )}
                 </td>
 
-                <td className="px-3 py-4">
+                <td className="px-3 py-3">
                   <div className="group relative">
                     <button
                       type="button"

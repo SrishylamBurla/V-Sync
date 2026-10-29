@@ -71,6 +71,15 @@ export const PERMISSIONS = {
   COMMUNICATION_VIEW: "communication.view",
   COMMUNICATION_CREATE: "communication.create",
 
+  // Finance operations
+  FINANCE_VIEW: "finance.view",
+  FINANCE_CREATE: "finance.create",
+  FINANCE_UPDATE: "finance.update",
+
+  // Practice settings
+  SETTINGS_VIEW: "settings.view",
+  SETTINGS_UPDATE: "settings.update",
+
   // Audit
   AUDIT_VIEW: "audit.view",
 };

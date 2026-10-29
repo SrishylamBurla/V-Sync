@@ -196,10 +196,10 @@ export default function BranchDetailsPage() {
 
   if (!branch || !form) {
     return (
-      <div className="min-h-screen bg-[#f5f7f9]">
-        <main className="mx-auto max-w-[1100px] px-4 py-8">
+      <div className="min-h-screen bg-transparent">
+        <main className="mx-auto max-w-[1100px] px-3 py-4">
 
-          <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-8 text-center">
+          <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-center">
             <Building2 className="mx-auto text-slate-400" size={28} />
 
             <h2 className="mt-3 font-semibold text-slate-900">
@@ -216,20 +216,20 @@ export default function BranchDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto w-full max-w-[1200px] px-3 py-3 sm:px-3 lg:px-4">
 
         {/* Top navigation */}
 
         {/* Alerts */}
         {error && (
-          <div className="mb-4 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             <span>{error}</span>
 
             <button
               type="button"
               onClick={() => setError("")}
-              className="rounded-md p-1 hover:bg-red-100"
+              className="rounded-lg p-1 hover:bg-red-100"
             >
               <X size={15} />
             </button>
@@ -237,18 +237,18 @@ export default function BranchDetailsPage() {
         )}
 
         {success && (
-          <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700">
             {success}
           </div>
         )}
 
         {/* Header */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="p-5 sm:p-6">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="p-3 sm:p-3">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white">
+              <div className="flex items-start gap-3">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
                   <Building2 size={25} />
                 </div>
 
@@ -296,7 +296,7 @@ export default function BranchDetailsPage() {
                   <button
                     type="button"
                     onClick={() => setEditing(true)}
-                    className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-800"
+                    className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-800"
                   >
                     <Edit3 size={16} />
                     Edit Branch
@@ -307,7 +307,7 @@ export default function BranchDetailsPage() {
           </div>
 
           {/* Tabs - visual for now */}
-          <div className="flex overflow-x-auto border-t border-slate-200 px-5 sm:px-6">
+          <div className="flex overflow-x-auto border-t border-slate-200 px-3 sm:px-3">
             <button
               type="button"
               className="border-b-2 border-slate-900 px-1 py-3.5 text-sm font-medium text-slate-900"
@@ -318,7 +318,7 @@ export default function BranchDetailsPage() {
             <button
               type="button"
               disabled
-              className="px-5 py-3.5 text-sm font-medium text-slate-400"
+              className="px-3 py-3.5 text-sm font-medium text-slate-400"
             >
               Staff
             </button>
@@ -326,7 +326,7 @@ export default function BranchDetailsPage() {
             <button
               type="button"
               disabled
-              className="px-5 py-3.5 text-sm font-medium text-slate-400"
+              className="px-3 py-3.5 text-sm font-medium text-slate-400"
             >
               Patients
             </button>
@@ -334,7 +334,7 @@ export default function BranchDetailsPage() {
             <button
               type="button"
               disabled
-              className="px-5 py-3.5 text-sm font-medium text-slate-400"
+              className="px-3 py-3.5 text-sm font-medium text-slate-400"
             >
               Appointments
             </button>
@@ -342,7 +342,7 @@ export default function BranchDetailsPage() {
             <button
               type="button"
               disabled
-              className="px-5 py-3.5 text-sm font-medium text-slate-400"
+              className="px-3 py-3.5 text-sm font-medium text-slate-400"
             >
               Activity
             </button>
@@ -352,16 +352,16 @@ export default function BranchDetailsPage() {
         {/* Content */}
         <form
           onSubmit={handleSave}
-          className="mt-5 space-y-5"
+          className="mt-4 space-y-3"
         >
           {/* Branch information */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <SectionHeader
               title="Branch information"
               description="Core identification and operating status."
             />
 
-            <div className="grid gap-5 p-5 md:grid-cols-2">
+            <div className="grid gap-3 p-3 md:grid-cols-2">
               <Field
                 label="Branch name"
                 value={form.name}
@@ -419,13 +419,13 @@ export default function BranchDetailsPage() {
           </section>
 
           {/* Contact */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <SectionHeader
               title="Contact information"
               description="Customer-facing contact details for this branch."
             />
 
-            <div className="grid gap-5 p-5 md:grid-cols-2">
+            <div className="grid gap-3 p-3 md:grid-cols-2">
               <Field
                 label="Phone"
                 value={form.phone}
@@ -450,13 +450,13 @@ export default function BranchDetailsPage() {
           </section>
 
           {/* Address */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <SectionHeader
               title="Branch address"
               description="Physical location and postal information."
             />
 
-            <div className="grid gap-5 p-5 md:grid-cols-2">
+            <div className="grid gap-3 p-3 md:grid-cols-2">
               <div className="md:col-span-2">
                 <Field
                   label="Address line 1"
@@ -518,13 +518,13 @@ export default function BranchDetailsPage() {
           </section>
 
           {/* Branch metadata */}
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <SectionHeader
               title="Branch record"
               description="System information for this location."
             />
 
-            <div className="grid gap-5 p-5 sm:grid-cols-2">
+            <div className="grid gap-3 p-3 sm:grid-cols-2">
               <InfoItem
                 label="Branch ID"
                 value={branch._id}
@@ -549,7 +549,7 @@ export default function BranchDetailsPage() {
 
           {/* Save actions */}
           {editing && (
-            <div className="sticky bottom-4 z-10 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+            <div className="sticky bottom-4 z-10 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
               <div className="text-sm text-slate-500">
                 You have unsaved changes.
               </div>
@@ -559,7 +559,7 @@ export default function BranchDetailsPage() {
                   type="button"
                   onClick={cancelEdit}
                   disabled={saving}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
                 >
                   <X size={16} />
                   Cancel
@@ -568,7 +568,7 @@ export default function BranchDetailsPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
                 >
                   <Save size={16} />
                   {saving ? "Saving..." : "Save changes"}
@@ -584,7 +584,7 @@ export default function BranchDetailsPage() {
 
 function SectionHeader({ title, description }) {
   return (
-    <div className="border-b border-slate-200 px-5 py-4">
+    <div className="border-b border-slate-200 px-3 py-3">
       <h2 className="font-semibold text-slate-900">
         {title}
       </h2>
@@ -626,7 +626,7 @@ function Field({
             onChange?.(event.target.value)
           }
           className={`h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 ${
-            icon ? "pl-9" : ""
+            icon ? "pl-8" : ""
           }`}
         />
       </div>
@@ -671,16 +671,16 @@ function formatDate(value) {
 
 function PageLoader() {
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
-        <div className="animate-pulse space-y-5">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto max-w-[1200px] px-3 py-3 sm:px-3 lg:px-4">
+        <div className="animate-pulse space-y-3">
           <div className="h-5 w-32 rounded bg-slate-200" />
 
-          <div className="h-32 rounded-2xl bg-white" />
+          <div className="h-32 rounded-xl bg-white" />
 
-          <div className="h-56 rounded-2xl bg-white" />
+          <div className="h-56 rounded-xl bg-white" />
 
-          <div className="h-40 rounded-2xl bg-white" />
+          <div className="h-40 rounded-xl bg-white" />
         </div>
       </main>
     </div>

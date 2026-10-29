@@ -121,13 +121,13 @@ const emptyExtra = () => ({
 });
 
 const inputClass =
-  "h-8 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[11px] text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50 disabled:text-slate-500";
+  "h-8 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50 disabled:text-slate-500";
 
 const selectClass =
-  "h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[11px] text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100";
+  "h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-[12px] text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100";
 
 const labelClass =
-  "mb-1 block text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-400";
+  "mb-1 block text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-400";
 
 const getPatientId = (patient) => patient?._id || patient?.id || "";
 
@@ -223,11 +223,11 @@ function Panel({ number, title, right, children, className = "" }) {
     >
       <div className="flex min-h-10 items-center justify-between border-b border-slate-100 px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded bg-slate-100 text-[8px] font-bold text-slate-500">
+          <span className="flex h-5 w-5 items-center justify-center rounded bg-slate-100 text-[12px] font-bold text-slate-500">
             {number}
           </span>
 
-          <h2 className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-700">
+          <h2 className="text-[12px] font-bold uppercase tracking-[0.08em] text-slate-700">
             {title}
           </h2>
         </div>
@@ -258,13 +258,13 @@ function SearchResult({ item, type, onSelect }) {
     >
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-[11px] text-slate-800">
+          <span className="font-semibold text-[12px] text-slate-800">
             {item.code || "—"}
           </span>
 
           {item.stock !== undefined && (
             <span
-              className={`rounded px-1.5 py-0.5 text-[8px] font-semibold ${
+              className={`rounded px-1.5 py-0.5 text-[12px] font-semibold ${
                 Number(item.stock) > 0
                   ? "bg-emerald-50 text-emerald-700"
                   : "bg-red-50 text-red-600"
@@ -275,17 +275,17 @@ function SearchResult({ item, type, onSelect }) {
           )}
         </div>
 
-        <p className="mt-0.5 truncate text-[9px] text-slate-500">
+        <p className="mt-0.5 truncate text-[12px] text-slate-500">
           {description || "No description"}
         </p>
       </div>
 
       <div className="shrink-0 text-right">
-        <p className="text-[10px] font-semibold text-slate-800">
+        <p className="text-[12px] font-semibold text-slate-800">
           ₹{money(item.sellingPrice)}
         </p>
 
-        <span className="mt-0.5 inline-flex items-center gap-1 text-[8px] font-semibold text-slate-400">
+        <span className="mt-0.5 inline-flex items-center gap-1 text-[12px] font-semibold text-slate-400">
           Select <Check size={10} />
         </span>
       </div>
@@ -300,16 +300,16 @@ function PatientSearchResult({ patient, onSelect }) {
       onClick={() => onSelect(patient)}
       className="flex w-full items-center gap-2.5 border-b border-slate-100 px-3 py-2 text-left transition last:border-b-0 hover:bg-slate-50"
     >
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
         <UserRound size={13} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[11px] font-semibold text-slate-800">
+        <p className="truncate text-[12px] font-semibold text-slate-800">
           {getPatientName(patient)}
         </p>
 
-        <div className="mt-0.5 flex flex-wrap gap-x-3 text-[9px] text-slate-400">
+        <div className="mt-0.5 flex flex-wrap gap-x-3 text-[12px] text-slate-400">
           {patient?.patientNumber && <span>{patient.patientNumber}</span>}
 
           {patient?.phone && <span>{patient.phone}</span>}
@@ -344,7 +344,7 @@ function PrescriptionRow({ eyeName, values, onChange }) {
     <div className="grid grid-cols-[52px_repeat(8,minmax(55px,1fr))] gap-1.5">
       <div className="flex items-center gap-1.5">
         <span
-          className={`flex h-7 w-7 items-center justify-center rounded text-[9px] font-bold ${
+          className={`flex h-7 w-7 items-center justify-center rounded text-[12px] font-bold ${
             eyeName === "right"
               ? "bg-slate-900 text-white"
               : "bg-slate-100 text-slate-600"
@@ -360,7 +360,7 @@ function PrescriptionRow({ eyeName, values, onChange }) {
           value={values?.[key] || ""}
           onChange={(event) => onChange(eyeName, key, event.target.value)}
           placeholder={label}
-          className="h-7 min-w-0 rounded-md border border-slate-200 bg-white px-1.5 text-center text-[9px] font-medium text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
+          className="h-7 min-w-0 rounded-lg border border-slate-200 bg-white px-1.5 text-center text-[12px] font-medium text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
         />
       ))}
     </div>
@@ -1151,7 +1151,7 @@ export default function NewSpectaclePage() {
             type="button"
             onClick={save}
             disabled={saving || loading || !activePatientId}
-            className="inline-flex h-8 items-center rounded-md bg-slate-900 px-3 text-[10px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-8 items-center rounded-lg bg-slate-900 px-3 text-[12px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Save size={13} className="mr-1.5" />
 
@@ -1162,7 +1162,7 @@ export default function NewSpectaclePage() {
     >
       <div className="space-y-2.5">
         {error && (
-          <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[10px] text-red-700">
+          <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />
 
             <span className="font-medium">{error}</span>
@@ -1177,7 +1177,7 @@ export default function NewSpectaclePage() {
               <button
                 type="button"
                 onClick={clearPatient}
-                className="inline-flex items-center gap-1 text-[9px] font-semibold text-red-600 hover:text-red-700"
+                className="inline-flex items-center gap-1 text-[12px] font-semibold text-red-600 hover:text-red-700"
               >
                 <X size={11} />
                 Change
@@ -1205,7 +1205,7 @@ export default function NewSpectaclePage() {
                   }}
                   onFocus={() => setShowPatientResults(true)}
                   placeholder="Search name, patient number or phone..."
-                  className={`${inputClass} pl-8 pr-8`}
+                  className={`${inputClass} pl-6 pr-6`}
                 />
 
                 {!routePatientId && (
@@ -1217,9 +1217,9 @@ export default function NewSpectaclePage() {
               </div>
 
               {!routePatientId && showPatientResults && (
-                <div className="absolute left-0 right-0 top-[46px] z-50 overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl">
+                <div className="absolute left-0 right-0 top-[46px] z-50 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
                   {patientsLoading ? (
-                    <div className="p-4 text-center text-[10px] text-slate-500">
+                    <div className="p-3 text-center text-[12px] text-slate-500">
                       Loading patients...
                     </div>
                   ) : filteredPatients.length ? (
@@ -1233,7 +1233,7 @@ export default function NewSpectaclePage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="p-4 text-center text-[10px] text-slate-500">
+                    <div className="p-3 text-center text-[12px] text-slate-500">
                       No patients found.
                     </div>
                   )}
@@ -1241,19 +1241,19 @@ export default function NewSpectaclePage() {
               )}
             </div>
 
-            <div className="min-w-[300px] rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+            <div className="min-w-[300px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
               {selectedPatient ? (
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-slate-500 ring-1 ring-slate-200">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-slate-500 ring-1 ring-slate-200">
                     <UserRound size={13} />
                   </div>
 
                   <div className="min-w-0">
-                    <p className="truncate text-[11px] font-bold text-slate-800">
+                    <p className="truncate text-[12px] font-bold text-slate-800">
                       {getPatientName(selectedPatient)}
                     </p>
 
-                    <div className="mt-0.5 flex gap-3 text-[9px] text-slate-500">
+                    <div className="mt-0.5 flex gap-3 text-[12px] text-slate-500">
                       <span>
                         {selectedPatient.patientNumber || "No patient no."}
                       </span>
@@ -1265,7 +1265,7 @@ export default function NewSpectaclePage() {
                   <Check size={14} className="ml-auto text-emerald-600" />
                 </div>
               ) : (
-                <div className="flex h-7 items-center text-[10px] text-slate-400">
+                <div className="flex h-7 items-center text-[12px] text-slate-400">
                   Select a patient to load the latest prescription.
                 </div>
               )}
@@ -1285,7 +1285,7 @@ export default function NewSpectaclePage() {
             <div>
               <span className={labelClass}>Optometrist</span>
 
-              <div className="flex h-8 items-center rounded-md border border-slate-200 bg-slate-50 px-2.5 text-[11px] text-slate-700">
+              <div className="flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-[12px] text-slate-700">
                 {optometristName || "From consultation"}
               </div>
             </div>
@@ -1313,7 +1313,7 @@ export default function NewSpectaclePage() {
           </div>
 
           <div className="mt-2 grid gap-2 lg:grid-cols-2">
-            <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
               <CompactSelect
                 label="Job Status"
                 value={form.status}
@@ -1327,7 +1327,7 @@ export default function NewSpectaclePage() {
               />
             </div>
 
-            <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
               <span className={labelClass}>PD</span>
 
               <div className="grid grid-cols-3 gap-1">
@@ -1420,14 +1420,14 @@ export default function NewSpectaclePage() {
             />
           </div>
 
-          <div className="mt-2 rounded-md border border-slate-200 bg-slate-50 p-2.5">
+          <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
             <div className="mb-1.5 flex items-center justify-between">
-              <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-slate-400">
+              <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
                 Prescription
               </span>
 
               {consultation && (
-                <span className="inline-flex items-center gap-1 text-[8px] font-semibold text-emerald-600">
+                <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-emerald-600">
                   <ClipboardList size={10} />
                   Latest consultation loaded
                 </span>
@@ -1458,7 +1458,7 @@ export default function NewSpectaclePage() {
                 }))
               }
               placeholder="Prescription note"
-              className="mt-1.5 h-7 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[9px] text-slate-700 outline-none focus:border-slate-400"
+              className="mt-1.5 h-7 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] text-slate-700 outline-none focus:border-slate-400"
             />
           </div>
         </Panel>
@@ -1472,7 +1472,7 @@ export default function NewSpectaclePage() {
                 <button
                   type="button"
                   onClick={clearFrame}
-                  className="text-[9px] font-semibold text-red-600"
+                  className="text-[12px] font-semibold text-red-600"
                 >
                   Clear
                 </button>
@@ -1496,7 +1496,7 @@ export default function NewSpectaclePage() {
                   if (frameSearch.trim()) setShowFrameResults(true);
                 }}
                 placeholder="Search frame code / brand / model..."
-                className={`${inputClass} pl-7 pr-7`}
+                className={`${inputClass} pl-6 pr-6`}
               />
 
               <ChevronDown
@@ -1505,7 +1505,7 @@ export default function NewSpectaclePage() {
               />
 
               {showFrameResults && frameSearch.trim() && (
-                <div className="absolute left-0 right-0 top-9 z-40 overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl">
+                <div className="absolute left-0 right-0 top-9 z-40 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
                   {filteredFrames.length ? (
                     <div className="max-h-56 overflow-auto">
                       {filteredFrames.map((item) => (
@@ -1518,7 +1518,7 @@ export default function NewSpectaclePage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="p-3 text-center text-[9px] text-slate-500">
+                    <div className="p-3 text-center text-[12px] text-slate-500">
                       No matching frames found.
                     </div>
                   )}
@@ -1616,7 +1616,7 @@ export default function NewSpectaclePage() {
                 }
               />
 
-              <label className="flex h-8 items-center gap-1.5 self-end rounded-md border border-slate-200 bg-slate-50 px-2 text-[9px] font-semibold text-slate-600">
+              <label className="flex h-8 items-center gap-1.5 self-end rounded-lg border border-slate-200 bg-slate-50 px-2 text-[12px] font-semibold text-slate-600">
                 <input
                   type="checkbox"
                   checked={form.frame.ownFrame}
@@ -1641,7 +1641,7 @@ export default function NewSpectaclePage() {
               </label>
             </div>
 
-            <div className="mt-1.5 flex items-center justify-between rounded-md bg-slate-50 px-2.5 py-1.5 text-[9px]">
+            <div className="mt-1.5 flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5 text-[12px]">
               <span className="truncate text-slate-500">
                 {displayText(form.frame.description) || "No frame selected"}
               </span>
@@ -1660,7 +1660,7 @@ export default function NewSpectaclePage() {
                 <button
                   type="button"
                   onClick={clearLens}
-                  className="text-[9px] font-semibold text-red-600"
+                  className="text-[12px] font-semibold text-red-600"
                 >
                   Clear
                 </button>
@@ -1684,7 +1684,7 @@ export default function NewSpectaclePage() {
                   if (lensSearch.trim()) setShowLensResults(true);
                 }}
                 placeholder="Search lens code / description / supplier..."
-                className={`${inputClass} pl-7 pr-7`}
+                className={`${inputClass} pl-6 pr-6`}
               />
 
               <ChevronDown
@@ -1693,7 +1693,7 @@ export default function NewSpectaclePage() {
               />
 
               {showLensResults && lensSearch.trim() && (
-                <div className="absolute left-0 right-0 top-9 z-40 overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl">
+                <div className="absolute left-0 right-0 top-9 z-40 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
                   {filteredLenses.length ? (
                     <div className="max-h-56 overflow-auto">
                       {filteredLenses.map((item) => (
@@ -1706,7 +1706,7 @@ export default function NewSpectaclePage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="p-3 text-center text-[9px] text-slate-500">
+                    <div className="p-3 text-center text-[12px] text-slate-500">
                       No matching lenses found.
                     </div>
                   )}
@@ -1804,7 +1804,7 @@ export default function NewSpectaclePage() {
                 }
               />
 
-              <div className="flex h-8 items-center justify-between rounded-md bg-slate-50 px-2 text-[9px]">
+              <div className="flex h-8 items-center justify-between rounded-lg bg-slate-50 px-2 text-[12px]">
                 <span className="truncate text-slate-500">
                   {displayText(form.lens.description) || "No lens selected"}
                 </span>
@@ -1824,7 +1824,7 @@ export default function NewSpectaclePage() {
             <button
               type="button"
               onClick={addExtra}
-              className="inline-flex h-6 items-center rounded-md border border-slate-200 bg-white px-2 text-[9px] font-semibold text-slate-600 hover:bg-slate-50"
+              className="inline-flex h-6 items-center rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-semibold text-slate-600 hover:bg-slate-50"
             >
               <Plus size={11} className="mr-1" />
               Add item
@@ -1866,7 +1866,7 @@ export default function NewSpectaclePage() {
                       <button
                         type="button"
                         onClick={() => removeExtra(index)}
-                        className="mt-3 flex h-8 items-center justify-center rounded-md border border-red-100 bg-white text-red-500 hover:bg-red-50"
+                        className="mt-3 flex h-8 items-center justify-center rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50"
                       >
                         <Trash2 size={12} />
                       </button>
@@ -1874,7 +1874,7 @@ export default function NewSpectaclePage() {
                   ))}
                 </div>
               ) : (
-                <div className="flex h-[58px] items-center justify-center rounded-md border border-dashed border-slate-200 bg-slate-50 text-[9px] text-slate-400">
+                <div className="flex h-[58px] items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-[12px] text-slate-400">
                   <Package size={13} className="mr-1.5" />
                   No additional optical items
                 </div>
@@ -1889,10 +1889,10 @@ export default function NewSpectaclePage() {
                 onChange={(value) => updateForm("discount", Number(value || 0))}
               />
 
-              <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2">
                 <span className={labelClass}>Items</span>
 
-                <p className="text-[11px] font-bold text-slate-700">
+                <p className="text-[12px] font-bold text-slate-700">
                   {2 + form.extras.length}
                 </p>
               </div>
@@ -1907,13 +1907,13 @@ export default function NewSpectaclePage() {
               onChange={(event) => updateForm("notes", event.target.value)}
               rows={2}
               placeholder="Job notes..."
-              className="w-full resize-none rounded-md border border-slate-200 bg-white px-2.5 py-2 text-[10px] text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
+              className="w-full resize-none rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-[12px] text-slate-700 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-100"
             />
           </div>
         </Panel>
 
         <div className="grid gap-2 lg:grid-cols-[1fr_320px]">
-          <div className="flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-[9px] text-slate-500">
+          <div className="flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-[12px] text-slate-500">
             <FileText size={13} className="mr-2 shrink-0 text-slate-400" />
 
             {selectedPatient
@@ -1922,20 +1922,20 @@ export default function NewSpectaclePage() {
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-slate-900 px-3 py-2.5 text-white">
-            <div className="mb-1 flex items-center justify-between text-[9px] text-slate-400">
+            <div className="mb-1 flex items-center justify-between text-[12px] text-slate-400">
               <span>Frame</span>
 
               <span>₹{money(form.frame.price)}</span>
             </div>
 
-            <div className="mb-1 flex items-center justify-between text-[9px] text-slate-400">
+            <div className="mb-1 flex items-center justify-between text-[12px] text-slate-400">
               <span>Lens + extras</span>
 
               <span>₹{money(Number(form.lens.price) + extrasTotal)}</span>
             </div>
 
             <div className="flex items-end justify-between border-t border-white/10 pt-1.5">
-              <span className="text-[9px] font-semibold text-slate-300">
+              <span className="text-[12px] font-semibold text-slate-300">
                 NET TOTAL
               </span>
 
@@ -1945,7 +1945,7 @@ export default function NewSpectaclePage() {
         </div>
 
         <div className="sticky bottom-2 z-30 flex items-center justify-between rounded-lg border border-slate-200 bg-white/95 px-3 py-2 shadow-lg backdrop-blur">
-          <div className="hidden items-center gap-2 text-[9px] text-slate-400 sm:flex">
+          <div className="hidden items-center gap-2 text-[12px] text-slate-400 sm:flex">
             <IndianRupee size={12} />
 
             <span>
@@ -1963,7 +1963,7 @@ export default function NewSpectaclePage() {
                   ? navigate(`/patients/${activePatientId}`)
                   : navigate(-1)
               }
-              className="h-8 rounded-md border border-slate-200 bg-white px-3 text-[10px] font-semibold text-slate-600 hover:bg-slate-50"
+              className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-semibold text-slate-600 hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -1972,7 +1972,7 @@ export default function NewSpectaclePage() {
               type="button"
               onClick={save}
               disabled={saving || loading || !activePatientId}
-              className="inline-flex h-8 items-center rounded-md bg-slate-900 px-4 text-[10px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-8 items-center rounded-lg bg-slate-900 px-3 text-[12px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Save size={12} className="mr-1.5" />
 

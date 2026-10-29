@@ -92,7 +92,7 @@ export default function StaffTable({
   if (loading) {
     return (
       <div className="border border-slate-200 bg-white">
-        <div className="space-y-3 p-5">
+        <div className="space-y-3 p-3">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
@@ -106,7 +106,7 @@ export default function StaffTable({
 
   if (!staff.length) {
     return (
-      <div className="border border-slate-200 bg-white px-6 py-16 text-center">
+      <div className="border border-slate-200 bg-white px-3 py-8 text-center">
         <p className="text-sm font-medium text-slate-700">
           No staff records found
         </p>
@@ -124,23 +124,23 @@ export default function StaffTable({
         <table className="w-full min-w-[980px] border-collapse">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50">
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Staff
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Role
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Branches
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Status
               </th>
 
-              <th className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 Updated
               </th>
 
@@ -170,7 +170,7 @@ export default function StaffTable({
                   className="border-b border-slate-100 transition hover:bg-slate-50/70"
                 >
                   {/* STAFF */}
-                  <td className="px-5 py-4">
+                  <td className="px-3 py-3">
                     <button
                       type="button"
                       onClick={() =>
@@ -191,14 +191,14 @@ export default function StaffTable({
                   </td>
 
                   {/* ROLE */}
-                  <td className="px-5 py-4">
+                  <td className="px-3 py-3">
                     <span className="text-sm text-slate-600">
                       {formatRole(member.role)}
                     </span>
                   </td>
 
                   {/* BRANCHES */}
-                  <td className="px-5 py-4">
+                  <td className="px-3 py-3">
                     {branchLabels.length ? (
                       <div className="flex max-w-[280px] flex-wrap gap-1.5">
                         {branchLabels
@@ -206,14 +206,14 @@ export default function StaffTable({
                           .map((label, index) => (
                             <span
                               key={`${label}-${index}`}
-                              className="inline-flex items-center border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-medium text-slate-600"
+                              className="inline-flex items-center border border-slate-200 bg-slate-50 px-2 py-1 text-[12px] font-medium text-slate-600"
                             >
                               {label}
                             </span>
                           ))}
 
                         {branchLabels.length > 2 && (
-                          <span className="inline-flex items-center px-1 py-1 text-[11px] font-medium text-slate-400">
+                          <span className="inline-flex items-center px-1 py-1 text-[12px] font-medium text-slate-400">
                             +{branchLabels.length - 2} more
                           </span>
                         )}
@@ -226,14 +226,14 @@ export default function StaffTable({
                   </td>
 
                   {/* STATUS */}
-                  <td className="px-5 py-4">
+                  <td className="px-3 py-3">
                     <StaffStatusBadge
                       status={member.status}
                     />
                   </td>
 
                   {/* UPDATED */}
-                  <td className="px-5 py-4 text-sm text-slate-500">
+                  <td className="px-3 py-3 text-sm text-slate-500">
                     {formatDate(
                       member.updatedAt ||
                         member.createdAt,
@@ -241,7 +241,7 @@ export default function StaffTable({
                   </td>
 
                   {/* ACTIONS */}
-                  <td className="px-3 py-4">
+                  <td className="px-3 py-3">
                     <div className="group relative">
                       <button
                         type="button"
