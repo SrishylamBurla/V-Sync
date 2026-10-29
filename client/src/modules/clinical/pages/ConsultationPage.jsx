@@ -1124,7 +1124,7 @@
 //   if (loadingPatient) {
 //     return (
 //       <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
-//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
 //           <Loader2 size={18} className="animate-spin text-blue-600" />
 //           Loading patient record...
 //         </div>
@@ -1134,8 +1134,8 @@
 
 //   if (!patient) {
 //     return (
-//       <div className="mx-auto max-w-3xl px-4 py-16">
-//         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+//       <div className="mx-auto max-w-3xl px-3 py-8">
+//         <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 //           {error || "Patient record not found."}
 //         </div>
 //       </div>
@@ -1149,10 +1149,10 @@
 //             TOP TOOLBAR
 //         ====================================================== */}
 //         <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
-//           <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
+//           <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-3 lg:px-4">
 //             <div className="flex min-w-0 items-center gap-3">
 //               <div className="min-w-0">
-//                 <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+//                 <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-blue-600">
 //                   Clinical workspace
 //                 </div>
 //                 <h1 className="truncate text-lg font-bold leading-tight text-slate-900 sm:text-xl">
@@ -1163,7 +1163,7 @@
 
 //             <div className="flex shrink-0 items-center gap-2">
 //               {dirty && consultationStarted && (
-//                 <span className="hidden items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-2 text-[10px] font-semibold text-amber-700 md:inline-flex">
+//                 <span className="hidden items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2 text-[12px] font-semibold text-amber-700 md:inline-flex">
 //                   <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
 //                   Unsaved
 //                 </span>
@@ -1173,7 +1173,7 @@
 //                 type="button"
 //                 onClick={handleSaveDraft}
 //                 disabled={!consultationStarted || saving}
-//                 className="inline-flex h-9 items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+//                 className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
 //               >
 //                 <Save size={14} />
 //                 <span className="hidden sm:inline">
@@ -1185,7 +1185,7 @@
 //                 type="submit"
 //                 form="consultation-form"
 //                 disabled={!consultationStarted || saving}
-//                 className="inline-flex h-9 items-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4"
+//                 className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-3"
 //               >
 //                 {saving ? (
 //                   <Loader2 size={14} className="animate-spin" />
@@ -1204,9 +1204,9 @@
 //             ALERTS
 //         ====================================================== */}
 //         {(error || success || billingMessage) && (
-//           <div className="px-3 pt-3 sm:px-5 lg:px-7">
+//           <div className="px-3 pt-3 sm:px-3 lg:px-4">
 //             {error && (
-//               <div className="flex items-start justify-between gap-4 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+//               <div className="flex items-start justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
 //                 <span>{error}</span>
 //                 <button
 //                   type="button"
@@ -1219,14 +1219,14 @@
 //             )}
 
 //             {success && (
-//               <div className="mt-2 flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-medium text-emerald-700">
+//               <div className="mt-2 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-medium text-emerald-700">
 //                 <Check size={14} />
 //                 {success}
 //               </div>
 //             )}
 
 //             {billingMessage && (
-//               <div className="mt-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-medium text-blue-700">
+//               <div className="mt-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-medium text-blue-700">
 //                 {billingMessage}
 //               </div>
 //             )}
@@ -1265,22 +1265,22 @@
 //           <form
 //             id="consultation-form"
 //             onSubmit={handleSave}
-//             className="px-3 pb-28 pt-3 sm:px-5 lg:px-7"
+//             className="px-3 pb-28 pt-3 sm:px-3 lg:px-4"
 //           >
 //             {/* =================================================
 //                 VISIT CONTROL STRIP
 //             ================================================== */}
-//             <div className="mb-3 rounded-md border border-slate-200 bg-white shadow-sm">
+//             <div className="mb-3 rounded-lg border border-slate-200 bg-white shadow-sm">
 //               <div className="grid items-center gap-0 lg:grid-cols-[1.1fr_1fr_1fr_1fr]">
 //                 <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
-//                   <div className="mb-1 text-[9px] font-bold text-slate-500">
+//                   <div className="mb-1 text-[12px] font-bold text-slate-500">
 //                     Consultation Type <span className="text-red-500">*</span>
 //                   </div>
 
 //                   <button
 //                     type="button"
 //                     onClick={changeConsultationType}
-//                     className="inline-flex h-8 items-center gap-2 rounded border border-blue-300 bg-blue-50 px-3 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+//                     className="inline-flex h-8 items-center gap-2 rounded border border-blue-300 bg-blue-50 px-3 text-[12px] font-bold text-blue-700 hover:bg-blue-100"
 //                   >
 //                     <Check size={13} />
 //                     {selectedType.label}
@@ -1290,7 +1290,7 @@
 
 //                 <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
 //                   <div className="flex items-center justify-between gap-2">
-//                     <div className="text-[9px] font-bold text-slate-500">
+//                     <div className="text-[12px] font-bold text-slate-500">
 //                       Recall
 //                     </div>
 
@@ -1299,7 +1299,7 @@
 //                       onClick={() =>
 //                         updateNested("recall", "enabled", !form.recall.enabled)
 //                       }
-//                       className={`rounded px-2 py-1 text-[9px] font-bold ${
+//                       className={`rounded px-2 py-1 text-[12px] font-bold ${
 //                         form.recall.enabled
 //                           ? "bg-blue-50 text-blue-700"
 //                           : "border border-slate-200 bg-white text-slate-500"
@@ -1322,7 +1322,7 @@
 //                           onChange={(event) =>
 //                             updateNested("recall", "date", event.target.value)
 //                           }
-//                           className="h-8 w-full rounded border border-slate-200 bg-white pl-8 pr-2 text-[10px] outline-none focus:border-blue-400"
+//                           className="h-8 w-full rounded border border-slate-200 bg-white pl-6 pr-2 text-[12px] outline-none focus:border-blue-400"
 //                         />
 //                       </div>
 
@@ -1331,7 +1331,7 @@
 //                         onChange={(event) =>
 //                           updateNested("recall", "type", event.target.value)
 //                         }
-//                         className="h-8 min-w-0 flex-1 rounded border border-slate-200 bg-white px-2 text-[10px] outline-none focus:border-blue-400"
+//                         className="h-8 min-w-0 flex-1 rounded border border-slate-200 bg-white px-2 text-[12px] outline-none focus:border-blue-400"
 //                       >
 //                         <option>Routine Review</option>
 //                         <option>Prescription Review</option>
@@ -1353,10 +1353,10 @@
 //                 </div>
 
 //                 <div className="px-3 py-2.5">
-//                   <div className="mb-1 text-[9px] font-bold text-slate-500">
+//                   <div className="mb-1 text-[12px] font-bold text-slate-500">
 //                     Optometrist
 //                   </div>
-//                   <div className="flex h-8 items-center justify-between rounded border border-slate-200 bg-slate-50 px-2.5 text-[10px] font-semibold text-slate-700">
+//                   <div className="flex h-8 items-center justify-between rounded border border-slate-200 bg-slate-50 px-2.5 text-[12px] font-semibold text-slate-700">
 //                     <span>
 //                       {patient?.assignedOptometristName ||
 //                         patient?.lastOptometristName ||
@@ -1540,35 +1540,35 @@
 //                     title="Binocular / Ocular Motility"
 //                     icon={Eye}
 //                   >
-//                     <div className="rounded border border-slate-200 bg-slate-50 px-3 py-3 text-[10px] leading-5 text-slate-500">
+//                     <div className="rounded border border-slate-200 bg-slate-50 px-3 py-3 text-[12px] leading-5 text-slate-500">
 //                       Detailed sensory, motor, accommodation, vergence, CISS and
 //                       final binocular vision assessment is recorded in the
 //                       specialist evaluation.
 //                     </div>
 //                     <div className="mt-3 grid gap-2 sm:grid-cols-3">
 //                       <div className="rounded border border-slate-200 bg-white px-3 py-2">
-//                         <div className="text-[8px] font-bold uppercase text-slate-400">
+//                         <div className="text-[12px] font-bold uppercase text-slate-400">
 //                           Stereopsis
 //                         </div>
-//                         <div className="mt-1 text-[10px] font-semibold text-slate-700">
+//                         <div className="mt-1 text-[12px] font-semibold text-slate-700">
 //                           {form.binocularVision.sensory.stereopsisNear ||
 //                             "Not recorded"}
 //                         </div>
 //                       </div>
 //                       <div className="rounded border border-slate-200 bg-white px-3 py-2">
-//                         <div className="text-[8px] font-bold uppercase text-slate-400">
+//                         <div className="text-[12px] font-bold uppercase text-slate-400">
 //                           Cover test
 //                         </div>
-//                         <div className="mt-1 text-[10px] font-semibold text-slate-700">
+//                         <div className="mt-1 text-[12px] font-semibold text-slate-700">
 //                           {form.binocularVision.motor.coverDistance ||
 //                             "Not recorded"}
 //                         </div>
 //                       </div>
 //                       <div className="rounded border border-slate-200 bg-white px-3 py-2">
-//                         <div className="text-[8px] font-bold uppercase text-slate-400">
+//                         <div className="text-[12px] font-bold uppercase text-slate-400">
 //                           CISS
 //                         </div>
-//                         <div className="mt-1 text-[10px] font-semibold text-slate-700">
+//                         <div className="mt-1 text-[12px] font-semibold text-slate-700">
 //                           {form.binocularVision.cissScore || "Not recorded"}
 //                         </div>
 //                       </div>
@@ -1601,7 +1601,7 @@
 //                       <button
 //                         type="button"
 //                         onClick={addTest}
-//                         className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+//                         className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
 //                       >
 //                         <Plus size={12} />
 //                         Add Test
@@ -1609,14 +1609,14 @@
 //                     }
 //                   >
 //                     {form.additionalTests.length === 0 ? (
-//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-[12px] text-slate-400">
 //                         No additional tests
 //                       </div>
 //                     ) : (
 //                       <div className="overflow-x-auto">
-//                         <table className="w-full min-w-[650px] border-collapse text-[10px]">
+//                         <table className="w-full min-w-[650px] border-collapse text-[12px]">
 //                           <thead>
-//                             <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-500">
+//                             <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-500">
 //                               <th className="border border-slate-200 px-2 py-2">
 //                                 Test Type
 //                               </th>
@@ -1644,7 +1644,7 @@
 //                                         event.target.value,
 //                                       )
 //                                     }
-//                                     className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[10px] outline-none focus:border-blue-400"
+//                                     className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[12px] outline-none focus:border-blue-400"
 //                                   >
 //                                     {testTypes.map((type) => (
 //                                       <option key={type} value={type}>
@@ -1663,7 +1663,7 @@
 //                                         event.target.value,
 //                                       )
 //                                     }
-//                                     className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+//                                     className="h-8 w-full rounded border border-slate-200 px-2 text-[12px] outline-none focus:border-blue-400"
 //                                   />
 //                                 </td>
 //                                 <td className="border border-slate-200 p-1">
@@ -1676,7 +1676,7 @@
 //                                         event.target.value,
 //                                       )
 //                                     }
-//                                     className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+//                                     className="h-8 w-full rounded border border-slate-200 px-2 text-[12px] outline-none focus:border-blue-400"
 //                                   />
 //                                 </td>
 //                                 <td className="border border-slate-200 p-1 text-center">
@@ -1704,7 +1704,7 @@
 //                       <button
 //                         type="button"
 //                         onClick={addDiagnosis}
-//                         className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+//                         className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
 //                       >
 //                         <Plus size={12} />
 //                         Add
@@ -1712,7 +1712,7 @@
 //                     }
 //                   >
 //                     {form.diagnosis.length === 0 ? (
-//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-[12px] text-slate-400">
 //                         No diagnosis added
 //                       </div>
 //                     ) : (
@@ -1748,7 +1748,7 @@
 //                             <button
 //                               type="button"
 //                               onClick={() => removeDiagnosis(index)}
-//                               className="mt-5 flex h-8 w-8 items-center justify-center rounded border border-red-100 bg-white text-red-500 hover:bg-red-50"
+//                               className="mt-4 flex h-8 w-8 items-center justify-center rounded border border-red-100 bg-white text-red-500 hover:bg-red-50"
 //                             >
 //                               <Trash2 size={13} />
 //                             </button>
@@ -1768,7 +1768,7 @@
 //                       {adviceOptions.map(([key, label]) => (
 //                         <label
 //                           key={key}
-//                           className={`flex cursor-pointer items-center gap-2 rounded border px-2.5 py-2 text-[10px] font-medium ${
+//                           className={`flex cursor-pointer items-center gap-2 rounded border px-2.5 py-2 text-[12px] font-medium ${
 //                             form.advice[key]
 //                               ? "border-blue-200 bg-blue-50 text-blue-700"
 //                               : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -1816,7 +1816,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={addTherapeutic}
-//                     className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+//                     className="inline-flex h-7 items-center gap-1 rounded border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
 //                   >
 //                     <Plus size={12} />
 //                     Add
@@ -1824,9 +1824,9 @@
 //                 }
 //               >
 //                 <div className="overflow-x-auto">
-//                   <table className="w-full min-w-[650px] border-collapse text-[10px]">
+//                   <table className="w-full min-w-[650px] border-collapse text-[12px]">
 //                     <thead>
-//                       <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-500">
+//                       <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-500">
 //                         <th className="border border-slate-200 px-2 py-2">
 //                           Medication
 //                         </th>
@@ -1869,7 +1869,7 @@
 //                                     event.target.value,
 //                                   )
 //                                 }
-//                                 className="h-8 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+//                                 className="h-8 w-full rounded border border-slate-200 px-2 text-[12px] outline-none focus:border-blue-400"
 //                               />
 //                             </td>
 //                           ))}
@@ -1929,13 +1929,13 @@
 //             {/* =================================================
 //                 MOBILE / BOTTOM SAVE BAR
 //             ================================================== */}
-//             <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur lg:static lg:mt-3 lg:border lg:rounded-md lg:shadow-sm">
+//             <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 p-2 shadow-2xl backdrop-blur lg:static lg:mt-3 lg:border lg:rounded-lg lg:shadow-sm">
 //               <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-1 sm:px-2">
 //                 <div className="hidden min-w-0 sm:block">
-//                   <div className="truncate text-[10px] font-bold text-slate-700">
+//                   <div className="truncate text-[12px] font-bold text-slate-700">
 //                     {selectedType.label}
 //                   </div>
-//                   <div className="truncate text-[9px] text-slate-400">
+//                   <div className="truncate text-[12px] text-slate-400">
 //                     {fullName(patient)} ·{" "}
 //                     {patient.patientNumber || "No patient number"}
 //                     {dirty ? " · Unsaved changes" : ""}
@@ -1947,7 +1947,7 @@
 //                     type="button"
 //                     onClick={safeNavigateBack}
 //                     disabled={saving}
-//                     className="h-9 rounded border border-slate-300 bg-white px-4 text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+//                     className="h-9 rounded border border-slate-300 bg-white px-3 text-[12px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
 //                   >
 //                     Cancel
 //                   </button>
@@ -1955,7 +1955,7 @@
 //                   <button
 //                     type="submit"
 //                     disabled={saving}
-//                     className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-4 text-[10px] font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
+//                     className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-3 text-[12px] font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
 //                   >
 //                     {saving ? (
 //                       <Loader2 size={13} className="animate-spin" />
@@ -1980,9 +1980,9 @@
 
 // function PatientHeader({ patient, age, previousConsultations }) {
 //   return (
-//     <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 lg:px-7">
+//     <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-3 lg:px-4">
 //       <div className="grid items-center gap-0 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
-//         <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
+//         <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-3">
 //           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
 //             <UserRound size={22} />
 //           </div>
@@ -1991,7 +1991,7 @@
 //             <div className="truncate text-sm font-bold text-slate-900 sm:text-base">
 //               {fullName(patient) || "Unnamed Patient"}
 //             </div>
-//             <div className="mt-0.5 text-[10px] font-medium text-slate-500">
+//             <div className="mt-0.5 text-[12px] font-medium text-slate-500">
 //               {patient.patientNumber || "Patient"}
 //             </div>
 //           </div>
@@ -2039,10 +2039,10 @@
 // function PatientMini({ label, value }) {
 //   return (
 //     <div className="border-b border-slate-100 px-3 py-2.5 lg:border-b-0 lg:border-r last:lg:border-r-0">
-//       <div className="text-[8px] font-bold uppercase tracking-wider text-slate-400">
+//       <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
 //         {label}
 //       </div>
-//       <div className="mt-1 truncate text-[10px] font-semibold text-slate-700">
+//       <div className="mt-1 truncate text-[12px] font-semibold text-slate-700">
 //         {value || "—"}
 //       </div>
 //     </div>
@@ -2055,9 +2055,9 @@
 
 // function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
 //   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-//       <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-//         <div className="mb-4 flex items-center justify-between">
+//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-3 backdrop-blur-sm">
+//       <div className="w-full max-w-2xl rounded-xl bg-white p-3 shadow-xl">
+//         <div className="mb-3 flex items-center justify-between">
 //           <h2 className="text-lg font-bold text-slate-900">
 //             Select Consultation Type
 //           </h2>
@@ -2090,7 +2090,7 @@
 //                 }`}
 //               >
 //                 <div
-//                   className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
+//                   className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
 //                     isSelected
 //                       ? "bg-blue-600 text-white"
 //                       : "bg-slate-100 text-slate-600"
@@ -2119,12 +2119,12 @@
 
 // function ClinicalPanel({ number, title, icon: Icon, action, children }) {
 //   return (
-//     <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+//     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 //       <div className="flex min-h-[34px] items-center justify-between gap-2 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3">
 //         <div className="flex items-center gap-2">
-//           <span className="text-[10px] font-bold text-blue-700">{number}.</span>
+//           <span className="text-[12px] font-bold text-blue-700">{number}.</span>
 //           <Icon size={13} className="text-blue-600" />
-//           <h2 className="text-[11px] font-bold text-blue-700">{title}</h2>
+//           <h2 className="text-[12px] font-bold text-blue-700">{title}</h2>
 //         </div>
 
 //         {action}
@@ -2192,7 +2192,7 @@
 //             key={value}
 //             type="button"
 //             onClick={() => setActive(value)}
-//             className={`h-8 rounded border text-[10px] font-bold transition ${
+//             className={`h-8 rounded border text-[12px] font-bold transition ${
 //               active === value
 //                 ? "border-blue-600 bg-blue-600 text-white"
 //                 : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -2212,10 +2212,10 @@
 //                 className="overflow-hidden rounded border border-blue-100 bg-white"
 //               >
 //                 <div className="flex items-center justify-between border-b border-blue-100 bg-blue-50 px-2.5 py-1.5">
-//                   <div className="text-[10px] font-bold text-blue-700">
+//                   <div className="text-[12px] font-bold text-blue-700">
 //                     Subjective Refraction {index + 1}
 //                   </div>
-//                   <span className="text-[9px] font-medium text-slate-500">
+//                   <span className="text-[12px] font-medium text-slate-500">
 //                     Trial {index + 1}
 //                   </span>
 //                 </div>
@@ -2277,9 +2277,9 @@
 //   ];
 
 //   return (
-//     <table className="w-full min-w-[760px] border-collapse text-[10px]">
+//     <table className="w-full min-w-[760px] border-collapse text-[12px]">
 //       <thead>
-//         <tr className="bg-slate-50 text-left text-[9px] font-bold text-slate-600">
+//         <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-600">
 //           <th className="w-20 border border-slate-200 px-2 py-2">Eye</th>
 //           {fields.map(([, label]) => (
 //             <th
@@ -2298,7 +2298,7 @@
 //           ["left", "Left (OS)"],
 //         ].map(([eye, label]) => (
 //           <tr key={eye}>
-//             <th className="border border-slate-200 bg-white px-2 py-1.5 text-left text-[10px] font-semibold text-slate-700">
+//             <th className="border border-slate-200 bg-white px-2 py-1.5 text-left text-[12px] font-semibold text-slate-700">
 //               {label}
 //             </th>
 
@@ -2307,7 +2307,7 @@
 //                 <input
 //                   value={data?.[eye]?.[field] || ""}
 //                   onChange={(event) => onChange(eye, field, event.target.value)}
-//                   className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-center text-[10px] outline-none focus:border-blue-400"
+//                   className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-center text-[12px] outline-none focus:border-blue-400"
 //                 />
 //               </td>
 //             ))}
@@ -2335,16 +2335,16 @@
 
 //   return (
 //     <div className="overflow-x-auto">
-//       <table className="w-full min-w-[580px] border-collapse text-[10px]">
+//       <table className="w-full min-w-[580px] border-collapse text-[12px]">
 //         <thead>
 //           <tr className="bg-slate-50">
-//             <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[9px] font-bold text-slate-600">
+//             <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[12px] font-bold text-slate-600">
 //               Parameter
 //             </th>
-//             <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+//             <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
 //               Right (OD)
 //             </th>
-//             <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+//             <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
 //               Left (OS)
 //             </th>
 //           </tr>
@@ -2364,7 +2364,7 @@
 //                     onChange={(event) =>
 //                       onChange(eye, field, event.target.value)
 //                     }
-//                     className="h-7 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+//                     className="h-7 w-full rounded border border-slate-200 px-2 text-[12px] outline-none focus:border-blue-400"
 //                   />
 //                 </td>
 //               ))}
@@ -2392,16 +2392,16 @@
 
 //   return (
 //     <div className="overflow-x-auto">
-//       <table className="w-full min-w-[580px] border-collapse text-[10px]">
+//       <table className="w-full min-w-[580px] border-collapse text-[12px]">
 //         <thead>
 //           <tr className="bg-slate-50">
-//             <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[9px] font-bold text-slate-600">
+//             <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[12px] font-bold text-slate-600">
 //               Parameter
 //             </th>
-//             <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+//             <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
 //               Right (OD)
 //             </th>
-//             <th className="border border-slate-200 px-2 py-2 text-center text-[9px] font-bold text-slate-600">
+//             <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
 //               Left (OS)
 //             </th>
 //           </tr>
@@ -2421,7 +2421,7 @@
 //                     onChange={(event) =>
 //                       onChange(eye, field, event.target.value)
 //                     }
-//                     className="h-7 w-full rounded border border-slate-200 px-2 text-[10px] outline-none focus:border-blue-400"
+//                     className="h-7 w-full rounded border border-slate-200 px-2 text-[12px] outline-none focus:border-blue-400"
 //                   />
 //                 </td>
 //               ))}
@@ -2449,17 +2449,17 @@
 //   onCreateBill,
 // }) {
 //   return (
-//     <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+//     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 //       <div className="flex min-h-[34px] items-center justify-between border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3">
 //         <div className="flex items-center gap-2">
-//           <span className="text-[10px] font-bold text-blue-700">09.</span>
+//           <span className="text-[12px] font-bold text-blue-700">09.</span>
 //           <Glasses size={13} className="text-blue-600" />
-//           <h2 className="text-[11px] font-bold text-blue-700">
+//           <h2 className="text-[12px] font-bold text-blue-700">
 //             Dispensing (Spectacles)
 //           </h2>
 //         </div>
 
-//         <label className="flex items-center gap-2 text-[9px] font-semibold text-slate-600">
+//         <label className="flex items-center gap-2 text-[12px] font-semibold text-slate-600">
 //           <input
 //             type="checkbox"
 //             checked={form.dispensing.spectacleRequired}
@@ -2557,7 +2557,7 @@
 
 //         {/* LENS ORDER TABLE */}
 //         <div className="mt-3 overflow-x-auto rounded border border-slate-200">
-//           <table className="w-full min-w-[1350px] border-collapse text-[9px]">
+//           <table className="w-full min-w-[1350px] border-collapse text-[12px]">
 //             <thead>
 //               <tr className="bg-slate-50 text-center font-bold text-slate-600">
 //                 <th className="border border-slate-200 px-2 py-2">Eye</th>
@@ -2610,7 +2610,7 @@
 //                       onChange={(event) =>
 //                         updateLens(index, "lensCode", event.target.value)
 //                       }
-//                       className="h-8 w-full rounded border border-slate-200 bg-white px-1.5 text-[9px] outline-none focus:border-blue-400"
+//                       className="h-8 w-full rounded border border-slate-200 bg-white px-1.5 text-[12px] outline-none focus:border-blue-400"
 //                     >
 //                       <option value="">Select</option>
 //                       <option value="SVTRAN">SVTRAN</option>
@@ -2627,7 +2627,7 @@
 //                       onChange={(event) =>
 //                         updateLens(index, "lensDescription", event.target.value)
 //                       }
-//                       className="h-8 w-full rounded border border-slate-200 px-2 text-[9px] text-blue-600 outline-none focus:border-blue-400"
+//                       className="h-8 w-full rounded border border-slate-200 px-2 text-[12px] text-blue-600 outline-none focus:border-blue-400"
 //                       placeholder="Lens description"
 //                     />
 //                   </td>
@@ -2648,7 +2648,7 @@
 //                           updateLens(index, field, event.target.value)
 //                         }
 //                         placeholder={placeholder}
-//                         className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[9px] outline-none focus:border-blue-400"
+//                         className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[12px] outline-none focus:border-blue-400"
 //                       />
 //                     </td>
 //                   ))}
@@ -2660,7 +2660,7 @@
 //                         updateLens(index, "lensSupplier", event.target.value)
 //                       }
 //                       placeholder="ESS"
-//                       className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[9px] outline-none focus:border-blue-400"
+//                       className="h-8 w-full rounded border border-slate-200 px-1.5 text-center text-[12px] outline-none focus:border-blue-400"
 //                     />
 //                   </td>
 
@@ -2675,13 +2675,13 @@
 //                           event.target.value,
 //                         )
 //                       }
-//                       className="h-8 w-full rounded border border-slate-200 px-1.5 text-[9px] outline-none focus:border-blue-400"
+//                       className="h-8 w-full rounded border border-slate-200 px-1.5 text-[12px] outline-none focus:border-blue-400"
 //                     />
 //                   </td>
 
 //                   <td className="border border-slate-200 p-1">
 //                     <div className="relative">
-//                       <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-slate-400">
+//                       <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">
 //                         ₹
 //                       </span>
 //                       <input
@@ -2691,7 +2691,7 @@
 //                         onChange={(event) =>
 //                           updateLens(index, "lensPrice", event.target.value)
 //                         }
-//                         className="h-8 w-full rounded border border-slate-200 pl-5 pr-1.5 text-right text-[9px] outline-none focus:border-blue-400"
+//                         className="h-8 w-full rounded border border-slate-200 pl-4 pr-1.5 text-right text-[12px] outline-none focus:border-blue-400"
 //                       />
 //                     </div>
 //                   </td>
@@ -2715,7 +2715,7 @@
 //           <button
 //             type="button"
 //             onClick={addLens}
-//             className="inline-flex h-8 items-center gap-1.5 rounded border border-blue-200 bg-white px-3 text-[9px] font-bold text-blue-600 hover:bg-blue-50"
+//             className="inline-flex h-8 items-center gap-1.5 rounded border border-blue-200 bg-white px-3 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
 //           >
 //             <Plus size={12} />
 //             Add Lens Row
@@ -2726,7 +2726,7 @@
 //             <MoneySummary label="Lenses" value={lensTotal} />
 //             <MoneySummary label="Total" value={grandTotal} emphasized />
 //             <div className="rounded border border-slate-200 bg-slate-50 px-3 py-1.5">
-//               <div className="text-[8px] font-bold uppercase text-slate-400">
+//               <div className="text-[12px] font-bold uppercase text-slate-400">
 //                 GST
 //               </div>
 //               <input
@@ -2735,7 +2735,7 @@
 //                   updateNested("dispensing", "gst", event.target.value)
 //                 }
 //                 placeholder="GST"
-//                 className="mt-0.5 h-6 w-full bg-transparent text-right text-[10px] font-bold outline-none"
+//                 className="mt-0.5 h-6 w-full bg-transparent text-right text-[12px] font-bold outline-none"
 //               />
 //             </div>
 //           </div>
@@ -2751,7 +2751,7 @@
 //           <button
 //             type="button"
 //             onClick={onCreateBill}
-//             className="mt-4 inline-flex h-8 items-center gap-1.5 rounded border border-slate-300 bg-white px-4 text-[9px] font-bold text-slate-700 hover:bg-slate-50"
+//             className="mt-3 inline-flex h-8 items-center gap-1.5 rounded border border-slate-300 bg-white px-3 text-[12px] font-bold text-slate-700 hover:bg-slate-50"
 //           >
 //             Create Bill
 //           </button>
@@ -2770,11 +2770,11 @@
 //           : "border-slate-200 bg-slate-50"
 //       }`}
 //     >
-//       <div className="text-[8px] font-bold uppercase text-slate-400">
+//       <div className="text-[12px] font-bold uppercase text-slate-400">
 //         {label}
 //       </div>
 //       <div
-//         className={`mt-0.5 text-right text-[11px] font-bold ${
+//         className={`mt-0.5 text-right text-[12px] font-bold ${
 //           emphasized ? "text-blue-700" : "text-slate-700"
 //         }`}
 //       >
@@ -2787,11 +2787,11 @@
 // function MoneyInput({ label, value, onChange }) {
 //   return (
 //     <label className="block">
-//       <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
+//       <span className="mb-1 block text-[12px] font-bold uppercase tracking-wide text-slate-400">
 //         {label}
 //       </span>
 //       <div className="relative">
-//         <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">
+//         <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">
 //           ₹
 //         </span>
 //         <input
@@ -2799,7 +2799,7 @@
 //           min="0"
 //           value={value || ""}
 //           onChange={(event) => onChange(event.target.value)}
-//           className="h-8 w-full rounded border border-slate-200 bg-white pl-6 pr-2 text-[10px] outline-none focus:border-blue-400"
+//           className="h-8 w-full rounded border border-slate-200 bg-white pl-4 pr-2 text-[12px] outline-none focus:border-blue-400"
 //         />
 //       </div>
 //     </label>
@@ -2845,9 +2845,9 @@
 //   };
 
 //   return (
-//     <div className="space-y-6">
-//       <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-//         <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+//     <div className="space-y-3">
+//       <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
+//         <div className="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
 //           <div className="flex items-center gap-2">
 //             <Glasses className="text-blue-600" size={20} />
 //             <h2 className="text-base font-bold text-slate-900 sm:text-lg">
@@ -2888,13 +2888,13 @@
 //         </div>
 
 //         {/* 1. CLINICAL HISTORY & BASELINE WEAR */}
-//         <div className="mb-6 rounded-md border border-slate-200 bg-slate-50/50 p-4">
+//         <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
 //           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
 //             1. Clinical History & Baseline Wear
 //           </h3>
-//           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+//           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Primary Indication
 //               </label>
 //               <select
@@ -2911,7 +2911,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Previous Lens Type / Material
 //               </label>
 //               <input
@@ -2924,7 +2924,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Wear Schedule / Replacement
 //               </label>
 //               <input
@@ -2937,7 +2937,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Current Care Solution
 //               </label>
 //               <input
@@ -2950,7 +2950,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Wear Time (hrs/day)
 //               </label>
 //               <input
@@ -2963,7 +2963,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Comfort OD (0-10)
 //               </label>
 //               <input
@@ -2978,7 +2978,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">
 //                 Comfort OS (0-10)
 //               </label>
 //               <input
@@ -3002,8 +3002,8 @@
 //           const badgeColor = isRight ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700";
 
 //           return (
-//             <div key={eyeKey} className="mb-6 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
-//               <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2">
+//             <div key={eyeKey} className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+//               <div className="mb-3 flex items-center justify-between border-b border-slate-200 pb-2">
 //                 <h3 className="text-sm font-bold text-slate-900">{label}</h3>
 //                 <span className={`rounded px-2 py-0.5 text-xs font-bold ${badgeColor}`}>
 //                   {isRight ? "OD" : "OS"}
@@ -3011,9 +3011,9 @@
 //               </div>
 
 //               {/* LENS TYPE SELECTOR FOR THIS EYE */}
-//               <div className="mb-4 grid gap-4 sm:grid-cols-3">
+//               <div className="mb-3 grid gap-3 sm:grid-cols-3">
 //                 <div>
-//                   <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-600">
+//                   <label className="mb-1 block text-[12px] font-bold uppercase tracking-wider text-slate-600">
 //                     Lens Category
 //                   </label>
 //                   <select
@@ -3029,13 +3029,13 @@
 //               </div>
 
 //               {/* TOPOGRAPHY / KERATOMETRY & OCULAR SURFACE */}
-//               <div className="mb-4 rounded bg-slate-50 p-3">
+//               <div className="mb-3 rounded bg-slate-50 p-3">
 //                 <h4 className="mb-2 text-xs font-bold text-slate-700">
 //                   Corneal Topography / Keratometry & Anterior Segment
 //                 </h4>
 //                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Flat K / Steep K</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Flat K / Steep K</label>
 //                     <div className="flex gap-1">
 //                       <input
 //                         type="text"
@@ -3055,7 +3055,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">K Axis / Ectasia Type</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">K Axis / Ectasia Type</label>
 //                     <div className="flex gap-1">
 //                       <input
 //                         type="text"
@@ -3075,7 +3075,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">HVID / Pupil Size</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">HVID / Pupil Size</label>
 //                     <div className="flex gap-1">
 //                       <input
 //                         type="text"
@@ -3095,7 +3095,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Tear Film / TBUT (sec)</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Tear Film / TBUT (sec)</label>
 //                     <input
 //                       type="text"
 //                       placeholder="TBUT sec"
@@ -3106,7 +3106,7 @@
 //                   </div>
 
 //                   <div className="lg:col-span-2">
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Cornea & Conjunctiva Health</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Cornea & Conjunctiva Health</label>
 //                     <input
 //                       type="text"
 //                       placeholder="Staining, scars, neovascularization, hyperemia..."
@@ -3117,7 +3117,7 @@
 //                   </div>
 
 //                   <div className="lg:col-span-2">
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Lids & Lashes (MGD/Bleph)</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Lids & Lashes (MGD/Bleph)</label>
 //                     <input
 //                       type="text"
 //                       placeholder="Lid margin, meibomian glands..."
@@ -3130,11 +3130,11 @@
 //               </div>
 
 //               {/* TRIAL LENS PARAMETERS */}
-//               <div className="mb-4 rounded border border-slate-200 p-3">
+//               <div className="mb-3 rounded border border-slate-200 p-3">
 //                 <h4 className="mb-2 text-xs font-bold text-slate-700">Trial Lens Parameters</h4>
 //                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Brand / Material / Dk</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Brand / Material / Dk</label>
 //                     <input
 //                       type="text"
 //                       placeholder="e.g. Zenlens / Boston XO2"
@@ -3145,7 +3145,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Base Curve (BC) / Sag Depth</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Base Curve (BC) / Sag Depth</label>
 //                     <input
 //                       type="text"
 //                       placeholder="e.g. 8.6 mm / 4200 μm"
@@ -3156,7 +3156,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Overall Diameter (OAD)</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Overall Diameter (OAD)</label>
 //                     <input
 //                       type="text"
 //                       placeholder="e.g. 14.2 / 16.5 mm"
@@ -3167,7 +3167,7 @@
 //                   </div>
 
 //                   <div>
-//                     <label className="mb-1 block text-[10px] font-medium text-slate-600">Power (Sph / Cyl / Axis)</label>
+//                     <label className="mb-1 block text-[12px] font-medium text-slate-600">Power (Sph / Cyl / Axis)</label>
 //                     <div className="flex gap-1">
 //                       <input
 //                         type="text"
@@ -3196,7 +3196,7 @@
 //               </div>
 
 //               {/* DYNAMIC FIT EVALUATION */}
-//               <div className="mb-4 rounded border border-blue-100 bg-blue-50/30 p-3">
+//               <div className="mb-3 rounded border border-blue-100 bg-blue-50/30 p-3">
 //                 <h4 className="mb-2 text-xs font-bold text-blue-900">
 //                   Fitting Assessment ({eyeData.lensCategory.toUpperCase()})
 //                 </h4>
@@ -3204,7 +3204,7 @@
 //                 {eyeData.lensCategory === "soft" && (
 //                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Centration</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Centration</label>
 //                       <select
 //                         value={eyeData.softCentration}
 //                         onChange={(e) => updateEye(eyeKey, "softCentration", e.target.value)}
@@ -3216,7 +3216,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Movement with Blink</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Movement with Blink</label>
 //                       <select
 //                         value={eyeData.softMovement}
 //                         onChange={(e) => updateEye(eyeKey, "softMovement", e.target.value)}
@@ -3229,7 +3229,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Push-Up Test</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Push-Up Test</label>
 //                       <select
 //                         value={eyeData.softPushUp}
 //                         onChange={(e) => updateEye(eyeKey, "softPushUp", e.target.value)}
@@ -3242,7 +3242,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Lag</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Lag</label>
 //                       <select
 //                         value={eyeData.softLag}
 //                         onChange={(e) => updateEye(eyeKey, "softLag", e.target.value)}
@@ -3259,7 +3259,7 @@
 //                 {eyeData.lensCategory === "rgp" && (
 //                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Fluorescein Pattern (Apical)</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Fluorescein Pattern (Apical)</label>
 //                       <select
 //                         value={eyeData.rgpApicalPattern}
 //                         onChange={(e) => updateEye(eyeKey, "rgpApicalPattern", e.target.value)}
@@ -3272,7 +3272,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Edge Lift / Clearance</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Edge Lift / Clearance</label>
 //                       <select
 //                         value={eyeData.rgpEdgeLift}
 //                         onChange={(e) => updateEye(eyeKey, "rgpEdgeLift", e.target.value)}
@@ -3285,7 +3285,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Centration & Dynamic Movement</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Centration & Dynamic Movement</label>
 //                       <select
 //                         value={eyeData.rgpCentration}
 //                         onChange={(e) => updateEye(eyeKey, "rgpCentration", e.target.value)}
@@ -3302,7 +3302,7 @@
 //                 {eyeData.lensCategory === "scleral" && (
 //                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Central Vault Clearance (μm)</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Central Vault Clearance (μm)</label>
 //                       <div className="flex gap-1">
 //                         <input
 //                           type="text"
@@ -3322,7 +3322,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Limbal Clearance</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Limbal Clearance</label>
 //                       <select
 //                         value={eyeData.scleralLimbalClearance}
 //                         onChange={(e) => updateEye(eyeKey, "scleralLimbalClearance", e.target.value)}
@@ -3335,7 +3335,7 @@
 //                     </div>
 
 //                     <div>
-//                       <label className="mb-1 block text-[10px] font-medium text-slate-600">Landing Zone Alignment</label>
+//                       <label className="mb-1 block text-[12px] font-medium text-slate-600">Landing Zone Alignment</label>
 //                       <select
 //                         value={eyeData.scleralLandingZone}
 //                         onChange={(e) => updateEye(eyeKey, "scleralLandingZone", e.target.value)}
@@ -3354,7 +3354,7 @@
 //               {/* OVER-REFRACTION & FINAL VA */}
 //               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //                 <div>
-//                   <label className="mb-1 block text-[10px] font-medium text-slate-600">Over-Refraction Sph</label>
+//                   <label className="mb-1 block text-[12px] font-medium text-slate-600">Over-Refraction Sph</label>
 //                   <input
 //                     type="text"
 //                     placeholder="e.g. +0.50"
@@ -3365,7 +3365,7 @@
 //                 </div>
 
 //                 <div>
-//                   <label className="mb-1 block text-[10px] font-medium text-slate-600">Over-Refraction Cyl / Axis</label>
+//                   <label className="mb-1 block text-[12px] font-medium text-slate-600">Over-Refraction Cyl / Axis</label>
 //                   <div className="flex gap-1">
 //                     <input
 //                       type="text"
@@ -3385,7 +3385,7 @@
 //                 </div>
 
 //                 <div>
-//                   <label className="mb-1 block text-[10px] font-medium text-slate-600">Final Aided VA</label>
+//                   <label className="mb-1 block text-[12px] font-medium text-slate-600">Final Aided VA</label>
 //                   <input
 //                     type="text"
 //                     placeholder="e.g. 6/6 (20/20)"
@@ -3400,14 +3400,14 @@
 //         })}
 
 //         {/* FINAL ORDER & INSTRUCTIONS */}
-//         <div className="rounded-md border border-slate-200 bg-slate-50/50 p-4">
+//         <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
 //           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
 //             5. Final Order Parameters & Patient Instructions
 //           </h3>
 
-//           <div className="grid gap-4 sm:grid-cols-2">
+//           <div className="grid gap-3 sm:grid-cols-2">
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">Final Lens Order Parameters (OD)</label>
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">Final Lens Order Parameters (OD)</label>
 //               <textarea
 //                 rows={2}
 //                 placeholder="OD BC, Dia, Power, Sag, Toricity..."
@@ -3418,7 +3418,7 @@
 //             </div>
 
 //             <div>
-//               <label className="mb-1 block text-[11px] font-semibold text-slate-600">Final Lens Order Parameters (OS)</label>
+//               <label className="mb-1 block text-[12px] font-semibold text-slate-600">Final Lens Order Parameters (OS)</label>
 //               <textarea
 //                 rows={2}
 //                 placeholder="OS BC, Dia, Power, Sag, Toricity..."
@@ -3429,7 +3429,7 @@
 //             </div>
 //           </div>
 
-//           <div className="mt-4 grid gap-3 sm:grid-cols-3">
+//           <div className="mt-3 grid gap-3 sm:grid-cols-3">
 //             <label className="flex items-center gap-2 text-xs font-medium text-slate-700">
 //               <input
 //                 type="checkbox"
@@ -3484,11 +3484,11 @@
 //   const Icon = item.icon;
 
 //   return (
-//     <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+//     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 //       <div className="flex items-center gap-2 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3 py-2.5">
 //         <Icon size={14} className="text-blue-600" />
 //         <div>
-//           <div className="text-[8px] font-bold uppercase tracking-wider text-blue-600">
+//           <div className="text-[12px] font-bold uppercase tracking-wider text-blue-600">
 //             Consultation Type
 //           </div>
 //           <h2 className="text-[12px] font-bold text-blue-700">{item.label}</h2>
@@ -3506,8 +3506,8 @@
 //         )}
 
 //         {type === "binocular_vision" && (
-//           <div className="space-y-5">
-//             <div className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-[10px] leading-5 text-blue-800">
+//           <div className="space-y-3">
+//             <div className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-[12px] leading-5 text-blue-800">
 //               <strong>Binocular Vision Evaluation.</strong> Record the dedicated
 //               binocular, accommodative and vergence assessment for this
 //               consultation.
@@ -3774,7 +3774,7 @@
 //               icon={Eye}
 //             >
 //               <div className="overflow-x-auto rounded border border-slate-200">
-//                 <table className="w-full min-w-[720px] border-collapse text-[10px]">
+//                 <table className="w-full min-w-[720px] border-collapse text-[12px]">
 //                   <thead className="bg-slate-50 text-left font-bold text-slate-500">
 //                     <tr>
 //                       <th className="border border-slate-200 p-2">Type</th>
@@ -3997,7 +3997,7 @@
 //             <ClinicalPanel number="10" title="Final Glass Rx" icon={Glasses}>
 //               <div className="grid gap-3 md:grid-cols-2">
 //                 <div className="rounded border border-slate-200 p-3">
-//                   <div className="mb-2 text-[9px] font-bold uppercase text-slate-400">
+//                   <div className="mb-2 text-[12px] font-bold uppercase text-slate-400">
 //                     OD
 //                   </div>
 //                   <div className="grid grid-cols-2 gap-2">
@@ -4020,7 +4020,7 @@
 //                   </div>
 //                 </div>
 //                 <div className="rounded border border-slate-200 p-3">
-//                   <div className="mb-2 text-[9px] font-bold uppercase text-slate-400">
+//                   <div className="mb-2 text-[12px] font-bold uppercase text-slate-400">
 //                     OS
 //                   </div>
 //                   <div className="grid grid-cols-2 gap-2">
@@ -4203,13 +4203,13 @@
 
 //   const renderTable = (title, farField, nearField) => (
 //     <div className="min-w-0 overflow-hidden rounded border border-slate-200">
-//       <div className="border-b border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-slate-600">
+//       <div className="border-b border-slate-200 bg-slate-50 px-3 py-2 text-[12px] font-bold uppercase tracking-wide text-slate-600">
 //         {title}
 //       </div>
 //       <div className="overflow-x-auto">
-//         <table className="w-full min-w-[340px] border-collapse text-[10px]">
+//         <table className="w-full min-w-[340px] border-collapse text-[12px]">
 //           <thead>
-//             <tr className="bg-white text-left text-[9px] font-bold text-slate-500">
+//             <tr className="bg-white text-left text-[12px] font-bold text-slate-500">
 //               <th className="w-[42%] border-b border-r border-slate-200 px-3 py-2">Eye</th>
 //               <th className="border-b border-r border-slate-200 px-2 py-2">Far</th>
 //               <th className="border-b border-slate-200 px-2 py-2">Near</th>
@@ -4229,7 +4229,7 @@
 //                       onChange={(event) => onChange(eye.key, farField, event.target.value)}
 //                       aria-label={`${title} ${eye.label} far visual acuity`}
 //                       placeholder="e.g. 6/6"
-//                       className="h-8 w-full min-w-0 rounded border border-slate-200 bg-white px-2 text-[10px] outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+//                       className="h-8 w-full min-w-0 rounded border border-slate-200 bg-white px-2 text-[12px] outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
 //                     />
 //                   </td>
 //                   <td className="border-b border-slate-200 p-1.5">
@@ -4238,7 +4238,7 @@
 //                       onChange={(event) => onChange(eye.key, nearField, event.target.value)}
 //                       aria-label={`${title} ${eye.label} near visual acuity`}
 //                       placeholder="e.g. N6"
-//                       className="h-8 w-full min-w-0 rounded border border-slate-200 bg-white px-2 text-[10px] outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+//                       className="h-8 w-full min-w-0 rounded border border-slate-200 bg-white px-2 text-[12px] outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
 //                     />
 //                   </td>
 //                 </tr>
@@ -4270,7 +4270,7 @@
 // function Input({ label, value, onChange, placeholder = "", type = "text" }) {
 //   return (
 //     <label className="block min-w-0">
-//       <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
+//       <span className="mb-1 block text-[12px] font-bold uppercase tracking-wide text-slate-400">
 //         {label}
 //       </span>
 
@@ -4279,7 +4279,7 @@
 //         value={value || ""}
 //         onChange={(event) => onChange(event.target.value)}
 //         placeholder={placeholder}
-//         className="h-8 w-full rounded border border-slate-200 bg-white px-2.5 text-[10px] text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+//         className="h-8 w-full rounded border border-slate-200 bg-white px-2.5 text-[12px] text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
 //       />
 //     </label>
 //   );
@@ -4288,7 +4288,7 @@
 // function TextArea({ label, value, onChange, placeholder = "", rows = 4 }) {
 //   return (
 //     <label className="block min-w-0">
-//       <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
+//       <span className="mb-1 block text-[12px] font-bold uppercase tracking-wide text-slate-400">
 //         {label}
 //       </span>
 
@@ -4297,7 +4297,7 @@
 //         value={value || ""}
 //         onChange={(event) => onChange(event.target.value)}
 //         placeholder={placeholder}
-//         className="w-full resize-y rounded border border-slate-200 bg-white px-2.5 py-2 text-[10px] leading-5 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+//         className="w-full resize-y rounded border border-slate-200 bg-white px-2.5 py-2 text-[12px] leading-5 text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
 //       />
 //     </label>
 //   );
@@ -4306,14 +4306,14 @@
 // function Select({ label, value, onChange, options = [] }) {
 //   return (
 //     <label className="block min-w-0">
-//       <span className="mb-1 block text-[8px] font-bold uppercase tracking-wide text-slate-400">
+//       <span className="mb-1 block text-[12px] font-bold uppercase tracking-wide text-slate-400">
 //         {label}
 //       </span>
 
 //       <select
 //         value={value || ""}
 //         onChange={(event) => onChange(event.target.value)}
-//         className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[10px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+//         className="h-8 w-full rounded border border-slate-200 bg-white px-2 text-[12px] text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
 //       >
 //         <option value="">Select...</option>
 //         {options.map((option) => (
@@ -5591,7 +5591,7 @@ export default function ConsultationPage() {
   if (loadingPatient) {
     return (
       <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
-        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
           <Loader2 size={18} className="animate-spin text-blue-600" />
           Loading patient record...
         </div>
@@ -5601,8 +5601,8 @@ export default function ConsultationPage() {
 
   if (!patient) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-16">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+      <div className="mx-auto max-w-3xl px-3 py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error || "Patient record not found."}
         </div>
       </div>
@@ -5610,16 +5610,16 @@ export default function ConsultationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f8fc] text-slate-800">
+    <div className="min-h-screen bg-transparent text-slate-800">
       <div className="mx-auto w-full max-w-[1600px]">
         {/* =====================================================
             TOP TOOLBAR
         ====================================================== */}
         <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
-          <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
+          <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-3 lg:px-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+                <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-blue-600">
                   Clinical workspace
                 </div>
                 <h1 className="truncate text-lg font-bold leading-tight text-slate-900 sm:text-xl">
@@ -5652,7 +5652,7 @@ export default function ConsultationPage() {
                 type="submit"
                 form="consultation-form"
                 disabled={!consultationStarted || saving}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-3"
               >
                 {saving ? (
                   <Loader2 size={14} className="animate-spin" />
@@ -5671,9 +5671,9 @@ export default function ConsultationPage() {
             ALERTS
         ====================================================== */}
         {(error || success || billingMessage) && (
-          <div className="px-3 pt-3 sm:px-5 lg:px-7">
+          <div className="px-3 pt-3 sm:px-3 lg:px-4">
             {error && (
-              <div className="flex items-start justify-between gap-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+              <div className="flex items-start justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
                 <span>{error}</span>
                 <button
                   type="button"
@@ -5732,7 +5732,7 @@ export default function ConsultationPage() {
           <form
             id="consultation-form"
             onSubmit={handleSave}
-            className="px-3 pb-28 pt-3 sm:px-5 lg:px-7"
+            className="px-3 pb-28 pt-3 sm:px-3 lg:px-4"
           >
             {/* =================================================
                 VISIT CONTROL STRIP
@@ -5740,7 +5740,7 @@ export default function ConsultationPage() {
             <div className="mb-3 rounded-lg border border-slate-200 bg-white shadow-sm">
               <div className="grid items-center gap-0 lg:grid-cols-[1.1fr_1fr_1fr_1fr]">
                 <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
-                  <div className="mb-1 text-[11px] font-bold text-slate-500">
+                  <div className="mb-1 text-[12px] font-bold text-slate-500">
                     Consultation Type <span className="text-red-500">*</span>
                   </div>
 
@@ -5757,7 +5757,7 @@ export default function ConsultationPage() {
 
                 <div className="border-b border-slate-200 px-3 py-2.5 lg:border-b-0 lg:border-r">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="text-[11px] font-bold text-slate-500">
+                    <div className="text-[12px] font-bold text-slate-500">
                       Recall
                     </div>
 
@@ -5766,7 +5766,7 @@ export default function ConsultationPage() {
                       onClick={() =>
                         updateNested("recall", "enabled", !form.recall.enabled)
                       }
-                      className={`rounded-lg px-2 py-1 text-[11px] font-bold ${
+                      className={`rounded-lg px-2 py-1 text-[12px] font-bold ${
                         form.recall.enabled
                           ? "bg-blue-50 text-blue-700"
                           : "border border-slate-200 bg-white text-slate-500"
@@ -5789,7 +5789,7 @@ export default function ConsultationPage() {
                           onChange={(event) =>
                             updateNested("recall", "date", event.target.value)
                           }
-                          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-8 pr-2 text-xs outline-none focus:border-blue-400"
+                          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-6 pr-2 text-xs outline-none focus:border-blue-400"
                         />
                       </div>
 
@@ -5820,7 +5820,7 @@ export default function ConsultationPage() {
                 </div>
 
                 <div className="px-3 py-2.5">
-                  <div className="mb-1 text-[11px] font-bold text-slate-500">
+                  <div className="mb-1 text-[12px] font-bold text-slate-500">
                     Optometrist
                   </div>
                   <div className="flex h-9 items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700">
@@ -5839,7 +5839,7 @@ export default function ConsultationPage() {
                 SHORT CONSULT
             ================================================== */}
             {isShortConsult ? (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-3 lg:grid-cols-2">
                 <ClinicalPanel number="01" title="Open Box" icon={FileText}>
                   <TextArea
                     label="Clinical entry"
@@ -5899,7 +5899,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 1
                 ================================================== */}
-                <div className="grid gap-4 lg:grid-cols-2">
+                <div className="grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="01"
                     title="Symptoms & History"
@@ -5913,7 +5913,7 @@ export default function ConsultationPage() {
                       placeholder="Enter presenting symptoms..."
                     />
 
-                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
                       <TextArea
                         label="Ocular History"
                         value={form.ocularHistory}
@@ -5966,7 +5966,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 2
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel number="03" title="Refraction" icon={Glasses}>
                     <RefractionTabs
                       form={{
@@ -6001,7 +6001,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 3
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="04"
                     title="Binocular / Ocular Motility"
@@ -6014,7 +6014,7 @@ export default function ConsultationPage() {
                     </div>
                     <div className="mt-3 grid gap-2 sm:grid-cols-3">
                       <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-                        <div className="text-[10px] font-bold uppercase text-slate-400">
+                        <div className="text-[12px] font-bold uppercase text-slate-400">
                           Stereopsis
                         </div>
                         <div className="mt-1 text-xs font-semibold text-slate-700">
@@ -6023,7 +6023,7 @@ export default function ConsultationPage() {
                         </div>
                       </div>
                       <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-                        <div className="text-[10px] font-bold uppercase text-slate-400">
+                        <div className="text-[12px] font-bold uppercase text-slate-400">
                           Cover test
                         </div>
                         <div className="mt-1 text-xs font-semibold text-slate-700">
@@ -6032,7 +6032,7 @@ export default function ConsultationPage() {
                         </div>
                       </div>
                       <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-                        <div className="text-[10px] font-bold uppercase text-slate-400">
+                        <div className="text-[12px] font-bold uppercase text-slate-400">
                           CISS
                         </div>
                         <div className="mt-1 text-xs font-semibold text-slate-700">
@@ -6059,7 +6059,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 4
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="05"
                     title="Additional Tests"
@@ -6068,7 +6068,7 @@ export default function ConsultationPage() {
                       <button
                         type="button"
                         onClick={addTest}
-                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[11px] font-bold text-blue-600 hover:bg-blue-50"
+                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
                       >
                         <Plus size={12} />
                         Add Test
@@ -6076,14 +6076,14 @@ export default function ConsultationPage() {
                     }
                   >
                     {form.additionalTests.length === 0 ? (
-                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
                         No additional tests
                       </div>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="w-full min-w-[650px] border-collapse text-xs">
                           <thead>
-                            <tr className="bg-slate-50 text-left text-[11px] font-bold text-slate-500">
+                            <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-500">
                               <th className="border border-slate-200 px-2 py-2">
                                 Test Type
                               </th>
@@ -6171,7 +6171,7 @@ export default function ConsultationPage() {
                       <button
                         type="button"
                         onClick={addDiagnosis}
-                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[11px] font-bold text-blue-600 hover:bg-blue-50"
+                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
                       >
                         <Plus size={12} />
                         Add
@@ -6179,7 +6179,7 @@ export default function ConsultationPage() {
                     }
                   >
                     {form.diagnosis.length === 0 ? (
-                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
                         No diagnosis added
                       </div>
                     ) : (
@@ -6215,7 +6215,7 @@ export default function ConsultationPage() {
                             <button
                               type="button"
                               onClick={() => removeDiagnosis(index)}
-                              className="mt-5 flex h-9 w-8 items-center justify-center rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50"
+                              className="mt-4 flex h-9 w-8 items-center justify-center rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50"
                             >
                               <Trash2 size={13} />
                             </button>
@@ -6225,7 +6225,7 @@ export default function ConsultationPage() {
                     )}
                   </ClinicalPanel>
                 </div>
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="09"
                     title="Advise / Management Plan"
@@ -6274,7 +6274,7 @@ export default function ConsultationPage() {
             {/* =================================================
                 THERAPEUTICS + RECALL
             ================================================== */}
-            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div className="mt-3 grid gap-3 lg:grid-cols-2">
               <ClinicalPanel
                 number="10"
                 title="Therapeutics"
@@ -6283,7 +6283,7 @@ export default function ConsultationPage() {
                   <button
                     type="button"
                     onClick={addTherapeutic}
-                    className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[11px] font-bold text-blue-600 hover:bg-blue-50"
+                    className="inline-flex h-8 items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
                   >
                     <Plus size={12} />
                     Add
@@ -6293,7 +6293,7 @@ export default function ConsultationPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[650px] border-collapse text-xs">
                     <thead>
-                      <tr className="bg-slate-50 text-left text-[11px] font-bold text-slate-500">
+                      <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-500">
                         <th className="border border-slate-200 px-2 py-2">
                           Medication
                         </th>
@@ -6402,7 +6402,7 @@ export default function ConsultationPage() {
                   <div className="truncate text-xs font-bold text-slate-700">
                     {selectedType.label}
                   </div>
-                  <div className="truncate text-[11px] text-slate-400">
+                  <div className="truncate text-[12px] text-slate-400">
                     {fullName(patient)} ·{" "}
                     {patient.patientNumber || "No patient number"}
                     {dirty ? " · Unsaved changes" : ""}
@@ -6414,7 +6414,7 @@ export default function ConsultationPage() {
                     type="button"
                     onClick={safeNavigateBack}
                     disabled={saving}
-                    className="h-9 rounded-lg border border-slate-300 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                    className="h-9 rounded-lg border border-slate-300 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -6422,7 +6422,7 @@ export default function ConsultationPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
                   >
                     {saving ? (
                       <Loader2 size={13} className="animate-spin" />
@@ -6447,9 +6447,9 @@ export default function ConsultationPage() {
 
 function PatientHeader({ patient, age, previousConsultations }) {
   return (
-    <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 lg:px-7">
+    <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-3 lg:px-4">
       <div className="grid items-center gap-0 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
-        <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
+        <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
             <UserRound size={22} />
           </div>
@@ -6506,7 +6506,7 @@ function PatientHeader({ patient, age, previousConsultations }) {
 function PatientMini({ label, value }) {
   return (
     <div className="border-b border-slate-100 px-3 py-2.5 lg:border-b-0 lg:border-r last:lg:border-r-0">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </div>
       <div className="mt-1 truncate text-xs font-semibold text-slate-700">
@@ -6522,9 +6522,9 @@ function PatientMini({ label, value }) {
 
 function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-3 backdrop-blur-sm">
+      <div className="w-full max-w-2xl rounded-xl bg-white p-3 shadow-xl">
+        <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900">
             Select Consultation Type
           </h2>
@@ -6587,9 +6587,9 @@ function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
 function ClinicalPanel({ number, title, icon: Icon, action, children }) {
   return (
     <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-shadow hover:shadow-sm">
-      <header className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
+      <header className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-3 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-blue-50 px-1.5 text-[10px] font-bold text-blue-700 ring-1 ring-blue-100">
+          <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-lg bg-blue-50 px-1.5 text-[12px] font-bold text-blue-700 ring-1 ring-blue-100">
             {number}
           </span>
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-blue-600 ring-1 ring-slate-200">
@@ -6599,7 +6599,7 @@ function ClinicalPanel({ number, title, icon: Icon, action, children }) {
         </div>
         {action && <div className="shrink-0">{action}</div>}
       </header>
-      <div className="space-y-4 p-4 sm:p-5">{children}</div>
+      <div className="space-y-3 p-3 sm:p-3">{children}</div>
     </section>
   );
 }
@@ -6684,7 +6684,7 @@ function RefractionTabs({ form, onChange, onPdChange }) {
                   <div className="text-xs font-bold text-blue-700">
                     Subjective Refraction {index + 1}
                   </div>
-                  <span className="text-[11px] font-medium text-slate-500">
+                  <span className="text-[12px] font-medium text-slate-500">
                     Trial {index + 1}
                   </span>
                 </div>
@@ -6748,7 +6748,7 @@ function RefractionTable({ data, onChange }) {
   return (
     <table className="w-full min-w-[760px] border-collapse text-xs">
       <thead>
-        <tr className="bg-slate-50 text-left text-[11px] font-bold text-slate-600">
+        <tr className="bg-slate-50 text-left text-[12px] font-bold text-slate-600">
           <th className="w-20 border border-slate-200 px-2 py-2">Eye</th>
           {fields.map(([, label]) => (
             <th
@@ -6807,13 +6807,13 @@ function SlitLampTable({ data, onChange }) {
       <table className="w-full min-w-[580px] border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50">
-            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[11px] font-bold text-slate-600">
+            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[12px] font-bold text-slate-600">
               Parameter
             </th>
-            <th className="border border-slate-200 px-2 py-2 text-center text-[11px] font-bold text-slate-600">
+            <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
               Right (OD)
             </th>
-            <th className="border border-slate-200 px-2 py-2 text-center text-[11px] font-bold text-slate-600">
+            <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
               Left (OS)
             </th>
           </tr>
@@ -6864,13 +6864,13 @@ function FundusTable({ data, onChange }) {
       <table className="w-full min-w-[580px] border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50">
-            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[11px] font-bold text-slate-600">
+            <th className="w-32 border border-slate-200 px-2 py-2 text-left text-[12px] font-bold text-slate-600">
               Parameter
             </th>
-            <th className="border border-slate-200 px-2 py-2 text-center text-[11px] font-bold text-slate-600">
+            <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
               Right (OD)
             </th>
-            <th className="border border-slate-200 px-2 py-2 text-center text-[11px] font-bold text-slate-600">
+            <th className="border border-slate-200 px-2 py-2 text-center text-[12px] font-bold text-slate-600">
               Left (OS)
             </th>
           </tr>
@@ -6928,7 +6928,7 @@ function DispensingPanel({
           </h2>
         </div>
 
-        <label className="flex items-center gap-2 text-[11px] font-semibold text-slate-600">
+        <label className="flex items-center gap-2 text-[12px] font-semibold text-slate-600">
           <input
             type="checkbox"
             checked={form.dispensing.spectacleRequired}
@@ -7026,7 +7026,7 @@ function DispensingPanel({
 
         {/* LENS ORDER TABLE */}
         <div className="mt-3 overflow-x-auto rounded-lg border border-slate-200">
-          <table className="w-full min-w-[1350px] border-collapse text-[11px]">
+          <table className="w-full min-w-[1350px] border-collapse text-[12px]">
             <thead>
               <tr className="bg-slate-50 text-center font-bold text-slate-600">
                 <th className="border border-slate-200 px-2 py-2">Eye</th>
@@ -7079,7 +7079,7 @@ function DispensingPanel({
                       onChange={(event) =>
                         updateLens(index, "lensCode", event.target.value)
                       }
-                      className="h-9 w-full rounded-lg border border-slate-200 bg-white px-1.5 text-[11px] outline-none focus:border-blue-400"
+                      className="h-9 w-full rounded-lg border border-slate-200 bg-white px-1.5 text-[12px] outline-none focus:border-blue-400"
                     >
                       <option value="">Select</option>
                       <option value="SVTRAN">SVTRAN</option>
@@ -7096,7 +7096,7 @@ function DispensingPanel({
                       onChange={(event) =>
                         updateLens(index, "lensDescription", event.target.value)
                       }
-                      className="h-9 w-full rounded-lg border border-slate-200 px-2 text-[11px] text-blue-600 outline-none focus:border-blue-400"
+                      className="h-9 w-full rounded-lg border border-slate-200 px-2 text-[12px] text-blue-600 outline-none focus:border-blue-400"
                       placeholder="Lens description"
                     />
                   </td>
@@ -7117,7 +7117,7 @@ function DispensingPanel({
                           updateLens(index, field, event.target.value)
                         }
                         placeholder={placeholder}
-                        className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-center text-[11px] outline-none focus:border-blue-400"
+                        className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-center text-[12px] outline-none focus:border-blue-400"
                       />
                     </td>
                   ))}
@@ -7129,7 +7129,7 @@ function DispensingPanel({
                         updateLens(index, "lensSupplier", event.target.value)
                       }
                       placeholder="ESS"
-                      className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-center text-[11px] outline-none focus:border-blue-400"
+                      className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-center text-[12px] outline-none focus:border-blue-400"
                     />
                   </td>
 
@@ -7144,13 +7144,13 @@ function DispensingPanel({
                           event.target.value,
                         )
                       }
-                      className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-[11px] outline-none focus:border-blue-400"
+                      className="h-9 w-full rounded-lg border border-slate-200 px-1.5 text-[12px] outline-none focus:border-blue-400"
                     />
                   </td>
 
                   <td className="border border-slate-200 p-1">
                     <div className="relative">
-                      <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-slate-400">
+                      <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">
                         ₹
                       </span>
                       <input
@@ -7160,7 +7160,7 @@ function DispensingPanel({
                         onChange={(event) =>
                           updateLens(index, "lensPrice", event.target.value)
                         }
-                        className="h-9 w-full rounded-lg border border-slate-200 pl-5 pr-1.5 text-right text-[11px] outline-none focus:border-blue-400"
+                        className="h-9 w-full rounded-lg border border-slate-200 pl-4 pr-1.5 text-right text-[12px] outline-none focus:border-blue-400"
                       />
                     </div>
                   </td>
@@ -7184,7 +7184,7 @@ function DispensingPanel({
           <button
             type="button"
             onClick={addLens}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-50"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 text-[12px] font-bold text-blue-600 hover:bg-blue-50"
           >
             <Plus size={12} />
             Add Lens Row
@@ -7195,7 +7195,7 @@ function DispensingPanel({
             <MoneySummary label="Lenses" value={lensTotal} />
             <MoneySummary label="Total" value={grandTotal} emphasized />
             <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5">
-              <div className="text-[10px] font-bold uppercase text-slate-400">
+              <div className="text-[12px] font-bold uppercase text-slate-400">
                 GST
               </div>
               <input
@@ -7220,7 +7220,7 @@ function DispensingPanel({
           <button
             type="button"
             onClick={onCreateBill}
-            className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 text-[11px] font-bold text-slate-700 hover:bg-slate-50"
+            className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 text-[12px] font-bold text-slate-700 hover:bg-slate-50"
           >
             Create Bill
           </button>
@@ -7239,7 +7239,7 @@ function MoneySummary({ label, value, emphasized = false }) {
           : "border-slate-200 bg-slate-50"
       }`}
     >
-      <div className="text-[10px] font-bold uppercase text-slate-400">
+      <div className="text-[12px] font-bold uppercase text-slate-400">
         {label}
       </div>
       <div
@@ -7256,7 +7256,7 @@ function MoneySummary({ label, value, emphasized = false }) {
 function MoneyInput({ label, value, onChange }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+      <span className="mb-1 block text-[12px] font-bold uppercase tracking-wide text-slate-400">
         {label}
       </span>
       <div className="relative">
@@ -7268,7 +7268,7 @@ function MoneyInput({ label, value, onChange }) {
           min="0"
           value={value || ""}
           onChange={(event) => onChange(event.target.value)}
-          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-6 pr-2 text-xs outline-none focus:border-blue-400"
+          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-4 pr-2 text-xs outline-none focus:border-blue-400"
         />
       </div>
     </label>
@@ -7314,9 +7314,9 @@ function ContactLensesSection({ contactLenses, onChange }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+    <div className="space-y-3">
+      <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
+        <div className="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <Glasses className="text-blue-600" size={20} />
             <h2 className="text-base font-bold text-slate-900 sm:text-lg">
@@ -7357,11 +7357,11 @@ function ContactLensesSection({ contactLenses, onChange }) {
         </div>
 
         {/* 1. CLINICAL HISTORY & BASELINE WEAR */}
-        <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
             1. Clinical History & Baseline Wear
           </h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label className="mb-1 block text-[13px] font-semibold text-slate-600">
                 Primary Indication
@@ -7471,8 +7471,8 @@ function ContactLensesSection({ contactLenses, onChange }) {
           const badgeColor = isRight ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700";
 
           return (
-            <div key={eyeKey} className="mb-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2">
+            <div key={eyeKey} className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+              <div className="mb-3 flex items-center justify-between border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold text-slate-900">{label}</h3>
                 <span className={`rounded-lg px-2 py-0.5 text-xs font-bold ${badgeColor}`}>
                   {isRight ? "OD" : "OS"}
@@ -7480,7 +7480,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
               </div>
 
               {/* LENS TYPE SELECTOR FOR THIS EYE */}
-              <div className="mb-4 grid gap-4 sm:grid-cols-3">
+              <div className="mb-3 grid gap-3 sm:grid-cols-3">
                 <div>
                   <label className="mb-1 block text-[13px] font-bold uppercase tracking-wider text-slate-600">
                     Lens Category
@@ -7498,7 +7498,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
               </div>
 
               {/* TOPOGRAPHY / KERATOMETRY & OCULAR SURFACE */}
-              <div className="mb-4 rounded-lg bg-slate-50 p-3">
+              <div className="mb-3 rounded-lg bg-slate-50 p-3">
                 <h4 className="mb-2 text-xs font-bold text-slate-700">
                   Corneal Topography / Keratometry & Anterior Segment
                 </h4>
@@ -7599,7 +7599,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
               </div>
 
               {/* TRIAL LENS PARAMETERS */}
-              <div className="mb-4 rounded-lg border border-slate-200 p-3">
+              <div className="mb-3 rounded-lg border border-slate-200 p-3">
                 <h4 className="mb-2 text-xs font-bold text-slate-700">Trial Lens Parameters</h4>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
@@ -7665,7 +7665,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
               </div>
 
               {/* DYNAMIC FIT EVALUATION */}
-              <div className="mb-4 rounded-lg border border-blue-100 bg-blue-50/30 p-3">
+              <div className="mb-3 rounded-lg border border-blue-100 bg-blue-50/30 p-3">
                 <h4 className="mb-2 text-xs font-bold text-blue-900">
                   Fitting Assessment ({eyeData.lensCategory.toUpperCase()})
                 </h4>
@@ -7869,12 +7869,12 @@ function ContactLensesSection({ contactLenses, onChange }) {
         })}
 
         {/* FINAL ORDER & INSTRUCTIONS */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
             5. Final Order Parameters & Patient Instructions
           </h3>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-[13px] font-semibold text-slate-600">Final Lens Order Parameters (OD)</label>
               <textarea
@@ -7898,7 +7898,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="flex items-center gap-2 text-xs font-medium text-slate-700">
               <input
                 type="checkbox"
@@ -7957,7 +7957,7 @@ function SpecializedConsultationSection({
       <div className="flex items-center gap-2 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-[#f4f9ff] px-3 py-2.5">
         <Icon size={14} className="text-blue-600" />
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+          <div className="text-[12px] font-bold uppercase tracking-wider text-blue-600">
             Consultation Type
           </div>
           <h2 className="text-[12px] font-bold text-blue-700">{item.label}</h2>
@@ -7975,7 +7975,7 @@ function SpecializedConsultationSection({
         )}
 
         {type === "binocular_vision" && (
-          <div className="space-y-5">
+          <div className="space-y-3">
             <div className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-xs leading-5 text-blue-800">
               <strong>Binocular Vision Evaluation.</strong> Record the dedicated
               binocular, accommodative and vergence assessment for this
@@ -8466,7 +8466,7 @@ function SpecializedConsultationSection({
             <ClinicalPanel number="10" title="Final Glass Rx" icon={Glasses}>
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border border-slate-200 p-3">
-                  <div className="mb-2 text-[11px] font-bold uppercase text-slate-400">
+                  <div className="mb-2 text-[12px] font-bold uppercase text-slate-400">
                     OD
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -8489,7 +8489,7 @@ function SpecializedConsultationSection({
                   </div>
                 </div>
                 <div className="rounded-lg border border-slate-200 p-3">
-                  <div className="mb-2 text-[11px] font-bold uppercase text-slate-400">
+                  <div className="mb-2 text-[12px] font-bold uppercase text-slate-400">
                     OS
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -8678,7 +8678,7 @@ function VisualAcuityTable({ data = {}, onChange, onNotesChange }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[340px] border-collapse text-xs">
           <thead>
-            <tr className="bg-white text-left text-[11px] font-bold text-slate-500">
+            <tr className="bg-white text-left text-[12px] font-bold text-slate-500">
               <th className="w-[42%] border-b border-r border-slate-200 px-3 py-2">Eye</th>
               <th className="border-b border-r border-slate-200 px-2 py-2">Far</th>
               <th className="border-b border-slate-200 px-2 py-2">Near</th>

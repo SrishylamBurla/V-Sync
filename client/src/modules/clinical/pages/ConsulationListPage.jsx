@@ -407,8 +407,8 @@ export default function ConsultationListPage() {
           PAGE HEADER
       ===================================================== */}
       <div className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto max-w-[1600px] px-3 py-3 sm:px-3 lg:px-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-start gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm">
                 <ClipboardList
@@ -433,7 +433,7 @@ export default function ConsultationListPage() {
               type="button"
               onClick={handleRefresh}
               disabled={loading || refreshing}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {refreshing ? (
                 <Loader2
@@ -453,12 +453,12 @@ export default function ConsultationListPage() {
       {/* =====================================================
           MAIN
       ===================================================== */}
-      <main className="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[1600px] px-3 py-3 sm:px-3 lg:px-4">
         {/* ===================================================
             SEARCH / FILTER BAR
         =================================================== */}
         <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="p-4">
+          <div className="p-3">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
               {/* SEARCH */}
               <div className="relative min-w-0 flex-1">
@@ -483,7 +483,7 @@ export default function ConsultationListPage() {
                     }
                   }}
                   placeholder="Search patient name, patient ID or phone..."
-                  className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                  className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-8 pr-8 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                 />
 
                 {searchInput && (
@@ -503,7 +503,7 @@ export default function ConsultationListPage() {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white transition hover:bg-slate-800"
               >
                 <Search size={16} />
                 Search
@@ -517,7 +517,7 @@ export default function ConsultationListPage() {
                       !current,
                   )
                 }
-                className={`inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-medium transition ${
+                className={`inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-medium transition ${
                   showFilters ||
                   hasFilters
                     ? "border-slate-300 bg-slate-100 text-slate-900"
@@ -531,7 +531,7 @@ export default function ConsultationListPage() {
 
             {/* FILTERS */}
             {showFilters && (
-              <div className="mt-4 grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 md:grid-cols-2">
+              <div className="mt-3 grid grid-cols-1 gap-3 border-t border-slate-100 pt-3 md:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-slate-600">
                     Consultation Type
@@ -600,7 +600,7 @@ export default function ConsultationListPage() {
             ACTIVE FILTER SUMMARY
         =================================================== */}
         {hasFilters && (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             {search && (
               <button
                 type="button"
@@ -645,7 +645,7 @@ export default function ConsultationListPage() {
         {/* ===================================================
             SUMMARY
         =================================================== */}
-        <div className="mt-5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">
               Consultation History
@@ -671,7 +671,7 @@ export default function ConsultationListPage() {
             ERROR
         =================================================== */}
         {error && !loading && (
-          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4">
+          <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-semibold text-red-800">
@@ -701,7 +701,7 @@ export default function ConsultationListPage() {
         {/* ===================================================
             TABLE
         =================================================== */}
-        <section className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <section className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           {loading ? (
             <div className="flex min-h-[360px] items-center justify-center">
               <div className="flex flex-col items-center gap-3 text-slate-500">
@@ -716,14 +716,14 @@ export default function ConsultationListPage() {
               </div>
             </div>
           ) : consultations.length === 0 ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 text-center">
+            <div className="flex min-h-[360px] flex-col items-center justify-center px-3 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-500">
                 <ClipboardList
                   size={25}
                 />
               </div>
 
-              <h3 className="mt-4 text-sm font-semibold text-slate-900">
+              <h3 className="mt-3 text-sm font-semibold text-slate-900">
                 No consultations found
               </h3>
 
@@ -745,7 +745,7 @@ export default function ConsultationListPage() {
                     setStatus("");
                     setPage(1);
                   }}
-                  className="mt-4 inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="mt-3 inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   Clear filters
                 </button>
@@ -758,31 +758,31 @@ export default function ConsultationListPage() {
                 <table className="w-full min-w-[1050px] border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50">
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Patient
                       </th>
 
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Patient ID
                       </th>
 
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Consultation
                       </th>
 
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Date
                       </th>
 
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Optometrist
                       </th>
 
-                      <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Status
                       </th>
 
-                      <th className="px-5 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                         Action
                       </th>
                     </tr>
@@ -805,7 +805,7 @@ export default function ConsultationListPage() {
                             className="group transition hover:bg-slate-50/70"
                           >
                             {/* PATIENT */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -840,7 +840,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* PATIENT ID */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <span className="font-mono text-xs font-medium text-slate-600">
                                 {patient?.patientNumber ||
                                   "—"}
@@ -848,7 +848,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* TYPE */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <span
                                 className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${getConsultationTypeClass(
                                   consultation.consultationType,
@@ -861,7 +861,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* DATE */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <div className="flex items-center gap-2">
                                 <CalendarDays
                                   size={15}
@@ -875,7 +875,7 @@ export default function ConsultationListPage() {
                                     )}
                                   </p>
 
-                                  <p className="mt-0.5 text-[11px] text-slate-400">
+                                  <p className="mt-0.5 text-[12px] text-slate-400">
                                     {formatDateTime(
                                       consultation.consultationDate,
                                     ).split(
@@ -888,7 +888,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* OPTOMETRIST */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <p className="text-sm text-slate-700">
                                 {optometrist
                                   ? [
@@ -906,7 +906,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* STATUS */}
-                            <td className="px-5 py-4">
+                            <td className="px-3 py-3">
                               <span
                                 className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusClass(
                                   consultation.status,
@@ -930,7 +930,7 @@ export default function ConsultationListPage() {
                             </td>
 
                             {/* ACTION */}
-                            <td className="px-5 py-4 text-right">
+                            <td className="px-3 py-3 text-right">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -969,7 +969,7 @@ export default function ConsultationListPage() {
                         key={
                           consultation._id
                         }
-                        className="p-4"
+                        className="p-3"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <button
@@ -1002,7 +1002,7 @@ export default function ConsultationListPage() {
                           </button>
 
                           <span
-                            className={`shrink-0 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium ${getStatusClass(
+                            className={`shrink-0 inline-flex items-center rounded-full border px-2.5 py-1 text-[12px] font-medium ${getStatusClass(
                               consultation.status,
                             )}`}
                           >
@@ -1011,7 +1011,7 @@ export default function ConsultationListPage() {
                           </span>
                         </div>
 
-                        <div className="mt-4 flex flex-wrap gap-2">
+                        <div className="mt-3 flex flex-wrap gap-2">
                           <span
                             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium ${getConsultationTypeClass(
                               consultation.consultationType,
@@ -1023,9 +1023,9 @@ export default function ConsultationListPage() {
                           </span>
                         </div>
 
-                        <div className="mt-4 grid grid-cols-2 gap-3">
+                        <div className="mt-3 grid grid-cols-2 gap-3">
                           <div className="rounded-lg bg-slate-50 p-3">
-                            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                            <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-400">
                               Date
                             </p>
 
@@ -1037,7 +1037,7 @@ export default function ConsultationListPage() {
                           </div>
 
                           <div className="rounded-lg bg-slate-50 p-3">
-                            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                            <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-400">
                               Optometrist
                             </p>
 
@@ -1065,7 +1065,7 @@ export default function ConsultationListPage() {
                               consultation,
                             )
                           }
-                          className="mt-4 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                          className="mt-3 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 transition hover:bg-slate-50"
                         >
                           <Eye size={15} />
                           View Consultation
@@ -1084,7 +1084,7 @@ export default function ConsultationListPage() {
         =================================================== */}
         {!loading &&
           consultations.length > 0 && (
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-slate-500">
                 Page {pagination.page} of{" "}
                 {pagination.totalPages}

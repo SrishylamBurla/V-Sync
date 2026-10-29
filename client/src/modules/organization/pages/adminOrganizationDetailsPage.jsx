@@ -83,7 +83,7 @@ export default function AdminOrganizationDetailsPage() {
 
   if (!data?.organization) {
     return (
-      <div className="p-6 text-sm text-red-600">
+      <div className="p-3 text-sm text-red-600">
         {error || "Organization not found"}
       </div>
     );
@@ -93,23 +93,23 @@ export default function AdminOrganizationDetailsPage() {
   const statistics = data.statistics || {};
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent px-3 py-3 sm:px-3 lg:px-4">
       <div className="mx-auto max-w-6xl">
 
         
 
         {error && (
-          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {/* Header */}
-        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white">
+            <div className="flex items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-slate-900 text-white">
                 <Building2 size={24} />
               </div>
 
@@ -131,7 +131,7 @@ export default function AdminOrganizationDetailsPage() {
                     `/admin/organizations/${organization._id}/edit`
                   )
                 }
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
               >
                 <Edit3 size={15} />
                 Edit
@@ -140,7 +140,7 @@ export default function AdminOrganizationDetailsPage() {
               {organization.status === "active" ? (
                 <button
                   onClick={() => changeStatus("suspended")}
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600"
+                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-amber-600"
                 >
                   <Ban size={15} />
                   Suspend
@@ -148,7 +148,7 @@ export default function AdminOrganizationDetailsPage() {
               ) : (
                 <button
                   onClick={() => changeStatus("active")}
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
                 >
                   <Power size={15} />
                   Activate
@@ -159,8 +159,8 @@ export default function AdminOrganizationDetailsPage() {
         </div>
 
         {/* Statistics */}
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-500">
@@ -176,7 +176,7 @@ export default function AdminOrganizationDetailsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-500">
@@ -194,14 +194,14 @@ export default function AdminOrganizationDetailsPage() {
         </div>
 
         {/* Information */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <h2 className="text-sm font-semibold text-slate-900">
               Organization Information
             </h2>
 
-            <div className="mt-5 space-y-4">
+            <div className="mt-4 space-y-3">
               <Info label="Name" value={organization.name} />
               <Info label="Email" value={organization.email} />
               <Info label="Phone" value={organization.phone} />
@@ -211,12 +211,12 @@ export default function AdminOrganizationDetailsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <h2 className="text-sm font-semibold text-slate-900">
               Platform Information
             </h2>
 
-            <div className="mt-5 space-y-4">
+            <div className="mt-4 space-y-3">
               <Info label="Organization ID" value={organization._id} mono />
               <Info label="Slug" value={organization.slug} mono />
               <Info

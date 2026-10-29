@@ -90,7 +90,7 @@ export default function StaffFilters({
               onSearchChange(e.target.value)
             }
             placeholder="Search staff management..."
-            className="h-10 w-full border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+            className="h-10 w-full border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
           />
         </div>
 
@@ -106,7 +106,7 @@ export default function StaffFilters({
             onChange={(e) =>
               onRoleChange(e.target.value)
             }
-            className="h-10 min-w-[190px] appearance-none border border-slate-200 bg-slate-50 pl-9 pr-8 text-sm text-slate-700 outline-none focus:border-slate-400"
+            className="h-10 min-w-[190px] appearance-none border border-slate-200 bg-slate-50 pl-8 pr-6 text-sm text-slate-700 outline-none focus:border-slate-400"
           >
             {roles.map((item) => (
               <option
@@ -142,7 +142,7 @@ export default function StaffFilters({
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 transition hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 transition hover:bg-slate-50"
           >
             <X size={14} />
             Clear

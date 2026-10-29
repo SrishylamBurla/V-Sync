@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Save, RefreshCw } from "lucide-react";
 import {
   DocumentShell,
@@ -8,9 +9,10 @@ import {
 import { getPracticeSettings, updatePracticeSettings } from "../settings.api";
 
 const FieldRow = ({ children }) => (
-  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{children}</div>
+  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">{children}</div>
 );
 export default function SettingsPage() {
+  const [searchParams] = useSearchParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,6 +33,17 @@ export default function SettingsPage() {
   useEffect(() => {
     load();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("section") !== "appointments" || loading) return;
+    const timer = window.setTimeout(() => {
+      const heading = Array.from(document.querySelectorAll("h3")).find(
+        (element) => element.textContent?.trim().toLowerCase() === "appointment setup",
+      );
+      heading?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [searchParams, loading]);
   const set = (section, key, value) =>
     setData((d) => ({ ...d, [section]: { ...d?.[section], [key]: value } }));
   const save = async () => {
@@ -54,7 +67,7 @@ export default function SettingsPage() {
         subtitle="Configure V-Sync defaults and operational parameters."
         code="SETTINGS"
       >
-        <div className="p-10 text-center text-sm text-slate-400">
+        <div className="p-4 text-center text-sm text-slate-400">
           Loading settings...
         </div>
       </DocumentShell>
@@ -66,7 +79,7 @@ export default function SettingsPage() {
         title="Practice Configuration"
         code="SETTINGS"
       >
-        <div className="p-10 text-sm text-red-600">{error}</div>
+        <div className="p-4 text-sm text-red-600">{error}</div>
       </DocumentShell>
     );
   return (

@@ -355,24 +355,24 @@ export default function DispensingPage() {
         : "Manage sundry dispensing orders from item selection through collection.";
 
   return (
-    <div className="py-4 sm:py-5">
+    <div className="py-3 sm:py-3">
       <div className="space-y-3.5">
         <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
               Dispensing
             </div>
             <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
               Dispensing
             </h1>
-            <p className="mt-1 text-[10px] text-slate-400">
+            <p className="mt-1 text-[12px] text-slate-400">
               One dispensing workspace for spectacle, contact-lens and sundry jobs.
             </p>
           </div>
           <button
             type="button"
             onClick={load}
-            className="inline-flex h-8 items-center gap-1.5 self-start rounded-md border border-slate-200 bg-white px-2.5 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 sm:self-auto"
+            className="inline-flex h-8 items-center gap-1.5 self-start rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 sm:self-auto"
           >
             <RefreshCw size={12} />
             Refresh
@@ -393,12 +393,12 @@ export default function DispensingPage() {
         title="Dispensing"
         description="Choose the type of dispensing work you want to manage."
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-3">
           {/* Spectacle */}
           <button
             type="button"
             onClick={() => switchType("spectacle")}
-            className={`group rounded-2xl border p-5 text-left transition ${
+            className={`group rounded-xl border p-3 text-left transition ${
               activeType === "spectacle"
                 ? "border-slate-900 bg-slate-900 text-white shadow-lg"
                 : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
@@ -416,7 +416,7 @@ export default function DispensingPage() {
               </div>
 
               <span
-                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                className={`rounded-full px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider ${
                   activeType === "spectacle"
                     ? "bg-white/10 text-slate-200"
                     : "bg-slate-100 text-slate-500"
@@ -426,7 +426,7 @@ export default function DispensingPage() {
               </span>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <div
                 className={`text-sm font-bold ${
                   activeType === "spectacle" ? "text-white" : "text-slate-900"
@@ -451,7 +451,7 @@ export default function DispensingPage() {
           <button
             type="button"
             onClick={() => switchType("contact_lens")}
-            className={`group rounded-2xl border p-5 text-left transition ${
+            className={`group rounded-xl border p-3 text-left transition ${
               activeType === "contact_lens"
                 ? "border-slate-900 bg-slate-900 text-white shadow-lg"
                 : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
@@ -469,7 +469,7 @@ export default function DispensingPage() {
               </div>
 
               <span
-                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                className={`rounded-full px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider ${
                   activeType === "contact_lens"
                     ? "bg-white/10 text-slate-200"
                     : "bg-slate-100 text-slate-500"
@@ -479,7 +479,7 @@ export default function DispensingPage() {
               </span>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <div
                 className={`text-sm font-bold ${
                   activeType === "contact_lens"
@@ -507,7 +507,7 @@ export default function DispensingPage() {
           <button
             type="button"
             onClick={() => switchType("sundry")}
-            className={`group rounded-2xl border p-5 text-left transition ${
+            className={`group rounded-xl border p-3 text-left transition ${
               activeType === "sundry"
                 ? "border-slate-900 bg-slate-900 text-white shadow-lg"
                 : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
@@ -525,7 +525,7 @@ export default function DispensingPage() {
               </div>
 
               <span
-                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                className={`rounded-full px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider ${
                   activeType === "sundry"
                     ? "bg-white/10 text-slate-200"
                     : "bg-slate-100 text-slate-500"
@@ -535,7 +535,7 @@ export default function DispensingPage() {
               </span>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <div
                 className={`text-sm font-bold ${
                   activeType === "sundry" ? "text-white" : "text-slate-900"
@@ -576,14 +576,14 @@ export default function DispensingPage() {
                 key={currentStatus}
                 type="button"
                 onClick={() => setStatus(selected ? "" : currentStatus)}
-                className={`rounded-xl border p-4 text-left transition ${
+                className={`rounded-xl border p-3 text-left transition ${
                   selected
                     ? "border-slate-900 bg-slate-900 text-white shadow-sm"
                     : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white"
                 }`}
               >
                 <div
-                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                  className={`text-[12px] font-bold uppercase tracking-wider ${
                     selected ? "text-slate-300" : "text-slate-400"
                   }`}
                 >
@@ -603,7 +603,7 @@ export default function DispensingPage() {
 
       <Section number="03" title={activeTitle} description={activeDescription}>
         {/* Search / filter */}
-        <div className="mb-5 flex flex-col gap-3 lg:flex-row">
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row">
           <div className="relative flex-1">
             <Search
               size={15}
@@ -620,7 +620,7 @@ export default function DispensingPage() {
                     ? "Search contact lens job, patient, brand, model..."
                     : "Search sundry job, patient, item..."
               }
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
             />
           </div>
 
@@ -641,7 +641,7 @@ export default function DispensingPage() {
 
         {/* Register */}
         {loading ? (
-          <div className="py-12 text-center text-sm text-slate-400">
+          <div className="py-6 text-center text-sm text-slate-400">
             Loading {activeTitle.toLowerCase()}...
           </div>
         ) : (
@@ -674,7 +674,7 @@ export default function DispensingPage() {
                       {patientName(row.patientId)}
                     </span>
 
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[12px] text-slate-400">
                       {row.patientId?.patientNumber || "No patient number"}
                       {" · "}
                       {row.patientId?.phone || "No phone"}
@@ -699,7 +699,7 @@ export default function DispensingPage() {
                           </div>
 
                           {row.frame?.description && row.frame?.code && (
-                            <div className="mt-0.5 text-[10px] text-slate-400">
+                            <div className="mt-0.5 text-[12px] text-slate-400">
                               {row.frame.description}
                             </div>
                           )}
@@ -715,7 +715,7 @@ export default function DispensingPage() {
                             {row.lens?.code || row.lens?.description || "—"}
                           </div>
                           {row.lens?.supplier && (
-                            <div className="mt-0.5 text-[10px] text-slate-400">
+                            <div className="mt-0.5 text-[12px] text-slate-400">
                               {row.lens.supplier}
                             </div>
                           )}
@@ -734,7 +734,7 @@ export default function DispensingPage() {
                               {row.brand || "—"}
                             </div>
                             {row.model && (
-                              <div className="mt-0.5 text-[10px] text-slate-400">
+                              <div className="mt-0.5 text-[12px] text-slate-400">
                                 {row.model}
                               </div>
                             )}
@@ -750,7 +750,7 @@ export default function DispensingPage() {
                               {row.lensType || "—"}
                             </div>
                             {row.replacement && (
-                              <div className="mt-0.5 text-[10px] text-slate-400">
+                              <div className="mt-0.5 text-[12px] text-slate-400">
                                 {row.replacement}
                               </div>
                             )}
@@ -778,7 +778,7 @@ export default function DispensingPage() {
                                 "Sundry"}
                             </div>
                             {(row.item?.description || row.inventoryItem?.description) && (
-                              <div className="mt-0.5 truncate text-[10px] text-slate-400">
+                              <div className="mt-0.5 truncate text-[12px] text-slate-400">
                                 {row.item?.description || row.inventoryItem?.description}
                               </div>
                             )}
@@ -805,7 +805,7 @@ export default function DispensingPage() {
                 key: "status",
                 label: "Status",
                 render: (row) => (
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider">
                     {label(row.status)}
                   </span>
                 ),
@@ -819,7 +819,7 @@ export default function DispensingPage() {
                     <button
                       type="button"
                       onClick={() => advance(row)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 py-1.5 text-[10px] font-bold text-white transition hover:bg-slate-800"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 py-1.5 text-[12px] font-bold text-white transition hover:bg-slate-800"
                     >
                       <CheckCircle2 size={12} />
 
@@ -887,15 +887,15 @@ function Section({ number, title, description, children }) {
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
       <header className="border-b border-slate-100 px-3.5 py-3">
         <div className="flex items-start gap-2">
-          <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[8px] font-bold text-slate-500">
+          <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded bg-slate-100 px-1 text-[12px] font-bold text-slate-500">
             {number}
           </span>
           <div className="min-w-0">
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-700">
+            <h2 className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-700">
               {title}
             </h2>
             {description && (
-              <p className="mt-0.5 text-[9px] leading-4 text-slate-400">
+              <p className="mt-0.5 text-[12px] leading-4 text-slate-400">
                 {description}
               </p>
             )}
@@ -910,9 +910,9 @@ function Section({ number, title, description, children }) {
 function Table({ columns, rows, empty = "No records found." }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[760px] text-left text-[10px]">
+      <table className="w-full min-w-[760px] text-left text-[12px]">
         <thead>
-          <tr className="border-b border-slate-200 text-[8px] uppercase tracking-[0.08em] text-slate-400">
+          <tr className="border-b border-slate-200 text-[12px] uppercase tracking-[0.08em] text-slate-400">
             {columns.map((column) => (
               <th
                 key={column.key}
@@ -941,7 +941,7 @@ function Table({ columns, rows, empty = "No records found." }) {
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-3 py-10 text-center text-[9px] text-slate-400"
+                className="px-3 py-6 text-center text-[12px] text-slate-400"
               >
                 {empty}
               </td>

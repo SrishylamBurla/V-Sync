@@ -121,8 +121,8 @@ const InfoItem = ({ icon: Icon, label, value }) => (
 );
 
 const Section = ({ title, description, children }) => (
-  <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-    <div className="border-b border-gray-100 px-5 py-4">
+  <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="border-b border-gray-100 px-3 py-3">
       <h2 className="text-base font-semibold text-gray-900">{title}</h2>
 
       {description && (
@@ -130,7 +130,7 @@ const Section = ({ title, description, children }) => (
       )}
     </div>
 
-    <div className="p-5">{children}</div>
+    <div className="p-3">{children}</div>
   </section>
 );
 
@@ -234,9 +234,9 @@ export default function StaffDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
         <div className="mx-auto max-w-7xl">
-          <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white">
+          <div className="flex min-h-[400px] items-center justify-center rounded-xl border border-gray-200 bg-white">
             <div className="flex flex-col items-center gap-3">
               <RefreshCw
                 size={28}
@@ -255,11 +255,11 @@ export default function StaffDetailsPage() {
 
   if (error && !staff) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
         <div className="mx-auto max-w-7xl">
           
 
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-3">
             <h2 className="text-base font-semibold text-red-800">
               Unable to load staff
             </h2>
@@ -269,7 +269,7 @@ export default function StaffDetailsPage() {
             <button
               type="button"
               onClick={loadStaff}
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
             >
               <RefreshCw size={16} />
               Try Again
@@ -303,10 +303,10 @@ export default function StaffDetailsPage() {
         );
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
+      <div className="mx-auto max-w-7xl space-y-3">
         {/* Header */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             
 
@@ -324,7 +324,7 @@ export default function StaffDetailsPage() {
               type="button"
               onClick={loadStaff}
               disabled={loading}
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <RefreshCw
                 size={16}
@@ -336,7 +336,7 @@ export default function StaffDetailsPage() {
             <button
               type="button"
               onClick={() => navigate(`/staff/${id}/edit`)}
-              className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+              className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
             >
               <Edit3 size={16} />
               Edit Staff
@@ -346,19 +346,19 @@ export default function StaffDetailsPage() {
 
         {/* Error */}
         {error && staff && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {/* Profile Card */}
-        <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="h-28 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700" />
 
-          <div className="px-5 pb-5 sm:px-7">
-            <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl border-4 border-white bg-gray-100 text-2xl font-bold text-gray-700 shadow-md">
+          <div className="px-3 pb-4 sm:px-4">
+            <div className="-mt-12 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border-4 border-white bg-gray-100 text-2xl font-bold text-gray-700 shadow-md">
                   {getInitials(staff)}
                 </div>
 
@@ -385,7 +385,7 @@ export default function StaffDetailsPage() {
                   type="button"
                   onClick={handleStatusChange}
                   disabled={updatingStatus}
-                  className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                  className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
                     staff?.status === "active"
                       ? "border-red-200 bg-white text-red-600 hover:bg-red-50"
                       : "border-emerald-200 bg-white text-emerald-600 hover:bg-emerald-50"
@@ -409,14 +409,14 @@ export default function StaffDetailsPage() {
         </section>
 
         {/* Main Grid */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           {/* Contact */}
           <div className="lg:col-span-2">
             <Section
               title="Personal Information"
               description="Basic contact and account information."
             >
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <InfoItem
                   icon={User}
                   label="Full Name"
@@ -453,7 +453,7 @@ export default function StaffDetailsPage() {
             title="Account"
             description="Account status and activity."
           >
-            <div className="space-y-5">
+            <div className="space-y-3">
               <InfoItem
                 icon={Clock3}
                 label="Last Login"
@@ -481,7 +481,7 @@ export default function StaffDetailsPage() {
           description="Branches where this staff member is authorized to work."
         >
           {branches.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center">
+            <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-3 text-center">
               <Building2 className="mx-auto text-gray-400" size={28} />
 
               <p className="mt-2 text-sm font-medium text-gray-700">
@@ -508,7 +508,7 @@ export default function StaffDetailsPage() {
                 return (
                   <div
                     key={branchId || index}
-                    className={`rounded-xl border p-4 ${
+                    className={`rounded-xl border p-3 ${
                       isDefault
                         ? "border-gray-900 bg-gray-50"
                         : "border-gray-200 bg-white"
@@ -541,7 +541,7 @@ export default function StaffDetailsPage() {
                       </div>
 
                       {isDefault && (
-                        <span className="shrink-0 rounded-full bg-gray-900 px-2 py-1 text-[10px] font-semibold text-white">
+                        <span className="shrink-0 rounded-full bg-gray-900 px-2 py-1 text-[12px] font-semibold text-white">
                           Default
                         </span>
                       )}
@@ -558,7 +558,7 @@ export default function StaffDetailsPage() {
           title="Security"
           description="Manage credentials and account access."
         >
-          <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-gray-600 shadow-sm">
                 <KeyRound size={18} />
@@ -578,7 +578,7 @@ export default function StaffDetailsPage() {
             <button
               type="button"
               onClick={handleResetPassword}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
             >
               <KeyRound size={16} />
               Reset Password

@@ -39,7 +39,7 @@ export default function BackButton() {
   }
 
   return (
-    <div className="pt-3 sm:pt-4">
+    <div className="pt-3 sm:pt-3">
       <button
         type="button"
         onClick={() => navigate(-1)}

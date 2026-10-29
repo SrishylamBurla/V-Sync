@@ -225,7 +225,6 @@ export const MODULE_ACCESS = {
     ROLES.ORGANIZATION_ADMIN,
     ROLES.BRANCH_MANAGER,
     ROLES.INVENTORY_MANAGER,
-    ROLES.SALES_EXECUTIVE,
     ROLES.OPTOMETRIST,
     ROLES.DOCTOR,
   ],
@@ -360,180 +359,75 @@ export const MAIN_NAV = [
     path: "/dashboard",
     access: "dashboard",
   },
-
   {
     key: "patients",
     label: "Patients",
-    path: "/patients",
-    access: "patients",
-  },
-
-  {
-    key: "appointments",
-    label: "Appointments",
-    path: "/appointments",
-    access: "appointments",
-  },
-
-  {
-    key: "clinical",
-    label: "Clinical",
-    path: "/clinical",
-    access: "clinical",
-  },
-
-  // ==========================================================
-  // DISPENSING
-  // ==========================================================
-
-  {
-    key: "dispensing",
-    label: "Dispensing",
-    path: "/dispensing",
-    access: "dispensing",
     dropdown: true,
-
     children: [
+      { key: "patient-details", label: "Patient Details", path: "/patients", access: "patients" },
       {
-        key: "dispensing-overview",
-        label: "Dispensing Overview",
-        path: "/dispensing",
-        access: "dispensing",
+        key: "appointments",
+        label: "Appointments",
+        dropdown: true,
+        children: [
+          { key: "appointment-make", label: "Make", path: "/appointments?book=1", access: "appointments" },
+          { key: "appointment-move", label: "Move", path: "/appointments?mode=move", access: "appointments" },
+          { key: "appointment-modify", label: "Modify", path: "/appointments?mode=modify", access: "appointments" },
+          { key: "appointment-setup", label: "Setup", path: "/settings?section=appointments", access: "settings" },
+        ],
       },
-
-      {
-        key: "spectacle-history",
-        label: "Spectacle Jobs",
-        path: "/dispensing/spectacle-jobs",
-        access: "dispensing",
-      },
-
-      {
-        key: "contact-lens-jobs",
-        label: "Contact Lens Jobs",
-        path: "/dispensing/contact-lenses",
-        access: "dispensing",
-      },
-
-      {
-        key: "sundries",
-        label: "Sundries",
-        path: "/dispensing/sundries",
-        access: "dispensing",
-      },
+      { key: "recall", label: "Recall List", path: "/recall", access: "recall" },
+      { key: "communications", label: "SMS / Email", path: "/newsletters", access: "newsletters" },
+      { key: "merge-records", label: "Merge records", access: "patients", disabled: true },
+      { key: "clinical", label: "Clinical Management", path: "/clinical", access: "clinical" },
     ],
   },
-
-  // ==========================================================
-  // OPERATIONS
-  // ==========================================================
-
   {
-    key: "operations",
-    label: "Operations",
+    key: "financial",
+    label: "Financial",
     dropdown: true,
-
     children: [
-      {
-        key: "inventory",
-        label: "Inventory",
-        path: "/inventory",
-        access: "inventory",
-      },
-
-      {
-        key: "catalogue",
-        label: "Catalogue",
-        path: "/catalogue",
-        access: "catalogue",
-      },
-
-      {
-        key: "laboratory",
-        label: "Laboratory",
-        path: "/lab",
-        access: "laboratory",
-      },
+      { key: "billing", label: "Billing", path: "/billing", access: "billing" },
+      { key: "outstanding", label: "Outstanding", path: "/finance?tab=outstanding", access: "finance" },
+      { key: "petty-cash", label: "Petty Cash", path: "/finance?tab=petty", access: "finance" },
+      { key: "expenses", label: "Expenses", path: "/finance?tab=expenses", access: "finance" },
+      { key: "business-activity-statement", label: "Business Activity Statement", access: "reports", disabled: true },
+      { key: "financial-year", label: "Financial Year", path: "/reports?period=financial-year", access: "reports" },
+      { key: "reports", label: "Reports", path: "/reports", access: "reports" },
     ],
   },
-
-  // ==========================================================
-  // FINANCE
-  // ==========================================================
-
   {
-    key: "finance",
-    label: "Finance",
+    key: "inventory",
+    label: "Inventory",
     dropdown: true,
-
     children: [
-      {
-        key: "billing",
-        label: "Billing",
-        path: "/billing",
-        access: "billing",
-      },
-
-      {
-        key: "finance-management",
-        label: "Finance",
-        path: "/finance",
-        access: "finance",
-      },
-
-      {
-        key: "reports",
-        label: "Reports",
-        path: "/reports",
-        access: "reports",
-      },
+      { key: "frame-details", label: "Frame Details List", path: "/inventory?category=frame", access: "inventory" },
+      { key: "frame-stocktake", label: "Frame Stock-take", path: "/inventory?category=frame&action=stocktake", access: "inventory" },
+      { key: "sundry-details", label: "Sundry Details", path: "/inventory?category=sundry", access: "inventory" },
+      { key: "adjustment-report", label: "Adjustment Report", access: "inventory", disabled: true },
+      { key: "lens-list", label: "Lens List", path: "/inventory?category=lens", access: "inventory" },
+      { key: "contact-lens-list", label: "Contact Lens List", path: "/dispensing/contact-lenses", access: "dispensing" },
+      { key: "dispensing", label: "Dispensing", dropdown: true, children: [
+        { key: "dispensing-overview", label: "Dispensing Overview", path: "/dispensing", access: "dispensing" },
+        { key: "spectacle-jobs", label: "Spectacle Jobs", path: "/dispensing/spectacle-jobs", access: "dispensing" },
+        { key: "contact-lens-jobs", label: "Contact Lens Jobs", path: "/dispensing/contact-lenses", access: "dispensing" },
+        { key: "sundry-jobs", label: "Sundry Jobs", path: "/dispensing/sundries", access: "dispensing" },
+      ] },
+      { key: "catalogue", label: "Optical Catalogue", path: "/catalogue", access: "catalogue" },
+      { key: "laboratory", label: "Laboratory", path: "/lab", access: "laboratory" },
     ],
   },
-
-  // ==========================================================
-  // MORE
-  // ==========================================================
-
   {
-    key: "more",
-    label: "More",
+    key: "maintenance",
+    label: "Maintenance",
     dropdown: true,
-
     children: [
-      {
-        key: "recall",
-        label: "Recall",
-        path: "/recall",
-        access: "recall",
-      },
-
-      {
-        key: "communications",
-        label: "Letters & Images",
-        path: "/communications",
-        access: "communications",
-      },
-
-      {
-        key: "staff",
-        label: "Staff",
-        path: "/staff",
-        access: "staff",
-      },
-
-      {
-        key: "branches",
-        label: "Branches",
-        path: "/branches",
-        access: "branches",
-      },
-
-      {
-        key: "settings",
-        label: "Settings",
-        path: "/settings",
-        access: "settings",
-      },
+      { key: "setup-frame", label: "Setup Frame", path: "/inventory?category=frame&create=1", access: "inventory" },
+      { key: "setup-lens", label: "Setup Lens", path: "/catalogue?tab=lens&new=1", access: "catalogue" },
+      { key: "staff", label: "Staff", path: "/staff", access: "staff" },
+      { key: "branches", label: "Branches", path: "/branches", access: "branches" },
+      { key: "settings", label: "Practice Settings", path: "/settings", access: "settings" },
+      { key: "organizations", label: "Organizations", path: "/admin/organizations", access: "organizations" },
     ],
   },
 ];

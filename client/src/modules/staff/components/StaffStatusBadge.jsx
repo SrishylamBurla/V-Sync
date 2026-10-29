@@ -30,7 +30,7 @@ export default function StaffStatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${config.className}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] ${config.className}`}
     >
       <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-current" />
 

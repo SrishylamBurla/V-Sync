@@ -28,12 +28,28 @@ import financeRoutes from "./routes/finance.routes.js";
 import catalogueRoutes from "./routes/catalogue.routes.js";
 import contactLensCatalogueRoutes from "./routes/contactLensCatalogue.routes.js";
 import sundryRoutes from "./routes/sundry.routes.js";
+import publicRoutes from "./routes/public.routes.js";
 
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
 
 const app = express();
+
+// Set TRUST_PROXY to a deployment-appropriate value (commonly 1 behind Render).
+if (process.env.TRUST_PROXY) {
+  const trustProxyValue = process.env.TRUST_PROXY.trim().toLowerCase();
+  const trustProxySetting = trustProxyValue === "true"
+    ? 1
+    : trustProxyValue === "false"
+      ? false
+      : /^\d+$/.test(trustProxyValue)
+        ? Number(trustProxyValue)
+        : process.env.TRUST_PROXY;
+  app.set("trust proxy", trustProxySetting);
+} else if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 
 /* =========================================================
    SECURITY
@@ -45,39 +61,27 @@ app.use(helmet());
    CORS
 ========================================================= */
 
-const allowedOrigins = [
+const isProduction = process.env.NODE_ENV === "production";
+const localDevelopmentOrigins = isProduction ? [] : ["http://localhost:5173"];
+const configuredOrigins = [
+  process.env.CLIENT_URL,
+  ...(process.env.CORS_ALLOWED_ORIGINS || "").split(","),
   "https://v-sync.in",
   "https://www.v-sync.in",
-  "http://localhost:5173",
-  "https://client-git-v-sync-b1-srishylamburlas-projects.vercel.app",
-];
+  ...localDevelopmentOrigins,
+]
+  .map((origin) => String(origin || "").trim().replace(/\/$/, ""))
+  .filter(Boolean)
+  .filter((origin) => !isProduction || !/^https?:\/\/localhost(?::\d+)?$/i.test(origin));
+
+const allowedOrigins = new Set(configuredOrigins);
+const vercelPreviewRegex =
+  /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i;
 
 const isAllowedOrigin = (origin) => {
-  // Requests without Origin:
-  // Postman, curl, server-to-server requests, etc.
-  if (!origin) {
-    return true;
-  }
-
-  // Exact allowed origins
-  if (allowedOrigins.includes(origin)) {
-    return true;
-  }
-
-  /*
-   * Allow Vercel preview deployments for this project.
-   *
-   * Example:
-   * https://client-git-v-sync-b1-xxxxx-srishylamburlas-projects.vercel.app
-   */
-  const vercelPreviewRegex =
-    /^https:\/\/client-git-v-sync-b1-[a-z0-9-]+-srishylamburlas-projects\.vercel\.app$/i;
-
-  if (vercelPreviewRegex.test(origin)) {
-    return true;
-  }
-
-  return false;
+  if (!origin) return true; // non-browser tools and service-to-service requests
+  const normalizedOrigin = String(origin).replace(/\/$/, "");
+  return allowedOrigins.has(normalizedOrigin) || vercelPreviewRegex.test(normalizedOrigin);
 };
 
 app.use(
@@ -87,7 +91,9 @@ app.use(
         callback(null, true);
       } else {
         console.warn("Blocked CORS origin:", origin);
-        callback(new Error("Not allowed by CORS"));
+        const error = new Error("Not allowed by CORS");
+        error.status = 403;
+        callback(error);
       }
     },
 
@@ -111,8 +117,8 @@ app.use(
    BODY / COOKIE MIDDLEWARE
 ========================================================= */
 
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: process.env.URLENCODED_BODY_LIMIT || "1mb", parameterLimit: 1000 }));
 app.use(cookieParser());
 
 /* =========================================================
@@ -122,7 +128,7 @@ app.use(cookieParser());
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "OptiCore API is running",
+    message: "V-Sync API is running",
     timestamp: new Date().toISOString(),
   });
 });
@@ -130,6 +136,8 @@ app.get("/api/health", (req, res) => {
 /* =========================================================
    API ROUTES
 ========================================================= */
+
+app.use("/api/v1/public", publicRoutes);
 
 app.use("/api/v1/auth", authRoutes);
 
@@ -190,6 +198,19 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
+    const accessSecret = String(process.env.JWT_ACCESS_SECRET || "");
+    const refreshSecret = String(process.env.JWT_REFRESH_SECRET || "");
+    const isPlaceholderSecret = (value) => /^(replace-with|change-me|your-secret|example-secret)/i.test(value.trim());
+
+    if (accessSecret.length < 32 || (isProduction && isPlaceholderSecret(accessSecret))) {
+      throw new Error("JWT_ACCESS_SECRET must be a unique random secret of at least 32 characters");
+    }
+    if (refreshSecret.length < 32 || (isProduction && isPlaceholderSecret(refreshSecret))) {
+      throw new Error("JWT_REFRESH_SECRET must be a unique random secret of at least 32 characters");
+    }
+    if (accessSecret === refreshSecret) {
+      throw new Error("JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be different values");
+    }
     await connectDB();
 
     app.listen(PORT, () => {

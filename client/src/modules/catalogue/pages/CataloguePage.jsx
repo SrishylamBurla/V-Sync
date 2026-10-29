@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Edit3,
   Plus,
@@ -7,6 +8,7 @@ import {
   Truck,
   GlassWater,
   WandSparkles,
+  ContactRound,
 } from "lucide-react";
 import {
   DocumentShell,
@@ -22,6 +24,7 @@ const money = (v) =>
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(Number(v || 0));
+const CATALOGUE_TABS = ["suppliers", "lens", "extras", "contact-lenses"];
 const empty = {
   supplier: {
     code: "",
@@ -56,12 +59,23 @@ const empty = {
     status: "active",
     notes: "",
   },
+  contactLens: {
+    code: "", brand: "", model: "", lensType: "Soft", modality: "Monthly",
+    material: "", supplierId: "", baseCurve: "", diameter: "",
+    sphereRange: "", cylinderRange: "", axisRange: "", addRange: "",
+    costPrice: 0, sellingPrice: 0, status: "active", notes: "",
+  },
 };
 export default function CataloguePage() {
-  const [tab, setTab] = useState("suppliers"),
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => {
+    const requested = searchParams.get("tab");
+    return CATALOGUE_TABS.includes(requested) ? requested : "suppliers";
+  }),
     [suppliers, setSuppliers] = useState([]),
     [lenses, setLenses] = useState([]),
     [extras, setExtras] = useState([]),
+    [contactLensCodes, setContactLensCodes] = useState([]),
     [query, setQuery] = useState(""),
     [show, setShow] = useState(false),
     [editing, setEditing] = useState(null),
@@ -70,14 +84,16 @@ export default function CataloguePage() {
   const load = async () => {
     try {
       setError("");
-      const [s, l, e] = await Promise.all([
+      const [s, l, e, cl] = await Promise.all([
         api.getSuppliers(),
         api.getLensCodes(),
         api.getLensExtras(),
+        api.getContactLensCodes(),
       ]);
       setSuppliers(s.data || []);
       setLenses(l.data || []);
       setExtras(e.data || []);
+      setContactLensCodes(cl.data || []);
     } catch (x) {
       setError(x?.response?.data?.message || "Unable to load catalogue");
     }
@@ -85,8 +101,27 @@ export default function CataloguePage() {
   useEffect(() => {
     load();
   }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const requested = searchParams.get("tab");
+      const nextTab = CATALOGUE_TABS.includes(requested) ? requested : "suppliers";
+      setTab(nextTab);
+
+      if (searchParams.get("new") === "1") {
+        const emptyKey = nextTab === "suppliers" ? "supplier" : nextTab === "extras" ? "extra" : nextTab === "contact-lenses" ? "contactLens" : "lens";
+        setEditing(null);
+        setForm({ ...empty[emptyKey] });
+        setShow(true);
+        const next = new URLSearchParams(searchParams);
+        next.delete("new");
+        setSearchParams(next, { replace: true });
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [searchParams, setSearchParams]);
   const current =
-    tab === "suppliers" ? suppliers : tab === "lens" ? lenses : extras;
+    tab === "suppliers" ? suppliers : tab === "lens" ? lenses : tab === "contact-lenses" ? contactLensCodes : extras;
   const filtered = useMemo(
     () =>
       current.filter((x) =>
@@ -101,7 +136,9 @@ export default function CataloguePage() {
         ? { ...empty.supplier }
         : tab === "lens"
           ? { ...empty.lens }
-          : { ...empty.extra },
+          : tab === "contact-lenses"
+            ? { ...empty.contactLens }
+            : { ...empty.extra },
     );
     setShow(true);
   };
@@ -122,6 +159,10 @@ export default function CataloguePage() {
             ? editing
               ? api.updateLensCode
               : api.createLensCode
+            : tab === "contact-lenses"
+            ? editing
+              ? api.updateContactLensCode
+              : api.createContactLensCode
             : editing
               ? api.updateLensExtra
               : api.createLensExtra;
@@ -137,12 +178,14 @@ export default function CataloguePage() {
       ? "Suppliers"
       : tab === "lens"
         ? "Spectacle Lens Codes"
-        : "Lens Extras";
+        : tab === "contact-lenses"
+          ? "Contact Lens List"
+          : "Lens Extras";
   return (
     <DocumentShell
       eyebrow="Catalogue control"
       title="Optical Catalogue"
-      subtitle="Suppliers, spectacle lens codes and lens extras configured in one practice document."
+      subtitle="Manage suppliers, spectacle lens codes, lens extras and contact-lens products in one practice catalogue."
       code="CATALOGUE"
       actions={
         <>
@@ -163,7 +206,9 @@ export default function CataloguePage() {
               ? "supplier"
               : tab === "lens"
                 ? "lens code"
-                : "extra"}
+                : tab === "contact-lenses"
+                  ? "contact lens"
+                  : "extra"}
           </button>
         </>
       }
@@ -174,7 +219,7 @@ export default function CataloguePage() {
         </div>
       )}
       <Section number="01" title="Catalogue areas">
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {[
             ["suppliers", "Suppliers", Truck, "Supplier master records"],
             [
@@ -189,6 +234,12 @@ export default function CataloguePage() {
               WandSparkles,
               "Tinting, coating and hardening",
             ],
+            [
+              "contact-lenses",
+              "Contact lenses",
+              ContactRound,
+              "Contact lens product master and pricing",
+            ],
           ].map(([k, t, I, d]) => (
             <button
               key={k}
@@ -196,8 +247,12 @@ export default function CataloguePage() {
                 setTab(k);
                 setShow(false);
                 setQuery("");
+                const next = new URLSearchParams(searchParams);
+                next.set("tab", k);
+                next.delete("new");
+                setSearchParams(next, { replace: true });
               }}
-              className={`rounded-2xl border p-5 text-left ${tab === k ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-slate-50 text-slate-800"}`}
+              className={`rounded-xl border p-3 text-left ${tab === k ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-slate-50 text-slate-800"}`}
             >
               <I size={18} />
               <div className="mt-3 text-sm font-bold">{t}</div>
@@ -213,11 +268,11 @@ export default function CataloguePage() {
       {show && (
         <Section
           number="02"
-          title={`${editing ? "Edit" : "Create"} ${title.slice(0, -1)}`}
+          title={`${editing ? "Edit" : "Create"} ${tab === "contact-lenses" ? "Contact Lens" : tab === "lens" ? "Spectacle Lens Code" : title.replace(/s$/, "")}`}
         >
           <form
             onSubmit={save}
-            className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+            className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
           >
             {tab === "suppliers" ? (
               <>
@@ -318,6 +373,24 @@ export default function CataloguePage() {
                   onChange={(v) => setForm({ ...form, sellingPrice: v })}
                 />
               </>
+            ) : tab === "contact-lenses" ? (
+              <>
+                <Field label="Contact lens code" value={form.code} onChange={(v) => setForm({ ...form, code: v })} />
+                <Field label="Brand" value={form.brand} onChange={(v) => setForm({ ...form, brand: v })} />
+                <Field label="Model" value={form.model} onChange={(v) => setForm({ ...form, model: v })} />
+                <Field label="Lens type" value={form.lensType} onChange={(v) => setForm({ ...form, lensType: v })} options={["Soft", "Rigid", "Toric", "Multifocal", "Other"].map((x) => ({ value: x, label: x }))} />
+                <Field label="Modality" value={form.modality} onChange={(v) => setForm({ ...form, modality: v })} options={["Daily", "Weekly", "Monthly", "Quarterly", "Yearly", "Other"].map((x) => ({ value: x, label: x }))} />
+                <Field label="Material" value={form.material} onChange={(v) => setForm({ ...form, material: v })} />
+                <Field label="Base curve" value={form.baseCurve} onChange={(v) => setForm({ ...form, baseCurve: v })} />
+                <Field label="Diameter" value={form.diameter} onChange={(v) => setForm({ ...form, diameter: v })} />
+                <Field label="Sphere range" value={form.sphereRange} onChange={(v) => setForm({ ...form, sphereRange: v })} />
+                <Field label="Cylinder range" value={form.cylinderRange} onChange={(v) => setForm({ ...form, cylinderRange: v })} />
+                <Field label="Axis range" value={form.axisRange} onChange={(v) => setForm({ ...form, axisRange: v })} />
+                <Field label="Add range" value={form.addRange} onChange={(v) => setForm({ ...form, addRange: v })} />
+                <Field label="Supplier" value={form.supplierId} onChange={(v) => setForm({ ...form, supplierId: v })} options={[{ value: "", label: "Select supplier" }, ...suppliers.map((s) => ({ value: s._id, label: `${s.code} · ${s.name}` }))]} />
+                <Field label="Cost price" type="number" value={form.costPrice} onChange={(v) => setForm({ ...form, costPrice: v })} />
+                <Field label="Selling price" type="number" value={form.sellingPrice} onChange={(v) => setForm({ ...form, sellingPrice: v })} />
+              </>
             ) : (
               <>
                 <Field
@@ -372,13 +445,13 @@ export default function CataloguePage() {
               onChange={(v) => setForm({ ...form, notes: v })}
             />
             <div className="flex gap-2">
-              <button className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 {editing ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={() => setShow(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600"
+                className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-semibold text-slate-600"
               >
                 Cancel
               </button>
@@ -387,7 +460,7 @@ export default function CataloguePage() {
         </Section>
       )}
       <Section number={show ? "03" : "02"} title={`${title} register`}>
-        <div className="relative mb-5 max-w-xl">
+        <div className="relative mb-4 max-w-xl">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -396,7 +469,7 @@ export default function CataloguePage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${title.toLowerCase()}...`}
-            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm outline-none focus:bg-white"
           />
         </div>
         <Table
@@ -414,7 +487,7 @@ export default function CataloguePage() {
                         <div className="font-semibold text-slate-900">
                           {r.name}
                         </div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[12px] text-slate-400">
                           {r.contactPerson || r.email || "No contact"}
                         </div>
                       </div>
@@ -473,6 +546,21 @@ export default function CataloguePage() {
                       ),
                     },
                   ]
+                : tab === "contact-lenses"
+                ? [
+                    { key: "code", label: "Code", render: (r) => <span className="font-semibold">{r.code}</span> },
+                    { key: "brand", label: "Brand" },
+                    { key: "model", label: "Model" },
+                    { key: "lensType", label: "Type" },
+                    { key: "modality", label: "Modality" },
+                    { key: "baseCurve", label: "Base curve" },
+                    { key: "diameter", label: "Diameter" },
+                    { key: "supplier", label: "Supplier", render: (r) => r.supplierId?.name || "—" },
+                    { key: "price", label: "Selling", align: "right", render: (r) => money(r.sellingPrice) },
+                    { key: "actions", label: "", align: "right", render: (r) => (
+                      <button onClick={() => edit(r)} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold">Edit</button>
+                    ) },
+                  ]
                 : [
                     {
                       key: "code",
@@ -526,7 +614,7 @@ export default function CataloguePage() {
           ].map(([t, d]) => (
             <div
               key={t}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
             >
               <div className="text-sm font-semibold text-slate-800">{t}</div>
               <div className="mt-1 text-xs text-slate-400">{d}</div>

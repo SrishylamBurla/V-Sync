@@ -28,7 +28,7 @@ export default function BranchFilters({
               onSearchChange(e.target.value)
             }
             placeholder="Search branches..."
-            className="h-10 w-full border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+            className="h-10 w-full border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
           />
         </div>
 
@@ -51,7 +51,7 @@ export default function BranchFilters({
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
           >
             <X size={14} />
             Clear

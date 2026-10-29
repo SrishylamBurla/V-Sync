@@ -37,11 +37,11 @@ export default function StaffStats({ stats = {} }) {
         return (
           <div
             key={card.key}
-            className="border border-slate-200 bg-white px-4 py-4"
+            className="border border-slate-200 bg-white px-3 py-3"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                   {card.label}
                 </p>
 

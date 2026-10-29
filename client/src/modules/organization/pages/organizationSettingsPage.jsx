@@ -172,12 +172,12 @@ export default function OrganizationSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent px-3 py-3 sm:px-3 lg:px-4">
       <div className="mx-auto max-w-6xl">
 
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm">
@@ -200,20 +200,20 @@ export default function OrganizationSettingsPage() {
 
         {/* Alerts */}
         {error && (
-          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700">
             {success}
           </div>
         )}
 
         {/* Stats */}
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-500">
@@ -231,7 +231,7 @@ export default function OrganizationSettingsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-500">
@@ -251,14 +251,14 @@ export default function OrganizationSettingsPage() {
         </div>
 
         {/* Main content */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
 
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="rounded-2xl border border-slate-200 bg-white shadow-sm"
+            className="rounded-xl border border-slate-200 bg-white shadow-sm"
           >
-            <div className="border-b border-slate-100 px-6 py-5">
+            <div className="border-b border-slate-100 px-3 py-3">
               <h2 className="text-base font-semibold text-slate-900">
                 Organization Information
               </h2>
@@ -268,7 +268,7 @@ export default function OrganizationSettingsPage() {
               </p>
             </div>
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-3 p-3">
 
               {/* Name */}
               <div>
@@ -285,7 +285,7 @@ export default function OrganizationSettingsPage() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="V-Sync Technologies"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function OrganizationSettingsPage() {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="admin@example.com"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
               </div>
@@ -325,13 +325,13 @@ export default function OrganizationSettingsPage() {
                     value={form.phone}
                     onChange={handleChange}
                     placeholder="+91 98765 43210"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
               </div>
 
               {/* Country / Currency */}
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">
                     Country
@@ -342,7 +342,7 @@ export default function OrganizationSettingsPage() {
                     name="country"
                     value={form.country}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
 
@@ -355,7 +355,7 @@ export default function OrganizationSettingsPage() {
                     name="currency"
                     value={form.currency}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   >
                     <option value="INR">
                       INR — Indian Rupee
@@ -391,7 +391,7 @@ export default function OrganizationSettingsPage() {
                     value={form.timezone}
                     onChange={handleChange}
                     placeholder="Asia/Kolkata"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
 
@@ -401,11 +401,11 @@ export default function OrganizationSettingsPage() {
               </div>
 
               {/* Save */}
-              <div className="flex justify-end border-t border-slate-100 pt-6">
+              <div className="flex justify-end border-t border-slate-100 pt-4">
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? (
                     <>
@@ -424,14 +424,14 @@ export default function OrganizationSettingsPage() {
           </form>
 
           {/* Organization summary */}
-          <aside className="space-y-6">
+          <aside className="space-y-3">
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-900">
                 Organization
               </h3>
 
-              <div className="mt-5 space-y-4">
+              <div className="mt-4 space-y-3">
 
                 <div>
                   <p className="text-xs text-slate-400">
@@ -487,10 +487,10 @@ export default function OrganizationSettingsPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-900 p-6 text-white shadow-sm">
+            <div className="rounded-xl border border-slate-200 bg-slate-900 p-3 text-white shadow-sm">
               <Globe className="h-5 w-5 text-slate-300" />
 
-              <h3 className="mt-4 text-sm font-semibold">
+              <h3 className="mt-3 text-sm font-semibold">
                 Regional Configuration
               </h3>
 
@@ -499,9 +499,9 @@ export default function OrganizationSettingsPage() {
                 billing, appointments, reports and operational workflows.
               </p>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-white/10 p-3">
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] text-slate-400">
                     Currency
                   </p>
                   <p className="mt-1 text-sm font-medium">
@@ -510,7 +510,7 @@ export default function OrganizationSettingsPage() {
                 </div>
 
                 <div className="rounded-xl bg-white/10 p-3">
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[12px] text-slate-400">
                     Country
                   </p>
                   <p className="mt-1 text-sm font-medium">

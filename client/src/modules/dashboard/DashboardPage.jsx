@@ -1166,10 +1166,10 @@ export default function DashboardPage() {
     };
 
   return (
-    <div className="py-5 sm:py-6">
-      <div className="space-y-5 sm:space-y-6">
+    <div className="py-3 sm:py-3">
+      <div className="space-y-3 sm:space-y-3">
         {/* SINGLE PAGE HEADING */}
-        <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/90 bg-white px-4 py-5 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <header className="flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white px-3 py-3 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-3">
           <div>
             <div className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -1216,7 +1216,7 @@ export default function DashboardPage() {
                 onClick={() =>
                   navigate("/appointments?book=1")
                 }
-                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-4 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-3 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
               >
                 <Plus size={14} />
                 Book Appointment
@@ -1325,10 +1325,10 @@ export default function DashboardPage() {
           />
         </section>
 
-        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <section className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_340px]">
           {/* PREMIUM APPOINTMENT SCHEDULE */}
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
-            <header className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
+            <header className="flex flex-col gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
               <div className="flex min-w-0 items-center gap-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
                   <CalendarClock size={19} />
@@ -1364,7 +1364,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => navigate("/appointments?book=1")}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
                   >
                     <Plus size={14} />
                     Book appointment
@@ -1374,15 +1374,15 @@ export default function DashboardPage() {
             </header>
 
             {appointmentsLoading ? (
-              <div className="p-4 sm:p-5">
+              <div className="p-3 sm:p-3">
                 <LoadingRow text="Loading today’s schedule..." />
               </div>
             ) : upcomingAppointments.length ? (
               <>
-                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
+                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3 border-b border-slate-100 bg-slate-50/80 px-3 py-2.5 text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
                   <span>Time</span>
                   <span>Patient & visit</span>
-                  <span className="pr-8">Status</span>
+                  <span className="pr-6">Status</span>
                 </div>
                 <div className="divide-y divide-slate-100">
                   {upcomingAppointments.map((appointment) => {
@@ -1398,13 +1398,13 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={appointment._id}
-                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
+                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-3 sm:px-3"
                       >
                         <div className="flex min-h-[58px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/90 px-2 py-2 transition group-hover:border-violet-100 group-hover:bg-white">
                           <span className="text-sm font-bold tracking-tight text-slate-900">
                             {formatTime(appointment.appointmentDate)}
                           </span>
-                          <span className="mt-0.5 text-[11px] font-medium text-slate-400">
+                          <span className="mt-0.5 text-[12px] font-medium text-slate-400">
                             {duration} min
                           </span>
                         </div>
@@ -1420,7 +1420,7 @@ export default function DashboardPage() {
                               {patientName}
                             </button>
                             {patient.patientNumber && (
-                              <span className="rounded-lg border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-slate-500">
+                              <span className="rounded-lg border border-slate-200 bg-white px-1.5 py-0.5 text-[12px] font-semibold text-slate-500">
                                 {patient.patientNumber}
                               </span>
                             )}
@@ -1459,7 +1459,7 @@ export default function DashboardPage() {
                                   );
                                 }
                               }}
-                              className={`h-9 max-w-[145px] rounded-xl border border-slate-200 px-2.5 text-[11px] font-bold outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-wait disabled:opacity-60 ${APPOINTMENT_STATUS_CLASS[status] || "bg-white text-slate-600"}`}
+                              className={`h-9 max-w-[145px] rounded-xl border border-slate-200 px-2.5 text-[12px] font-bold outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-wait disabled:opacity-60 ${APPOINTMENT_STATUS_CLASS[status] || "bg-white text-slate-600"}`}
                               aria-label={`Change appointment status for ${patientName}`}
                               title="Change appointment status"
                             >
@@ -1487,7 +1487,7 @@ export default function DashboardPage() {
                     );
                   })}
                 </div>
-                <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
                   <span className="text-[12px] text-slate-500">
                     {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
                   </span>
@@ -1501,11 +1501,11 @@ export default function DashboardPage() {
                 </footer>
               </>
             ) : (
-              <div className="flex flex-col items-center px-5 py-12 text-center sm:py-14">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 ring-1 ring-violet-100">
+              <div className="flex flex-col items-center px-3 py-6 text-center sm:py-6">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-violet-50 text-violet-600 ring-1 ring-violet-100">
                   <CalendarClock size={24} />
                 </div>
-                <h3 className="mt-4 text-sm font-bold text-slate-900">No appointments scheduled today</h3>
+                <h3 className="mt-3 text-sm font-bold text-slate-900">No appointments scheduled today</h3>
                 <p className="mt-1 max-w-sm text-xs leading-5 text-slate-500">
                   New bookings will appear here with their visit type, scheduled time, and assigned clinician.
                 </p>
@@ -1513,7 +1513,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => navigate("/appointments?book=1")}
-                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-violet-700"
+                    className="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white transition hover:bg-violet-700"
                   >
                     <Plus size={14} /> Book appointment
                   </button>
@@ -1626,7 +1626,7 @@ export default function DashboardPage() {
                               key,
                             )
                           }
-                          className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[10px] font-bold transition ${
+                          className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[12px] font-bold transition ${
                             active
                               ? "border-slate-950 bg-slate-950 text-white"
                               : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
@@ -1637,7 +1637,7 @@ export default function DashboardPage() {
                           />
                           {option.shortLabel}
                           <span
-                            className={`rounded-full px-1.5 py-0.5 text-[9px] ${
+                            className={`rounded-full px-1.5 py-0.5 text-[12px] ${
                               active
                                 ? "bg-white/10 text-white"
                                 : "bg-slate-100 text-slate-500"
@@ -1672,7 +1672,7 @@ export default function DashboardPage() {
                         )
                       }
                       placeholder="Search job, patient, item..."
-                      className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-7 pr-2.5 text-[11px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                      className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-6 pr-2.5 text-[12px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                     />
                   </div>
 
@@ -1685,7 +1685,7 @@ export default function DashboardPage() {
                         event.target.value,
                       )
                     }
-                    className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-600 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                    className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-semibold text-slate-600 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                   >
                     {DISPENSING_STATUS_OPTIONS.map(
                       ([
@@ -1715,7 +1715,7 @@ export default function DashboardPage() {
                       onClick={
                         clearDispensingFilters
                       }
-                      className="inline-flex h-8 items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-[10px] font-bold text-slate-500 transition hover:bg-slate-50"
+                      className="inline-flex h-8 items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-[12px] font-bold text-slate-500 transition hover:bg-slate-50"
                       title="Clear filters"
                     >
                       <X
@@ -1793,7 +1793,7 @@ export default function DashboardPage() {
             ) : dispensingRecords.length ? (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[920px] text-left">
-                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                  <thead className="bg-slate-50 text-[12px] font-bold uppercase tracking-[0.1em] text-slate-400">
                     <tr>
                       <th className="px-3 py-2.5">
                         Type
@@ -1887,7 +1887,7 @@ export default function DashboardPage() {
                                   }
                                 </div>
 
-                                <div className="mt-0.5 text-[11px] text-slate-400">
+                                <div className="mt-0.5 text-[12px] text-slate-400">
                                   {
                                     record._dashboardPatientNumber
                                   }
@@ -1902,7 +1902,7 @@ export default function DashboardPage() {
                                 }
                               </div>
 
-                              <div className="mt-0.5 truncate text-[11px] text-slate-400">
+                              <div className="mt-0.5 truncate text-[12px] text-slate-400">
                                 {
                                   record._dashboardSecondary
                                 }
@@ -1989,7 +1989,7 @@ export default function DashboardPage() {
             ) : consultations.length ? (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[820px] text-left">
-                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                  <thead className="bg-slate-50 text-[12px] font-bold uppercase tracking-[0.1em] text-slate-400">
                     <tr>
                       <th className="px-3 py-2.5">Patient</th>
                       <th className="px-3 py-2.5">Type</th>
@@ -2024,14 +2024,14 @@ export default function DashboardPage() {
                               <div className="font-semibold text-slate-700 hover:underline">
                                 {fullName(patient)}
                               </div>
-                              <div className="mt-0.5 text-[11px] text-slate-400">
+                              <div className="mt-0.5 text-[12px] text-slate-400">
                                 {getPatientNumber({ patientId: patient })}
                               </div>
                             </button>
                           </td>
 
                           <td className="px-3 py-2.5">
-                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600">
+                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[12px] font-bold text-slate-600">
                               {consultationTypeLabel(consultation.consultationType)}
                             </span>
                           </td>
@@ -2049,7 +2049,7 @@ export default function DashboardPage() {
                           <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2">
                               <span
-                                className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
+                                className={`inline-flex items-center rounded-full px-2 py-1 text-[12px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
                                   currentStatus,
                                 )}`}
                               >
@@ -2065,7 +2065,7 @@ export default function DashboardPage() {
                                     event.target.value,
                                   )
                                 }
-                                className="h-8 rounded-lg border border-slate-200 bg-white px-1.5 text-[10px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="h-8 rounded-lg border border-slate-200 bg-white px-1.5 text-[12px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
                                 aria-label={`Change status for ${fullName(patient)}`}
                               >
                                 {CONSULTATION_STATUS_OPTIONS.map(([value, text]) => (
@@ -2156,10 +2156,10 @@ function SectionCard({
   children,
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-4 py-4 sm:px-5">
+    <section className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-3 py-3 sm:px-3">
         <div className="min-w-0">
-          <div className="text-[11px] font-bold uppercase tracking-[0.17em] text-violet-600">
+          <div className="text-[12px] font-bold uppercase tracking-[0.17em] text-violet-600">
             {eyebrow}
           </div>
 
@@ -2180,7 +2180,7 @@ function SectionCard({
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
+            className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-bold text-slate-600 transition hover:bg-slate-50"
           >
             {actionLabel}
             <ArrowRight size={10} />
@@ -2204,7 +2204,7 @@ function Metric({
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-2xl border border-slate-200/90 bg-white p-4 text-left shadow-[0_4px_18px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_10px_28px_rgba(109,40,217,0.08)] focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
+      className="group rounded-xl border border-slate-200/90 bg-white p-3 text-left shadow-[0_4px_18px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_10px_28px_rgba(109,40,217,0.08)] focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
     >
       <div className="flex items-center gap-2.5">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-700 ring-1 ring-violet-100/80 transition group-hover:from-violet-100 group-hover:to-blue-100">
@@ -2212,7 +2212,7 @@ function Metric({
         </span>
 
         <span className="min-w-0">
-          <span className="block truncate text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+          <span className="block truncate text-[12px] font-bold uppercase tracking-[0.12em] text-slate-500">
             {label}
           </span>
 
@@ -2256,7 +2256,7 @@ function SummaryMetric({
         </span>
       </div>
 
-      <div className="mt-1.5 truncate text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
+      <div className="mt-1.5 truncate text-[12px] font-bold uppercase tracking-[0.08em] text-slate-400">
         {label}
       </div>
     </button>
@@ -2276,7 +2276,7 @@ function CategoryBadge({
     PackageCheck;
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.07em] text-slate-600">
+    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[12px] font-bold uppercase tracking-[0.07em] text-slate-600">
       <Icon size={9} />
       {option?.shortLabel ||
         "Dispensing"}
@@ -2313,7 +2313,7 @@ function DispensingStatusBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] ${
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[12px] font-bold uppercase tracking-[0.08em] ${
         classes[key] ||
         "bg-slate-100 text-slate-600"
       }`}
@@ -2337,7 +2337,7 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-bold tracking-[0.02em] ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] font-bold tracking-[0.02em] ${
         APPOINTMENT_STATUS_CLASS[
           key
         ] ||
@@ -2401,7 +2401,7 @@ function QuickAction({
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
+      className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
     >
       <span className="flex h-9 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-100">
         <Icon size={13} />
@@ -2412,7 +2412,7 @@ function QuickAction({
           {label}
         </span>
 
-        <span className="mt-0.5 block truncate text-[10px] text-slate-400">
+        <span className="mt-0.5 block truncate text-[12px] text-slate-400">
           {description}
         </span>
       </span>
@@ -2433,7 +2433,7 @@ function EmptyState({
   showAction = true,
 }) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+    <div className="flex flex-col items-center justify-center px-3 py-6 text-center">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300">
         <Icon size={17} />
       </span>
@@ -2447,7 +2447,7 @@ function EmptyState({
           <button
             type="button"
             onClick={onAction}
-            className="mt-2 inline-flex h-8 items-center gap-1 rounded-lg bg-slate-950 px-2.5 text-[10px] font-bold text-white"
+            className="mt-2 inline-flex h-8 items-center gap-1 rounded-lg bg-slate-950 px-2.5 text-[12px] font-bold text-white"
           >
             {actionLabel}
             <ArrowRight
@@ -2479,7 +2479,7 @@ function Pagination({
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-100 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
-      <span className="text-[10px] font-semibold text-slate-400">
+      <span className="text-[12px] font-semibold text-slate-400">
         Showing {start}–{end} of {totalItems}
       </span>
 
@@ -2492,14 +2492,14 @@ function Pagination({
             )
           }
           disabled={page <= 1}
-          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Previous page"
         >
           <ChevronLeft size={10} />
           Previous
         </button>
 
-        <span className="inline-flex h-8 min-w-[64px] items-center justify-center rounded-lg bg-slate-950 px-2 text-[10px] font-bold text-white">
+        <span className="inline-flex h-8 min-w-[64px] items-center justify-center rounded-lg bg-slate-950 px-2 text-[12px] font-bold text-white">
           Page {page} / {totalPages}
         </span>
 
@@ -2514,7 +2514,7 @@ function Pagination({
             )
           }
           disabled={page >= totalPages}
-          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[12px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Next page"
         >
           Next
@@ -2529,7 +2529,7 @@ function LoadingRow({
   text,
 }) {
   return (
-    <div className="flex items-center justify-center gap-2 px-4 py-10 text-[12px] text-slate-400">
+    <div className="flex items-center justify-center gap-2 px-3 py-6 text-[12px] text-slate-400">
       <RefreshCw
         size={12}
         className="animate-spin"

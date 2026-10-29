@@ -113,11 +113,11 @@ export default function AdminOrganizationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent px-3 py-3 sm:px-3 lg:px-4">
       <div className="mx-auto max-w-7xl">
 
         {/* Header */}
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
@@ -138,7 +138,7 @@ export default function AdminOrganizationsPage() {
 
           <button
             onClick={() => navigate("/admin/organizations/new")}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             <Plus size={16} />
             Create Organization
@@ -147,13 +147,13 @@ export default function AdminOrganizationsPage() {
 
         {/* Error */}
         {error && (
-          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {/* Filters */}
-        <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
           <div className="flex flex-col gap-3 md:flex-row">
             <div className="relative flex-1">
               <Search
@@ -165,14 +165,14 @@ export default function AdminOrganizationsPage() {
                 value={search}
                 onChange={handleSearch}
                 placeholder="Search organizations..."
-                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
               />
             </div>
 
             <select
               value={status}
               onChange={handleStatusChange}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-400"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
             >
               <option value="all">All statuses</option>
               <option value="active">Active</option>
@@ -182,7 +182,7 @@ export default function AdminOrganizationsPage() {
 
             <button
               onClick={loadOrganizations}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
             >
               <RefreshCw size={15} />
               Refresh
@@ -191,14 +191,14 @@ export default function AdminOrganizationsPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
           {loading ? (
-            <div className="p-12 text-center text-sm text-slate-500">
+            <div className="p-6 text-center text-sm text-slate-500">
               Loading organizations...
             </div>
           ) : organizations.length === 0 ? (
-            <div className="p-12 text-center">
+            <div className="p-6 text-center">
               <Building2 className="mx-auto h-10 w-10 text-slate-300" />
 
               <h3 className="mt-3 text-sm font-semibold text-slate-800">
@@ -214,23 +214,23 @@ export default function AdminOrganizationsPage() {
               <table className="w-full min-w-[900px] text-left">
                 <thead className="border-b border-slate-100 bg-slate-50">
                   <tr>
-                    <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Organization
                     </th>
 
-                    <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Contact
                     </th>
 
-                    <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Country
                     </th>
 
-                    <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Status
                     </th>
 
-                    <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                       Actions
                     </th>
                   </tr>
@@ -242,7 +242,7 @@ export default function AdminOrganizationsPage() {
                       key={organization._id}
                       className="transition hover:bg-slate-50"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                             <Building2 size={17} />
@@ -260,7 +260,7 @@ export default function AdminOrganizationsPage() {
                         </div>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <p className="text-sm text-slate-700">
                           {organization.email || "—"}
                         </p>
@@ -270,14 +270,14 @@ export default function AdminOrganizationsPage() {
                         </p>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-center gap-2 text-sm text-slate-600">
                           <MapPin size={14} />
                           {organization.country || "India"}
                         </div>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                             organization.status === "active"
@@ -291,7 +291,7 @@ export default function AdminOrganizationsPage() {
                         </span>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex justify-end gap-2">
                           <button
                             title="View"
@@ -343,7 +343,7 @@ export default function AdminOrganizationsPage() {
 
           {/* Footer */}
           {!loading && organizations.length > 0 && (
-            <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4">
+            <div className="flex items-center justify-between border-t border-slate-100 px-3 py-3">
               <p className="text-xs text-slate-500">
                 Showing {organizations.length} of{" "}
                 {pagination.total} organizations

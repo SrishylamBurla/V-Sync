@@ -1,38 +1,93 @@
 @import "tailwindcss";
 
 :root {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  color: #111827;
-  background: #f8fafc;
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+  color: #172033;
+  background: #f6f8fc;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  line-height: 1.45;
+  --vsync-ink: #172033;
+  --vsync-muted: #667085;
+  --vsync-border: #e1e7f0;
+  --vsync-indigo: #4f46e5;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f8fafc;
+  color: var(--vsync-ink);
+  background: linear-gradient(135deg, #f8faff 0%, #f3f7fc 52%, #f9f7ff 100%);
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
 }
+button, input, textarea, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, .22);
+  outline-offset: 2px;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+input, textarea, select, button { letter-spacing: inherit; }
+::selection { background: rgba(129, 140, 248, .22); color: #172033; }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
+/* Unified clinical workspace: compact density, soft light gradients and clear contrast. */
+.vsync-app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(224, 231, 255, .52), transparent 34rem),
+    radial-gradient(ellipse at 94% 8%, rgba(219, 234, 254, .42), transparent 30rem),
+    linear-gradient(145deg, #f8faff 0%, #f3f7fb 62%, #f8f7ff 100%);
+}
+.vsync-app-shell main { padding-bottom: 1.25rem; }
+.vsync-app-shell header.sticky {
+  background: linear-gradient(100deg, rgba(255,255,255,.98) 0%, rgba(250,251,255,.98) 58%, rgba(245,247,255,.98) 100%);
+  box-shadow: 0 1px 0 rgba(148, 163, 184, .12);
+}
+.vsync-app-shell input:not([type="checkbox"]):not([type="radio"]),
+.vsync-app-shell select,
+.vsync-app-shell textarea { border-color: #dbe3ef; }
+.vsync-app-shell input:not([type="checkbox"]):not([type="radio"]):focus,
+.vsync-app-shell select:focus,
+.vsync-app-shell textarea:focus {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, .10);
+}
+.vsync-app-shell .text-\[8px\], .vsync-app-shell .text-\[9px\] { font-size: 11px; }
+
+/* Public marketing pages */
+.public-site {
+  color: #172033;
+  background:
+    radial-gradient(ellipse at 12% 7%, rgba(224, 231, 255, .65), transparent 36rem),
+    radial-gradient(ellipse at 95% 18%, rgba(219, 234, 254, .48), transparent 34rem),
+    #f8faff;
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, "Segoe UI", sans-serif;
+}
+.public-section { scroll-margin-top: 88px; }
+.public-card {
+  border: 1px solid rgba(226, 232, 240, .95);
+  background: linear-gradient(145deg, rgba(255,255,255,.99), rgba(248,250,255,.93));
+  box-shadow: 0 8px 24px rgba(25, 42, 80, .04);
+}
+.public-button-primary {
+  background-image: linear-gradient(110deg, #4f46e5 0%, #6366f1 52%, #3b82f6 100%);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, .16);
+}
+.public-button-primary:hover { filter: brightness(.97); transform: translateY(-1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

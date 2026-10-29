@@ -136,11 +136,11 @@ export default function BranchListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto w-full max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto w-full max-w-[1500px] px-3 py-3 sm:px-3 lg:px-4">
         {/* Header */}
-        <section className="mb-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <section className="mb-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 <Building2 size={14} />
@@ -183,7 +183,7 @@ export default function BranchListPage() {
 
               <Link
                 to="/branches/new"
-                className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
+                className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
               >
                 <Plus size={17} />
                 New Branch
@@ -194,13 +194,13 @@ export default function BranchListPage() {
 
         {/* Error */}
         {error && (
-          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {/* Stats */}
-        <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <section className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <StatCard
             label="Total Branches"
             value={stats.total}
@@ -225,9 +225,9 @@ export default function BranchListPage() {
         </section>
 
         {/* Workspace */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           {/* Filters */}
-          <div className="border-b border-slate-200 p-4 sm:p-5">
+          <div className="border-b border-slate-200 p-3 sm:p-3">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative w-full lg:max-w-md">
                 <Search
@@ -242,7 +242,7 @@ export default function BranchListPage() {
                     setSearch(event.target.value)
                   }
                   placeholder="Search branches..."
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
                 />
               </div>
 
@@ -274,27 +274,27 @@ export default function BranchListPage() {
               <table className="min-w-[850px] w-full">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50/80">
-                    <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                       Branch
                     </th>
 
-                    <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                       Location
                     </th>
 
-                    <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                       Contact
                     </th>
 
-                    <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                       GSTIN
                     </th>
 
-                    <th className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    <th className="px-3 py-3 text-left text-[12px] font-semibold uppercase tracking-wider text-slate-500">
                       Status
                     </th>
 
-                    <th className="w-12 px-5 py-3" />
+                    <th className="w-12 px-3 py-3" />
                   </tr>
                 </thead>
 
@@ -304,7 +304,7 @@ export default function BranchListPage() {
                       key={branch._id}
                       className="group border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <Link
                           to={`/branches/${branch._id}`}
                           className="flex items-center gap-3"
@@ -325,7 +325,7 @@ export default function BranchListPage() {
                         </Link>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="flex items-start gap-2 text-sm text-slate-600">
                           <MapPin
                             size={15}
@@ -349,7 +349,7 @@ export default function BranchListPage() {
                         </div>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         {branch.phone ? (
                           <div className="flex items-center gap-2 text-sm text-slate-600">
                             <Phone
@@ -365,19 +365,19 @@ export default function BranchListPage() {
                         )}
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <span className="text-sm text-slate-600">
                           {branch.gstin || "—"}
                         </span>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <BranchStatusBadge
                           status={branch.status}
                         />
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <Link
                           to={`/branches/${branch._id}`}
                           className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
@@ -393,7 +393,7 @@ export default function BranchListPage() {
           </div>
 
           {!loading && filteredBranches.length > 0 && (
-            <div className="border-t border-slate-200 bg-slate-50/50 px-5 py-3 text-xs text-slate-500">
+            <div className="border-t border-slate-200 bg-slate-50/50 px-3 py-3 text-xs text-slate-500">
               Showing {filteredBranches.length} of {branches.length} branches
             </div>
           )}
@@ -405,7 +405,7 @@ export default function BranchListPage() {
 
 function StatCard({ label, value, icon }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-slate-500">
           {label}
@@ -416,7 +416,7 @@ function StatCard({ label, value, icon }) {
         </div>
       </div>
 
-      <div className="mt-4 text-2xl font-semibold tracking-tight text-slate-900">
+      <div className="mt-3 text-2xl font-semibold tracking-tight text-slate-900">
         {value}
       </div>
     </div>
@@ -425,8 +425,8 @@ function StatCard({ label, value, icon }) {
 
 function LoadingState() {
   return (
-    <div className="p-8">
-      <div className="space-y-4">
+    <div className="p-4">
+      <div className="space-y-3">
         {[1, 2, 3, 4].map((item) => (
           <div
             key={item}
@@ -440,12 +440,12 @@ function LoadingState() {
 
 function EmptyState({ hasFilters }) {
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center px-6 text-center">
+    <div className="flex min-h-[300px] flex-col items-center justify-center px-3 text-center">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
         <Building2 size={21} />
       </div>
 
-      <h3 className="mt-4 text-sm font-semibold text-slate-900">
+      <h3 className="mt-3 text-sm font-semibold text-slate-900">
         {hasFilters
           ? "No branches match your filters"
           : "No branches yet"}
@@ -460,7 +460,7 @@ function EmptyState({ hasFilters }) {
       {!hasFilters && (
         <Link
           to="/branches/new"
-          className="mt-5 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-slate-800"
         >
           <Plus size={16} />
           Create Branch

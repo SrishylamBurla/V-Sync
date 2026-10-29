@@ -1,9 +1,14 @@
 import axios from "axios";
 import { authStorage } from "../modules/auth/authStorage";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://localhost:5000/api/v1";
+const configuredApiUrl = String(import.meta.env.VITE_API_URL || "").trim();
+const API_URL = configuredApiUrl || (import.meta.env.DEV ? "http://localhost:5000/api/v1" : "/api/v1");
+
+if (import.meta.env.PROD && !configuredApiUrl) {
+  // Same-origin fallback supports reverse-proxy deployments; set VITE_API_URL
+  // explicitly when the API is hosted separately (for example on Render).
+  console.error("VITE_API_URL is not configured. Set it to the deployed V-Sync API base URL.");
+}
 
 const api = axios.create({
   baseURL: API_URL,
@@ -76,6 +81,8 @@ api.interceptors.response.use(
 
   async (error) => {
     const originalRequest = error.config;
+
+    if (!originalRequest) return Promise.reject(error);
 
     // Not an authentication error
     if (error.response?.status !== 401) {

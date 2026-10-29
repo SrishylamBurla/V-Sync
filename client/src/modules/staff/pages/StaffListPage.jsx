@@ -325,13 +325,13 @@ export default function StaffListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7f9]">
-      <main className="mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent">
+      <main className="mx-auto max-w-[1500px] px-3 py-4 sm:px-3 lg:px-4">
         {/* PAGE HEADER */}
-        <div className="mb-7">
-          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+        <div className="mb-6">
+          <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-end">
             <div>
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+              <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.22em] text-slate-400">
                 Administration
               </p>
 
@@ -392,7 +392,7 @@ export default function StaffListPage() {
                 onClick={() =>
                   navigate("/staff/new")
                 }
-                className="inline-flex h-10 items-center gap-2 bg-slate-950 px-4 text-xs font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-slate-800"
+                className="inline-flex h-10 items-center gap-2 bg-slate-950 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-slate-800"
               >
                 <Plus size={15} />
 
@@ -404,7 +404,7 @@ export default function StaffListPage() {
 
         {/* ERROR */}
         {error && (
-          <div className="mb-5 flex items-center justify-between border border-rose-200 bg-rose-50 px-4 py-3">
+          <div className="mb-4 flex items-center justify-between border border-rose-200 bg-rose-50 px-3 py-3">
             <div>
               <p className="text-sm font-medium text-rose-700">
                 Unable to load staff
@@ -428,10 +428,10 @@ export default function StaffListPage() {
         {/* DOCUMENT */}
         <article className="border border-slate-200 bg-white">
           {/* DOCUMENT HEADER */}
-          <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
+          <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-slate-400">
                   Staff
                 </p>
 
@@ -455,15 +455,15 @@ export default function StaffListPage() {
           </div>
 
           {/* STATS */}
-          <div className="border-b border-slate-200 p-5 sm:p-7">
+          <div className="border-b border-slate-200 p-3 sm:p-4">
             <StaffStats stats={stats} />
           </div>
 
           {/* REGISTER */}
           <section>
-            <div className="border-b border-slate-200 px-5 py-5 sm:px-7">
-              <div className="mb-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="border-b border-slate-200 px-3 py-3 sm:px-4">
+              <div className="mb-3">
+                <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                   Section 01
                 </p>
 
@@ -483,7 +483,7 @@ export default function StaffListPage() {
               />
             </div>
 
-            <div className="p-5 sm:p-7">
+            <div className="p-3 sm:p-4">
               <StaffTable
                 staff={staff}
                 loading={loading}
@@ -515,7 +515,7 @@ export default function StaffListPage() {
 
               {/* PAGINATION SUMMARY */}
               {pagination && (
-                <div className="mt-4 flex flex-col justify-between gap-2 border-t border-slate-100 pt-4 text-xs text-slate-400 sm:flex-row sm:items-center">
+                <div className="mt-3 flex flex-col justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-400 sm:flex-row sm:items-center">
                   <span>
                     Showing{" "}
                     <span className="font-medium text-slate-600">
@@ -545,8 +545,8 @@ export default function StaffListPage() {
 
           {/* ROLES */}
           <section className="border-t border-slate-200">
-            <div className="px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 02
               </p>
 
@@ -560,7 +560,7 @@ export default function StaffListPage() {
               </p>
             </div>
 
-            <div className="border-t border-slate-100 px-5 py-12 text-center sm:px-7">
+            <div className="border-t border-slate-100 px-3 py-6 text-center sm:px-4">
               <p className="text-sm font-medium text-slate-600">
                 Select a staff member
               </p>
@@ -575,8 +575,8 @@ export default function StaffListPage() {
 
           {/* ACTIVITY */}
           <section className="border-t border-slate-200">
-            <div className="px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 03
               </p>
 
@@ -585,10 +585,10 @@ export default function StaffListPage() {
               </h3>
             </div>
 
-            <div className="border-t border-slate-100 px-5 py-10 sm:px-7">
+            <div className="border-t border-slate-100 px-3 py-6 sm:px-4">
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                <div className="border border-slate-200 p-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                <div className="border border-slate-200 p-3">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                     Staff accounts
                   </p>
 
@@ -597,8 +597,8 @@ export default function StaffListPage() {
                   </p>
                 </div>
 
-                <div className="border border-slate-200 p-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                <div className="border border-slate-200 p-3">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                     Active accounts
                   </p>
 
@@ -607,8 +607,8 @@ export default function StaffListPage() {
                   </p>
                 </div>
 
-                <div className="border border-slate-200 p-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                <div className="border border-slate-200 p-3">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                     Inactive accounts
                   </p>
 
@@ -622,8 +622,8 @@ export default function StaffListPage() {
 
           {/* ACCOUNT NOTES */}
           <section className="border-t border-slate-200">
-            <div className="px-5 py-5 sm:px-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="px-3 py-3 sm:px-4">
+              <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-slate-400">
                 Section 04
               </p>
 
@@ -633,8 +633,8 @@ export default function StaffListPage() {
             </div>
 
             <div className="grid grid-cols-1 border-t border-slate-100 sm:grid-cols-3">
-              <div className="border-b border-slate-100 px-5 py-4 sm:border-b-0 sm:border-r sm:px-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <div className="border-b border-slate-100 px-3 py-3 sm:border-b-0 sm:border-r sm:px-4">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                   Created
                 </p>
 
@@ -643,8 +643,8 @@ export default function StaffListPage() {
                 </p>
               </div>
 
-              <div className="border-b border-slate-100 px-5 py-4 sm:border-b-0 sm:border-r sm:px-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <div className="border-b border-slate-100 px-3 py-3 sm:border-b-0 sm:border-r sm:px-4">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                   Access
                 </p>
 
@@ -653,8 +653,8 @@ export default function StaffListPage() {
                 </p>
               </div>
 
-              <div className="px-5 py-4 sm:px-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <div className="px-3 py-3 sm:px-4">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                   Audit
                 </p>
 
@@ -666,8 +666,8 @@ export default function StaffListPage() {
           </section>
         </article>
 
-        <footer className="py-6 text-center">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+        <footer className="py-3 text-center">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400">
             V-Sync · Practice Management
           </p>
         </footer>

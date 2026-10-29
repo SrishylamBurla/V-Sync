@@ -105,7 +105,7 @@ export default function LaboratoryManagementPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+        <div className="m-5 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs font-medium text-red-700">
           {error}
         </div>
       )}
@@ -117,7 +117,7 @@ export default function LaboratoryManagementPage() {
         </div>
       </Section>
       <Section number="02" title="Production queue">
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search
               size={15}
@@ -127,7 +127,7 @@ export default function LaboratoryManagementPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search job, patient, frame or lens..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-sm outline-none focus:bg-white"
             />
           </div>
           <select
@@ -144,7 +144,7 @@ export default function LaboratoryManagementPage() {
           </select>
         </div>
         {loading ? (
-          <div className="flex items-center justify-center gap-2 py-14 text-xs text-slate-400">
+          <div className="flex items-center justify-center gap-2 py-6 text-xs text-slate-400">
             <RefreshCw size={14} className="animate-spin" />
             Loading production queue...
           </div>
@@ -182,7 +182,7 @@ export default function LaboratoryManagementPage() {
                 render: (r) => (
                   <span>
                     <b>{name(r.patientId)}</b>
-                    <span className="ml-2 text-[10px] text-slate-400">
+                    <span className="ml-2 text-[12px] text-slate-400">
                       {r.patientId?.patientNumber || "—"}
                     </span>
                   </span>
@@ -202,7 +202,7 @@ export default function LaboratoryManagementPage() {
                 key: "status",
                 label: "Status",
                 render: (r) => (
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase">
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[12px] font-bold uppercase">
                     {label(r.status)}
                   </span>
                 ),
@@ -217,10 +217,10 @@ export default function LaboratoryManagementPage() {
 
 function Metric({ icon: Icon, label: title, value }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
       <div className="flex items-center gap-2 text-slate-400">
         <Icon size={14} />
-        <span className="text-[10px] font-bold uppercase tracking-wider">
+        <span className="text-[12px] font-bold uppercase tracking-wider">
           {title}
         </span>
       </div>

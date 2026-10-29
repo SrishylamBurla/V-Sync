@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 import dns from "node:dns";
 
-dns.setServers([
-  "8.8.8.8",
-  "8.8.4.4",
-]);
-
 let isConnected = false;
 
 const connectDB = async () => {
-  if (isConnected) {
-    return;
-  }
+  if (isConnected) return;
+
+  // Use the host resolver by default. Only override DNS when explicitly configured.
+  // This runs after dotenv.config() in server.js, so values from .env are available.
+  const configuredDnsServers = (process.env.MONGODB_DNS_SERVERS || "")
+    .split(",")
+    .map((server) => server.trim())
+    .filter(Boolean);
+  if (configuredDnsServers.length) dns.setServers(configuredDnsServers);
 
   const uri = process.env.MONGODB_URI;
 

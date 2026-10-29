@@ -482,8 +482,8 @@ export default function DispensingDetailsPage() {
 
   if (!record) {
     return (
-      <div className="mx-auto max-w-3xl py-16">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+      <div className="mx-auto max-w-3xl py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error || "Dispensing record not found"}
         </div>
       </div>
@@ -622,7 +622,7 @@ export default function DispensingDetailsPage() {
         ================================================== */}
 
         <Section number="01" title="Patient">
-          <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
+          <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
             <InfoGrid
               items={[
                 {
@@ -746,7 +746,7 @@ export default function DispensingDetailsPage() {
               title="Spectacle dispensing"
               description="Frame, lens and prescription information for this spectacle job."
             >
-              <div className="grid gap-5 xl:grid-cols-2">
+              <div className="grid gap-3 xl:grid-cols-2">
                 <DetailCard
                   title="Frame"
                   icon={Glasses}
@@ -825,8 +825,8 @@ export default function DispensingDetailsPage() {
               </div>
 
               {record.extras?.length > 0 && (
-                <div className="mt-4">
-                  <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="mt-3">
+                  <div className="mb-2 text-[12px] font-bold uppercase tracking-wider text-slate-400">
                     Spectacle extras
                   </div>
 
@@ -936,7 +936,7 @@ export default function DispensingDetailsPage() {
               number="04"
               title="Contact lens parameters"
             >
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2">
                 <DetailCard
                   title="Right eye · OD"
                   items={[
@@ -1035,7 +1035,7 @@ export default function DispensingDetailsPage() {
               : "Contact lens billing summary"
           }
         >
-          <div className="ml-auto max-w-md rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div className="ml-auto max-w-md rounded-xl border border-slate-200 bg-slate-50 p-3">
             {isSpectacle ? (
               <div className="space-y-2 text-sm">
                 <BillRow
@@ -1126,9 +1126,9 @@ export default function DispensingDetailsPage() {
             {workflow.map((item) => (
               <div
                 key={item.label}
-                className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                className="rounded-xl border border-slate-200 bg-slate-50 p-3"
               >
-                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
                   {item.label}
                 </div>
 
@@ -1149,9 +1149,9 @@ export default function DispensingDetailsPage() {
           {/* CURRENT STATUS CONTROL */}
 
           {currentNextStatus && (
-            <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-4 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
                   Current status
                 </div>
 
@@ -1175,7 +1175,7 @@ export default function DispensingDetailsPage() {
                 onClick={() =>
                   void advanceStatus()
                 }
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-50"
               >
                 {savingStatus ? (
                   <Loader2
@@ -1201,7 +1201,7 @@ export default function DispensingDetailsPage() {
         ================================================== */}
 
         <Section number="07" title="Notes">
-          <p className="whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-6 text-slate-600">
+          <p className="whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600">
             {record.notes ||
               "No dispensing notes recorded."}
           </p>
@@ -1250,8 +1250,8 @@ function DetailCard({
   items,
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="mb-4 flex items-center gap-2">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="mb-3 flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-slate-600">
           {Icon ? (
             <Icon size={15} />
@@ -1268,7 +1268,7 @@ function DetailCard({
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map((item) => (
           <div key={item.label}>
-            <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
               {item.label}
             </div>
 
@@ -1288,7 +1288,7 @@ function DetailCard({
 
 function BillRow({ label: title, value }) {
   return (
-    <div className="flex justify-between gap-4">
+    <div className="flex justify-between gap-3">
       <span className="text-slate-500">
         {title}
       </span>
@@ -1319,7 +1319,7 @@ function RxTable({ rx, pd }) {
     <div className="overflow-x-auto rounded-xl border border-slate-200">
       <table className="w-full min-w-[650px] text-xs">
         <thead>
-          <tr className="bg-slate-50 text-left text-[9px] uppercase tracking-wider text-slate-400">
+          <tr className="bg-slate-50 text-left text-[12px] uppercase tracking-wider text-slate-400">
             <th className="p-3">
               Field
             </th>
@@ -1394,13 +1394,13 @@ function BillModal({
   saving,
 }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm">
+      <div className="w-full max-w-2xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
         {/* HEADER */}
 
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-slate-200 px-3 py-3">
           <div>
-            <div className="text-[9px] font-bold uppercase tracking-wider text-blue-600">
+            <div className="text-[12px] font-bold uppercase tracking-wider text-blue-600">
               Billing
             </div>
 
@@ -1422,12 +1422,12 @@ function BillModal({
 
         <form
           onSubmit={onSubmit}
-          className="space-y-5 p-5"
+          className="space-y-3 p-3"
         >
           {/* TOTAL */}
 
-          <div className="rounded-2xl bg-slate-50 p-4">
-            <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="rounded-xl bg-slate-50 p-3">
+            <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
               Bill total
             </div>
 
@@ -1485,7 +1485,7 @@ function BillModal({
                     {labelText}
                   </div>
 
-                  <div className="mt-1 text-[9px] text-slate-400">
+                  <div className="mt-1 text-[12px] text-slate-400">
                     {value ===
                     "pay_full"
                       ? "Invoice is paid immediately"
@@ -1502,7 +1502,7 @@ function BillModal({
           {/* PAYMENT DETAILS */}
 
           {mode !== "pay_later" && (
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-3">
               <Field
                 label="Amount"
                 type="number"
@@ -1548,11 +1548,11 @@ function BillModal({
 
           {/* ACTIONS */}
 
-          <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-200 pt-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600"
+              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-semibold text-slate-600"
             >
               Cancel
             </button>
@@ -1560,7 +1560,7 @@ function BillModal({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving && (
                 <Loader2

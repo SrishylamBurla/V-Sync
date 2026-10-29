@@ -131,7 +131,7 @@ const InputField = ({
         <input
           {...props}
           className={`w-full rounded-xl border bg-white py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 ${
-            Icon ? "pl-10 pr-3" : "px-3"
+            Icon ? "pl-8 pr-3" : "px-3"
           } ${
             error
               ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-100"
@@ -181,8 +181,8 @@ const SelectField = ({
 };
 
 const Section = ({ title, description, children }) => (
-  <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-    <div className="border-b border-gray-100 px-5 py-4">
+  <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="border-b border-gray-100 px-3 py-3">
       <h2 className="text-base font-semibold text-gray-900">
         {title}
       </h2>
@@ -194,7 +194,7 @@ const Section = ({ title, description, children }) => (
       )}
     </div>
 
-    <div className="p-5">{children}</div>
+    <div className="p-3">{children}</div>
   </section>
 );
 
@@ -524,8 +524,8 @@ export default function EditStaffPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto flex min-h-[400px] max-w-5xl items-center justify-center rounded-2xl border border-gray-200 bg-white">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
+        <div className="mx-auto flex min-h-[400px] max-w-5xl items-center justify-center rounded-xl border border-gray-200 bg-white">
           <div className="flex flex-col items-center gap-3">
             <Loader2
               size={28}
@@ -543,11 +543,11 @@ export default function EditStaffPage() {
 
   if (error && !form.firstName) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
         <div className="mx-auto max-w-5xl">
           
 
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-3">
             <h2 className="font-semibold text-red-800">
               Unable to load staff
             </h2>
@@ -559,7 +559,7 @@ export default function EditStaffPage() {
             <button
               type="button"
               onClick={loadData}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+              className="mt-3 inline-flex items-center gap-2 rounded-xl bg-red-600 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-700"
             >
               <RefreshCw size={16} />
               Try Again
@@ -571,10 +571,10 @@ export default function EditStaffPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 p-3 sm:p-3 lg:p-4">
+      <div className="mx-auto max-w-5xl space-y-3">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div>
               <p className="text-sm text-gray-500">
@@ -590,7 +590,7 @@ export default function EditStaffPage() {
           <button
             type="button"
             onClick={() => navigate(`/staff/${id}`)}
-            className="hidden rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 sm:block"
+            className="hidden rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 sm:block"
           >
             View Profile
           </button>
@@ -598,14 +598,14 @@ export default function EditStaffPage() {
 
         {/* Alerts */}
         {error && (
-          <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
             <UserX size={18} className="mt-0.5 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700">
             <CheckCircle2
               size={18}
               className="mt-0.5 shrink-0"
@@ -614,13 +614,13 @@ export default function EditStaffPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Personal Information */}
           <Section
             title="Personal Information"
             description="Update the staff member's basic information."
           >
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2">
               <InputField
                 label="First Name"
                 required
@@ -673,7 +673,7 @@ export default function EditStaffPage() {
             title="Role & Access"
             description="Control the staff member's operational role."
           >
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2">
               <SelectField
                 label="Staff Role"
                 required
@@ -711,7 +711,7 @@ export default function EditStaffPage() {
               </SelectField>
             </div>
 
-            <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-3">
               <div className="flex items-start gap-3">
                 <Shield
                   size={19}
@@ -740,14 +740,14 @@ export default function EditStaffPage() {
             description="Select the branches where this staff member can operate."
           >
             {loadingBranches ? (
-              <div className="flex items-center justify-center py-10">
+              <div className="flex items-center justify-center py-6">
                 <Loader2
                   size={24}
                   className="animate-spin text-gray-400"
                 />
               </div>
             ) : branches.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center">
+              <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4 text-center">
                 <Building2
                   size={30}
                   className="mx-auto text-gray-400"
@@ -776,7 +776,7 @@ export default function EditStaffPage() {
                         onClick={() =>
                           handleBranchToggle(branchId)
                         }
-                        className={`relative rounded-xl border p-4 text-left transition ${
+                        className={`relative rounded-xl border p-3 text-left transition ${
                           selected
                             ? "border-gray-900 bg-gray-50 shadow-sm"
                             : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
@@ -788,7 +788,7 @@ export default function EditStaffPage() {
                           </span>
                         )}
 
-                        <div className="flex items-start gap-3 pr-5">
+                        <div className="flex items-start gap-3 pr-4">
                           <div
                             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
                               selected
@@ -831,7 +831,7 @@ export default function EditStaffPage() {
                 )}
 
                 {/* Default Branch */}
-                <div className="mt-6 border-t border-gray-100 pt-5">
+                <div className="mt-4 border-t border-gray-100 pt-4">
                   <SelectField
                     label="Default Branch"
                     required
@@ -885,7 +885,7 @@ export default function EditStaffPage() {
                         status: option.value,
                       }))
                     }
-                    className={`rounded-xl border p-4 text-left transition ${
+                    className={`rounded-xl border p-3 text-left transition ${
                       selected
                         ? "border-gray-900 bg-gray-50"
                         : "border-gray-200 bg-white hover:border-gray-300"
@@ -912,14 +912,14 @@ export default function EditStaffPage() {
               })}
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {form.status !== "active" && (
                 <button
                   type="button"
                   onClick={() =>
                     handleStatusChange("active")
                   }
-                  className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+                  className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
                 >
                   <UserCheck size={16} />
                   Activate Account
@@ -932,7 +932,7 @@ export default function EditStaffPage() {
                   onClick={() =>
                     handleStatusChange("inactive")
                   }
-                  className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100"
+                  className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100"
                 >
                   <UserX size={16} />
                   Deactivate Account
@@ -942,7 +942,7 @@ export default function EditStaffPage() {
           </Section>
 
           {/* Save */}
-          <div className="sticky bottom-4 z-10 rounded-2xl border border-gray-200 bg-white/95 p-4 shadow-lg backdrop-blur">
+          <div className="sticky bottom-4 z-10 rounded-xl border border-gray-200 bg-white/95 p-3 shadow-lg backdrop-blur">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-gray-500">
                 Changes will be applied to this staff account.
@@ -954,7 +954,7 @@ export default function EditStaffPage() {
                   onClick={() =>
                     navigate(`/staff/${id}`)
                   }
-                  className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -962,7 +962,7 @@ export default function EditStaffPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? (
                     <>
@@ -990,7 +990,7 @@ export default function EditStaffPage() {
           description="Reset the staff member's login password."
         >
           {!showResetPassword ? (
-            <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-gray-600 shadow-sm">
                   <KeyRound size={18} />
@@ -1010,7 +1010,7 @@ export default function EditStaffPage() {
               <button
                 type="button"
                 onClick={() => setShowResetPassword(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
               >
                 <KeyRound size={16} />
                 Reset Password
@@ -1019,9 +1019,9 @@ export default function EditStaffPage() {
           ) : (
             <form
               onSubmit={handlePasswordReset}
-              className="space-y-5"
+              className="space-y-3"
             >
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">
                     New Password
@@ -1048,7 +1048,7 @@ export default function EditStaffPage() {
                         }))
                       }
                       placeholder="Minimum 8 characters"
-                      className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-11 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-100"
+                      className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-8 pr-11 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-100"
                     />
 
                     <button
@@ -1095,7 +1095,7 @@ export default function EditStaffPage() {
                         }))
                       }
                       placeholder="Confirm new password"
-                      className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-100"
+                      className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-100"
                     />
                   </div>
                 </div>
@@ -1111,7 +1111,7 @@ export default function EditStaffPage() {
                       confirmPassword: "",
                     });
                   }}
-                  className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -1119,7 +1119,7 @@ export default function EditStaffPage() {
                 <button
                   type="submit"
                   disabled={resettingPassword}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {resettingPassword ? (
                     <>

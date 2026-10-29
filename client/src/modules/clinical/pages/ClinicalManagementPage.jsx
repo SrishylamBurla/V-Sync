@@ -293,17 +293,17 @@ export default function ClinicalManagementPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] bg-slate-50 px-3 py-5 sm:px-5 lg:px-7">
+    <div className="min-h-[calc(100vh-5rem)] bg-slate-50 px-3 py-3 sm:px-3 lg:px-4">
            {" "}
-      <div className="mx-auto max-w-[1600px] space-y-5">
+      <div className="mx-auto max-w-[1600px] space-y-3">
                {" "}
-        <header className="rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-sm sm:px-7">
+        <header className="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:px-4">
                    {" "}
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                        {" "}
             <div>
                            {" "}
-              <div className="text-[10px] font-bold uppercase tracking-[.2em] text-blue-600">
+              <div className="text-[12px] font-bold uppercase tracking-[.2em] text-blue-600">
                                 Patient care workspace              {" "}
               </div>
                            {" "}
@@ -337,7 +337,7 @@ export default function ClinicalManagementPage() {
         </header>
                {" "}
         {error && (
-          <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+          <div className="flex items-start justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs font-medium text-red-700">
                         <span>{error}</span>           {" "}
             <button
               type="button"
@@ -350,11 +350,11 @@ export default function ClinicalManagementPage() {
           </div>
         )}
                {" "}
-        <section className="grid gap-5 xl:grid-cols-[390px_minmax(0,1fr)]">
+        <section className="grid gap-3 xl:grid-cols-[390px_minmax(0,1fr)]">
                    {" "}
-          <aside className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-[92px] xl:self-start">
+          <aside className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-[92px] xl:self-start">
                        {" "}
-            <div className="border-b border-slate-200 p-4">
+            <div className="border-b border-slate-200 p-3">
                            {" "}
               <div className="flex items-center gap-2">
                                 <Search size={15} className="text-slate-400" /> 
@@ -381,13 +381,13 @@ export default function ClinicalManagementPage() {
             <div className="max-h-[calc(100vh-260px)] overflow-y-auto">
                            {" "}
               {loadingPatients ? (
-                <div className="flex items-center justify-center gap-2 px-4 py-12 text-xs text-slate-400">
+                <div className="flex items-center justify-center gap-2 px-3 py-6 text-xs text-slate-400">
                                    {" "}
                   <Loader2 size={15} className="animate-spin" /> Loading        
                             patients...                {" "}
                 </div>
               ) : patients.length === 0 ? (
-                <div className="px-5 py-12 text-center text-xs text-slate-400">
+                <div className="px-3 py-6 text-center text-xs text-slate-400">
                                     No active patients found.              
                    {" "}
                 </div>
@@ -402,7 +402,7 @@ export default function ClinicalManagementPage() {
                       key={patient._id}
                       type="button"
                       onClick={() => void selectPatient(patient)}
-                      className={`flex w-full items-center gap-3 border-b border-slate-100 px-4 py-3 text-left transition ${active ? "bg-blue-50" : "hover:bg-slate-50"}`}
+                      className={`flex w-full items-center gap-3 border-b border-slate-100 px-3 py-3 text-left transition ${active ? "bg-blue-50" : "hover:bg-slate-50"}`}
                     >
                                            {" "}
                       <div
@@ -422,7 +422,7 @@ export default function ClinicalManagementPage() {
                                        {" "}
                         </div>
                                                {" "}
-                        <div className="mt-1 truncate text-[10px] text-slate-400">
+                        <div className="mt-1 truncate text-[12px] text-slate-400">
                                                    {" "}
                           {patient.patientNumber || "No number"}               
                                     {age !== null ? ` · ${age} yrs` : ""}       
@@ -447,22 +447,22 @@ export default function ClinicalManagementPage() {
                      {" "}
           </aside>
                    {" "}
-          <main className="min-w-0 space-y-5">
+          <main className="min-w-0 space-y-3">
                        {" "}
             {!selectedPatient ? (
               <EmptyWorkspace />
             ) : (
               <>
                                {" "}
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                                    {" "}
-                  <div className="bg-gradient-to-br from-blue-50 via-white to-violet-50 p-5 sm:p-6">
+                  <div className="bg-gradient-to-br from-blue-50 via-white to-violet-50 p-3 sm:p-3">
                                        {" "}
-                    <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                                            {" "}
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3">
                                                {" "}
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-sm font-bold text-white">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-bold text-white">
                                                    {" "}
                           {(
                             selectedPatient.firstName?.[0] || "P"
@@ -474,7 +474,7 @@ export default function ClinicalManagementPage() {
                                                {" "}
                         <div>
                                                    {" "}
-                          <div className="text-[10px] font-bold uppercase tracking-[.18em] text-blue-600">
+                          <div className="text-[12px] font-bold uppercase tracking-[.18em] text-blue-600">
                                                         Selected patient        
                                              {" "}
                           </div>
@@ -508,7 +508,7 @@ export default function ClinicalManagementPage() {
                         <button
                           type="button"
                           onClick={startConsultation}
-                          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
                         >
                                                     <ClipboardPlus size={14} />{" "}
                           Start consultation                        {" "}
@@ -519,7 +519,7 @@ export default function ClinicalManagementPage() {
                           onClick={() =>
                             navigate(`/patients/${selectedPatient._id}`)
                           }
-                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                         >
                                                     <Eye size={14} /> Patient
                           record                        {" "}
@@ -531,7 +531,7 @@ export default function ClinicalManagementPage() {
                                      {" "}
                   </div>
                                    {" "}
-                  <div className="grid gap-3 border-t border-slate-200 p-5 sm:grid-cols-4">
+                  <div className="grid gap-3 border-t border-slate-200 p-3 sm:grid-cols-4">
                                        {" "}
                     <Summary
                       label="Consultations"
@@ -565,9 +565,9 @@ export default function ClinicalManagementPage() {
                                  {" "}
                 </section>
                                {" "}
-                <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
                                    {" "}
-                  <div className="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-3 border-b border-slate-200 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
                                        {" "}
                     <div>
                                            {" "}
@@ -582,7 +582,7 @@ export default function ClinicalManagementPage() {
                                              {" "}
                       </div>
                                            {" "}
-                      <p className="mt-1 text-[10px] text-slate-400">
+                      <p className="mt-1 text-[12px] text-slate-400">
                                                 Select any previous visit to
                         review the complete                         clinical
                         record.                      {" "}
@@ -605,7 +605,7 @@ export default function ClinicalManagementPage() {
                           key={value}
                           type="button"
                           onClick={() => setHistoryFilter(value)}
-                          className={`rounded-lg px-2.5 py-1.5 text-[9px] font-bold ${historyFilter === value ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+                          className={`rounded-lg px-2.5 py-1.5 text-[12px] font-bold ${historyFilter === value ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
                         >
                                                     {text}                     
                            {" "}
@@ -616,17 +616,17 @@ export default function ClinicalManagementPage() {
                                      {" "}
                   </div>
                                    {" "}
-                  <div className="p-5">
+                  <div className="p-3">
                                        {" "}
                     {loadingHistory ? (
-                      <div className="flex justify-center py-12 text-xs text-slate-400">
+                      <div className="flex justify-center py-6 text-xs text-slate-400">
                                                {" "}
                         <Loader2 size={16} className="mr-2 animate-spin" />    
                                             Loading history...                  
                            {" "}
                       </div>
                     ) : filteredHistory.length === 0 ? (
-                      <div className="rounded-xl border border-dashed border-slate-200 px-5 py-12 text-center text-xs text-slate-400">
+                      <div className="rounded-xl border border-dashed border-slate-200 px-3 py-6 text-center text-xs text-slate-400">
                                                 No consultations in this
                         category.                      {" "}
                       </div>
@@ -638,7 +638,7 @@ export default function ClinicalManagementPage() {
                             key={item._id || index}
                             type="button"
                             onClick={() => void openConsultation(item)}
-                            className="group rounded-2xl border border-slate-200 p-4 text-left transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-sm"
+                            className="group rounded-xl border border-slate-200 p-3 text-left transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-sm"
                           >
                                                        {" "}
                             <div className="flex items-start justify-between gap-3">
@@ -657,14 +657,14 @@ export default function ClinicalManagementPage() {
                             </div>
                                                        {" "}
                             <div
-                              className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold ${toneClass(consultationTone(item))}`}
+                              className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[12px] font-bold ${toneClass(consultationTone(item))}`}
                             >
                                                            {" "}
                               {consultationLabel(item)}                         
                                {" "}
                             </div>
                                                        {" "}
-                            <div className="mt-3 space-y-1 text-[10px] text-slate-400">
+                            <div className="mt-3 space-y-1 text-[12px] text-slate-400">
                                                            {" "}
                               <div>
                                                                 Status:        
@@ -702,9 +702,9 @@ export default function ClinicalManagementPage() {
                                  {" "}
                 </section>
                                {" "}
-                <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
                                    {" "}
-                  <div className="border-b border-slate-200 px-5 py-4">
+                  <div className="border-b border-slate-200 px-3 py-3">
                                        {" "}
                     <div className="flex items-center gap-2">
                                            {" "}
@@ -717,7 +717,7 @@ export default function ClinicalManagementPage() {
                                          {" "}
                     </div>
                                        {" "}
-                    <p className="mt-1 text-[10px] text-slate-400">
+                    <p className="mt-1 text-[12px] text-slate-400">
                                             Specialist assessments become
                       available after a completed                      
                       Comprehensive Consultation.                    {" "}
@@ -725,7 +725,7 @@ export default function ClinicalManagementPage() {
                                      {" "}
                   </div>
                                    {" "}
-                  <div className="grid gap-3 p-5 md:grid-cols-3">
+                  <div className="grid gap-3 p-3 md:grid-cols-3">
                                        {" "}
                     <SpecialistCard
                       title="Binocular Vision"
@@ -775,15 +775,15 @@ export default function ClinicalManagementPage() {
 
 function EmptyWorkspace() {
   return (
-    <section className="flex min-h-[560px] items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
+    <section className="flex min-h-[560px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-4 text-center">
            {" "}
       <div className="max-w-sm">
                {" "}
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                     <UserRound size={25} />       {" "}
         </div>
                {" "}
-        <h2 className="mt-4 text-lg font-bold text-slate-900">
+        <h2 className="mt-3 text-lg font-bold text-slate-900">
                     Select a patient        {" "}
         </h2>
                {" "}
@@ -803,7 +803,7 @@ function Summary({ label: title, value }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
            {" "}
-      <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
                 {title}     {" "}
       </div>
             <div className="mt-1 text-sm font-bold text-slate-900">{value}</div>
@@ -818,7 +818,7 @@ function SpecialistCard({ title, description, enabled, onClick }) {
       type="button"
       disabled={!enabled}
       onClick={onClick}
-      className="group rounded-2xl border border-slate-200 p-4 text-left transition hover:border-violet-200 hover:bg-violet-50/40 disabled:cursor-not-allowed disabled:opacity-50"
+      className="group rounded-xl border border-slate-200 p-3 text-left transition hover:border-violet-200 hover:bg-violet-50/40 disabled:cursor-not-allowed disabled:opacity-50"
     >
            {" "}
       <div className="flex items-center justify-between">
@@ -835,10 +835,10 @@ function SpecialistCard({ title, description, enabled, onClick }) {
       </div>
             <div className="mt-3 text-xs font-bold text-slate-900">{title}</div>
            {" "}
-      <p className="mt-1 text-[10px] leading-5 text-slate-400">{description}</p>
+      <p className="mt-1 text-[12px] leading-5 text-slate-400">{description}</p>
            {" "}
       <div
-        className={`mt-3 text-[9px] font-bold ${enabled ? "text-emerald-600" : "text-slate-400"}`}
+        className={`mt-3 text-[12px] font-bold ${enabled ? "text-emerald-600" : "text-slate-400"}`}
       >
                 {enabled ? "Available" : "Complete Comprehensive first"}   
          {" "}
@@ -977,27 +977,27 @@ function ConsultationModal({ consultation, loading, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-2 backdrop-blur-sm sm:p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-2 backdrop-blur-sm sm:p-3"
       role="dialog"
       aria-modal="true"
       aria-label={`${consultationType} clinical record`}
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
     >
       <div className="flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-2xl">
-        <header className="flex items-start justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:px-5">
+        <header className="flex items-start justify-between gap-3 border-b border-slate-200 bg-white px-3 py-3 sm:px-3">
           <div className="min-w-0">
-            <div className="text-[9px] font-bold uppercase tracking-[.16em] text-blue-600">
+            <div className="text-[12px] font-bold uppercase tracking-[.16em] text-blue-600">
               Patient clinical history
             </div>
             <div className="mt-1 flex flex-wrap items-center gap-2">
               <h2 className="text-sm font-bold text-slate-900 sm:text-base">
                 {consultationType}
               </h2>
-              <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-semibold text-slate-600">
+              <span className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-0.5 text-[12px] font-semibold text-slate-600">
                 {label(consultation?.status || "completed")}
               </span>
             </div>
-            <p className="mt-1 text-[10px] text-slate-400">
+            <p className="mt-1 text-[12px] text-slate-400">
               {formatDateTime(
                 consultation?.consultationDate || consultation?.createdAt,
               )}
@@ -1010,16 +1010,16 @@ function ConsultationModal({ consultation, loading, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-md border border-slate-200 bg-white p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+            className="shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
             aria-label="Close consultation history"
           >
             <X size={15} />
           </button>
         </header>
 
-        <div className="min-h-0 overflow-y-auto p-3 sm:p-4">
+        <div className="min-h-0 overflow-y-auto p-3 sm:p-3">
           {loading ? (
-            <div className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white py-10 text-xs text-slate-500">
+            <div className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white py-6 text-xs text-slate-500">
               <Loader2 size={15} className="animate-spin" /> Loading complete
               consultation record...
             </div>
@@ -1075,7 +1075,7 @@ function ConsultationModal({ consultation, loading, onClose }) {
 
               <ClinicalSection title="Visual acuity" always>
                 {isBlankModalValue(consultation?.visualAcuity) ? (
-                  <p className="rounded-md border border-dashed border-slate-200 bg-white px-3 py-4 text-center text-[11px] text-slate-400">
+                  <p className="rounded-lg border border-dashed border-slate-200 bg-white px-3 py-3 text-center text-[12px] text-slate-400">
                     No visual acuity values recorded for this consultation.
                   </p>
                 ) : (
@@ -1097,7 +1097,7 @@ function ConsultationModal({ consultation, loading, onClose }) {
                     ))}
                   </div>
                 ) : (
-                  <p className="rounded-md border border-dashed border-slate-200 bg-white px-3 py-4 text-center text-[11px] text-slate-400">
+                  <p className="rounded-lg border border-dashed border-slate-200 bg-white px-3 py-3 text-center text-[12px] text-slate-400">
                     No prescription stages recorded.
                   </p>
                 )}
@@ -1193,14 +1193,14 @@ function ConsultationModal({ consultation, loading, onClose }) {
             </div>
           )}
         </div>
-        <footer className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-2.5">
-          <span className="text-[9px] text-slate-400">
+        <footer className="flex items-center justify-between border-t border-slate-200 bg-white px-3 py-2.5">
+          <span className="text-[12px] text-slate-400">
             Clinical record · View only
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md bg-slate-900 px-3 py-1.5 text-[10px] font-semibold text-white transition hover:bg-slate-700"
+            className="rounded-lg bg-slate-900 px-3 py-1.5 text-[12px] font-semibold text-white transition hover:bg-slate-700"
           >
             Close
           </button>
@@ -1213,11 +1213,11 @@ function ConsultationModal({ consultation, loading, onClose }) {
 function ModalMeta({ label: title, value }) {
   return (
     <div className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2">
-      <div className="text-[8px] font-bold uppercase tracking-[.1em] text-slate-400">
+      <div className="text-[12px] font-bold uppercase tracking-[.1em] text-slate-400">
         {title}
       </div>
       <div
-        className="mt-1 truncate text-[10px] font-semibold text-slate-700"
+        className="mt-1 truncate text-[12px] font-semibold text-slate-700"
         title={String(value ?? "")}
       >
         {value || "—"}
@@ -1234,7 +1234,7 @@ function ClinicalSection({ title, fields, children, always = false }) {
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white">
       <header className="border-b border-slate-100 bg-slate-50 px-3 py-2">
-        <h3 className="text-[10px] font-bold uppercase tracking-[.1em] text-slate-700">
+        <h3 className="text-[12px] font-bold uppercase tracking-[.1em] text-slate-700">
           {title}
         </h3>
       </header>
@@ -1251,7 +1251,7 @@ function ClinicalSection({ title, fields, children, always = false }) {
               ))}
             </div>
           ) : (
-            <p className="text-[10px] text-slate-400">No details recorded.</p>
+            <p className="text-[12px] text-slate-400">No details recorded.</p>
           ))}
       </div>
     </section>
@@ -1261,8 +1261,8 @@ function ClinicalSection({ title, fields, children, always = false }) {
 function ClinicalField({ label: title, value }) {
   if (isBlankModalValue(value)) return null;
   return (
-    <div className="min-w-0 rounded-md border border-slate-100 bg-slate-50/70 px-2.5 py-2">
-      <div className="mb-1 text-[8px] font-bold uppercase tracking-[.08em] text-slate-400">
+    <div className="min-w-0 rounded-lg border border-slate-100 bg-slate-50/70 px-2.5 py-2">
+      <div className="mb-1 text-[12px] font-bold uppercase tracking-[.08em] text-slate-400">
         {title}
       </div>
       <ClinicalValue value={value} />
@@ -1283,10 +1283,10 @@ function VisualAcuityTable({ value }) {
   ];
   return (
     <div className="space-y-2">
-      <div className="overflow-x-auto rounded-md border border-slate-200">
+      <div className="overflow-x-auto rounded-lg border border-slate-200">
         <table className="w-full min-w-[520px] text-left">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-[8px] font-bold uppercase tracking-wider text-slate-400">
+            <tr className="border-b border-slate-200 bg-slate-50 text-[12px] font-bold uppercase tracking-wider text-slate-400">
               <th className="px-2.5 py-2">Eye</th>
               {columns.map(([, title]) => (
                 <th key={title} className="px-2 py-2 text-center">
@@ -1301,13 +1301,13 @@ function VisualAcuityTable({ value }) {
               ["OS", left, "text-rose-700"],
             ].map(([eye, row, tone]) => (
               <tr key={eye} className="border-b border-slate-100 last:border-0">
-                <th className={`px-2.5 py-2 text-[10px] font-bold ${tone}`}>
+                <th className={`px-2.5 py-2 text-[12px] font-bold ${tone}`}>
                   {eye}
                 </th>
                 {columns.map(([key]) => (
                   <td
                     key={key}
-                    className="px-2 py-2 text-center font-mono text-[10px] text-slate-700"
+                    className="px-2 py-2 text-center font-mono text-[12px] text-slate-700"
                   >
                     {firstRecordedValue(row?.[key], row?.[key.toUpperCase()]) ||
                       "—"}
@@ -1346,8 +1346,8 @@ function PrescriptionHistoryTable({ title, value }) {
   ];
   const hasEyeValues = !isBlankModalValue(right) || !isBlankModalValue(left);
   return (
-    <div className="overflow-hidden rounded-md border border-slate-200">
-      <div className="border-b border-slate-100 bg-slate-50 px-3 py-2 text-[9px] font-bold text-slate-700">
+    <div className="overflow-hidden rounded-lg border border-slate-200">
+      <div className="border-b border-slate-100 bg-slate-50 px-3 py-2 text-[12px] font-bold text-slate-700">
         {title}
       </div>
       {hasEyeValues &&
@@ -1355,7 +1355,7 @@ function PrescriptionHistoryTable({ title, value }) {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-left">
             <thead>
-              <tr className="border-b border-slate-100 text-[8px] font-bold uppercase tracking-wider text-slate-400">
+              <tr className="border-b border-slate-100 text-[12px] font-bold uppercase tracking-wider text-slate-400">
                 <th className="px-2.5 py-2">Eye</th>
                 {columns.map(([, text]) => (
                   <th key={text} className="px-2 py-2 text-center">
@@ -1373,13 +1373,13 @@ function PrescriptionHistoryTable({ title, value }) {
                   key={eye}
                   className="border-b border-slate-100 last:border-0"
                 >
-                  <th className={`px-2.5 py-2 text-[9px] font-bold ${tone}`}>
+                  <th className={`px-2.5 py-2 text-[12px] font-bold ${tone}`}>
                     {eye}
                   </th>
                   {columns.map(([key]) => (
                     <td
                       key={key}
-                      className="px-2 py-2 text-center font-mono text-[9px] text-slate-700"
+                      className="px-2 py-2 text-center font-mono text-[12px] text-slate-700"
                     >
                       {firstRecordedValue(
                         row?.[key],
@@ -1409,22 +1409,22 @@ function PrescriptionHistoryTable({ title, value }) {
 function ClinicalValue({ value, depth = 0 }) {
   const parsed = parseModalValue(value);
   if (isBlankModalValue(parsed))
-    return <span className="text-[10px] text-slate-300">—</span>;
+    return <span className="text-[12px] text-slate-300">—</span>;
   if (typeof parsed === "boolean")
     return (
-      <span className="text-[10px] font-medium text-slate-700">
+      <span className="text-[12px] font-medium text-slate-700">
         {parsed ? "Yes" : "No"}
       </span>
     );
   if (typeof parsed === "string" || typeof parsed === "number")
     return (
-      <span className="whitespace-pre-wrap break-words text-[10px] leading-5 text-slate-700">
+      <span className="whitespace-pre-wrap break-words text-[12px] leading-5 text-slate-700">
         {String(parsed)}
       </span>
     );
   if (depth > 6)
     return (
-      <pre className="max-w-full whitespace-pre-wrap break-words text-[9px] leading-4 text-slate-600">
+      <pre className="max-w-full whitespace-pre-wrap break-words text-[12px] leading-4 text-slate-600">
         {JSON.stringify(parsed, null, 2)}
       </pre>
     );
@@ -1432,7 +1432,7 @@ function ClinicalValue({ value, depth = 0 }) {
   if (Array.isArray(parsed)) {
     const values = parsed.filter((item) => !isBlankModalValue(item));
     if (!values.length)
-      return <span className="text-[10px] text-slate-300">—</span>;
+      return <span className="text-[12px] text-slate-300">—</span>;
     return (
       <div className="space-y-1.5">
         {values.map((item, index) => {
@@ -1459,10 +1459,10 @@ function ClinicalValue({ value, depth = 0 }) {
           return (
             <div
               key={`${index}-${title || String(item)}`}
-              className="rounded-md border border-slate-100 bg-white p-2"
+              className="rounded-lg border border-slate-100 bg-white p-2"
             >
               {title && (
-                <div className="mb-1 text-[9px] font-bold text-slate-700">
+                <div className="mb-1 text-[12px] font-bold text-slate-700">
                   {title}
                 </div>
               )}
@@ -1478,7 +1478,7 @@ function ClinicalValue({ value, depth = 0 }) {
     ([key, item]) => !["_id", "__v"].includes(key) && !isBlankModalValue(item),
   );
   if (!entries.length)
-    return <span className="text-[10px] text-slate-300">—</span>;
+    return <span className="text-[12px] text-slate-300">—</span>;
   const eyeKeys = new Set(["right", "left", "od", "os", "ou"]);
   const groupedByEye = entries.some(([key]) =>
     eyeKeys.has(String(key).toLowerCase()),
@@ -1492,9 +1492,9 @@ function ClinicalValue({ value, depth = 0 }) {
         return (
           <div
             key={key}
-            className={`min-w-0 rounded-md border border-slate-100 bg-white px-2 py-1.5 ${nested ? "sm:col-span-2" : ""}`}
+            className={`min-w-0 rounded-lg border border-slate-100 bg-white px-2 py-1.5 ${nested ? "sm:col-span-2" : ""}`}
           >
-            <dt className="mb-0.5 text-[8px] font-bold uppercase tracking-[.07em] text-slate-400">
+            <dt className="mb-0.5 text-[12px] font-bold uppercase tracking-[.07em] text-slate-400">
               {modalFieldLabel(key)}
             </dt>
             <dd className="min-w-0">
