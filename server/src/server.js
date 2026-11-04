@@ -39,13 +39,14 @@ const app = express();
 // Set TRUST_PROXY to a deployment-appropriate value (commonly 1 behind Render).
 if (process.env.TRUST_PROXY) {
   const trustProxyValue = process.env.TRUST_PROXY.trim().toLowerCase();
-  const trustProxySetting = trustProxyValue === "true"
-    ? 1
-    : trustProxyValue === "false"
-      ? false
-      : /^\d+$/.test(trustProxyValue)
-        ? Number(trustProxyValue)
-        : process.env.TRUST_PROXY;
+  const trustProxySetting =
+    trustProxyValue === "true"
+      ? 1
+      : trustProxyValue === "false"
+        ? false
+        : /^\d+$/.test(trustProxyValue)
+          ? Number(trustProxyValue)
+          : process.env.TRUST_PROXY;
   app.set("trust proxy", trustProxySetting);
 } else if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
@@ -70,9 +71,16 @@ const configuredOrigins = [
   "https://www.v-sync.in",
   ...localDevelopmentOrigins,
 ]
-  .map((origin) => String(origin || "").trim().replace(/\/$/, ""))
+  .map((origin) =>
+    String(origin || "")
+      .trim()
+      .replace(/\/$/, ""),
+  )
   .filter(Boolean)
-  .filter((origin) => !isProduction || !/^https?:\/\/localhost(?::\d+)?$/i.test(origin));
+  .filter(
+    (origin) =>
+      !isProduction || !/^https?:\/\/localhost(?::\d+)?$/i.test(origin),
+  );
 
 const allowedOrigins = new Set(configuredOrigins);
 const vercelPreviewRegex =
@@ -81,7 +89,10 @@ const vercelPreviewRegex =
 const isAllowedOrigin = (origin) => {
   if (!origin) return true; // non-browser tools and service-to-service requests
   const normalizedOrigin = String(origin).replace(/\/$/, "");
-  return allowedOrigins.has(normalizedOrigin) || vercelPreviewRegex.test(normalizedOrigin);
+  return (
+    allowedOrigins.has(normalizedOrigin) ||
+    vercelPreviewRegex.test(normalizedOrigin)
+  );
 };
 
 app.use(
@@ -118,7 +129,13 @@ app.use(
 ========================================================= */
 
 app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || "1mb" }));
-app.use(express.urlencoded({ extended: true, limit: process.env.URLENCODED_BODY_LIMIT || "1mb", parameterLimit: 1000 }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: process.env.URLENCODED_BODY_LIMIT || "1mb",
+    parameterLimit: 1000,
+  }),
+);
 app.use(cookieParser());
 
 /* =========================================================
@@ -200,16 +217,31 @@ const startServer = async () => {
   try {
     const accessSecret = String(process.env.JWT_ACCESS_SECRET || "");
     const refreshSecret = String(process.env.JWT_REFRESH_SECRET || "");
-    const isPlaceholderSecret = (value) => /^(replace-with|change-me|your-secret|example-secret)/i.test(value.trim());
+    const isPlaceholderSecret = (value) =>
+      /^(replace-with|change-me|your-secret|example-secret)/i.test(
+        value.trim(),
+      );
 
-    if (accessSecret.length < 32 || (isProduction && isPlaceholderSecret(accessSecret))) {
-      throw new Error("JWT_ACCESS_SECRET must be a unique random secret of at least 32 characters");
+    if (
+      accessSecret.length < 32 ||
+      (isProduction && isPlaceholderSecret(accessSecret))
+    ) {
+      throw new Error(
+        "JWT_ACCESS_SECRET must be a unique random secret of at least 32 characters",
+      );
     }
-    if (refreshSecret.length < 32 || (isProduction && isPlaceholderSecret(refreshSecret))) {
-      throw new Error("JWT_REFRESH_SECRET must be a unique random secret of at least 32 characters");
+    if (
+      refreshSecret.length < 32 ||
+      (isProduction && isPlaceholderSecret(refreshSecret))
+    ) {
+      throw new Error(
+        "JWT_REFRESH_SECRET must be a unique random secret of at least 32 characters",
+      );
     }
     if (accessSecret === refreshSecret) {
-      throw new Error("JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be different values");
+      throw new Error(
+        "JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be different values",
+      );
     }
     await connectDB();
 
