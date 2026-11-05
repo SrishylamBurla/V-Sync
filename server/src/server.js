@@ -122,7 +122,7 @@ app.use(cookieParser());
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "OptiCore API is running",
+    message: "V-Sync API is running",
     timestamp: new Date().toISOString(),
   });
 });

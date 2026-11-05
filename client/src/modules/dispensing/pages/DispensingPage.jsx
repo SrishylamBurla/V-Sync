@@ -565,7 +565,7 @@ export default function DispensingPage() {
         title={`${activeTitle} — Workflow`}
         description="Filter this dispensing workflow by its current stage."
       >
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
           {activeStatuses.map((currentStatus) => {
             const count = activeCounts[currentStatus] || 0;
 

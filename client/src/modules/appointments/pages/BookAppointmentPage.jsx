@@ -1,12 +1,4 @@
-// import { Navigate } from "react-router-dom";
 
-// /**
-//  * Booking has one UI: the booking modal inside AppointmentsPage.
-//  * This route simply opens that same workflow.
-//  */
-// export default function BookAppointmentPage() {
-//   return <Navigate to="/appointments?book=1" replace />;
-// }
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, CalendarDays, LoaderCircle } from "lucide-react";
