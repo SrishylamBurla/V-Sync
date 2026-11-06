@@ -1,5 +1,4 @@
-
- import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
   ArrowRight,
@@ -8,28 +7,26 @@ import {
   ChevronRight,
   CheckCircle2,
   Clock3,
-  ContactRound,
-  Glasses,
-  PackageCheck,
   Plus,
+  PackageCheck,
   RefreshCw,
-  Search,
-  ShoppingBag,
   Users,
   ClipboardList,
   ListTodo,
   Trash2,
-  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { canAccessModule } from "../../config/access";
 
-import { getAppointments, updateAppointment } from "../appointments/appointment.api";
-import { getDispensingList } from "../optical/spectacle.api";
-import { getContactLenses } from "../contactLenses/contactLens.api";
-import { getSundryJobs } from "../dispensing/sundryJob.api";
-import { getConsultations, updateConsultationStatus } from "../clinical/consultation.api";
+import {
+  getAppointments,
+  updateAppointment,
+} from "../appointments/appointment.api";
+import {
+  getConsultations,
+  updateConsultationStatus,
+} from "../clinical/consultation.api";
 
 const PAGE_SIZE = 10;
 
@@ -83,43 +80,6 @@ const consultationStatusLabel = (status) => {
   );
 };
 
-
-const DISPENSING_CATEGORY = {
-  all: {
-    label: "All",
-    shortLabel: "All",
-    icon: PackageCheck,
-  },
-  spectacles: {
-    label: "Spectacles",
-    shortLabel: "Spectacles",
-    icon: Glasses,
-  },
-  contact_lenses: {
-    label: "Contact lenses",
-    shortLabel: "Contact",
-    icon: ContactRound,
-  },
-  sundries: {
-    label: "Sundry",
-    shortLabel: "Sundry",
-    icon: ShoppingBag,
-  },
-};
-
-const DISPENSING_STATUS_OPTIONS = [
-  ["", "All statuses"],
-  ["draft", "Draft"],
-  ["ordered", "Ordered"],
-  ["not_ready", "Not ready"],
-  ["ready", "Ready"],
-  ["notified", "Notified"],
-  ["collected", "Collected"],
-  ["cancelled", "Cancelled"],
-  ["dispensed", "Dispensed"],
-  ["delivered", "Delivered"],
-];
-
 const dateKey = (date) => {
   const value = new Date(date);
 
@@ -127,9 +87,10 @@ const dateKey = (date) => {
     return "";
   }
 
-  return `${value.getFullYear()}-${String(
-    value.getMonth() + 1,
-  ).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(
+    2,
+    "0",
+  )}-${String(value.getDate()).padStart(2, "0")}`;
 };
 
 const formatDate = (value) => {
@@ -175,11 +136,7 @@ const formatTime = (value) => {
 };
 
 const fullName = (person) =>
-  [
-    person?.firstName,
-    person?.middleName,
-    person?.lastName,
-  ]
+  [person?.firstName, person?.middleName, person?.lastName]
     .filter(Boolean)
     .join(" ") || "Unknown patient";
 
@@ -194,30 +151,15 @@ const normalizeList = (response, keys = []) => {
 
   const fallbackKey = keys[0];
 
-  if (
-    fallbackKey &&
-    Array.isArray(response?.[fallbackKey])
-  ) {
+  if (fallbackKey && Array.isArray(response?.[fallbackKey])) {
     return response[fallbackKey];
   }
 
   return [];
 };
 
-const normalizeStatus = (value) =>
-  String(value || "")
-    .trim()
-    .toLowerCase();
-
-const consultationTypeLabel = (value) =>
-  String(value || "consultation")
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-
 const getPatientFromRecord = (record) =>
-  record?.patientId ||
-  record?.patient ||
-  {};
+  record?.patientId || record?.patient || {};
 
 const getPatientNumber = (record) => {
   const patient = getPatientFromRecord(record);
@@ -230,140 +172,15 @@ const getPatientNumber = (record) => {
   );
 };
 
-const getRecordDate = (record) =>
-  record?.updatedAt ||
-  record?.createdAt ||
-  record?.jobDate ||
-  record?.orderDate ||
-  record?.orderDateTime ||
-  record?.dueDate ||
-  record?.specDueDate ||
-  record?.appointmentDate;
+const normalizeStatus = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase();
 
-const getRecordDueDate = (record) =>
-  record?.specDueDate ||
-  record?.dueDate ||
-  record?.labDueDate ||
-  record?.expectedDate ||
-  record?.deliveryDate;
-
-const getRecordNumber = (record) =>
-  record?.jobNumber ||
-  record?.jobNo ||
-  record?.orderNumber ||
-  record?.orderNo ||
-  record?.recordNumber ||
-  record?._id?.slice(-8) ||
-  "—";
-
-const getSundryItem = (record) =>
-  record?.item ||
-  record?.inventoryItem ||
-  record?.inventoryItemId ||
-  {};
-
-const getRecordItem = (record, category) => {
-  if (category === "spectacles") {
-    return (
-      record?.frame?.code ||
-      record?.frame?.description ||
-      record?.frameItemId?.code ||
-      record?.frameItemId?.description ||
-      "Spectacle"
-    );
-  }
-
-  if (category === "contact_lenses") {
-    return (
-      record?.item?.code ||
-      record?.item?.description ||
-      record?.lens?.code ||
-      record?.lens?.description ||
-      record?.contactLens?.code ||
-      record?.contactLens?.description ||
-      record?.lensCode ||
-      "Contact lens"
-    );
-  }
-
-  const item = getSundryItem(record);
-
-  return (
-    item?.code ||
-    item?.description ||
-    item?.name ||
-    record?.itemName ||
-    "Sundry"
-  );
-};
-
-const getRecordSecondary = (record, category) => {
-  if (category === "spectacles") {
-    return (
-      record?.frame?.brand ||
-      record?.frame?.model ||
-      record?.frame?.size ||
-      "Spectacle dispensing"
-    );
-  }
-
-  if (category === "contact_lenses") {
-    return (
-      record?.item?.brand ||
-      record?.item?.model ||
-      record?.contactLens?.brand ||
-      record?.contactLens?.model ||
-      "Contact-lens dispensing"
-    );
-  }
-
-  const item = getSundryItem(record);
-
-  return (
-    item?.brand ||
-    item?.model ||
-    `${record?.quantity || 1} item`
-  );
-};
-
-const getCategoryLabel = (category) =>
-  DISPENSING_CATEGORY[category]?.label ||
-  "Dispensing";
-
-const normalizeDispensingRecord = (
-  record,
-  category,
-) => ({
-  ...record,
-  _dashboardCategory: category,
-  _dashboardCategoryLabel:
-    getCategoryLabel(category),
-  _dashboardDate: getRecordDate(record),
-  _dashboardDueDate:
-    getRecordDueDate(record),
-  _dashboardPatient:
-    getPatientFromRecord(record),
-  _dashboardPatientName:
-    fullName(getPatientFromRecord(record)),
-  _dashboardPatientNumber:
-    getPatientNumber(record),
-  _dashboardNumber:
-    getRecordNumber(record),
-  _dashboardItem:
-    getRecordItem(
-      record,
-      category,
-    ),
-  _dashboardSecondary:
-    getRecordSecondary(
-      record,
-      category,
-    ),
-  _dashboardStatus:
-    normalizeStatus(
-      record?.status,
-    ),
-});
+const consultationTypeLabel = (value) =>
+  String(value || "consultation")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -385,130 +202,60 @@ export default function DashboardPage() {
     setError("");
   };
 
-  const canAppointments = canAccessModule(
-    "appointments",
-    role,
-  );
-  const canPatients = canAccessModule(
-    "patients",
-    role,
-  );
-  const canClinical = canAccessModule(
-    "clinical",
-    role,
-  );
-  const canDispensing = canAccessModule(
-    "dispensing",
-    role,
-  );
-  const canInventory = canAccessModule(
-    "inventory",
-    role,
-  );
-  const canBilling = canAccessModule(
-    "billing",
-    role,
-  );
+  const canAppointments = canAccessModule("appointments", role);
+  const canPatients = canAccessModule("patients", role);
+  const canClinical = canAccessModule("clinical", role);
+  const canInventory = canAccessModule("inventory", role);
+  const canBilling = canAccessModule("billing", role);
 
-  const [
-    appointments,
-    setAppointments,
-  ] = useState([]);
-
-  const [
-    spectacleJobs,
-    setSpectacleJobs,
-  ] = useState([]);
-
-  const [
-    contactOrders,
-    setContactOrders,
-  ] = useState([]);
-
-  const [
-    sundryJobs,
-    setSundryJobs,
-  ] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const [consultations, setConsultations] = useState([]);
 
-  const [dispensingPage, setDispensingPage] = useState(1);
   const [consultationsPage, setConsultationsPage] = useState(1);
 
-  const [
-    appointmentsLoading,
-    setAppointmentsLoading,
-  ] = useState(true);
-
-  const [
-    dispensingLoading,
-    setDispensingLoading,
-  ] = useState(true);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
 
   const [consultationsLoading, setConsultationsLoading] = useState(true);
   const [updatingAppointmentId, setUpdatingAppointmentId] = useState("");
   const [updatingConsultationId, setUpdatingConsultationId] = useState("");
 
-  const [
-    error,
-    setError,
-  ] = useState("");
+  const [error, setError] = useState("");
 
-  const [
-    dispensingCategory,
-    setDispensingCategory,
-  ] = useState("all");
+  const loadAppointments = useCallback(async () => {
+    if (!canAppointments) {
+      setAppointments([]);
+      setAppointmentsLoading(false);
+      return;
+    }
 
-  const [
-    dispensingStatus,
-    setDispensingStatus,
-  ] = useState("");
+    setAppointmentsLoading(true);
 
-  const [
-    dispensingSearch,
-    setDispensingSearch,
-  ] = useState("");
+    try {
+      const response = await getAppointments({
+        date: scheduleDate,
+        limit: 250,
+      });
 
-  const loadAppointments =
-    useCallback(async () => {
-      if (!canAppointments) {
-        setAppointments([]);
-        setAppointmentsLoading(false);
-        return;
-      }
+      setAppointments(normalizeList(response, ["appointments"]));
+    } catch (err) {
+      setAppointments([]);
 
-      setAppointmentsLoading(true);
-
-      try {
-        const response =
-          await getAppointments({
-            date: scheduleDate,
-            limit: 250,
-          });
-
-        setAppointments(
-          normalizeList(
-            response,
-            ["appointments"],
-          ),
-        );
-      } catch (err) {
-        setAppointments([]);
-
-        setError(
-          err?.response?.data?.message ||
-            err?.message ||
-            "Unable to load appointments for the selected date.",
-        );
-      } finally {
-        setAppointmentsLoading(false);
-      }
-    }, [canAppointments, scheduleDate]);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Unable to load appointments for the selected date.",
+      );
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  }, [canAppointments, scheduleDate]);
 
   // Appointment status is intentionally editable from the dashboard only.
   const updateDashboardAppointmentStatus = useCallback(
     async (appointmentId, nextStatus, previousStatus) => {
-      if (!appointmentId || !nextStatus || nextStatus === previousStatus) return;
+      if (!appointmentId || !nextStatus || nextStatus === previousStatus)
+        return;
 
       setUpdatingAppointmentId(appointmentId);
       setError("");
@@ -516,9 +263,7 @@ export default function DashboardPage() {
       // Update the visible row immediately; roll it back if the server rejects the change.
       setAppointments((current) =>
         current.map((item) =>
-          item._id === appointmentId
-            ? { ...item, status: nextStatus }
-            : item,
+          item._id === appointmentId ? { ...item, status: nextStatus } : item,
         ),
       );
 
@@ -527,14 +272,22 @@ export default function DashboardPage() {
           status: nextStatus,
           statusNote: `Status changed from ${previousStatus || "booked"} to ${nextStatus} from the dashboard`,
         });
-        const updated = response?.data?.appointment ?? response?.data ?? response?.appointment ?? response;
+        const updated =
+          response?.data?.appointment ??
+          response?.data ??
+          response?.appointment ??
+          response;
 
         setAppointments((current) =>
           current.map((item) =>
             item._id === appointmentId
               ? {
                   ...item,
-                  ...(updated && typeof updated === "object" && updated._id === appointmentId ? updated : {}),
+                  ...(updated &&
+                  typeof updated === "object" &&
+                  updated._id === appointmentId
+                    ? updated
+                    : {}),
                   status: nextStatus,
                 }
               : item,
@@ -631,128 +384,11 @@ export default function DashboardPage() {
     [],
   );
 
-  const loadDispensing =
-    useCallback(async () => {
-      if (!canDispensing) {
-        setSpectacleJobs([]);
-        setContactOrders([]);
-        setSundryJobs([]);
-        setDispensingLoading(false);
-        return;
-      }
+  const refresh = useCallback(async () => {
+    setError("");
 
-      setDispensingLoading(true);
-
-      const [
-        spectaclesResult,
-        contactsResult,
-        sundriesResult,
-      ] = await Promise.allSettled([
-        getDispensingList({
-          page: 1,
-          limit: 50,
-        }),
-        getContactLenses({
-          page: 1,
-          limit: 50,
-        }),
-        getSundryJobs({
-          page: 1,
-          limit: 50,
-        }),
-      ]);
-
-      if (
-        spectaclesResult.status ===
-        "fulfilled"
-      ) {
-        setSpectacleJobs(
-          normalizeList(
-            spectaclesResult.value,
-            [
-              "spectacles",
-              "jobs",
-            ],
-          ),
-        );
-      } else {
-        setSpectacleJobs([]);
-      }
-
-      if (
-        contactsResult.status ===
-        "fulfilled"
-      ) {
-        setContactOrders(
-          normalizeList(
-            contactsResult.value,
-            [
-              "contactLenses",
-              "orders",
-              "jobs",
-            ],
-          ),
-        );
-      } else {
-        setContactOrders([]);
-      }
-
-      if (
-        sundriesResult.status ===
-        "fulfilled"
-      ) {
-        setSundryJobs(
-          normalizeList(
-            sundriesResult.value,
-            [
-              "sundryJobs",
-              "jobs",
-            ],
-          ),
-        );
-      } else {
-        setSundryJobs([]);
-      }
-
-      const failures = [
-        spectaclesResult,
-        contactsResult,
-        sundriesResult,
-      ].filter(
-        (result) =>
-          result.status ===
-          "rejected",
-      );
-
-      if (failures.length) {
-        const failure =
-          failures[0]?.reason;
-
-        setError(
-          failure?.response?.data
-            ?.message ||
-            failure?.message ||
-            "Some dispensing information could not be loaded.",
-        );
-      }
-
-      setDispensingLoading(false);
-    }, [canDispensing]);
-
-  const refresh =
-    useCallback(async () => {
-      setError("");
-
-      await Promise.all([
-        loadAppointments(),
-        loadDispensing(),
-        loadConsultations(),
-      ]);
-    }, [
-      loadAppointments,
-      loadDispensing,
-      loadConsultations,
-    ]);
+    await Promise.all([loadAppointments(), loadConsultations()]);
+  }, [loadAppointments, loadConsultations]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -764,430 +400,102 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      void Promise.all([loadDispensing(), loadConsultations()]);
+      void loadConsultations();
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [loadDispensing, loadConsultations]);
+  }, [loadConsultations]);
 
-  const appointmentCounts =
-    useMemo(() => {
-      const total =
-        appointments.length;
-
-      return {
-        total,
-
-        waiting:
-          appointments.filter(
-            (item) =>
-              [
-                "booked",
-                "confirmed",
-                "here",
-              ].includes(
-                normalizeStatus(
-                  item.status,
-                ),
-              ),
-          ).length,
-
-        examining:
-          appointments.filter(
-            (item) =>
-              normalizeStatus(
-                item.status,
-              ) === "examining",
-          ).length,
-
-        completed:
-          appointments.filter(
-            (item) =>
-              normalizeStatus(
-                item.status,
-              ) === "complete",
-          ).length,
-
-        cancelled:
-          appointments.filter(
-            (item) =>
-              [
-                "cancelled",
-                "no_show",
-              ].includes(
-                normalizeStatus(
-                  item.status,
-                ),
-              ),
-          ).length,
-      };
-    }, [appointments]);
-
-  const spectacleCounts =
-    useMemo(() => {
-      const open =
-        spectacleJobs.filter(
-          (job) =>
-            ![
-              "collected",
-              "cancelled",
-            ].includes(
-              normalizeStatus(
-                job.status,
-              ),
-            ),
-        );
-
-      return {
-        total:
-          spectacleJobs.length,
-
-        open: open.length,
-
-        ready:
-          spectacleJobs.filter(
-            (job) =>
-              normalizeStatus(
-                job.status,
-              ) === "ready",
-          ).length,
-
-        notified:
-          spectacleJobs.filter(
-            (job) =>
-              normalizeStatus(
-                job.status,
-              ) === "notified",
-          ).length,
-      };
-    }, [spectacleJobs]);
-
-  const contactCounts =
-    useMemo(() => {
-      const closedStatuses =
-        [
-          "collected",
-          "cancelled",
-          "dispensed",
-          "delivered",
-        ];
-
-      const readyStatuses =
-        [
-          "ready",
-          "collected",
-          "dispensed",
-          "delivered",
-        ];
-
-      return {
-        total:
-          contactOrders.length,
-
-        open:
-          contactOrders.filter(
-            (job) =>
-              !closedStatuses.includes(
-                normalizeStatus(
-                  job.status,
-                ),
-              ),
-          ).length,
-
-        ready:
-          contactOrders.filter(
-            (job) =>
-              readyStatuses.includes(
-                normalizeStatus(
-                  job.status,
-                ),
-              ),
-          ).length,
-      };
-    }, [contactOrders]);
-
-  const sundryCounts =
-    useMemo(() => {
-      const closedStatuses =
-        [
-          "collected",
-          "cancelled",
-        ];
-
-      const open =
-        sundryJobs.filter(
-          (job) =>
-            !closedStatuses.includes(
-              normalizeStatus(
-                job.status,
-              ),
-            ),
-        );
-
-      return {
-        total:
-          sundryJobs.length,
-
-        open:
-          open.length,
-
-        ready:
-          sundryJobs.filter(
-            (job) =>
-              normalizeStatus(
-                job.status,
-              ) === "ready",
-          ).length,
-
-        notified:
-          sundryJobs.filter(
-            (job) =>
-              normalizeStatus(
-                job.status,
-              ) === "notified",
-          ).length,
-      };
-    }, [sundryJobs]);
-
-  const upcomingAppointments =
-    useMemo(
-      () =>
-        [...appointments]
-          .sort(
-            (a, b) =>
-              new Date(
-                a.appointmentDate,
-              ).getTime() -
-              new Date(
-                b.appointmentDate,
-              ).getTime(),
-          ),
-      [appointments],
-    );
-
-  const dispensingRecords =
-    useMemo(() => {
-      const records = [
-        ...spectacleJobs.map(
-          (job) =>
-            normalizeDispensingRecord(
-              job,
-              "spectacles",
-            ),
-        ),
-
-        ...contactOrders.map(
-          (job) =>
-            normalizeDispensingRecord(
-              job,
-              "contact_lenses",
-            ),
-        ),
-
-        ...sundryJobs.map(
-          (job) =>
-            normalizeDispensingRecord(
-              job,
-              "sundries",
-            ),
-        ),
-      ];
-
-      const filteredByCategory =
-        dispensingCategory ===
-        "all"
-          ? records
-          : records.filter(
-              (record) =>
-                record._dashboardCategory ===
-                dispensingCategory,
-            );
-
-      const filteredByStatus =
-        dispensingStatus
-          ? filteredByCategory.filter(
-              (record) =>
-                record._dashboardStatus ===
-                dispensingStatus,
-            )
-          : filteredByCategory;
-
-      const search =
-        dispensingSearch
-          .trim()
-          .toLowerCase();
-
-      const filteredBySearch =
-        search
-          ? filteredByStatus.filter(
-              (record) =>
-                [
-                  record._dashboardNumber,
-                  record._dashboardItem,
-                  record._dashboardSecondary,
-                  record._dashboardPatientName,
-                  record._dashboardPatientNumber,
-                  record._dashboardStatus,
-                ]
-                  .filter(Boolean)
-                  .join(" ")
-                  .toLowerCase()
-                  .includes(search),
-            )
-          : filteredByStatus;
-
-      return filteredBySearch.sort(
+  const upcomingAppointments = useMemo(
+    () =>
+      [...appointments].sort(
         (a, b) =>
-          new Date(
-            b._dashboardDate,
-          ).getTime() -
-          new Date(
-            a._dashboardDate,
-          ).getTime(),
-      );
-    }, [
-      spectacleJobs,
-      contactOrders,
-      sundryJobs,
-      dispensingCategory,
-      dispensingStatus,
-      dispensingSearch,
-    ]);
-
-  const dispensingPageCount = Math.max(
-    1,
-    Math.ceil(
-      dispensingRecords.length / PAGE_SIZE,
-    ),
+          new Date(a?.appointmentDate || 0).getTime() -
+          new Date(b?.appointmentDate || 0).getTime(),
+      ),
+    [appointments],
   );
+
+  const appointmentCounts = useMemo(() => {
+    const total = appointments.length;
+
+    return {
+      total,
+
+      waiting: appointments.filter((item) =>
+        ["booked", "confirmed", "here"].includes(normalizeStatus(item.status)),
+      ).length,
+
+      examining: appointments.filter(
+        (item) => normalizeStatus(item.status) === "examining",
+      ).length,
+
+      completed: appointments.filter(
+        (item) => normalizeStatus(item.status) === "complete",
+      ).length,
+
+      cancelled: appointments.filter((item) =>
+        ["cancelled", "no_show"].includes(normalizeStatus(item.status)),
+      ).length,
+    };
+  }, [appointments]);
 
   const consultationsPageCount = Math.max(
     1,
-    Math.ceil(
-      consultations.length / PAGE_SIZE,
-    ),
+    Math.ceil(consultations.length / PAGE_SIZE),
   );
 
   useEffect(() => {
-    setDispensingPage(1);
-  }, [
-    dispensingCategory,
-    dispensingStatus,
-    dispensingSearch,
-  ]);
-
-  useEffect(() => {
-    setDispensingPage((current) =>
-      Math.min(
-        current,
-        dispensingPageCount,
-      ),
-    );
-  }, [dispensingPageCount]);
-
-  useEffect(() => {
     setConsultationsPage((current) =>
-      Math.min(
-        current,
-        consultationsPageCount,
-      ),
+      Math.min(current, consultationsPageCount),
     );
   }, [consultationsPageCount]);
 
-  const visibleDispensingRecords =
-    useMemo(() => {
-      const start =
-        (dispensingPage - 1) *
-        PAGE_SIZE;
+  const visibleConsultations = useMemo(() => {
+    const start = (consultationsPage - 1) * PAGE_SIZE;
 
-      return dispensingRecords.slice(
-        start,
-        start + PAGE_SIZE,
-      );
-    }, [
-      dispensingRecords,
-      dispensingPage,
-    ]);
-
-  const visibleConsultations =
-    useMemo(() => {
-      const start =
-        (consultationsPage - 1) *
-        PAGE_SIZE;
-
-      return consultations.slice(
-        start,
-        start + PAGE_SIZE,
-      );
-    }, [
-      consultations,
-      consultationsPage,
-    ]);
+    return consultations.slice(start, start + PAGE_SIZE);
+  }, [consultations, consultationsPage]);
 
   const quickActions = [
     canAppointments && {
       icon: CalendarClock,
       label: "Appointments",
-      description:
-        "Open today's schedule and booking workflow.",
-      onClick: () =>
-        navigate("/appointments"),
+      description: "Open today's schedule and booking workflow.",
+      onClick: () => navigate("/appointments"),
     },
 
     canPatients && {
       icon: Users,
       label: "Patients",
-      description:
-        "Search records and open patient workspaces.",
-      onClick: () =>
-        navigate("/patients"),
+      description: "Search records and open patient workspaces.",
+      onClick: () => navigate("/patients"),
     },
 
     canClinical && {
       icon: Activity,
       label: "Clinical",
-      description:
-        "Open consultation and examination workflow.",
-      onClick: () =>
-        navigate("/clinical"),
-    },
-
-    canDispensing && {
-      icon: Glasses,
-      label: "Dispensing",
-      description:
-        "Manage spectacle, contact-lens and sundry jobs.",
-      onClick: () =>
-        navigate("/dispensing"),
+      description: "Open consultation and examination workflow.",
+      onClick: () => navigate("/clinical"),
     },
 
     canInventory && {
       icon: PackageCheck,
       label: "Inventory",
-      description:
-        "Review stock and catalogue operations.",
-      onClick: () =>
-        navigate("/inventory"),
+      description: "Review stock and catalogue operations.",
+      onClick: () => navigate("/inventory"),
     },
 
     canBilling && {
       icon: CheckCircle2,
       label: "Billing",
-      description:
-        "Open invoices, payments and billing.",
-      onClick: () =>
-        navigate("/billing"),
+      description: "Open invoices, payments and billing.",
+      onClick: () => navigate("/billing"),
     },
   ].filter(Boolean);
 
-  const clearDispensingFilters =
-    () => {
-      setDispensingCategory("all");
-      setDispensingStatus("");
-      setDispensingSearch("");
-    };
-
-  const todoUserKey = user?._id || user?.id || user?.email || role || "workspace";
+  const todoUserKey =
+    user?._id || user?.id || user?.email || role || "workspace";
   const todoOrganizationKey =
     user?.organizationId?._id || user?.organizationId || "organization";
   const todoBranchKey =
@@ -1215,9 +523,7 @@ export default function DashboardPage() {
               </h1>
 
               <span className="text-xs font-medium text-slate-500">
-                {formatDate(
-                  new Date(),
-                )}
+                {formatDate(new Date())}
               </span>
             </div>
           </div>
@@ -1225,17 +531,13 @@ export default function DashboardPage() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() =>
-                void refresh()
-              }
+              onClick={() => void refresh()}
               className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
             >
               <RefreshCw
                 size={14}
                 className={
-                  appointmentsLoading ||
-                  dispensingLoading ||
-                  consultationsLoading
+                  appointmentsLoading || consultationsLoading
                     ? "animate-spin"
                     : ""
                 }
@@ -1246,9 +548,7 @@ export default function DashboardPage() {
             {canAppointments && (
               <button
                 type="button"
-                onClick={() =>
-                  navigate("/appointments?book=1")
-                }
+                onClick={() => navigate("/appointments?book=1")}
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-3 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
               >
                 <Plus size={14} />
@@ -1264,9 +564,7 @@ export default function DashboardPage() {
 
             <button
               type="button"
-              onClick={() =>
-                setError("")
-              }
+              onClick={() => setError("")}
               className="rounded-lg p-1 text-amber-600 hover:bg-amber-100"
               aria-label="Dismiss"
             >
@@ -1289,14 +587,19 @@ export default function DashboardPage() {
                   </div>
                   <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h2 className="text-lg font-bold tracking-tight text-slate-950">
-                      {scheduleDate === today ? "Today’s appointments" : "Appointments"}
+                      {scheduleDate === today
+                        ? "Today’s appointments"
+                        : "Appointments"}
                     </h2>
                     <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[12px] font-semibold text-slate-500">
-                      {appointmentsLoading ? "Loading" : `${appointmentCounts.total} scheduled`}
+                      {appointmentsLoading
+                        ? "Loading"
+                        : `${appointmentCounts.total} scheduled`}
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-slate-500">
-                    {scheduleDateLabel} · Review patient visits, clinicians, and appointment status.
+                    {scheduleDateLabel} · Review patient visits, clinicians, and
+                    appointment status.
                   </p>
                 </div>
               </div>
@@ -1314,7 +617,10 @@ export default function DashboardPage() {
                   </button>
                   <label className="flex h-8 min-w-0 items-center gap-1.5 px-1.5">
                     <span className="sr-only">Select schedule date</span>
-                    <CalendarClock size={13} className="shrink-0 text-violet-600" />
+                    <CalendarClock
+                      size={13}
+                      className="shrink-0 text-violet-600"
+                    />
                     <input
                       type="date"
                       value={scheduleDate}
@@ -1357,22 +663,14 @@ export default function DashboardPage() {
                   View schedule
                   <ArrowRight size={14} />
                 </button>
-                {canAppointments && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/appointments?book=1")}
-                    className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl bg-slate-950 px-2.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
-                  >
-                    <Plus size={14} />
-                    Book appointment
-                  </button>
-                )}
               </div>
             </header>
 
             {appointmentsLoading ? (
               <div className="flex min-h-0 flex-1 items-center justify-center p-3">
-                <LoadingRow text={`Loading appointments for ${scheduleDateLabel}...`} />
+                <LoadingRow
+                  text={`Loading appointments for ${scheduleDateLabel}...`}
+                />
               </div>
             ) : upcomingAppointments.length ? (
               <>
@@ -1382,18 +680,25 @@ export default function DashboardPage() {
                   <span className="pr-4">Status</span>
                 </div>
                 <div
-                  className="min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent]"
+                  className="min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto overscroll-y-contain touch-pan-y scroll-smooth [scrollbar-width:thin] [scrollbar-color:rgb(148_163_184)_rgb(241_245_249)] [-webkit-overflow-scrolling:touch] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-200"
                   aria-label="Appointment list"
+                  tabIndex={0}
                 >
                   {upcomingAppointments.map((appointment) => {
-                    const patient = appointment.patientId || appointment.patient || {};
-                    const clinician = appointment.clinicianId || appointment.optometristId || {};
-                    const status = normalizeStatus(appointment.status) || "booked";
+                    const patient =
+                      appointment.patientId || appointment.patient || {};
+                    const clinician =
+                      appointment.clinicianId ||
+                      appointment.optometristId ||
+                      {};
+                    const status =
+                      normalizeStatus(appointment.status) || "booked";
                     const patientName = fullName(patient);
                     const appointmentType = appointment.type || "Comprehensive";
                     const duration = appointment.durationMinutes || 30;
 
-                    const isUpdatingStatus = updatingAppointmentId === appointment._id;
+                    const isUpdatingStatus =
+                      updatingAppointmentId === appointment._id;
 
                     return (
                       <div
@@ -1413,7 +718,10 @@ export default function DashboardPage() {
                           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
                             <button
                               type="button"
-                              onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
+                              onClick={() =>
+                                appointment._id &&
+                                navigate(`/appointments/${appointment._id}`)
+                              }
                               className="max-w-full truncate text-left text-sm font-bold text-slate-900 transition hover:text-violet-700 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-violet-300"
                               aria-label={`Open appointment for ${patientName}`}
                             >
@@ -1427,12 +735,24 @@ export default function DashboardPage() {
                           </div>
                           <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-slate-500">
                             <span className="inline-flex min-w-0 items-center gap-1.5">
-                              <ClipboardList size={12} className="shrink-0 text-violet-500" />
-                              <span className="truncate">{appointmentType}</span>
+                              <ClipboardList
+                                size={12}
+                                className="shrink-0 text-violet-500"
+                              />
+                              <span className="truncate">
+                                {appointmentType}
+                              </span>
                             </span>
                             <span className="inline-flex min-w-0 items-center gap-1.5">
-                              <Users size={12} className="shrink-0 text-slate-400" />
-                              <span className="truncate">{[clinician.firstName, clinician.lastName].filter(Boolean).join(" ") || "Clinician unassigned"}</span>
+                              <Users
+                                size={12}
+                                className="shrink-0 text-slate-400"
+                              />
+                              <span className="truncate">
+                                {[clinician.firstName, clinician.lastName]
+                                  .filter(Boolean)
+                                  .join(" ") || "Clinician unassigned"}
+                              </span>
                             </span>
                             {patient.phone && (
                               <span className="hidden items-center gap-1.5 text-slate-400 md:inline-flex">
@@ -1445,10 +765,12 @@ export default function DashboardPage() {
 
                         <div className="col-start-2 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:col-start-auto sm:justify-end">
                           <div className="flex min-w-0 items-center gap-2">
-                            <StatusBadge status={status} />
                             <select
                               value={status}
-                              disabled={!canAppointments || Boolean(updatingAppointmentId)}
+                              disabled={
+                                !canAppointments ||
+                                Boolean(updatingAppointmentId)
+                              }
                               onChange={(event) => {
                                 const nextStatus = event.target.value;
                                 if (nextStatus !== status) {
@@ -1459,23 +781,32 @@ export default function DashboardPage() {
                                   );
                                 }
                               }}
-                              className={`h-9 max-w-[145px] rounded-xl border border-slate-200 px-2.5 text-[11px] font-bold outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-wait disabled:opacity-60 ${APPOINTMENT_STATUS_CLASS[status] || "bg-white text-slate-600"}`}
+                              className={`h-9 min-w-[112px] max-w-[145px] cursor-pointer rounded-xl border border-slate-200 px-2.5 text-[11px] font-bold outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 disabled:cursor-wait disabled:opacity-60 ${APPOINTMENT_STATUS_CLASS[status] || "bg-white text-slate-600"}`}
                               aria-label={`Change appointment status for ${patientName}`}
                               title="Change appointment status"
                             >
-                              {Object.entries(APPOINTMENT_STATUS).map(([value, label]) => (
-                                <option key={value} value={value}>
-                                  {label}
-                                </option>
-                              ))}
+                              {Object.entries(APPOINTMENT_STATUS).map(
+                                ([value, label]) => (
+                                  <option key={value} value={value}>
+                                    {label}
+                                  </option>
+                                ),
+                              )}
                             </select>
                             {isUpdatingStatus && (
-                              <RefreshCw size={13} className="shrink-0 animate-spin text-violet-600" aria-label="Saving status" />
+                              <RefreshCw
+                                size={13}
+                                className="shrink-0 animate-spin text-violet-600"
+                                aria-label="Saving status"
+                              />
                             )}
                           </div>
                           <button
                             type="button"
-                            onClick={() => appointment._id && navigate(`/appointments/${appointment._id}`)}
+                            onClick={() =>
+                              appointment._id &&
+                              navigate(`/appointments/${appointment._id}`)
+                            }
                             className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:border-violet-200 hover:text-violet-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
                             aria-label={`Open appointment for ${patientName}`}
                             title="Open appointment"
@@ -1489,7 +820,9 @@ export default function DashboardPage() {
                 </div>
                 <footer className="shrink-0 flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
                   <span className="text-[12px] text-slate-500">
-                    {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
+                    {appointmentCounts.waiting} waiting / upcoming ·{" "}
+                    {appointmentCounts.examining} examining ·{" "}
+                    {appointmentCounts.completed} completed
                   </span>
                   <button
                     type="button"
@@ -1506,20 +839,13 @@ export default function DashboardPage() {
                   <CalendarClock size={24} />
                 </div>
                 <h3 className="mt-4 text-sm font-bold text-slate-900">
-                  No appointments scheduled {scheduleDate === today ? "today" : "for this date"}
+                  No appointments scheduled{" "}
+                  {scheduleDate === today ? "today" : "for this date"}
                 </h3>
                 <p className="mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                  No patient visits are currently booked for {scheduleDateLabel}. Choose another date or create a new booking.
+                  No patient visits are currently booked for {scheduleDateLabel}
+                  . Choose another date or open the full appointment schedule.
                 </p>
-                {canAppointments && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/appointments?book=1")}
-                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white transition hover:bg-violet-700"
-                  >
-                    <Plus size={14} /> Book appointment
-                  </button>
-                )}
               </div>
             )}
           </section>
@@ -1527,574 +853,178 @@ export default function DashboardPage() {
           <DashboardTodoList storageKey={todoStorageKey} />
         </section>
 
-        {/* DISPENSING + CLINICAL: keep both worklists side by side on desktop */}
-        <section className="grid min-w-0 grid-cols-1 items-stretch gap-3 lg:grid-cols-2">
-        {/* DISPENSING */}
-        {canDispensing && (
-          <SectionCard
-            eyebrow="Dispensing"
-            title="Dispensing activity"
-            meta={`${dispensingRecords.length} matching records · Page ${dispensingPage} of ${dispensingPageCount}`}
-            actionLabel="Open dispensing"
-            onAction={() =>
-              navigate(
-                "/dispensing",
-              )
-            }
-          >
-            {/* CATEGORY FILTERS */}
-            <div className="border-b border-slate-100 px-3 py-2.5 sm:px-3.5">
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex min-w-0 flex-wrap items-center gap-1">
-                  {Object.entries(
-                    DISPENSING_CATEGORY,
-                  ).map(
-                    ([
-                      key,
-                      option,
-                    ]) => {
-                      const Icon =
-                        option.icon;
-
-                      const active =
-                        dispensingCategory ===
-                        key;
-
-                      const count =
-                        key ===
-                        "spectacles"
-                          ? spectacleCounts.total
-                          : key ===
-                              "contact_lenses"
-                            ? contactCounts.total
-                            : key ===
-                                "sundries"
-                              ? sundryCounts.total
-                              : spectacleCounts.total +
-                                contactCounts.total +
-                                sundryCounts.total;
-
-                      return (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() =>
-                            setDispensingCategory(
-                              key,
-                            )
-                          }
-                          className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-[10px] font-bold transition ${
-                            active
-                              ? "border-slate-950 bg-slate-950 text-white"
-                              : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                          }`}
-                        >
-                          <Icon
-                            size={11}
-                          />
-                          {option.shortLabel}
-                          <span
-                            className={`rounded-full px-1.5 py-0.5 text-[9px] ${
-                              active
-                                ? "bg-white/10 text-white"
-                                : "bg-slate-100 text-slate-500"
-                            }`}
-                          >
-                            {dispensingLoading
-                              ? "—"
-                              : count}
-                          </span>
-                        </button>
-                      );
-                    },
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1.5 sm:flex-row">
-                  <div className="relative min-w-0 sm:w-52">
-                    <Search
-                      size={11}
-                      className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
-
-                    <input
-                      value={
-                        dispensingSearch
-                      }
-                      onChange={(
-                        event,
-                      ) =>
-                        setDispensingSearch(
-                          event.target.value,
-                        )
-                      }
-                      placeholder="Search job, patient, item..."
-                      className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-7 pr-2.5 text-[11px] font-medium text-slate-700 outline-none placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
-                    />
-                  </div>
-
-                  <select
-                    value={
-                      dispensingStatus
-                    }
-                    onChange={(event) =>
-                      setDispensingStatus(
-                        event.target.value,
-                      )
-                    }
-                    className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-600 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
-                  >
-                    {DISPENSING_STATUS_OPTIONS.map(
-                      ([
-                        value,
-                        label,
-                      ]) => (
-                        <option
-                          key={value}
-                          value={
-                            value
-                          }
-                        >
-                          {label}
-                        </option>
-                      ),
-                    )}
-                  </select>
-
-                  {(
-                    dispensingCategory !==
-                      "all" ||
-                    dispensingStatus ||
-                    dispensingSearch
-                  ) && (
-                    <button
-                      type="button"
-                      onClick={
-                        clearDispensingFilters
-                      }
-                      className="inline-flex h-8 items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-[10px] font-bold text-slate-500 transition hover:bg-slate-50"
-                      title="Clear filters"
-                    >
-                      <X
-                        size={10}
-                      />
-                      Clear
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* CATEGORY SUMMARY */}
-            <div className="grid gap-2 border-b border-slate-100 p-3 sm:grid-cols-3 sm:p-3.5">
-              <SummaryMetric
-                icon={Glasses}
-                label="Spectacle jobs"
-                value={
-                  dispensingLoading
-                    ? "—"
-                    : spectacleCounts.total
-                }
-                active={
-                  dispensingCategory ===
-                  "spectacles"
-                }
-                onClick={() =>
-                  setDispensingCategory(
-                    "spectacles",
-                  )
-                }
-              />
-
-              <SummaryMetric
-                icon={ContactRound}
-                label="Contact lens jobs"
-                value={
-                  dispensingLoading
-                    ? "—"
-                    : contactCounts.total
-                }
-                active={
-                  dispensingCategory ===
-                  "contact_lenses"
-                }
-                onClick={() =>
-                  setDispensingCategory(
-                    "contact_lenses",
-                  )
-                }
-              />
-
-              <SummaryMetric
-                icon={ShoppingBag}
-                label="Sundry jobs"
-                value={
-                  dispensingLoading
-                    ? "—"
-                    : sundryCounts.total
-                }
-                active={
-                  dispensingCategory ===
-                  "sundries"
-                }
-                onClick={() =>
-                  setDispensingCategory(
-                    "sundries",
-                  )
-                }
-              />
-            </div>
-
-            {dispensingLoading ? (
-              <LoadingRow text="Loading dispensing jobs..." />
-            ) : dispensingRecords.length ? (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[920px] text-left">
-                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
-                    <tr>
-                      <th className="px-3 py-2.5">
-                        Type
-                      </th>
-
-                      <th className="px-3 py-2.5">
-                        Job
-                      </th>
-
-                      <th className="px-3 py-2.5">
-                        Patient
-                      </th>
-
-                      <th className="px-3 py-2.5">
-                        Item
-                      </th>
-
-                      <th className="px-3 py-2.5">
-                        Status
-                      </th>
-
-                      <th className="px-3 py-2.5">
-                        Updated
-                      </th>
-
-                      <th className="px-3 py-2.5 text-right">
-                        Due
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="text-[12px]">
-                    {visibleDispensingRecords.map(
-                      (record) => {
-                        const category =
-                          record._dashboardCategory;
-
-                        const target =
-                          category ===
-                          "spectacles"
-                            ? `/dispensing/spectacles/${record._id}`
-                            : category ===
-                                "contact_lenses"
-                              ? `/dispensing/contact-lenses/${record._id}`
-                              : `/dispensing/sundries/${record._id}`;
+        {/* CLINICAL WORKLIST */}
+        <section className="grid min-w-0 grid-cols-1 items-stretch gap-3">
+          {/* CONSULTATION LIST */}
+          {canClinical && (
+            <SectionCard
+              eyebrow="Clinical"
+              title="Consultations"
+              meta={`${consultations.length} records · Page ${consultationsPage} of ${consultationsPageCount}`}
+              actionLabel="Open clinical"
+              onAction={() => navigate("/clinical")}
+            >
+              {consultationsLoading ? (
+                <LoadingRow text="Loading consultations..." />
+              ) : consultations.length ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[820px] text-left">
+                    <thead className="sticky bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
+                      <tr>
+                        <th className="px-3 py-2.5">Patient</th>
+                        <th className="px-3 py-2.5">Type</th>
+                        <th className="px-3 py-2.5">Date</th>
+                        <th className="px-3 py-2.5">Optometrist</th>
+                        <th className="px-3 py-2.5">Status</th>
+                        <th className="px-3 py-2.5 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-[12px]">
+                      {visibleConsultations.map((consultation) => {
+                        const patient = consultation.patientId || {};
+                        const optometrist = consultation.optometristId || {};
+                        const consultationId = consultation._id;
+                        const currentStatus =
+                          normalizeStatus(consultation.status) || "completed";
 
                         return (
                           <tr
-                            key={`${category}-${record._id}`}
+                            key={consultationId}
                             className="border-t border-slate-100 transition-colors hover:bg-violet-50/30"
                           >
                             <td className="px-3 py-2.5">
-                              <CategoryBadge
-                                category={
-                                  category
-                                }
-                              />
-                            </td>
-
-                            <td className="px-3 py-2.5">
                               <button
                                 type="button"
                                 onClick={() =>
-                                  navigate(
-                                    target,
-                                  )
-                                }
-                                className="font-bold text-slate-800 hover:underline"
-                              >
-                                {
-                                  record._dashboardNumber
-                                }
-                              </button>
-                            </td>
-
-                            <td className="px-3 py-2.5">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  record._dashboardPatient
-                                    ? navigate(
-                                        `/patients/${record._dashboardPatient._id}`,
-                                      )
-                                    : null
+                                  patient?._id &&
+                                  navigate(`/patients/${patient._id}`)
                                 }
                                 className="text-left"
                               >
                                 <div className="font-semibold text-slate-700 hover:underline">
-                                  {
-                                    record._dashboardPatientName
-                                  }
+                                  {fullName(patient)}
                                 </div>
-
                                 <div className="mt-0.5 text-[11px] text-slate-400">
-                                  {
-                                    record._dashboardPatientNumber
-                                  }
+                                  {getPatientNumber({ patientId: patient })}
                                 </div>
                               </button>
                             </td>
 
                             <td className="px-3 py-2.5">
-                              <div className="font-semibold text-slate-700">
-                                {
-                                  record._dashboardItem
-                                }
-                              </div>
-
-                              <div className="mt-0.5 truncate text-[11px] text-slate-400">
-                                {
-                                  record._dashboardSecondary
-                                }
-                              </div>
-                            </td>
-
-                            <td className="px-3 py-2.5">
-                              <DispensingStatusBadge
-                                status={
-                                  record._dashboardStatus
-                                }
-                              />
+                              <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600">
+                                {consultationTypeLabel(
+                                  consultation.consultationType,
+                                )}
+                              </span>
                             </td>
 
                             <td className="px-3 py-2.5 text-slate-500">
-                              {formatShortDate(
-                                record._dashboardDate,
-                              )}
+                              {formatShortDate(consultation.consultationDate)}
                             </td>
 
-                            <td className="px-3 py-2.5 text-right text-slate-500">
-                              {formatShortDate(
-                                record._dashboardDueDate,
-                              )}
+                            <td className="px-3 py-2.5 text-slate-600">
+                              {[optometrist.firstName, optometrist.lastName]
+                                .filter(Boolean)
+                                .join(" ") || "—"}
+                            </td>
+
+                            <td className="px-3 py-2.5">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
+                                    currentStatus,
+                                  )}`}
+                                >
+                                  {consultationStatusLabel(currentStatus)}
+                                </span>
+
+                                <select
+                                  value={currentStatus}
+                                  disabled={
+                                    updatingConsultationId === consultationId
+                                  }
+                                  onChange={(event) =>
+                                    void updateDashboardConsultationStatus(
+                                      consultationId,
+                                      event.target.value,
+                                    )
+                                  }
+                                  className="h-8 rounded-lg border border-slate-200 bg-white px-1.5 text-[10px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                  aria-label={`Change status for ${fullName(patient)}`}
+                                >
+                                  {CONSULTATION_STATUS_OPTIONS.map(
+                                    ([value, text]) => (
+                                      <option key={value} value={value}>
+                                        {text}
+                                      </option>
+                                    ),
+                                  )}
+                                </select>
+                              </div>
+                            </td>
+
+                            <td className="px-3 py-2.5 text-right">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  consultationId &&
+                                  navigate(
+                                    `/clinical/consultations/${consultationId}`,
+                                  )
+                                }
+                                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                              >
+                                View
+                                <ArrowRight size={12} />
+                              </button>
                             </td>
                           </tr>
                         );
-                      },
-                    )}
-                  </tbody>
-                </table>
+                      })}
+                    </tbody>
+                  </table>
 
-                <Pagination
-                  page={dispensingPage}
-                  totalPages={dispensingPageCount}
-                  totalItems={dispensingRecords.length}
-                  onPageChange={setDispensingPage}
+                  <Pagination
+                    page={consultationsPage}
+                    totalPages={consultationsPageCount}
+                    totalItems={consultations.length}
+                    onPageChange={setConsultationsPage}
+                  />
+                </div>
+              ) : (
+                <EmptyState
+                  icon={ClipboardList}
+                  title="No consultations"
+                  actionLabel="Open clinical"
+                  onAction={() => navigate("/clinical")}
                 />
-              </div>
-            ) : (
-              <EmptyState
-                icon={
-                  dispensingCategory ===
-                  "spectacles"
-                    ? Glasses
-                    : dispensingCategory ===
-                        "contact_lenses"
-                      ? ContactRound
-                      : dispensingCategory ===
-                          "sundries"
-                        ? ShoppingBag
-                        : PackageCheck
-                }
-                title={
-                  dispensingSearch ||
-                  dispensingStatus ||
-                  dispensingCategory !==
-                    "all"
-                    ? "No dispensing jobs match the selected filters"
-                    : "No dispensing jobs"
-                }
-                actionLabel="Open dispensing"
-                onAction={() =>
-                  navigate(
-                    "/dispensing",
-                  )
-                }
-              />
-            )}
-          </SectionCard>
-        )}
-
-        {/* CONSULTATION LIST */}
-        {canClinical && (
-          <SectionCard
-            eyebrow="Clinical"
-            title="Consultations"
-            meta={`${consultations.length} records · Page ${consultationsPage} of ${consultationsPageCount}`}
-            actionLabel="Open clinical"
-            onAction={() => navigate("/clinical")}
-          >
-            {consultationsLoading ? (
-              <LoadingRow text="Loading consultations..." />
-            ) : consultations.length ? (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[820px] text-left">
-                  <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
-                    <tr>
-                      <th className="px-3 py-2.5">Patient</th>
-                      <th className="px-3 py-2.5">Type</th>
-                      <th className="px-3 py-2.5">Date</th>
-                      <th className="px-3 py-2.5">Optometrist</th>
-                      <th className="px-3 py-2.5">Status</th>
-                      <th className="px-3 py-2.5 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-[12px]">
-                    {visibleConsultations.map((consultation) => {
-                      const patient = consultation.patientId || {};
-                      const optometrist = consultation.optometristId || {};
-                      const consultationId = consultation._id;
-                      const currentStatus =
-                        normalizeStatus(consultation.status) || "completed";
-
-                      return (
-                        <tr
-                          key={consultationId}
-                          className="border-t border-slate-100 transition-colors hover:bg-violet-50/30"
-                        >
-                          <td className="px-3 py-2.5">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                patient?._id &&
-                                navigate(`/patients/${patient._id}`)
-                              }
-                              className="text-left"
-                            >
-                              <div className="font-semibold text-slate-700 hover:underline">
-                                {fullName(patient)}
-                              </div>
-                              <div className="mt-0.5 text-[11px] text-slate-400">
-                                {getPatientNumber({ patientId: patient })}
-                              </div>
-                            </button>
-                          </td>
-
-                          <td className="px-3 py-2.5">
-                            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600">
-                              {consultationTypeLabel(consultation.consultationType)}
-                            </span>
-                          </td>
-
-                          <td className="px-3 py-2.5 text-slate-500">
-                            {formatShortDate(consultation.consultationDate)}
-                          </td>
-
-                          <td className="px-3 py-2.5 text-slate-600">
-                            {[optometrist.firstName, optometrist.lastName]
-                              .filter(Boolean)
-                              .join(" ") || "—"}
-                          </td>
-
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`inline-flex items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.06em] ${getConsultationStatusClass(
-                                  currentStatus,
-                                )}`}
-                              >
-                                {consultationStatusLabel(currentStatus)}
-                              </span>
-
-                              <select
-                                value={currentStatus}
-                                disabled={updatingConsultationId === consultationId}
-                                onChange={(event) =>
-                                  void updateDashboardConsultationStatus(
-                                    consultationId,
-                                    event.target.value,
-                                  )
-                                }
-                                className="h-8 rounded-lg border border-slate-200 bg-white px-1.5 text-[10px] font-semibold text-slate-600 outline-none focus:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
-                                aria-label={`Change status for ${fullName(patient)}`}
-                              >
-                                {CONSULTATION_STATUS_OPTIONS.map(([value, text]) => (
-                                  <option key={value} value={value}>
-                                    {text}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </td>
-
-                          <td className="px-3 py-2.5 text-right">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                consultationId &&
-                                navigate(
-                                  `/clinical/consultations/${consultationId}`,
-                                )
-                              }
-                              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-600 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
-                            >
-                              View
-                              <ArrowRight size={12} />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-
-                <Pagination
-                  page={consultationsPage}
-                  totalPages={consultationsPageCount}
-                  totalItems={consultations.length}
-                  onPageChange={setConsultationsPage}
-                />
-              </div>
-            ) : (
-              <EmptyState
-                icon={ClipboardList}
-                title="No consultations"
-                actionLabel="Open clinical"
-                onAction={() => navigate("/clinical")}
-              />
-            )}
-          </SectionCard>
-        )}
+              )}
+            </SectionCard>
+          )}
         </section>
 
         {/* QUICK ACTIONS */}
-        {quickActions.length >
-          0 && (
-          <SectionCard
-            eyebrow="Workspace"
-            title="Quick actions"
-            meta="Role-based shortcuts"
-          >
-            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-3 sm:p-3.5">
-              {quickActions.map(
-                (action) => (
-                  <QuickAction
-                    key={
-                      action.label
-                    }
-                    {...action}
-                  />
-                ),
-              )}
+        {quickActions.length > 0 && (
+          // <SectionCard
+          //   eyebrow="Workspace"
+          //   title="Quick actions"
+          //   meta="Role-based shortcuts"
+          // >
+
+          <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)] p-3 sm:p-3.5">
+            <div className="text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
+              Quick actions
             </div>
-          </SectionCard>
+            <p className="mt-1 text-xs text-slate-900">Role-based shortcuts</p>
+
+            <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-3 sm:p-3.5">
+              {quickActions.map((action) => (
+                <QuickAction key={action.label} {...action} />
+              ))}
+            </div>
+          </div>
+
+          // </SectionCard>
         )}
       </div>
     </div>
@@ -2126,11 +1056,7 @@ function SectionCard({
               {title}
             </h2>
 
-            {meta && (
-              <span className="text-[12px] text-slate-500">
-                {meta}
-              </span>
-            )}
+            {meta && <span className="text-[12px] text-slate-500">{meta}</span>}
           </div>
         </div>
 
@@ -2146,135 +1072,10 @@ function SectionCard({
         )}
       </header>
 
-      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent]">
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgb(148_163_184)_rgb(241_245_249)] [-webkit-overflow-scrolling:touch]">
         {children}
       </div>
     </section>
-  );
-}
-
-function SummaryMetric({
-  icon: Icon,
-  label,
-  value,
-  active = false,
-  onClick,
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-xl border px-3 py-2.5 text-left transition ${
-        active
-          ? "border-violet-200 bg-white shadow-sm ring-1 ring-violet-100"
-          : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/30"
-      }`}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-700 ring-1 ring-violet-100">
-          <Icon size={12} />
-        </span>
-
-        <span className="text-sm font-bold text-slate-900">
-          {value}
-        </span>
-      </div>
-
-      <div className="mt-1.5 truncate text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
-        {label}
-      </div>
-    </button>
-  );
-}
-
-function CategoryBadge({
-  category,
-}) {
-  const option =
-    DISPENSING_CATEGORY[
-      category
-    ];
-
-  const Icon =
-    option?.icon ||
-    PackageCheck;
-
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.07em] text-slate-600">
-      <Icon size={9} />
-      {option?.shortLabel ||
-        "Dispensing"}
-    </span>
-  );
-}
-
-function DispensingStatusBadge({
-  status,
-}) {
-  const key =
-    normalizeStatus(status);
-
-  const classes = {
-    draft:
-      "bg-slate-100 text-slate-600",
-    ordered:
-      "bg-blue-50 text-blue-700",
-    not_ready:
-      "bg-amber-50 text-amber-700",
-    ready:
-      "bg-emerald-50 text-emerald-700",
-    notified:
-      "bg-violet-50 text-violet-700",
-    collected:
-      "bg-slate-900 text-white",
-    cancelled:
-      "bg-rose-50 text-rose-700",
-    dispensed:
-      "bg-emerald-50 text-emerald-700",
-    delivered:
-      "bg-emerald-50 text-emerald-700",
-  };
-
-  return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-[0.08em] ${
-        classes[key] ||
-        "bg-slate-100 text-slate-600"
-      }`}
-    >
-      <span className="h-1 w-1 rounded-full bg-current" />
-      {key
-        ? key.replaceAll(
-            "_",
-            " ",
-          )
-        : "Draft"}
-    </span>
-  );
-}
-
-function StatusBadge({
-  status,
-}) {
-  const key =
-    normalizeStatus(status);
-
-  return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-bold tracking-[0.02em] ${
-        APPOINTMENT_STATUS_CLASS[
-          key
-        ] ||
-        "bg-slate-100 text-slate-600"
-      }`}
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-current" />
-      {
-        APPOINTMENT_STATUS[key] ||
-        key ||
-        "Booked"
-      }
-    </span>
   );
 }
 
@@ -2337,9 +1138,7 @@ function DashboardTodoList({ storageKey }) {
   const toggleTask = (taskId) => {
     setItems((current) =>
       current.map((item) =>
-        item.id === taskId
-          ? { ...item, completed: !item.completed }
-          : item,
+        item.id === taskId ? { ...item, completed: !item.completed } : item,
       ),
     );
   };
@@ -2376,7 +1175,10 @@ function DashboardTodoList({ storageKey }) {
         </span>
       </header>
 
-      <form onSubmit={addTask} className="shrink-0 flex gap-2 border-b border-slate-100 p-3">
+      <form
+        onSubmit={addTask}
+        className="shrink-0 flex gap-2 border-b border-slate-100 p-3"
+      >
         <label className="sr-only" htmlFor="dashboard-todo-input">
           Add a task
         </label>
@@ -2399,18 +1201,25 @@ function DashboardTodoList({ storageKey }) {
       </form>
 
       <div
-        className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent]"
+        className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y scroll-smooth [scrollbar-width:thin] [scrollbar-color:rgb(148_163_184)_rgb(241_245_249)] [-webkit-overflow-scrolling:touch]"
         aria-label="To-do tasks"
         tabIndex={0}
       >
         {items.length ? (
           <ul className="divide-y divide-slate-100">
             {items.map((item) => (
-              <li key={item.id} className="group flex items-start gap-2.5 px-3.5 py-3 transition hover:bg-slate-50/80">
+              <li
+                key={item.id}
+                className="group flex items-start gap-2.5 px-3.5 py-3 transition hover:bg-slate-50/80"
+              >
                 <button
                   type="button"
                   onClick={() => toggleTask(item.id)}
-                  aria-label={item.completed ? `Mark ${item.text} as pending` : `Complete ${item.text}`}
+                  aria-label={
+                    item.completed
+                      ? `Mark ${item.text} as pending`
+                      : `Complete ${item.text}`
+                  }
                   aria-pressed={item.completed}
                   className={`mt-0.5 inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 ${
                     item.completed
@@ -2418,9 +1227,15 @@ function DashboardTodoList({ storageKey }) {
                       : "border-slate-300 bg-white text-transparent hover:border-blue-400"
                   }`}
                 >
-                  {item.completed ? <CheckCircle2 size={14} /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
+                  {item.completed ? (
+                    <CheckCircle2 size={14} />
+                  ) : (
+                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                  )}
                 </button>
-                <span className={`min-w-0 flex-1 break-words text-xs leading-5 ${item.completed ? "text-slate-400 line-through" : "font-medium text-slate-700"}`}>
+                <span
+                  className={`min-w-0 flex-1 break-words text-xs leading-5 ${item.completed ? "text-slate-400 line-through" : "font-medium text-slate-700"}`}
+                >
                   {item.text}
                 </span>
                 <button
@@ -2444,7 +1259,8 @@ function DashboardTodoList({ storageKey }) {
               Your checklist is clear
             </p>
             <p className="mt-1 max-w-[230px] text-[11px] leading-5 text-slate-400">
-              Add tasks you need to complete today. Tick each item when it is done.
+              Add tasks you need to complete today. Tick each item when it is
+              done.
             </p>
           </div>
         )}
@@ -2455,7 +1271,9 @@ function DashboardTodoList({ storageKey }) {
           {completedCount} of {items.length} completed
         </span>
         <div className="flex items-center gap-3">
-          <span className="text-[9px] text-slate-400">Saved on this device</span>
+          <span className="text-[9px] text-slate-400">
+            Saved on this device
+          </span>
           {completedCount > 0 && (
             <button
               type="button"
@@ -2471,12 +1289,7 @@ function DashboardTodoList({ storageKey }) {
   );
 }
 
-function QuickAction({
-  icon: Icon,
-  label,
-  description,
-  onClick,
-}) {
+function QuickAction({ icon: Icon, label, description, onClick }) {
   return (
     <button
       type="button"
@@ -2522,40 +1335,28 @@ function EmptyState({
         {title}
       </div>
 
-      {showAction &&
-        actionLabel && (
-          <button
-            type="button"
-            onClick={onAction}
-            className="mt-2 inline-flex h-8 items-center gap-1 rounded-lg bg-slate-950 px-2.5 text-[10px] font-bold text-white"
-          >
-            {actionLabel}
-            <ArrowRight
-              size={10}
-            />
-          </button>
-        )}
+      {showAction && actionLabel && (
+        <button
+          type="button"
+          onClick={onAction}
+          className="mt-2 inline-flex h-8 items-center gap-1 rounded-lg bg-slate-950 px-2.5 text-[10px] font-bold text-white"
+        >
+          {actionLabel}
+          <ArrowRight size={10} />
+        </button>
+      )}
     </div>
   );
 }
 
-function Pagination({
-  page,
-  totalPages,
-  totalItems,
-  onPageChange,
-}) {
+function Pagination({ page, totalPages, totalItems, onPageChange }) {
   if (totalItems <= PAGE_SIZE) {
     return null;
   }
 
-  const start =
-    (page - 1) * PAGE_SIZE + 1;
+  const start = (page - 1) * PAGE_SIZE + 1;
 
-  const end = Math.min(
-    page * PAGE_SIZE,
-    totalItems,
-  );
+  const end = Math.min(page * PAGE_SIZE, totalItems);
 
   return (
     <div className="flex flex-col gap-2 border-t border-slate-100 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
@@ -2566,11 +1367,7 @@ function Pagination({
       <div className="flex items-center gap-1">
         <button
           type="button"
-          onClick={() =>
-            onPageChange(
-              Math.max(1, page - 1),
-            )
-          }
+          onClick={() => onPageChange(Math.max(1, page - 1))}
           disabled={page <= 1}
           className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Previous page"
@@ -2585,14 +1382,7 @@ function Pagination({
 
         <button
           type="button"
-          onClick={() =>
-            onPageChange(
-              Math.min(
-                totalPages,
-                page + 1,
-              ),
-            )
-          }
+          onClick={() => onPageChange(Math.min(totalPages, page + 1))}
           disabled={page >= totalPages}
           className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Next page"
@@ -2605,17 +1395,11 @@ function Pagination({
   );
 }
 
-function LoadingRow({
-  text,
-}) {
+function LoadingRow({ text }) {
   return (
     <div className="flex items-center justify-center gap-2 px-3 py-5 text-[12px] text-slate-400">
-      <RefreshCw
-        size={12}
-        className="animate-spin"
-      />
+      <RefreshCw size={12} className="animate-spin" />
       {text}
     </div>
   );
 }
- 

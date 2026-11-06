@@ -232,12 +232,12 @@ export default function ReportsPage() {
       subtitle="Operational, clinical, optical, inventory and financial reporting in one workspace."
       code="REPORTS"
       actions={
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           <button
             type="button"
             onClick={load}
             disabled={running}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <RefreshCw size={14} className={running ? "animate-spin" : ""} />
             {running ? "Refreshing..." : "Refresh"}
@@ -246,7 +246,7 @@ export default function ReportsPage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
           >
             <Download size={14} />
             Print
@@ -256,7 +256,7 @@ export default function ReportsPage() {
             type="button"
             onClick={exportCsv}
             disabled={!data}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Download size={14} />
             Export CSV
@@ -283,8 +283,8 @@ export default function ReportsPage() {
         title="Report period"
         description="Choose the inclusive period used for clinical, operational and financial calculations."
       >
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-          <div className="grid flex-1 gap-3 sm:grid-cols-2">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid flex-1 grid-cols-2 gap-2">
             <Field
               label="From"
               type="date"
@@ -310,7 +310,7 @@ export default function ReportsPage() {
                 key={key}
                 type="button"
                 onClick={() => setPreset(key)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+                className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
               >
                 {value}
               </button>
@@ -320,7 +320,7 @@ export default function ReportsPage() {
               type="button"
               onClick={load}
               disabled={running}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
             >
               <BarChart3 size={14} />
               Run reports
@@ -330,120 +330,92 @@ export default function ReportsPage() {
       </Section>
 
       {loading ? (
-        <div className="py-24 text-center">
-          <RefreshCw className="mx-auto animate-spin text-slate-300" size={28} />
-          <p className="mt-3 text-sm font-semibold text-slate-600">
-            Building reports...
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Collecting data for the selected period.
-          </p>
+        <div className="py-12 text-center">
+          <RefreshCw className="mx-auto animate-spin text-slate-300" size={24} />
+          <p className="mt-2 text-xs font-semibold text-slate-600">Building reports...</p>
+          <p className="mt-1 text-[11px] text-slate-400">Collecting data for the selected period.</p>
         </div>
       ) : (
-        <>
-          <Section number="02" title="Practice overview">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-              <Metric icon={Users} label="Active patients" value={counts.patients || 0} accent="blue" />
-              <Metric icon={CalendarDays} label="Appointments" value={counts.appointments || 0} accent="violet" />
-              <Metric icon={Activity} label="Consultations" value={counts.consultations || 0} accent="emerald" />
-              <Metric icon={ClipboardList} label="Spectacle jobs" value={counts.spectacles || 0} accent="amber" />
-              <Metric icon={Package} label="Contact lens" value={counts.contactLenses || 0} accent="rose" />
-              <Metric icon={CalendarDays} label="Recall due" value={counts.recallDue || 0} accent="cyan" />
+        <div className="space-y-3 px-3 pb-3 sm:px-4">
+          {/* Practice snapshot */}
+          <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">Practice overview</h2>
+              <span className="text-[10px] text-slate-400">{range.from} – {range.to}</span>
             </div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+              <Metric compact icon={Users} label="Active patients" value={counts.patients || 0} accent="blue" />
+              <Metric compact icon={CalendarDays} label="Appointments" value={counts.appointments || 0} accent="violet" />
+              <Metric compact icon={Activity} label="Consultations" value={counts.consultations || 0} accent="emerald" />
+              <Metric compact icon={ClipboardList} label="Spectacle jobs" value={counts.spectacles || 0} accent="amber" />
+              <Metric compact icon={Package} label="Contact lens" value={counts.contactLenses || 0} accent="rose" />
+              <Metric compact icon={CalendarDays} label="Recall due" value={counts.recallDue || 0} accent="cyan" />
+            </div>
+            <div className="mt-2 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-[11px]">
+              <span className="font-medium text-slate-500">Total tracked clinical & optical activity</span>
+              <strong className="text-slate-800">{totalActivity.toLocaleString("en-IN")}</strong>
+            </div>
+          </div>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
-                    Operational activity
-                  </div>
-                  <div className="mt-1 text-sm font-semibold text-slate-700">
-                    {totalActivity.toLocaleString("en-IN")} tracked clinical and optical activities
-                  </div>
-                </div>
-                <div className="rounded-full bg-white px-3 py-1.5 text-[10px] font-bold text-slate-500 shadow-sm">
-                  {range.from} → {range.to}
-                </div>
+          {/* Financial snapshot and charts */}
+          <div className="grid gap-3 xl:grid-cols-12">
+            <section className="rounded-xl border border-slate-200 bg-white p-3 xl:col-span-5">
+              <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Financial performance</h2>
+              <div className="grid grid-cols-2 gap-2">
+                <Metric compact icon={WalletCards} label="Invoiced" value={money(financial.invoiceTotal)} accent="blue" />
+                <Metric compact icon={CheckCircle2} label="Collected" value={money(financial.paid)} accent="emerald" />
+                <Metric compact icon={TrendingUp} label="Outstanding" value={money(financial.outstanding)} accent="amber" />
+                <Metric compact icon={BarChart3} label="Collection rate" value={`${collectionRate}%`} accent="violet" />
               </div>
-            </div>
-          </Section>
-
-          <Section number="03" title="Financial performance">
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <Metric icon={WalletCards} label="Invoiced" value={money(financial.invoiceTotal)} accent="blue" />
-              <Metric icon={CheckCircle2} label="Collected" value={money(financial.paid)} accent="emerald" />
-              <Metric icon={TrendingUp} label="Outstanding" value={money(financial.outstanding)} accent="amber" />
-              <Metric icon={BarChart3} label="Collection rate" value={`${collectionRate}%`} accent="violet" />
-            </div>
-
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            </section>
+            <div className="grid gap-3 sm:grid-cols-2 xl:col-span-7">
               <Chart title="Revenue by day" rows={daily.map((x) => ({ label: x._id, value: x.value }))} max={maxRevenue} />
               <SimpleBars title="Payment methods" rows={paymentByMethod} moneyValues={false} />
             </div>
-          </Section>
+          </div>
 
-          <Section number="04" title="Clinical & operational statistics">
-            <div className="grid gap-3 lg:grid-cols-2">
-              <SimpleBars title="Appointment status" rows={appointmentStatuses} />
-              <SimpleBars title="Revenue by category" rows={revenueByCategory} moneyValues />
-              <SimpleBars title="Appointment types" rows={operations.appointments || []} />
-              <SimpleBars title="Consultation types" rows={operations.consultations || []} />
-            </div>
-          </Section>
-
-          <Section number="05" title="Optical & dispensing">
-            <div className="grid gap-3 lg:grid-cols-2">
-              <SimpleBars title="Spectacle workflow" rows={operations.spectacles || []} />
-              <SimpleBars title="Contact lens workflow" rows={operations.contactLenses || []} />
-            </div>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Metric
-                icon={ClipboardList}
-                label="Recall lists created"
-                value={operations.recalls?.lists || 0}
-                accent="blue"
-              />
-              <Metric
-                icon={Users}
-                label="Patients selected for recall"
-                value={operations.recalls?.selected || 0}
-                accent="violet"
-              />
-            </div>
-          </Section>
-
-          <Section number="06" title="Inventory statistics">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric icon={Package} label="Active items" value={inventory.total || 0} accent="blue" />
-              <Metric icon={Activity} label="Low stock" value={lowStock.length} accent="rose" />
-              <Metric icon={WalletCards} label="Cost value" value={money(inventory.costValue)} accent="amber" />
-              <Metric icon={TrendingUp} label="Retail value" value={money(inventory.retailValue)} accent="emerald" />
-            </div>
-
-            <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
-              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-3 py-3">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
-                    Reorder attention
-                  </div>
-                  <div className="mt-1 text-sm font-bold text-slate-800">
-                    Low-stock inventory
-                  </div>
-                </div>
-                <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[10px] font-bold text-rose-700">
-                  {lowStock.length} items
-                </span>
+          {/* Operations */}
+          <div className="grid gap-3 lg:grid-cols-2">
+            <section className="rounded-xl border border-slate-200 bg-white p-3">
+              <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Clinical & operational statistics</h2>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <SimpleBars title="Appointment status" rows={appointmentStatuses} compact />
+                <SimpleBars title="Revenue by category" rows={revenueByCategory} moneyValues compact />
+                <SimpleBars title="Appointment types" rows={operations.appointments || []} compact />
+                <SimpleBars title="Consultation types" rows={operations.consultations || []} compact />
               </div>
+            </section>
+            <section className="rounded-xl border border-slate-200 bg-white p-3">
+              <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-700">Optical & dispensing</h2>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <SimpleBars title="Spectacle workflow" rows={operations.spectacles || []} compact />
+                <SimpleBars title="Contact lens workflow" rows={operations.contactLenses || []} compact />
+              </div>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <Metric compact icon={ClipboardList} label="Recall lists created" value={operations.recalls?.lists || 0} accent="blue" />
+                <Metric compact icon={Users} label="Patients selected for recall" value={operations.recalls?.selected || 0} accent="violet" />
+              </div>
+            </section>
+          </div>
+
+          {/* Inventory */}
+          <section className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">Inventory statistics</h2>
+              <span className="rounded-full bg-rose-50 px-2 py-1 text-[10px] font-bold text-rose-700">{lowStock.length} low-stock</span>
+            </div>
+            <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Metric compact icon={Package} label="Active items" value={inventory.total || 0} accent="blue" />
+              <Metric compact icon={Activity} label="Low stock" value={lowStock.length} accent="rose" />
+              <Metric compact icon={WalletCards} label="Cost value" value={money(inventory.costValue)} accent="amber" />
+              <Metric compact icon={TrendingUp} label="Retail value" value={money(inventory.retailValue)} accent="emerald" />
+            </div>
+            <div className="max-h-48 overflow-auto rounded-lg border border-slate-100">
               <Table
                 columns={[
                   { key: "code", label: "Code" },
                   { key: "name", label: "Item" },
-                  {
-                    key: "category",
-                    label: "Category",
-                    render: (r) => label(r.category),
-                  },
+                  { key: "category", label: "Category", render: (r) => label(r.category) },
                   { key: "stock", label: "Stock" },
                   { key: "reorder", label: "Reorder" },
                 ]}
@@ -451,22 +423,16 @@ export default function ReportsPage() {
                 empty="No low-stock items."
               />
             </div>
-          </Section>
-        </>
+          </section>
+          <p className="px-1 text-[10px] leading-4 text-slate-400">Reports use the current organization's invoice, payment, appointment, consultation, optical job, recall and inventory records.</p>
+        </div>
       )}
 
-      <Section number="07" title="Report notes">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-500">
-          Reports are calculated from the current organization's records. Financial totals use
-          invoice and payment records; operational totals use appointments, consultations,
-          optical jobs, recalls and inventory currently stored in V-Sync.
-        </div>
-      </Section>
     </DocumentShell>
   );
 }
 
-function Metric({ icon: Icon, label, value, accent = "slate" }) {
+function Metric({ icon: Icon, label, value, accent = "slate", compact = false }) {
   const styles = {
     blue: "from-blue-50 to-cyan-50 text-blue-700",
     violet: "from-violet-50 to-fuchsia-50 text-violet-700",
@@ -478,26 +444,23 @@ function Metric({ icon: Icon, label, value, accent = "slate" }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${styles[accent] || styles.slate}`}>
-          <Icon size={17} />
+    <div className={`rounded-lg border border-slate-200 bg-white ${compact ? "p-2" : "p-3"}`}>
+      <div className="flex items-center gap-2">
+        <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${styles[accent] || styles.slate}`}>
+          <Icon size={14} />
         </div>
-        <div className="text-[9px] font-bold uppercase tracking-[.14em] text-slate-300">
-          KPI
-        </div>
-      </div>
-      <div className="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-        {label}
-      </div>
-      <div className="mt-1 break-words text-xl font-bold tracking-tight text-slate-900">
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[9px] font-semibold uppercase tracking-wide text-slate-400">{label}</div>
+          <div className="mt-0.5 break-words text-base font-bold leading-tight tracking-tight text-slate-900">
         {value}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-function SimpleBars({ title, rows = [], moneyValues = false }) {
+function SimpleBars({ title, rows = [], moneyValues = false, compact = false }) {
   const normalized = Array.isArray(rows) ? rows : [];
   const max = Math.max(
     1,
@@ -505,21 +468,21 @@ function SimpleBars({ title, rows = [], moneyValues = false }) {
   );
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+    <div className={`rounded-lg border border-slate-100 bg-slate-50/60 ${compact ? "p-2" : "p-3"}`}>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
           {title}
         </div>
         <BarChart3 size={15} className="text-slate-300" />
       </div>
 
-      <div className="space-y-3">
+      <div className={compact ? "space-y-2" : "space-y-3"}>
         {normalized.length ? (
           normalized.map((r, i) => {
             const v = Number(r.value ?? r.count ?? 0);
             return (
               <div key={`${r._id ?? "row"}-${i}`}>
-                <div className="mb-1.5 flex items-center justify-between gap-3 text-xs">
+                <div className="mb-1 flex items-center justify-between gap-2 text-[10px]">
                   <span className="min-w-0 truncate font-semibold text-slate-700">
                     {label(r._id)}
                   </span>
@@ -528,7 +491,7 @@ function SimpleBars({ title, rows = [], moneyValues = false }) {
                   </span>
                 </div>
 
-                <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
                   <div
                     className="h-full rounded-full bg-slate-800 transition-all"
                     style={{ width: `${Math.max(3, (v / max) * 100)}%` }}
@@ -551,26 +514,26 @@ function Chart({ title, rows = [], max = 1 }) {
   const normalized = Array.isArray(rows) ? rows : [];
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+    <div className="rounded-lg border border-slate-100 bg-slate-50/60 p-2">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
           {title}
         </div>
         <TrendingUp size={15} className="text-slate-300" />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {normalized.length ? (
           normalized.slice(-14).map((r, i) => (
             <div
               key={`${r.label}-${i}`}
-              className="grid grid-cols-[76px_1fr_96px] items-center gap-2 text-xs"
+              className="grid grid-cols-[52px_1fr_76px] items-center gap-1.5 text-[10px]"
             >
               <span className="truncate text-slate-400">
                 {String(r.label || "").slice(5)}
               </span>
 
-              <div className="h-2 rounded-full bg-slate-100">
+              <div className="h-1.5 rounded-full bg-slate-200">
                 <div
                   className="h-full rounded-full bg-slate-800 transition-all"
                   style={{
