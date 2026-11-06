@@ -1205,7 +1205,7 @@ export default function NewSpectaclePage() {
                   }}
                   onFocus={() => setShowPatientResults(true)}
                   placeholder="Search name, patient number or phone..."
-                  className={`${inputClass} pl-8 pr-8`}
+                  className={`${inputClass} pl-4 pr-4`}
                 />
 
                 {!routePatientId && (
@@ -1219,7 +1219,7 @@ export default function NewSpectaclePage() {
               {!routePatientId && showPatientResults && (
                 <div className="absolute left-0 right-0 top-[46px] z-50 overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl">
                   {patientsLoading ? (
-                    <div className="p-4 text-center text-[10px] text-slate-500">
+                    <div className="p-3 text-center text-[10px] text-slate-500">
                       Loading patients...
                     </div>
                   ) : filteredPatients.length ? (
@@ -1233,7 +1233,7 @@ export default function NewSpectaclePage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="p-4 text-center text-[10px] text-slate-500">
+                    <div className="p-3 text-center text-[10px] text-slate-500">
                       No patients found.
                     </div>
                   )}
@@ -1972,7 +1972,7 @@ export default function NewSpectaclePage() {
               type="button"
               onClick={save}
               disabled={saving || loading || !activePatientId}
-              className="inline-flex h-8 items-center rounded-md bg-slate-900 px-4 text-[10px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-8 items-center rounded-md bg-slate-900 px-3 text-[10px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Save size={12} className="mr-1.5" />
 

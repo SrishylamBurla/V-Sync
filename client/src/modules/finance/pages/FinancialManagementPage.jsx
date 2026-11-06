@@ -215,12 +215,12 @@ export default function FinancialManagementPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
       {message && (
-        <div className="m-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+        <div className="m-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
           {message}
         </div>
       )}
@@ -247,7 +247,7 @@ export default function FinancialManagementPage() {
         >
           <form
             onSubmit={submit}
-            className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+            className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
           >
             {tab === "expenses" && (
               <>
@@ -434,7 +434,7 @@ export default function FinancialManagementPage() {
               </>
             )}
             <div className="md:col-span-4">
-              <button className="rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 Save record
               </button>
             </div>
@@ -442,7 +442,7 @@ export default function FinancialManagementPage() {
         </Section>
       )}
       <Section number="03" title="Financial registers">
-        <div className="mb-5 flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           {[
             ["expenses", "Expenses"],
             ["petty", "Petty Cash"],
@@ -490,7 +490,7 @@ export default function FinancialManagementPage() {
         )}
         {tab === "petty" && (
           <>
-            <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Current recorded movement
               </span>
@@ -595,7 +595,7 @@ export default function FinancialManagementPage() {
           />
         )}
         {tab === "outstanding" && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
             <div className="text-xs font-semibold text-slate-500">
               Outstanding patient invoices
             </div>
@@ -636,7 +636,7 @@ export default function FinancialManagementPage() {
 }
 function Metric({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3">
       {Icon && <Icon size={16} className="text-slate-500" />}
       <div className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
         {label}

@@ -368,7 +368,7 @@
 //             type="submit"
 //             form="contact-lens-job-form"
 //             disabled={saving}
-//             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+//             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
 //           >
 //             <Save size={14} />
 //             {saving ? "Creating..." : "Create Job"}
@@ -377,7 +377,7 @@
 //       }
 //     >
 //       {error && (
-//         <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+//         <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 //           {error}
 //         </div>
 //       )}
@@ -421,7 +421,7 @@
 //                         onClick={() =>
 //                           selectPatient(patient)
 //                         }
-//                         className="flex w-full items-center gap-3 border-b border-slate-100 px-4 py-3 text-left last:border-0 hover:bg-slate-50"
+//                         className="flex w-full items-center gap-3 border-b border-slate-100 px-3 py-3 text-left last:border-0 hover:bg-slate-50"
 //                       >
 //                         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
 //                           <UserRound size={15} />
@@ -448,14 +448,14 @@
 //               {!loadingPatients &&
 //                 patientSearch &&
 //                 patients.length === 0 && (
-//                   <div className="mt-2 rounded-xl border border-dashed border-slate-200 p-4 text-xs text-slate-400">
+//                   <div className="mt-2 rounded-xl border border-dashed border-slate-200 p-3 text-xs text-slate-400">
 //                     No patients found.
 //                   </div>
 //                 )}
 //             </div>
 //           ) : (
-//             <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
-//               <div className="flex items-center justify-between gap-4">
+//             <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3">
+//               <div className="flex items-center justify-between gap-3">
 //                 <div className="flex items-center gap-3">
 //                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-600">
 //                     <CheckCircle2 size={18} />
@@ -499,7 +499,7 @@
 //           title="Lens order"
 //           description="Select the dispensing lens and order parameters."
 //         >
-//           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+//           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
 
 //             <Field
 //               label="Catalogue lens"
@@ -634,7 +634,7 @@
 //           number="03"
 //           title="Right eye"
 //         >
-//           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+//           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
 //             {[
 //               "power",
 //               "sphere",
@@ -669,7 +669,7 @@
 //           number="04"
 //           title="Left eye"
 //         >
-//           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+//           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
 //             {[
 //               "power",
 //               "sphere",
@@ -704,7 +704,7 @@
 //           number="05"
 //           title="Pricing"
 //         >
-//           <div className="grid gap-4 sm:grid-cols-3">
+//           <div className="grid gap-3 sm:grid-cols-3">
 
 //             <Field
 //               label="Unit price"
@@ -1141,13 +1141,13 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-violet-100 selection:text-violet-900 pb-12">
+//     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-violet-100 selection:text-violet-900 pb-9">
 //       {/* =====================================================
 //           APP HEADER & WORKSPACE BANNER
 //       ===================================================== */}
 //       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs">
-//         <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8">
-//           <div className="flex h-16 items-center justify-between gap-4">
+//         <div className="mx-auto w-full max-w-[1600px] px-3 sm:px-3 lg:px-4">
+//           <div className="flex h-16 items-center justify-between gap-3">
 //             {/* Logo / Title */}
 //             <div className="flex items-center gap-3">
 //               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-200">
@@ -1206,16 +1206,16 @@
 //       </header>
 
 //       {/* Main Container */}
-//       <main className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 pt-6">
+//       <main className="mx-auto w-full max-w-[1600px] px-3 sm:px-3 lg:px-4 pt-4">
 //         {/* =====================================================
 //             TAB 1: ORDERS REGISTER
 //         ===================================================== */}
 //         {activeTab === "register" && (
-//           <div className="space-y-6">
+//           <div className="space-y-3">
 //             {/* Top Banner & Quick Metrics */}
 //             <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
-//               <div className="bg-gradient-to-r from-violet-50 via-white to-blue-50 p-6">
-//                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+//               <div className="bg-gradient-to-r from-violet-50 via-white to-blue-50 p-3">
+//                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 //                   <div>
 //                     <div className="inline-flex items-center gap-1.5 rounded-full bg-violet-100/80 px-2.5 py-0.5 text-[11px] font-bold text-violet-700">
 //                       <Sparkles className="h-3 w-3" />
@@ -1239,7 +1239,7 @@
 //                     </button>
 //                     <button
 //                       onClick={handleCreateNew}
-//                       className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-violet-700 transition"
+//                       className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-violet-700 transition"
 //                     >
 //                       <Plus className="h-4 w-4" />
 //                       New Clinical Exam
@@ -1250,27 +1250,27 @@
 
 //               {/* Summary Metrics Bar */}
 //               <div className="grid grid-cols-2 divide-x divide-y divide-slate-100 border-t border-slate-200 sm:grid-cols-3 lg:grid-cols-6 lg:divide-y-0">
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Exams</span>
 //                   <div className="mt-1 text-xl font-black text-slate-900">{summary.total}</div>
 //                 </div>
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Draft / Pending</span>
 //                   <div className="mt-1 text-xl font-black text-slate-700">{summary.draft}</div>
 //                 </div>
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600">Trial Fitted</span>
 //                   <div className="mt-1 text-xl font-black text-purple-700">{summary.trialFitted}</div>
 //                 </div>
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">Ordered</span>
 //                   <div className="mt-1 text-xl font-black text-blue-700">{summary.ordered}</div>
 //                 </div>
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Ready in Lab</span>
 //                   <div className="mt-1 text-xl font-black text-emerald-700">{summary.ready}</div>
 //                 </div>
-//                 <div className="p-4 text-center sm:text-left">
+//                 <div className="p-3 text-center sm:text-left">
 //                   <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Dispensed</span>
 //                   <div className="mt-1 text-xl font-black text-indigo-700">{summary.dispensed}</div>
 //                 </div>
@@ -1297,7 +1297,7 @@
 //                   <select
 //                     value={statusFilter}
 //                     onChange={(e) => setStatusFilter(e.target.value)}
-//                     className="rounded-lg border border-slate-200 bg-white pl-8 pr-7 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 cursor-pointer"
+//                     className="rounded-lg border border-slate-200 bg-white pl-4 pr-7 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 cursor-pointer"
 //                   >
 //                     <option value="">All Statuses</option>
 //                     <option value="draft">Draft</option>
@@ -1328,20 +1328,20 @@
 //                 <table className="w-full min-w-[950px] text-left text-xs">
 //                   <thead>
 //                     <tr className="border-b border-slate-200 bg-slate-50/80 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-//                       <th className="px-5 py-3.5">Job / Order</th>
-//                       <th className="px-5 py-3.5">Patient Details</th>
-//                       <th className="px-5 py-3.5">Lens Modality</th>
-//                       <th className="px-5 py-3.5">Prescribed Lens</th>
-//                       <th className="px-5 py-3.5">Fitting Clinician</th>
-//                       <th className="px-5 py-3.5">Date</th>
-//                       <th className="px-5 py-3.5">Status</th>
-//                       <th className="px-5 py-3.5 text-right">Actions</th>
+//                       <th className="px-3 py-3.5">Job / Order</th>
+//                       <th className="px-3 py-3.5">Patient Details</th>
+//                       <th className="px-3 py-3.5">Lens Modality</th>
+//                       <th className="px-3 py-3.5">Prescribed Lens</th>
+//                       <th className="px-3 py-3.5">Fitting Clinician</th>
+//                       <th className="px-3 py-3.5">Date</th>
+//                       <th className="px-3 py-3.5">Status</th>
+//                       <th className="px-3 py-3.5 text-right">Actions</th>
 //                     </tr>
 //                   </thead>
 //                   <tbody className="divide-y divide-slate-100">
 //                     {paginatedOrders.length === 0 ? (
 //                       <tr>
-//                         <td colSpan={8} className="py-12 text-center text-slate-400">
+//                         <td colSpan={8} className="py-5 text-center text-slate-400">
 //                           <Eye className="mx-auto h-8 w-8 text-slate-300" />
 //                           <p className="mt-2 text-xs font-medium text-slate-500">No contact lens records found matching your query.</p>
 //                         </td>
@@ -1349,15 +1349,15 @@
 //                     ) : (
 //                       paginatedOrders.map((order) => (
 //                         <tr key={order.id} className="hover:bg-slate-50/80 transition">
-//                           <td className="px-5 py-3.5 font-bold text-slate-900">
+//                           <td className="px-3 py-3.5 font-bold text-slate-900">
 //                             {order.orderNumber}
 //                             <div className="text-[10px] font-normal text-slate-400">{order.id}</div>
 //                           </td>
-//                           <td className="px-5 py-3.5">
+//                           <td className="px-3 py-3.5">
 //                             <div className="font-semibold text-slate-800">{order.patientName}</div>
 //                             <div className="text-[10px] text-slate-400">{order.patientNumber}</div>
 //                           </td>
-//                           <td className="px-5 py-3.5">
+//                           <td className="px-3 py-3.5">
 //                             <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
 //                               order.lensType === "scleral" ? "bg-amber-100 text-amber-800" :
 //                               order.lensType === "rgp" ? "bg-purple-100 text-purple-800" :
@@ -1366,21 +1366,21 @@
 //                               {order.lensType}
 //                             </span>
 //                           </td>
-//                           <td className="px-5 py-3.5 font-medium text-slate-700">
+//                           <td className="px-3 py-3.5 font-medium text-slate-700">
 //                             {order.brand}
 //                           </td>
-//                           <td className="px-5 py-3.5 text-slate-600">
+//                           <td className="px-3 py-3.5 text-slate-600">
 //                             {order.fitter}
 //                           </td>
-//                           <td className="px-5 py-3.5 text-slate-500">
+//                           <td className="px-3 py-3.5 text-slate-500">
 //                             {order.orderDate}
 //                           </td>
-//                           <td className="px-5 py-3.5">
+//                           <td className="px-3 py-3.5">
 //                             <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${statusClass(order.status)}`}>
 //                               {formatStatus(order.status)}
 //                             </span>
 //                           </td>
-//                           <td className="px-5 py-3.5 text-right space-x-1">
+//                           <td className="px-3 py-3.5 text-right space-x-1">
 //                             <button
 //                               onClick={() => setPrintModalOrder(order)}
 //                               title="Print Sheet"
@@ -1403,7 +1403,7 @@
 //               </div>
 
 //               {/* Pagination Footer */}
-//               <div className="flex items-center justify-between border-t border-slate-100 px-5 py-3">
+//               <div className="flex items-center justify-between border-t border-slate-100 px-3 py-3">
 //                 <span className="text-xs text-slate-500">
 //                   Showing {paginatedOrders.length} of {filteredOrders.length} entries
 //                 </span>
@@ -1433,9 +1433,9 @@
 //             TAB 2: CLINICAL DOCUMENTATION & FITTING FORM
 //         ===================================================== */}
 //         {activeTab === "form" && (
-//           <form onSubmit={handleSaveForm} className="space-y-6 pb-12">
+//           <form onSubmit={handleSaveForm} className="space-y-3 pb-9">
 //             {/* Header Action Bar */}
-//             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+//             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
 //               <div className="flex items-center gap-3">
 //                 <button
 //                   type="button"
@@ -1467,7 +1467,7 @@
 
 //                 <button
 //                   type="submit"
-//                   className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition"
+//                   className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white shadow-sm hover:bg-violet-700 transition"
 //                 >
 //                   <Check className="h-4 w-4" />
 //                   Save Examination
@@ -1477,7 +1477,7 @@
 
 //             {/* Section 1: Patient & Clinical History */}
 //             <FormPanel number="1" title="Patient Selection & Clinical History">
-//               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+//               <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
 //                 {/* Patient Search Picker */}
 //                 <div className="relative">
 //                   <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -1544,7 +1544,7 @@
 
 //             {/* Section 2: Baseline Refraction & Corneal Parameters */}
 //             <FormPanel number="2" title="Baseline Ocular Refraction & Topography">
-//               <div className="space-y-4">
+//               <div className="space-y-3">
 //                 {/* Table for OD & OS Refraction */}
 //                 <div className="overflow-x-auto">
 //                   <table className="w-full text-left text-xs">
@@ -1614,7 +1614,7 @@
 //                 <button
 //                   type="button"
 //                   onClick={() => setFormData({ ...formData, lensCategory: "soft" })}
-//                   className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${
+//                   className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
 //                     formData.lensCategory === "soft" ? "bg-white text-violet-700 shadow-xs" : "text-slate-600"
 //                   }`}
 //                 >
@@ -1623,7 +1623,7 @@
 //                 <button
 //                   type="button"
 //                   onClick={() => setFormData({ ...formData, lensCategory: "rgp" })}
-//                   className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${
+//                   className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
 //                     formData.lensCategory === "rgp" ? "bg-white text-purple-700 shadow-xs" : "text-slate-600"
 //                   }`}
 //                 >
@@ -1632,7 +1632,7 @@
 //                 <button
 //                   type="button"
 //                   onClick={() => setFormData({ ...formData, lensCategory: "scleral" })}
-//                   className={`rounded-lg px-4 py-1.5 text-xs font-bold transition ${
+//                   className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
 //                     formData.lensCategory === "scleral" ? "bg-white text-amber-700 shadow-xs" : "text-slate-600"
 //                   }`}
 //                 >
@@ -1674,7 +1674,7 @@
 
 //               {/* DYNAMIC FIT PARAMETERS BASED ON LENS CATEGORY */}
 //               {formData.lensCategory === "soft" && (
-//                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-violet-50/50 p-4 rounded-xl border border-violet-100">
+//                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-violet-50/50 p-3 rounded-xl border border-violet-100">
 //                   <div>
 //                     <label className="block text-[10px] font-bold text-slate-500">Centration (OD/OS)</label>
 //                     <input
@@ -1715,7 +1715,7 @@
 //               )}
 
 //               {formData.lensCategory === "rgp" && (
-//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-purple-50/50 p-3 rounded-xl border border-purple-100">
 //                   <div>
 //                     <label className="block text-[10px] font-bold text-slate-500">Apical Fluorescein Pattern</label>
 //                     <select
@@ -1750,7 +1750,7 @@
 //               )}
 
 //               {formData.lensCategory === "scleral" && (
-//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-amber-50/50 p-3 rounded-xl border border-amber-100">
 //                   <div>
 //                     <label className="block text-[10px] font-bold text-slate-500">Initial Central Vault OD/OS (μm)</label>
 //                     <input
@@ -1784,7 +1784,7 @@
 
 //             {/* Section 4: Final Prescribed Specifications & Financials */}
 //             <FormPanel number="4" title="Final Prescribed Specifications & Billing">
-//               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+//               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //                 {/* Specifications */}
 //                 <div className="space-y-3">
 //                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Lens Specification Parameters</h4>
@@ -1850,7 +1850,7 @@
 //                 </div>
 
 //                 {/* Billing Ledger */}
-//                 <div className="space-y-3 rounded-xl bg-slate-50 p-4 border border-slate-200">
+//                 <div className="space-y-3 rounded-xl bg-slate-50 p-3 border border-slate-200">
 //                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Dispensing Financial Ledger</h4>
 //                   <div className="flex justify-between items-center text-xs">
 //                     <span className="text-slate-600">Base Fitting & Lens Price:</span>
@@ -1890,8 +1890,8 @@
 //           PRINTABLE DOCUMENT MODAL
 //       ===================================================== */}
 //       {printModalOrder && (
-//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-//           <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl space-y-6">
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-3">
+//           <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl space-y-3">
 //             <div className="flex justify-between items-center border-b border-slate-200 pb-4">
 //               <div>
 //                 <h3 className="text-xl font-bold text-slate-900">Contact Lens Clinical Sheet</h3>
@@ -1905,8 +1905,8 @@
 //               </button>
 //             </div>
 
-//             <div className="space-y-4 text-xs">
-//               <div className="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-lg">
+//             <div className="space-y-3 text-xs">
+//               <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg">
 //                 <div><strong>Patient:</strong> {printModalOrder.patientName}</div>
 //                 <div><strong>Date:</strong> {printModalOrder.orderDate}</div>
 //                 <div><strong>Lens Category:</strong> {printModalOrder.lensType?.toUpperCase()}</div>
@@ -1953,7 +1953,7 @@
 //                 </div>
 //                 <button
 //                   onClick={() => window.print()}
-//                   className="rounded-lg bg-violet-600 px-4 py-2 text-white font-bold inline-flex items-center gap-2"
+//                   className="rounded-lg bg-violet-600 px-3 py-2 text-white font-bold inline-flex items-center gap-2"
 //                 >
 //                   <Printer className="h-4 w-4" /> Print Document
 //                 </button>
@@ -1973,13 +1973,13 @@
 // function FormPanel({ number, title, children }) {
 //   return (
 //     <section className="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
-//       <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/50 px-5 py-3">
+//       <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/50 px-3 py-3">
 //         <span className="flex h-5 w-5 items-center justify-center rounded-md bg-violet-100 text-[10px] font-bold text-violet-700">
 //           {number}
 //         </span>
 //         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">{title}</h3>
 //       </div>
-//       <div className="p-5">{children}</div>
+//       <div className="p-3">{children}</div>
 //     </section>
 //   );
 // }
@@ -2002,8 +2002,8 @@
 //   }, [spectacleSph, vertexDistance]);
 
 //   return (
-//     <div className="space-y-6 max-w-4xl mx-auto">
-//       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-6">
+//     <div className="space-y-3 max-w-4xl mx-auto">
+//       <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xs space-y-3">
 //         <div>
 //           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
 //             <Calculator className="h-5 w-5 text-violet-600" />
@@ -2014,9 +2014,9 @@
 //           </p>
 //         </div>
 
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 //           {/* Vault Decay Card */}
-//           <div className="rounded-xl bg-amber-50/60 p-4 border border-amber-200 space-y-4">
+//           <div className="rounded-xl bg-amber-50/60 p-3 border border-amber-200 space-y-3">
 //             <h3 className="text-xs font-bold uppercase tracking-wider text-amber-800">Scleral Fluid Vault Settlement</h3>
 //             <div>
 //               <label className="text-[11px] font-bold text-slate-600">Initial Insertion Clearance (μm)</label>
@@ -2044,7 +2044,7 @@
 //           </div>
 
 //           {/* Vertex Distance Adjustment Card */}
-//           <div className="rounded-xl bg-violet-50/60 p-4 border border-violet-200 space-y-4">
+//           <div className="rounded-xl bg-violet-50/60 p-3 border border-violet-200 space-y-3">
 //             <h3 className="text-xs font-bold uppercase tracking-wider text-violet-800">Vertex Distance Power Compensation</h3>
 //             <div>
 //               <label className="text-[11px] font-bold text-slate-600">Spectacle Sphere Power (D)</label>
@@ -2336,9 +2336,9 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[1400px] space-y-6 py-5">
+    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[1400px] space-y-3 py-3">
       {/* HEADER BAR */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -2371,7 +2371,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
             Cancel
           </button>
@@ -2379,7 +2379,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {saving ? "Saving..." : "Save Order Job"}
@@ -2420,7 +2420,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
       </div>
 
       {/* PATIENT & LENS SPECIFICATION */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         <Panel number="1" title="Patient & Stock Lens Lookup">
           <div className="space-y-3">
             {/* Patient Search */}
@@ -2542,7 +2542,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
       {/* MODALITY CLINICAL EVALUATION MATRIX */}
       <Panel number="3" title={`${formData.lensCategory.toUpperCase()} Clinical Assessment Parameters`}>
         {formData.lensCategory === "soft" && (
-          <div className="grid grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="space-y-2 border-r border-slate-100 pr-4">
               <h4 className="font-bold text-slate-700">Right Eye (OD Soft)</h4>
               <div className="grid grid-cols-2 gap-2">
@@ -2581,7 +2581,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
         )}
 
         {formData.lensCategory === "rgp" && (
-          <div className="grid grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="space-y-2 border-r border-slate-100 pr-4">
               <h4 className="font-bold text-slate-700">Right Eye (OD RGP Corneal)</h4>
               <div className="grid grid-cols-2 gap-2">
@@ -2620,7 +2620,7 @@ export default function NewContactLensJobPage({ onCancel, onSuccess }) {
         )}
 
         {formData.lensCategory === "scleral" && (
-          <div className="grid grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="space-y-2 border-r border-slate-100 pr-4">
               <h4 className="font-bold text-slate-700">Right Eye Scleral Profile</h4>
               <div className="grid grid-cols-2 gap-2">

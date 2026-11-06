@@ -225,7 +225,7 @@ export default function AddPatientPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6 px-1 pb-8 pt-5 sm:pt-7">
+    <div className="mx-auto w-full max-w-6xl space-y-3 px-1 pb-4 pt-4 sm:pt-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
           <button
@@ -248,9 +248,9 @@ export default function AddPatientPage() {
       <header className="relative overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.045)]">
         <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-violet-100/65 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-24 right-[28%] h-48 w-48 rounded-full bg-sky-100/60 blur-3xl" />
-        <div className="relative flex flex-col gap-5 p-5 sm:p-7 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200">
+        <div className="relative flex flex-col gap-3 p-3 sm:p-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200">
               <FilePlus2 size={21} strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
@@ -265,7 +265,7 @@ export default function AddPatientPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/80 px-3 py-3 shadow-sm backdrop-blur-sm">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
               <BadgeCheck size={17} />
             </div>
@@ -280,7 +280,7 @@ export default function AddPatientPage() {
       {error && (
         <div
           role="alert"
-          className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5 text-sm text-red-800 shadow-sm"
+          className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-3.5 text-sm text-red-800 shadow-sm"
         >
           <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
           <div>
@@ -290,8 +290,8 @@ export default function AddPatientPage() {
         </div>
       )}
 
-      <form onSubmit={submit} noValidate className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_290px]">
-        <div className="min-w-0 space-y-5">
+      <form onSubmit={submit} noValidate className="grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_290px]">
+        <div className="min-w-0 space-y-3">
           <section className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
             <SectionHeader
               icon={UserRound}
@@ -300,7 +300,7 @@ export default function AddPatientPage() {
               description="The primary details used to identify the patient across the practice."
             />
 
-            <div className="grid gap-x-4 gap-y-5 p-5 sm:grid-cols-2 sm:p-6 xl:grid-cols-3">
+            <div className="grid gap-x-3 gap-y-3 p-3 sm:grid-cols-2 sm:p-3 xl:grid-cols-3">
               <Input
                 name="firstName"
                 label="First name"
@@ -373,8 +373,8 @@ export default function AddPatientPage() {
               title="Source and front-desk notes"
               description="Record how the patient found the practice and any useful administrative context."
             />
-            <div className="space-y-5 p-5 sm:p-6">
-              <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-3 p-3 sm:p-3">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <Select
                   name="source"
                   label="Patient source"
@@ -382,7 +382,7 @@ export default function AddPatientPage() {
                   options={sourceOptions}
                   onChange={(value) => change("source", value)}
                 />
-                <div className="flex items-start gap-3 rounded-xl border border-sky-100 bg-sky-50/70 px-4 py-3">
+                <div className="flex items-start gap-3 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-3">
                   <ShieldCheck size={16} className="mt-0.5 shrink-0 text-sky-700" />
                   <p className="text-xs leading-5 text-slate-600">
                     Keep examination findings, allergies and clinical history inside the patient's consultation record.
@@ -407,7 +407,7 @@ export default function AddPatientPage() {
             </div>
           </section>
 
-          <div className="flex flex-col-reverse gap-2 rounded-[20px] border border-slate-200 bg-white/95 p-3 shadow-[0_8px_24px_rgba(15,23,42,0.05)] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-4">
+          <div className="flex flex-col-reverse gap-2 rounded-[20px] border border-slate-200 bg-white/95 p-3 shadow-[0_8px_24px_rgba(15,23,42,0.05)] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-3">
             <p className="px-1 text-[11px] leading-5 text-slate-400">
               <span className="text-red-500">*</span> Required fields
             </p>
@@ -416,14 +416,14 @@ export default function AddPatientPage() {
                 type="button"
                 onClick={() => navigate("/patients")}
                 disabled={saving}
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving ? <LoaderCircle size={15} className="animate-spin" /> : <Save size={15} />}
                 {saving ? "Creating patient…" : "Create patient"}
@@ -432,15 +432,15 @@ export default function AddPatientPage() {
           </div>
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-5">
+        <aside className="space-y-3 lg:sticky lg:top-4">
           <section className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
-            <div className="border-b border-slate-100 px-5 py-4">
+            <div className="border-b border-slate-100 px-3 py-3">
               <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-violet-700">Live preview</div>
               <h2 className="mt-1 text-sm font-bold text-slate-900">Patient profile</h2>
             </div>
-            <div className="p-5">
+            <div className="p-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-sky-100 text-sm font-bold text-violet-800 ring-1 ring-violet-100">
+                <div className="flex h-10 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-sky-100 text-sm font-bold text-violet-800 ring-1 ring-violet-100">
                   {initials}
                 </div>
                 <div className="min-w-0">
@@ -448,7 +448,7 @@ export default function AddPatientPage() {
                   <div className="mt-0.5 text-[11px] text-slate-400">New patient record</div>
                 </div>
               </div>
-              <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
+              <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
                 <PreviewLine icon={Phone} label="Phone" value={form.phone || "Not entered"} />
                 <PreviewLine icon={Mail} label="Email" value={form.email || "Not entered"} />
                 <PreviewLine icon={CalendarDays} label="Age" value={age === null ? "Not provided" : `${age} years`} />
@@ -456,7 +456,7 @@ export default function AddPatientPage() {
             </div>
           </section>
 
-          <section className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
+          <section className="rounded-[22px] border border-slate-200 bg-white p-3 shadow-[0_3px_18px_rgba(15,23,42,0.035)]">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                 <Users size={15} />
@@ -517,7 +517,7 @@ export default function AddPatientPage() {
             )}
           </section>
 
-          <div className="rounded-[20px] border border-violet-100 bg-gradient-to-br from-violet-50/80 to-sky-50/80 p-4">
+          <div className="rounded-[20px] border border-violet-100 bg-gradient-to-br from-violet-50/80 to-sky-50/80 p-3">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
               <ShieldCheck size={15} className="text-violet-700" />
               Registration guidance
@@ -534,7 +534,7 @@ export default function AddPatientPage() {
 
 function SectionHeader({ icon: Icon, eyebrow, title, description }) {
   return (
-    <header className="flex items-start gap-3 border-b border-slate-100 bg-slate-50/60 px-5 py-4 sm:px-6">
+    <header className="flex items-start gap-3 border-b border-slate-100 bg-slate-50/60 px-3 py-3 sm:px-3">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-violet-700 shadow-sm ring-1 ring-slate-100">
         <Icon size={17} strokeWidth={1.9} />
       </div>
@@ -589,7 +589,7 @@ function Input({
         autoComplete={autoComplete}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={`h-11 w-full rounded-xl border bg-slate-50/70 px-3.5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:bg-white focus:ring-4 ${
+        className={`h-10 w-full rounded-xl border bg-slate-50/70 px-3.5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:bg-white focus:ring-4 ${
           error
             ? "border-red-300 focus:border-red-400 focus:ring-red-50"
             : "border-slate-200 focus:border-violet-400 focus:ring-violet-50"
@@ -614,7 +614,7 @@ function Select({ name, label, value, onChange, options }) {
         name={name}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+        className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
       >
         {options.map(([optionValue, optionLabel]) => (
           <option key={optionValue} value={optionValue}>

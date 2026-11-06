@@ -276,7 +276,7 @@ export default function RecallPage() {
       }
     >
       {error && (
-        <div className="mx-5 mt-5 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:mx-7">
+        <div className="mx-4 mt-4 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700 sm:mx-7">
           <span>{error}</span>
           <button
             type="button"
@@ -290,7 +290,7 @@ export default function RecallPage() {
       )}
 
       {notice && (
-        <div className="mx-5 mt-5 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 sm:mx-7">
+        <div className="mx-4 mt-4 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm text-emerald-700 sm:mx-7">
           <CheckCircle2 size={16} />
           {notice}
         </div>
@@ -334,8 +334,8 @@ export default function RecallPage() {
           />
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
+        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-3 py-3">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
                 Recall list history
@@ -395,7 +395,7 @@ export default function RecallPage() {
           description="Build an inclusive date-range list of patients whose recall is due. Exclusion months can be used to prevent recent contacts from being selected."
         >
           <form onSubmit={create}>
-            <div className="grid gap-4 lg:grid-cols-4">
+            <div className="grid gap-3 lg:grid-cols-4">
               <Field
                 label="Start date"
                 type="date"
@@ -433,7 +433,7 @@ export default function RecallPage() {
                 <button
                   type="submit"
                   disabled={working}
-                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-4 text-xs font-bold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-3 text-xs font-bold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <CalendarDays size={14} />
                   {working ? "Creating..." : "Create list"}
@@ -451,7 +451,7 @@ export default function RecallPage() {
           description="Configure the first five recall periods used by the practice."
         >
           <form onSubmit={saveSettings}>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
               <Field
                 label="First recall (months)"
                 type="number"
@@ -514,7 +514,7 @@ export default function RecallPage() {
               />
             </div>
 
-            <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto]">
+            <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_auto]">
               <Field
                 label="Default recall letter"
                 value={settings.defaultLetter || ""}
@@ -530,7 +530,7 @@ export default function RecallPage() {
                 <button
                   type="submit"
                   disabled={working}
-                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-4 text-xs font-bold text-white disabled:opacity-60"
+                  className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-3 text-xs font-bold text-white disabled:opacity-60"
                 >
                   <CheckCircle2 size={14} />
                   {working ? "Saving..." : "Save settings"}
@@ -546,7 +546,7 @@ export default function RecallPage() {
         title="Current recall list"
         description="Search the active recall list, review patients and process each recall action."
       >
-        <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto]">
+        <div className="mb-4 grid gap-3 lg:grid-cols-[1fr_auto_auto_auto]">
           <div className="relative">
             <UserRound
               size={15}
@@ -556,14 +556,14 @@ export default function RecallPage() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search patient, patient number, phone or email..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-50"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 outline-none"
+            className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 outline-none"
           >
             <option value="">All statuses</option>
             <option value="pending">Pending</option>
@@ -578,7 +578,7 @@ export default function RecallPage() {
               setQuery("");
               setStatusFilter("");
             }}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50"
           >
             <Filter size={14} />
             Clear
@@ -588,7 +588,7 @@ export default function RecallPage() {
             <button
               type="button"
               onClick={printList}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 print:hidden"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50 print:hidden"
             >
               <Printer size={14} />
               Print list
@@ -597,7 +597,7 @@ export default function RecallPage() {
         </div>
 
         {loading ? (
-          <div className="flex min-h-[320px] items-center justify-center">
+          <div className="flex min-h-[260px] items-center justify-center">
             <div className="text-center">
               <RefreshCw
                 className="mx-auto animate-spin text-slate-300"
@@ -760,7 +760,7 @@ export default function RecallPage() {
           ].map(([number, title, description]) => (
             <div
               key={number}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-2xl border border-slate-200 bg-slate-50 p-3"
             >
               <div className="text-[10px] font-bold tracking-[.18em] text-slate-400">
                 {number}
@@ -790,7 +790,7 @@ function SummaryCard({ icon: Icon, label, value, accent = "slate" }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div
           className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${

@@ -1123,8 +1123,8 @@
 
 //   if (loadingPatient) {
 //     return (
-//       <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
-//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+//       <div className="flex min-h-[50vh] items-center justify-center bg-slate-50">
+//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
 //           <Loader2 size={18} className="animate-spin text-blue-600" />
 //           Loading patient record...
 //         </div>
@@ -1134,8 +1134,8 @@
 
 //   if (!patient) {
 //     return (
-//       <div className="mx-auto max-w-3xl px-4 py-16">
-//         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+//       <div className="mx-auto max-w-3xl px-3 py-6">
+//         <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
 //           {error || "Patient record not found."}
 //         </div>
 //       </div>
@@ -1149,7 +1149,7 @@
 //             TOP TOOLBAR
 //         ====================================================== */}
 //         <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
-//           <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
+//           <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-3 lg:px-3">
 //             <div className="flex min-w-0 items-center gap-3">
 //               <div className="min-w-0">
 //                 <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-blue-600">
@@ -1185,7 +1185,7 @@
 //                 type="submit"
 //                 form="consultation-form"
 //                 disabled={!consultationStarted || saving}
-//                 className="inline-flex h-9 items-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4"
+//                 className="inline-flex h-9 items-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-3"
 //               >
 //                 {saving ? (
 //                   <Loader2 size={14} className="animate-spin" />
@@ -1204,9 +1204,9 @@
 //             ALERTS
 //         ====================================================== */}
 //         {(error || success || billingMessage) && (
-//           <div className="px-3 pt-3 sm:px-5 lg:px-7">
+//           <div className="px-3 pt-3 sm:px-3 lg:px-3">
 //             {error && (
-//               <div className="flex items-start justify-between gap-4 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+//               <div className="flex items-start justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
 //                 <span>{error}</span>
 //                 <button
 //                   type="button"
@@ -1265,7 +1265,7 @@
 //           <form
 //             id="consultation-form"
 //             onSubmit={handleSave}
-//             className="px-3 pb-28 pt-3 sm:px-5 lg:px-7"
+//             className="px-3 pb-28 pt-3 sm:px-3 lg:px-3"
 //           >
 //             {/* =================================================
 //                 VISIT CONTROL STRIP
@@ -1322,7 +1322,7 @@
 //                           onChange={(event) =>
 //                             updateNested("recall", "date", event.target.value)
 //                           }
-//                           className="h-8 w-full rounded border border-slate-200 bg-white pl-8 pr-2 text-[10px] outline-none focus:border-blue-400"
+//                           className="h-8 w-full rounded border border-slate-200 bg-white pl-4 pr-2 text-[10px] outline-none focus:border-blue-400"
 //                         />
 //                       </div>
 
@@ -1609,7 +1609,7 @@
 //                     }
 //                   >
 //                     {form.additionalTests.length === 0 ? (
-//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-[10px] text-slate-400">
 //                         No additional tests
 //                       </div>
 //                     ) : (
@@ -1712,7 +1712,7 @@
 //                     }
 //                   >
 //                     {form.diagnosis.length === 0 ? (
-//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-[10px] text-slate-400">
+//                       <div className="rounded border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-[10px] text-slate-400">
 //                         No diagnosis added
 //                       </div>
 //                     ) : (
@@ -1748,7 +1748,7 @@
 //                             <button
 //                               type="button"
 //                               onClick={() => removeDiagnosis(index)}
-//                               className="mt-5 flex h-8 w-8 items-center justify-center rounded border border-red-100 bg-white text-red-500 hover:bg-red-50"
+//                               className="mt-4 flex h-8 w-8 items-center justify-center rounded border border-red-100 bg-white text-red-500 hover:bg-red-50"
 //                             >
 //                               <Trash2 size={13} />
 //                             </button>
@@ -1947,7 +1947,7 @@
 //                     type="button"
 //                     onClick={safeNavigateBack}
 //                     disabled={saving}
-//                     className="h-9 rounded border border-slate-300 bg-white px-4 text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+//                     className="h-9 rounded border border-slate-300 bg-white px-3 text-[10px] font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
 //                   >
 //                     Cancel
 //                   </button>
@@ -1955,7 +1955,7 @@
 //                   <button
 //                     type="submit"
 //                     disabled={saving}
-//                     className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-4 text-[10px] font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
+//                     className="inline-flex h-9 items-center gap-1.5 rounded bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
 //                   >
 //                     {saving ? (
 //                       <Loader2 size={13} className="animate-spin" />
@@ -1980,10 +1980,10 @@
 
 // function PatientHeader({ patient, age, previousConsultations }) {
 //   return (
-//     <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 lg:px-7">
+//     <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-3 lg:px-3">
 //       <div className="grid items-center gap-0 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
 //         <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
-//           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
+//           <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
 //             <UserRound size={22} />
 //           </div>
 
@@ -2055,8 +2055,8 @@
 
 // function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
 //   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-//       <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-3 backdrop-blur-sm">
+//       <div className="w-full max-w-2xl rounded-xl bg-white p-3 shadow-xl">
 //         <div className="mb-4 flex items-center justify-between">
 //           <h2 className="text-lg font-bold text-slate-900">
 //             Select Consultation Type
@@ -2691,7 +2691,7 @@
 //                         onChange={(event) =>
 //                           updateLens(index, "lensPrice", event.target.value)
 //                         }
-//                         className="h-8 w-full rounded border border-slate-200 pl-5 pr-1.5 text-right text-[9px] outline-none focus:border-blue-400"
+//                         className="h-8 w-full rounded border border-slate-200 pl-4 pr-1.5 text-right text-[9px] outline-none focus:border-blue-400"
 //                       />
 //                     </div>
 //                   </td>
@@ -2751,7 +2751,7 @@
 //           <button
 //             type="button"
 //             onClick={onCreateBill}
-//             className="mt-4 inline-flex h-8 items-center gap-1.5 rounded border border-slate-300 bg-white px-4 text-[9px] font-bold text-slate-700 hover:bg-slate-50"
+//             className="mt-4 inline-flex h-8 items-center gap-1.5 rounded border border-slate-300 bg-white px-3 text-[9px] font-bold text-slate-700 hover:bg-slate-50"
 //           >
 //             Create Bill
 //           </button>
@@ -2799,7 +2799,7 @@
 //           min="0"
 //           value={value || ""}
 //           onChange={(event) => onChange(event.target.value)}
-//           className="h-8 w-full rounded border border-slate-200 bg-white pl-6 pr-2 text-[10px] outline-none focus:border-blue-400"
+//           className="h-8 w-full rounded border border-slate-200 bg-white pl-4 pr-2 text-[10px] outline-none focus:border-blue-400"
 //         />
 //       </div>
 //     </label>
@@ -2845,8 +2845,8 @@
 //   };
 
 //   return (
-//     <div className="space-y-6">
-//       <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+//     <div className="space-y-3">
+//       <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
 //         <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
 //           <div className="flex items-center gap-2">
 //             <Glasses className="text-blue-600" size={20} />
@@ -2888,11 +2888,11 @@
 //         </div>
 
 //         {/* 1. CLINICAL HISTORY & BASELINE WEAR */}
-//         <div className="mb-6 rounded-md border border-slate-200 bg-slate-50/50 p-4">
+//         <div className="mb-4 rounded-md border border-slate-200 bg-slate-50/50 p-3">
 //           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
 //             1. Clinical History & Baseline Wear
 //           </h3>
-//           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+//           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //             <div>
 //               <label className="mb-1 block text-[11px] font-semibold text-slate-600">
 //                 Primary Indication
@@ -3002,7 +3002,7 @@
 //           const badgeColor = isRight ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700";
 
 //           return (
-//             <div key={eyeKey} className="mb-6 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+//             <div key={eyeKey} className="mb-4 rounded-md border border-slate-200 bg-white p-3 shadow-sm">
 //               <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2">
 //                 <h3 className="text-sm font-bold text-slate-900">{label}</h3>
 //                 <span className={`rounded px-2 py-0.5 text-xs font-bold ${badgeColor}`}>
@@ -3011,7 +3011,7 @@
 //               </div>
 
 //               {/* LENS TYPE SELECTOR FOR THIS EYE */}
-//               <div className="mb-4 grid gap-4 sm:grid-cols-3">
+//               <div className="mb-4 grid gap-3 sm:grid-cols-3">
 //                 <div>
 //                   <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-600">
 //                     Lens Category
@@ -3400,12 +3400,12 @@
 //         })}
 
 //         {/* FINAL ORDER & INSTRUCTIONS */}
-//         <div className="rounded-md border border-slate-200 bg-slate-50/50 p-4">
+//         <div className="rounded-md border border-slate-200 bg-slate-50/50 p-3">
 //           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
 //             5. Final Order Parameters & Patient Instructions
 //           </h3>
 
-//           <div className="grid gap-4 sm:grid-cols-2">
+//           <div className="grid gap-3 sm:grid-cols-2">
 //             <div>
 //               <label className="mb-1 block text-[11px] font-semibold text-slate-600">Final Lens Order Parameters (OD)</label>
 //               <textarea
@@ -3506,7 +3506,7 @@
 //         )}
 
 //         {type === "binocular_vision" && (
-//           <div className="space-y-5">
+//           <div className="space-y-3">
 //             <div className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-[10px] leading-5 text-blue-800">
 //               <strong>Binocular Vision Evaluation.</strong> Record the dedicated
 //               binocular, accommodative and vergence assessment for this
@@ -5590,8 +5590,8 @@ export default function ConsultationPage() {
 
   if (loadingPatient) {
     return (
-      <div className="flex min-h-[65vh] items-center justify-center bg-slate-50">
-        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+      <div className="flex min-h-[50vh] items-center justify-center bg-slate-50">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
           <Loader2 size={18} className="animate-spin text-blue-600" />
           Loading patient record...
         </div>
@@ -5601,8 +5601,8 @@ export default function ConsultationPage() {
 
   if (!patient) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-16">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+      <div className="mx-auto max-w-3xl px-3 py-6">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error || "Patient record not found."}
         </div>
       </div>
@@ -5616,7 +5616,7 @@ export default function ConsultationPage() {
             TOP TOOLBAR
         ====================================================== */}
         <div className="sticky top-0 z-40 border-b border-slate-200 bg-[#f8fbff]/95 backdrop-blur">
-          <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-5 lg:px-7">
+          <div className="flex min-h-[58px] items-center justify-between gap-3 px-3 py-2 sm:px-3 lg:px-3">
             <div className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600">
@@ -5652,7 +5652,7 @@ export default function ConsultationPage() {
                 type="submit"
                 form="consultation-form"
                 disabled={!consultationStarted || saving}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:px-3"
               >
                 {saving ? (
                   <Loader2 size={14} className="animate-spin" />
@@ -5671,9 +5671,9 @@ export default function ConsultationPage() {
             ALERTS
         ====================================================== */}
         {(error || success || billingMessage) && (
-          <div className="px-3 pt-3 sm:px-5 lg:px-7">
+          <div className="px-3 pt-3 sm:px-3 lg:px-3">
             {error && (
-              <div className="flex items-start justify-between gap-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
+              <div className="flex items-start justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700">
                 <span>{error}</span>
                 <button
                   type="button"
@@ -5732,7 +5732,7 @@ export default function ConsultationPage() {
           <form
             id="consultation-form"
             onSubmit={handleSave}
-            className="px-3 pb-28 pt-3 sm:px-5 lg:px-7"
+            className="px-3 pb-28 pt-3 sm:px-3 lg:px-3"
           >
             {/* =================================================
                 VISIT CONTROL STRIP
@@ -5789,7 +5789,7 @@ export default function ConsultationPage() {
                           onChange={(event) =>
                             updateNested("recall", "date", event.target.value)
                           }
-                          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-8 pr-2 text-xs outline-none focus:border-blue-400"
+                          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-4 pr-2 text-xs outline-none focus:border-blue-400"
                         />
                       </div>
 
@@ -5839,7 +5839,7 @@ export default function ConsultationPage() {
                 SHORT CONSULT
             ================================================== */}
             {isShortConsult ? (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-3 lg:grid-cols-2">
                 <ClinicalPanel number="01" title="Open Box" icon={FileText}>
                   <TextArea
                     label="Clinical entry"
@@ -5899,7 +5899,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 1
                 ================================================== */}
-                <div className="grid gap-4 lg:grid-cols-2">
+                <div className="grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="01"
                     title="Symptoms & History"
@@ -5966,7 +5966,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 2
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel number="03" title="Refraction" icon={Glasses}>
                     <RefractionTabs
                       form={{
@@ -6001,7 +6001,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 3
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="04"
                     title="Binocular / Ocular Motility"
@@ -6059,7 +6059,7 @@ export default function ConsultationPage() {
                 {/* =================================================
                     ROW 4
                 ================================================== */}
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="05"
                     title="Additional Tests"
@@ -6076,7 +6076,7 @@ export default function ConsultationPage() {
                     }
                   >
                     {form.additionalTests.length === 0 ? (
-                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
                         No additional tests
                       </div>
                     ) : (
@@ -6179,7 +6179,7 @@ export default function ConsultationPage() {
                     }
                   >
                     {form.diagnosis.length === 0 ? (
-                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-xs text-slate-400">
+                      <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
                         No diagnosis added
                       </div>
                     ) : (
@@ -6215,7 +6215,7 @@ export default function ConsultationPage() {
                             <button
                               type="button"
                               onClick={() => removeDiagnosis(index)}
-                              className="mt-5 flex h-9 w-8 items-center justify-center rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50"
+                              className="mt-4 flex h-9 w-8 items-center justify-center rounded-lg border border-red-100 bg-white text-red-500 hover:bg-red-50"
                             >
                               <Trash2 size={13} />
                             </button>
@@ -6225,7 +6225,7 @@ export default function ConsultationPage() {
                     )}
                   </ClinicalPanel>
                 </div>
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
                   <ClinicalPanel
                     number="09"
                     title="Advise / Management Plan"
@@ -6274,7 +6274,7 @@ export default function ConsultationPage() {
             {/* =================================================
                 THERAPEUTICS + RECALL
             ================================================== */}
-            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
               <ClinicalPanel
                 number="10"
                 title="Therapeutics"
@@ -6414,7 +6414,7 @@ export default function ConsultationPage() {
                     type="button"
                     onClick={safeNavigateBack}
                     disabled={saving}
-                    className="h-9 rounded-lg border border-slate-300 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                    className="h-9 rounded-lg border border-slate-300 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -6422,7 +6422,7 @@ export default function ConsultationPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-60"
                   >
                     {saving ? (
                       <Loader2 size={13} className="animate-spin" />
@@ -6447,10 +6447,10 @@ export default function ConsultationPage() {
 
 function PatientHeader({ patient, age, previousConsultations }) {
   return (
-    <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5 lg:px-7">
+    <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-3 lg:px-3">
       <div className="grid items-center gap-0 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
         <div className="flex items-center gap-3 border-b border-slate-100 pb-3 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
+          <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
             <UserRound size={22} />
           </div>
 
@@ -6522,8 +6522,8 @@ function PatientMini({ label, value }) {
 
 function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-3 backdrop-blur-sm">
+      <div className="w-full max-w-2xl rounded-xl bg-white p-3 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900">
             Select Consultation Type
@@ -6587,7 +6587,7 @@ function ConsultationTypeModal({ currentType, onSelect, onClose, canClose }) {
 function ClinicalPanel({ number, title, icon: Icon, action, children }) {
   return (
     <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-shadow hover:shadow-sm">
-      <header className="flex min-h-12 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3">
+      <header className="flex min-h-10 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-3 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-blue-50 px-1.5 text-[10px] font-bold text-blue-700 ring-1 ring-blue-100">
             {number}
@@ -6599,7 +6599,7 @@ function ClinicalPanel({ number, title, icon: Icon, action, children }) {
         </div>
         {action && <div className="shrink-0">{action}</div>}
       </header>
-      <div className="space-y-4 p-4 sm:p-5">{children}</div>
+      <div className="space-y-3 p-3 sm:p-3">{children}</div>
     </section>
   );
 }
@@ -7160,7 +7160,7 @@ function DispensingPanel({
                         onChange={(event) =>
                           updateLens(index, "lensPrice", event.target.value)
                         }
-                        className="h-9 w-full rounded-lg border border-slate-200 pl-5 pr-1.5 text-right text-[11px] outline-none focus:border-blue-400"
+                        className="h-9 w-full rounded-lg border border-slate-200 pl-4 pr-1.5 text-right text-[11px] outline-none focus:border-blue-400"
                       />
                     </div>
                   </td>
@@ -7220,7 +7220,7 @@ function DispensingPanel({
           <button
             type="button"
             onClick={onCreateBill}
-            className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 text-[11px] font-bold text-slate-700 hover:bg-slate-50"
+            className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 text-[11px] font-bold text-slate-700 hover:bg-slate-50"
           >
             Create Bill
           </button>
@@ -7268,7 +7268,7 @@ function MoneyInput({ label, value, onChange }) {
           min="0"
           value={value || ""}
           onChange={(event) => onChange(event.target.value)}
-          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-6 pr-2 text-xs outline-none focus:border-blue-400"
+          className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-4 pr-2 text-xs outline-none focus:border-blue-400"
         />
       </div>
     </label>
@@ -7314,8 +7314,8 @@ function ContactLensesSection({ contactLenses, onChange }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+    <div className="space-y-3">
+      <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
         <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <Glasses className="text-blue-600" size={20} />
@@ -7357,11 +7357,11 @@ function ContactLensesSection({ contactLenses, onChange }) {
         </div>
 
         {/* 1. CLINICAL HISTORY & BASELINE WEAR */}
-        <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
             1. Clinical History & Baseline Wear
           </h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label className="mb-1 block text-[13px] font-semibold text-slate-600">
                 Primary Indication
@@ -7471,7 +7471,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
           const badgeColor = isRight ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700";
 
           return (
-            <div key={eyeKey} className="mb-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={eyeKey} className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
               <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2">
                 <h3 className="text-sm font-bold text-slate-900">{label}</h3>
                 <span className={`rounded-lg px-2 py-0.5 text-xs font-bold ${badgeColor}`}>
@@ -7480,7 +7480,7 @@ function ContactLensesSection({ contactLenses, onChange }) {
               </div>
 
               {/* LENS TYPE SELECTOR FOR THIS EYE */}
-              <div className="mb-4 grid gap-4 sm:grid-cols-3">
+              <div className="mb-4 grid gap-3 sm:grid-cols-3">
                 <div>
                   <label className="mb-1 block text-[13px] font-bold uppercase tracking-wider text-slate-600">
                     Lens Category
@@ -7869,12 +7869,12 @@ function ContactLensesSection({ contactLenses, onChange }) {
         })}
 
         {/* FINAL ORDER & INSTRUCTIONS */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
             5. Final Order Parameters & Patient Instructions
           </h3>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-[13px] font-semibold text-slate-600">Final Lens Order Parameters (OD)</label>
               <textarea
@@ -7975,7 +7975,7 @@ function SpecializedConsultationSection({
         )}
 
         {type === "binocular_vision" && (
-          <div className="space-y-5">
+          <div className="space-y-3">
             <div className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2.5 text-xs leading-5 text-blue-800">
               <strong>Binocular Vision Evaluation.</strong> Record the dedicated
               binocular, accommodative and vergence assessment for this

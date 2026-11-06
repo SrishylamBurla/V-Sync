@@ -259,7 +259,7 @@
 //       id={sectionIdFromTitle(title)}
 //       className="min-w-0 scroll-mt-36 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.035)]"
 //     >
-//       <div className="flex min-h-12 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5 sm:px-4">
+//       <div className="flex min-h-10 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5 sm:px-3">
 //         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-[0_1px_1px_rgba(15,23,42,0.03)]">
 //           <Icon size={15} />
 //         </div>
@@ -274,7 +274,7 @@
 //         </span>
 //       </div>
 
-//       <div className="min-w-0 p-3.5 sm:p-4">
+//       <div className="min-w-0 p-3.5 sm:p-3">
 //         {children}
 //       </div>
 //     </section>
@@ -483,7 +483,7 @@
 
 //   return (
 //     <div className="overflow-hidden rounded-xl border border-slate-200">
-//       <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
+//       <div className="border-b border-slate-200 bg-slate-50 px-3 py-3">
 //         <h3 className="text-sm font-semibold text-slate-800">
 //           {title}
 //         </h3>
@@ -493,15 +493,15 @@
 //         <table className="min-w-full text-sm">
 //           <thead>
 //             <tr className="border-b border-slate-200 bg-white text-left text-xs text-slate-400">
-//               <th className="px-4 py-3">Eye</th>
-//               <th className="px-4 py-3">Sphere</th>
-//               <th className="px-4 py-3">Cylinder</th>
-//               <th className="px-4 py-3">Axis</th>
-//               <th className="px-4 py-3">VA</th>
-//               <th className="px-4 py-3">Near VA</th>
-//               <th className="px-4 py-3">Add</th>
-//               <th className="px-4 py-3">Prism</th>
-//               <th className="px-4 py-3">Base</th>
+//               <th className="px-3 py-3">Eye</th>
+//               <th className="px-3 py-3">Sphere</th>
+//               <th className="px-3 py-3">Cylinder</th>
+//               <th className="px-3 py-3">Axis</th>
+//               <th className="px-3 py-3">VA</th>
+//               <th className="px-3 py-3">Near VA</th>
+//               <th className="px-3 py-3">Add</th>
+//               <th className="px-3 py-3">Prism</th>
+//               <th className="px-3 py-3">Base</th>
 //             </tr>
 //           </thead>
 
@@ -514,39 +514,39 @@
 //                   key={eye}
 //                   className="border-b border-slate-100 last:border-0"
 //                 >
-//                   <td className="px-4 py-3 font-semibold text-slate-700">
+//                   <td className="px-3 py-3 font-semibold text-slate-700">
 //                     {eye === "right" ? "OD" : "OS"}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.sphere)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.cylinder)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.axis)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.va)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.nearVa)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.add)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.prism)}
 //                   </td>
 
-//                   <td className="px-4 py-3">
+//                   <td className="px-3 py-3">
 //                     {formatValue(row.base)}
 //                   </td>
 //                 </tr>
@@ -883,7 +883,7 @@
 //     return (
 //       <div className="space-y-2">
 //         {normalizedValue.length === 0 && (
-//           <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs text-slate-400">
+//           <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
 //             No records added yet.
 //           </div>
 //         )}
@@ -1074,8 +1074,8 @@
 //   onChange,
 // }) {
 //   return (
-//     <div className="space-y-4">
-//       <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3">
+//     <div className="space-y-3">
+//       <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-3">
 //         <div className="text-sm font-semibold text-blue-900">
 //           Edit consultation record
 //         </div>
@@ -1093,7 +1093,7 @@
 //             key={group.title}
 //             className="scroll-mt-36 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.035)]"
 //           >
-//             <header className="flex min-h-12 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+//             <header className="flex min-h-10 items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
 //               <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600">
 //                 <Icon size={15} />
 //               </span>
@@ -1102,7 +1102,7 @@
 //               </h2>
 //             </header>
 
-//             <div className="grid min-w-0 grid-cols-1 gap-4 p-4 lg:grid-cols-2">
+//             <div className="grid min-w-0 grid-cols-1 gap-3 p-3 lg:grid-cols-2">
 //               {group.fields.map(([key, label]) => {
 //                 const value = data[key];
 //                 const nested =
@@ -1387,8 +1387,8 @@
 
 //   if (loading) {
 //     return (
-//       <div className="flex min-h-[60vh] items-center justify-center bg-[#f4f7fb]">
-//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-500 shadow-sm">
+//       <div className="flex min-h-[45vh] items-center justify-center bg-[#f4f7fb]">
+//         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-500 shadow-sm">
 //           <Loader2
 //             size={20}
 //             className="animate-spin"
@@ -1401,11 +1401,11 @@
 
 //   if (error) {
 //     return (
-//       <div className="min-h-[60vh] bg-[#f4f7fb] p-6">
+//       <div className="min-h-[45vh] bg-[#f4f7fb] p-3">
 //         <div className="mx-auto max-w-5xl">
           
 
-//           <div className="rounded-xl border border-rose-200 bg-white p-6 text-rose-700 shadow-sm">
+//           <div className="rounded-xl border border-rose-200 bg-white p-3 text-rose-700 shadow-sm">
 //             {error}
 //           </div>
 //         </div>
@@ -1421,7 +1421,7 @@
 //     <div className="min-h-screen bg-[#f4f7fb] text-slate-800">
 //       {/* APPLICATION WORKSPACE HEADER */}
 //       <div className="border-b border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.025)]">
-//         <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-5 lg:px-6">
+//         <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
           
 
 //           <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
@@ -1432,9 +1432,9 @@
 //             <span className="text-blue-600">Consultation</span>
 //           </div>
 
-//           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+//           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 //             <div className="flex min-w-0 items-start gap-3">
-//               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 text-white shadow-sm">
+//               <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 text-white shadow-sm">
 //                 <Stethoscope size={19} />
 //               </div>
 
@@ -1456,7 +1456,7 @@
 //                   </span>
 //                 </div>
 
-//                 <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+//                 <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
 //                   <span className="inline-flex items-center gap-1.5">
 //                     <UserRound size={14} />
 //                     {patientName}
@@ -1560,14 +1560,14 @@
 //       </div>
 
 //       {(saveError || saveSuccess) && (
-//         <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-5 lg:px-6">
+//         <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-3 lg:px-3">
 //           {saveError && (
-//             <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+//             <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-3 text-sm text-rose-700">
 //               {saveError}
 //             </div>
 //           )}
 //           {saveSuccess && (
-//             <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+//             <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm font-medium text-emerald-700">
 //               <Check size={15} />
 //               {saveSuccess}
 //             </div>
@@ -1576,7 +1576,7 @@
 //       )}
 
 //       {/* RECORD WORKSPACE */}
-//       <div className="mx-auto max-w-[1800px] px-3 py-4 sm:px-5 lg:px-6">
+//       <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
 //         <nav
 //           aria-label="Consultation sections"
 //           className="mb-4 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.025)]"
@@ -1614,7 +1614,7 @@
 //                 data={editData || {}}
 //                 onChange={handleEditChange}
 //               />
-//               <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-lg shadow-slate-900/10 backdrop-blur">
+//               <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/95 px-3 py-3 shadow-lg shadow-slate-900/10 backdrop-blur">
 //                 <div className="text-[10px] font-medium text-slate-500">
 //                   {editDirty ? "You have unsaved changes" : "No unsaved changes"}
 //                 </div>
@@ -1647,7 +1647,7 @@
 //           title="Consultation Information"
 //           icon={ClipboardList}
 //         >
-//           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+//           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
 //             <Field
 //               label="Consultation Date"
 //               value={formatDateTime(
@@ -1718,7 +1718,7 @@
 //           title="Refraction & Prescription"
 //           icon={Glasses}
 //         >
-//           <div className="space-y-5">
+//           <div className="space-y-3">
 //             <PrescriptionTable
 //               title="Previous Rx"
 //               prescription={consultation.previousRx}
@@ -1744,7 +1744,7 @@
 //               prescription={consultation.givenRx}
 //             />
 
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               <Field
 //                 label="PD"
 //                 value={consultation.pd}
@@ -1766,7 +1766,7 @@
 //             title="Binocular Vision"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.binocularVision,
 //               ).map(([key, value]) => (
@@ -1785,7 +1785,7 @@
 //           title="Clinical Management & Tests"
 //           icon={Stethoscope}
 //         >
-//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //             <Field
 //               label="Slit Lamp"
 //               value={consultation.slitLamp}
@@ -1854,7 +1854,7 @@
 //             title="Low Vision Management"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.lowVision,
 //               ).map(([key, value]) => (
@@ -1875,7 +1875,7 @@
 //             title="Contact Lens Management"
 //             icon={Eye}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.contactLens ||
 //                   consultation.contactLenses ||
@@ -1897,7 +1897,7 @@
 //             title="Dispensing"
 //             icon={Glasses}
 //           >
-//             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //               {Object.entries(
 //                 consultation.dispensing,
 //               ).map(([key, value]) => (
@@ -1916,7 +1916,7 @@
 //           title="Clinical Notes & Instructions"
 //           icon={FileText}
 //         >
-//           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+//           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 //             <Field
 //               label="Clinical Notes"
 //               value={consultation.clinicalNotes}
@@ -1958,7 +1958,7 @@
 //         </Section>
 
 //         {/* FOOTER */}
-//         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+//         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3">
 //           <div className="text-xs text-slate-400">
 //             Created:{" "}
 //             {formatDateTime(
@@ -2866,7 +2866,7 @@ function EditableValue({
     return (
       <div className="space-y-2">
         {normalizedValue.length === 0 && (
-          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs text-slate-400">
+          <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-400">
             No records added yet.
           </div>
         )}
@@ -3370,8 +3370,8 @@ export default function ConsultationDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-[#f4f7fb]">
-        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs font-medium text-slate-500 shadow-sm">
+      <div className="flex min-h-[45vh] items-center justify-center bg-[#f4f7fb]">
+        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-xs font-medium text-slate-500 shadow-sm">
           <Loader2
             size={20}
             className="animate-spin"
@@ -3384,11 +3384,11 @@ export default function ConsultationDetailsPage() {
 
   if (error) {
     return (
-      <div className="min-h-[60vh] bg-[#f4f7fb] p-6">
+      <div className="min-h-[45vh] bg-[#f4f7fb] p-3">
         <div className="mx-auto max-w-5xl">
           
 
-          <div className="rounded-xl border border-rose-200 bg-white p-6 text-rose-700 shadow-sm">
+          <div className="rounded-xl border border-rose-200 bg-white p-3 text-rose-700 shadow-sm">
             {error}
           </div>
         </div>
@@ -3404,7 +3404,7 @@ export default function ConsultationDetailsPage() {
     <div className="min-h-screen bg-[#f4f7fb] text-slate-800">
       {/* APPLICATION WORKSPACE HEADER */}
       <div className="border-b border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.025)]">
-        <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-5 lg:px-6">
+        <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
           
 
           <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
@@ -3439,7 +3439,7 @@ export default function ConsultationDetailsPage() {
                   </span>
                 </div>
 
-                <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
                   <span className="inline-flex items-center gap-1.5">
                     <UserRound size={14} />
                     {patientName}
@@ -3543,7 +3543,7 @@ export default function ConsultationDetailsPage() {
       </div>
 
       {(saveError || saveSuccess) && (
-        <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-5 lg:px-6">
+        <div className="mx-auto max-w-[1800px] px-3 pt-3 sm:px-3 lg:px-3">
           {saveError && (
             <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
               {saveError}
@@ -3559,7 +3559,7 @@ export default function ConsultationDetailsPage() {
       )}
 
       {/* RECORD WORKSPACE */}
-      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-4 lg:px-5">
+      <div className="mx-auto max-w-[1800px] px-3 py-3 sm:px-3 lg:px-3">
         <nav
           aria-label="Consultation sections"
           className="mb-3 rounded-lg border border-slate-200 bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.025)]"

@@ -1,18 +1,44 @@
 @import "tailwindcss";
 
-:root {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+/* --------------------------------------------------------------------------
+   V-Sync application design system
+   Compact clinical SaaS surfaces: calm neutrals, disciplined blue accents,
+   consistent controls, dense data presentation and accessible focus states.
+   -------------------------------------------------------------------------- */
+@theme {
+  /* Tailwind spacing utilities use this token, tightening spacing consistently
+     across every module without changing component behavior. */
+  --spacing: 0.22rem;
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 0.875rem;
+  --radius-3xl: 1rem;
+}
 
-  color: #111827;
-  background: #f8fafc;
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: #182235;
+  background: #f4f6fa;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --vsync-bg: #f4f6fa;
+  --vsync-surface: #ffffff;
+  --vsync-border: #e4e9f1;
+  --vsync-border-strong: #d7deea;
+  --vsync-ink: #182235;
+  --vsync-muted: #68758a;
+  --vsync-subtle: #8b96a8;
+  --vsync-primary: #4659c9;
+  --vsync-primary-soft: #eef1ff;
+  --vsync-shadow: 0 2px 10px rgba(24, 34, 53, 0.035);
 }
 
 * {
@@ -21,18 +47,300 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  background: var(--vsync-bg);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--vsync-bg);
+  color: var(--vsync-ink);
+  font-size: 13px;
 }
 
+body,
 button,
 input,
 textarea,
 select {
-  font: inherit;
+  font-family: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  transition-property: color, background-color, border-color, box-shadow,
+    transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+  color: #253149;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+select {
+  min-height: 34px;
+  border-color: var(--vsync-border-strong);
+  border-radius: 8px;
+  background-color: #fbfcfe;
+  font-size: 12px;
+}
+
+textarea {
+  border-color: var(--vsync-border-strong);
+  border-radius: 9px;
+  background-color: #fbfcfe;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9aa5b5;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #8797e8;
+  box-shadow: 0 0 0 3px rgba(80, 100, 210, 0.1);
+}
+
+:focus-visible {
+  outline: 2px solid rgba(70, 89, 201, 0.65);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #dfe5ff;
+  color: #202d72;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Application frame */
+.vsync-app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(91, 112, 220, 0.045), transparent 23rem),
+    var(--vsync-bg);
+}
+
+.vsync-app-content {
+  width: 100%;
+  max-width: 1680px;
+  min-height: calc(100vh - 90px);
+  padding: 14px 20px 24px;
+  margin-inline: auto;
+  color: var(--vsync-ink);
+}
+
+.vsync-app-content > * {
+  min-width: 0;
+}
+
+.vsync-topbar {
+  border-color: rgba(222, 228, 238, 0.92);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 0 rgba(25, 39, 66, 0.025);
+  backdrop-filter: blur(16px);
+}
+
+/* Consistent typography across all authenticated workspaces */
+.vsync-app-content h1 {
+  color: #172238;
+  font-size: clamp(1.2rem, 1.45vw, 1.55rem);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.vsync-app-content h2 {
+  color: #1e2a40;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.018em;
+}
+
+.vsync-app-content h3 {
+  color: #26334a;
+  font-size: 0.86rem;
+  font-weight: 680;
+  line-height: 1.35;
+}
+
+/* Premium card surfaces used throughout dashboard, forms and data modules */
+.vsync-app-content div[class*="rounded-"][class*="border"][class*="bg-white"][class*="p-"] {
+  border-color: var(--vsync-border);
+  box-shadow: var(--vsync-shadow);
+}
+
+.vsync-app-content article[class*="border"][class*="bg-white"],
+.vsync-app-content section[class*="border"][class*="bg-white"] {
+  border-color: var(--vsync-border);
+}
+
+/* Dense, readable data tables reduce vertical scrolling in registers */
+.vsync-app-content table {
+  border-color: var(--vsync-border);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.vsync-app-content thead th {
+  padding: 9px 11px !important;
+  background: #f7f9fc;
+  color: #758197;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.vsync-app-content tbody td {
+  padding: 9px 11px !important;
+  border-color: #edf0f5;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.vsync-app-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Compact controls and action buttons */
+.vsync-app-content button:not([class*="h-"]) {
+  min-height: 30px;
+}
+
+.vsync-app-content button[class*="shadow"] {
+  box-shadow: 0 2px 5px rgba(25, 39, 66, 0.07);
+}
+
+.vsync-app-content label > span {
+  line-height: 1.35;
+}
+
+.vsync-app-content input[type="checkbox"],
+.vsync-app-content input[type="radio"] {
+  accent-color: var(--vsync-primary);
+}
+
+/* Scrollbars stay subtle in long tables, lists and modal panels */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd3e0 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #cbd3e0;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #aeb9ca;
+  background-clip: padding-box;
+}
+
+/* Modal form panels inherit the same compact visual language */
+[role="dialog"] input:not([type="checkbox"]):not([type="radio"]),
+[role="dialog"] select {
+  min-height: 35px;
+}
+
+@media (max-width: 767px) {
+  .vsync-app-content {
+    min-height: calc(100vh - 56px);
+    padding: 11px 12px 20px;
+  }
+
+  .vsync-app-content h1 {
+    font-size: 1.2rem;
+  }
+
+  .vsync-app-content table thead th,
+  .vsync-app-content table tbody td {
+    padding: 8px 9px !important;
+  }
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    background: #fff !important;
+  }
+
+  .vsync-app-content {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+/* Brand actions: one confident navy/indigo language across modules */
+.vsync-app-content button[class*="bg-slate-950"],
+.vsync-app-content button[class*="bg-slate-900"] {
+  border-color: #25365f;
+  background-image: linear-gradient(135deg, #25365f, #344a82);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(37, 54, 95, 0.14);
+}
+
+.vsync-app-content button[class*="bg-slate-950"]:hover,
+.vsync-app-content button[class*="bg-slate-900"]:hover {
+  border-color: #3f54a1;
+  background-image: linear-gradient(135deg, #344a82, #465dc0);
+}
+
+/* Consistent compact active controls and selected navigation states */
+.vsync-app-content [role="tablist"] button[aria-selected="true"],
+.vsync-app-content button[aria-pressed="true"] {
+  color: #3548a8;
+}
+
+/* Better data-density on list and register panels */
+.vsync-app-content [class*="overflow-x-auto"] {
+  max-width: 100%;
+  scrollbar-gutter: stable;
+}
+
+.vsync-app-content [class*="animate-pulse"] {
+  border-radius: 7px;
+}
+
+.vsync-app-content [role="dialog"] {
+  overscroll-behavior: contain;
 }

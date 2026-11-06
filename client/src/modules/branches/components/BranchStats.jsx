@@ -33,7 +33,7 @@ export default function BranchStats({
         return (
           <div
             key={item.key}
-            className="border border-slate-200 bg-white p-4"
+            className="border border-slate-200 bg-white p-3"
           >
             <div className="flex items-start justify-between">
               <div>

@@ -266,7 +266,7 @@
 
 //   if (loading) {
 //     return (
-//       <div className="flex min-h-[55vh] items-center justify-center gap-3 text-sm text-slate-500">
+//       <div className="flex min-h-[42vh] items-center justify-center gap-3 text-sm text-slate-500">
 //         <Loader2 size={18} className="animate-spin text-blue-600" />
 //         Loading appointment…
 //       </div>
@@ -275,15 +275,15 @@
 
 //   if (!appointment) {
 //     return (
-//       <div className="mx-auto max-w-3xl px-4 py-10">
+//       <div className="mx-auto max-w-3xl px-3 py-5">
 //         <button
 //           type="button"
 //           onClick={() => navigate(-1)}
-//           className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+//           className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
 //         >
 //           <ArrowLeft size={16} /> Back
 //         </button>
-//         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+//         <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
 //           {error || "Appointment not found."}
 //         </div>
 //       </div>
@@ -297,8 +297,8 @@
 //     : "PT";
 
 //   return (
-//     <div className="min-h-full bg-slate-50/70 px-3 py-4 sm:px-5 sm:py-6 lg:px-7">
-//       <div className="mx-auto max-w-6xl space-y-4">
+//     <div className="min-h-full bg-slate-50/70 px-3 py-3 sm:px-3 sm:py-3 lg:px-3">
+//       <div className="mx-auto max-w-6xl space-y-3">
 //         <header className="flex flex-wrap items-center justify-between gap-3">
 //           <div className="flex min-w-0 items-start gap-3">
 //             <button
@@ -347,10 +347,10 @@
 //           </div>
 //         )}
 
-//         <main className="grid items-start gap-4 lg:grid-cols-2">
+//         <main className="grid items-start gap-3 lg:grid-cols-2">
 //           {/* 01 — Patient */}
 //           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-//             <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+//             <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
 //               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
 //                 <UserRound size={17} />
 //               </div>
@@ -360,9 +360,9 @@
 //               </div>
 //             </div>
 
-//             <div className="space-y-4 p-4 sm:p-5">
+//             <div className="space-y-3 p-3 sm:p-3">
 //               <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3.5">
-//                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
+//                 <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
 //                   {initials}
 //                 </div>
 //                 <div className="min-w-0 flex-1">
@@ -375,7 +375,7 @@
 //                 </div>
 //               </div>
 
-//               <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+//               <div className="grid grid-cols-2 gap-x-3 gap-y-3">
 //                 <Info label="Patient number" value={patient?.patientNumber} />
 //                 <Info label="Date of birth" value={formatDate(patientDob)} />
 //                 <Info label="Age" value={age === null ? "—" : `${age} ${age === 1 ? "year" : "years"}`} />
@@ -406,7 +406,7 @@
 
 //           {/* 02 — Schedule */}
 //           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-//             <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+//             <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
 //               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 text-violet-700">
 //                 <CalendarDays size={17} />
 //               </div>
@@ -416,7 +416,7 @@
 //               </div>
 //             </div>
 
-//             <div className="space-y-4 p-4 sm:p-5">
+//             <div className="space-y-3 p-3 sm:p-3">
 //               <div className="grid grid-cols-2 gap-3">
 //                 <div className="col-span-2 rounded-lg border border-blue-100 bg-blue-50/70 p-3.5">
 //                   <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-blue-700">
@@ -951,7 +951,7 @@ export default function AppointmentDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[55vh] items-center justify-center gap-3 text-sm text-slate-500">
+      <div className="flex min-h-[42vh] items-center justify-center gap-3 text-sm text-slate-500">
         <Loader2 size={18} className="animate-spin text-blue-600" />
         Loading appointment…
       </div>
@@ -960,15 +960,15 @@ export default function AppointmentDetailsPage() {
 
   if (!appointment) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10">
+      <div className="mx-auto max-w-3xl px-3 py-5">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft size={16} /> Back
         </button>
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
           {error || "Appointment not found."}
         </div>
       </div>
@@ -982,8 +982,8 @@ export default function AppointmentDetailsPage() {
     : "PT";
 
   return (
-    <div className="min-h-full bg-slate-50/70 px-3 py-4 sm:px-5 sm:py-6 lg:px-7">
-      <div className="mx-auto max-w-6xl space-y-4">
+    <div className="min-h-full bg-slate-50/70 px-3 py-3 sm:px-3 sm:py-3 lg:px-3">
+      <div className="mx-auto max-w-6xl space-y-3">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-start gap-3">
             <button
@@ -1032,10 +1032,10 @@ export default function AppointmentDetailsPage() {
           </div>
         )}
 
-        <main className="grid items-start gap-4 lg:grid-cols-2">
+        <main className="grid items-start gap-3 lg:grid-cols-2">
           {/* 01 — Patient */}
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                 <UserRound size={17} />
               </div>
@@ -1045,9 +1045,9 @@ export default function AppointmentDetailsPage() {
               </div>
             </div>
 
-            <div className="space-y-4 p-4 sm:p-5">
+            <div className="space-y-3 p-3 sm:p-3">
               <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3.5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
+                <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-800">
                   {initials}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -1060,7 +1060,7 @@ export default function AppointmentDetailsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-3">
                 <Info label="Patient number" value={patient?.patientNumber} />
                 <Info label="Date of birth" value={formatDate(patientDob)} />
                 <Info label="Age" value={age === null ? "—" : `${age} ${age === 1 ? "year" : "years"}`} />
@@ -1091,7 +1091,7 @@ export default function AppointmentDetailsPage() {
 
           {/* 02 — Schedule */}
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 sm:px-5">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-3 py-3.5 sm:px-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 text-violet-700">
                 <CalendarDays size={17} />
               </div>
@@ -1101,7 +1101,7 @@ export default function AppointmentDetailsPage() {
               </div>
             </div>
 
-            <div className="space-y-4 p-4 sm:p-5">
+            <div className="space-y-3 p-3 sm:p-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2 rounded-lg border border-blue-100 bg-blue-50/70 p-3.5">
                   <label

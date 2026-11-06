@@ -51,7 +51,7 @@ export default function BranchFilters({
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
+            className="inline-flex h-10 items-center justify-center gap-2 border border-slate-200 px-3 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 hover:bg-slate-50"
           >
             <X size={14} />
             Clear

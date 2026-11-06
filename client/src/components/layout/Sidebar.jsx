@@ -17,10 +17,10 @@ export default function Sidebar({ mobileOpen = false, onClose }) {
   const items = navigation.filter((item) => !item.roles || item.roles.includes(user?.role));
   return (
     <nav className={`${mobileOpen ? "flex" : "hidden"} fixed inset-x-0 top-16 z-40 border-b border-slate-200 bg-white p-3 shadow-xl lg:static lg:flex lg:items-center lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}>
-      <div className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center gap-1 px-1 lg:px-0">
+      <div className="mx-auto flex w-full max-w-[1680px] flex-wrap items-center gap-1 px-1 lg:px-0">
         {items.map((item) => {
           const Icon = item.icon;
-          return <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `group inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition ${isActive ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}><Icon size={15} strokeWidth={1.9} /><span>{item.label}</span></NavLink>;
+          return <NavLink key={item.path} to={item.path} onClick={onClose} className={({ isActive }) => `group inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition ${isActive ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}><Icon size={15} strokeWidth={1.9} /><span>{item.label}</span></NavLink>;
         })}
       </div>
     </nav>

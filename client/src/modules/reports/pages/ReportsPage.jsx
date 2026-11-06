@@ -265,7 +265,7 @@ export default function ReportsPage() {
       }
     >
       {error && (
-        <div className="mx-5 mt-5 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:mx-7">
+        <div className="mx-4 mt-4 flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700 sm:mx-7">
           <span>{error}</span>
           <button
             type="button"
@@ -283,8 +283,8 @@ export default function ReportsPage() {
         title="Report period"
         description="Choose the inclusive period used for clinical, operational and financial calculations."
       >
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div className="grid flex-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+          <div className="grid flex-1 gap-3 sm:grid-cols-2">
             <Field
               label="From"
               type="date"
@@ -320,7 +320,7 @@ export default function ReportsPage() {
               type="button"
               onClick={load}
               disabled={running}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-60"
             >
               <BarChart3 size={14} />
               Run reports
@@ -351,7 +351,7 @@ export default function ReportsPage() {
               <Metric icon={CalendarDays} label="Recall due" value={counts.recallDue || 0} accent="cyan" />
             </div>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
@@ -376,14 +376,14 @@ export default function ReportsPage() {
               <Metric icon={BarChart3} label="Collection rate" value={`${collectionRate}%`} accent="violet" />
             </div>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
               <Chart title="Revenue by day" rows={daily.map((x) => ({ label: x._id, value: x.value }))} max={maxRevenue} />
               <SimpleBars title="Payment methods" rows={paymentByMethod} moneyValues={false} />
             </div>
           </Section>
 
           <Section number="04" title="Clinical & operational statistics">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-3 lg:grid-cols-2">
               <SimpleBars title="Appointment status" rows={appointmentStatuses} />
               <SimpleBars title="Revenue by category" rows={revenueByCategory} moneyValues />
               <SimpleBars title="Appointment types" rows={operations.appointments || []} />
@@ -392,7 +392,7 @@ export default function ReportsPage() {
           </Section>
 
           <Section number="05" title="Optical & dispensing">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-3 lg:grid-cols-2">
               <SimpleBars title="Spectacle workflow" rows={operations.spectacles || []} />
               <SimpleBars title="Contact lens workflow" rows={operations.contactLenses || []} />
             </div>
@@ -421,8 +421,8 @@ export default function ReportsPage() {
               <Metric icon={TrendingUp} label="Retail value" value={money(inventory.retailValue)} accent="emerald" />
             </div>
 
-            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200">
-              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
+            <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-3 py-3">
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">
                     Reorder attention
@@ -456,7 +456,7 @@ export default function ReportsPage() {
       )}
 
       <Section number="07" title="Report notes">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs leading-6 text-slate-500">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-500">
           Reports are calculated from the current organization's records. Financial totals use
           invoice and payment records; operational totals use appointments, consultations,
           optical jobs, recalls and inventory currently stored in V-Sync.
@@ -478,7 +478,7 @@ function Metric({ icon: Icon, label, value, accent = "slate" }) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${styles[accent] || styles.slate}`}>
           <Icon size={17} />
@@ -505,7 +505,7 @@ function SimpleBars({ title, rows = [], moneyValues = false }) {
   );
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
           {title}
@@ -513,7 +513,7 @@ function SimpleBars({ title, rows = [], moneyValues = false }) {
         <BarChart3 size={15} className="text-slate-300" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {normalized.length ? (
           normalized.map((r, i) => {
             const v = Number(r.value ?? r.count ?? 0);
@@ -538,7 +538,7 @@ function SimpleBars({ title, rows = [], moneyValues = false }) {
             );
           })
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-sm text-slate-400">
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-3 text-center text-sm text-slate-400">
             No data for this period.
           </div>
         )}
@@ -551,7 +551,7 @@ function Chart({ title, rows = [], max = 1 }) {
   const normalized = Array.isArray(rows) ? rows : [];
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
           {title}
@@ -585,7 +585,7 @@ function Chart({ title, rows = [], max = 1 }) {
             </div>
           ))
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-sm text-slate-400">
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-3 text-center text-sm text-slate-400">
             No invoices in this period.
           </div>
         )}

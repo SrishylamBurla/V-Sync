@@ -1141,9 +1141,9 @@ export default function SpectacleDetailsPage() {
 
   if (!job) {
     return (
-      <div className="min-h-full bg-slate-50 p-4">
+      <div className="min-h-full bg-slate-50 p-3">
         <div className="mx-auto max-w-5xl">
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs font-medium text-red-700">
             {error ||
               "Spectacle job not found."}
           </div>
@@ -1153,7 +1153,7 @@ export default function SpectacleDetailsPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f6f8fb] p-2.5 sm:p-4 lg:p-5 print:bg-white print:p-0">
+    <div className="min-h-full bg-[#f6f8fb] p-2.5 sm:p-3 lg:p-3 print:bg-white print:p-0">
       <div className="mx-auto max-w-[1380px]">
         {/* TOP BAR */}
         <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 print:hidden">
@@ -1221,7 +1221,7 @@ export default function SpectacleDetailsPage() {
 
         <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.05)] print:rounded-none print:border-0 print:shadow-none">
           {/* HEADER */}
-          <header className="bg-slate-950 px-4 py-4 text-white sm:px-5">
+          <header className="bg-slate-950 px-3 py-3 text-white sm:px-3">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/10">
@@ -2228,7 +2228,7 @@ export default function SpectacleDetailsPage() {
                                 colSpan={
                                   5
                                 }
-                                className="px-2 py-5 text-center text-[9px] text-slate-400"
+                                className="px-2 py-3 text-center text-[9px] text-slate-400"
                               >
                                 No extras.
                               </td>
@@ -2733,7 +2733,7 @@ export default function SpectacleDetailsPage() {
             </div>
           </main>
 
-          <footer className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-2.5 text-[8px] text-slate-400 sm:px-5">
+          <footer className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-3 py-2.5 text-[8px] text-slate-400 sm:px-3">
             <span className="font-semibold text-slate-500">
               V-Sync · Spectacle Dispensing
             </span>
@@ -3603,7 +3603,7 @@ function ExtrasView({
             <tr>
               <td
                 colSpan={4}
-                className="px-2.5 py-5 text-center text-[9px] text-slate-400"
+                className="px-2.5 py-3 text-center text-[9px] text-slate-400"
               >
                 No extras recorded.
               </td>

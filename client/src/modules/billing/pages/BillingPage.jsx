@@ -339,7 +339,7 @@ export default function BillingPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
           {error}
         </div>
       )}
@@ -375,8 +375,8 @@ export default function BillingPage() {
           title="Create bill"
           description="Choose one of three payment outcomes: pay in full, take a partial payment, or leave the invoice outstanding for later payment."
         >
-          <form onSubmit={save} className="space-y-5">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <form onSubmit={save} className="space-y-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <div className="relative xl:col-span-2">
                 <label className="block">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -403,7 +403,7 @@ export default function BillingPage() {
                         type="button"
                         key={patient._id}
                         onClick={() => selectPatient(patient)}
-                        className="flex w-full border-b border-slate-100 px-4 py-3 text-left last:border-0 hover:bg-slate-50"
+                        className="flex w-full border-b border-slate-100 px-3 py-3 text-left last:border-0 hover:bg-slate-50"
                       >
                         <span className="text-xs font-semibold">
                           {fullName(patient)}
@@ -584,7 +584,7 @@ export default function BillingPage() {
               + Add line
             </button>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3">
               <Field
                 label="Invoice discount"
                 type="number"
@@ -610,7 +610,7 @@ export default function BillingPage() {
               />
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
               <div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Payment at bill creation
               </div>
@@ -658,7 +658,7 @@ export default function BillingPage() {
               </div>
 
               {form.paymentMode !== "pay_later" && (
-                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                <div className="mt-4 grid gap-3 md:grid-cols-3">
                   <Field
                     label="Amount received"
                     type="number"
@@ -706,7 +706,7 @@ export default function BillingPage() {
               </div>
               <button
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-xs font-bold text-white disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-3 text-xs font-bold text-white disabled:opacity-50"
               >
                 {saving && (
                   <RefreshCw
@@ -725,7 +725,7 @@ export default function BillingPage() {
         number={show ? "03" : "02"}
         title="Invoice register"
       >
-        <div className="relative mb-5 max-w-xl">
+        <div className="relative mb-4 max-w-xl">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -734,12 +734,12 @@ export default function BillingPage() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search invoice, patient, creator or updater..."
-            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:border-blue-400"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:border-blue-400"
           />
         </div>
 
         {loading ? (
-          <div className="py-12 text-center text-sm text-slate-400">
+          <div className="py-5 text-center text-sm text-slate-400">
             Loading invoices...
           </div>
         ) : (
@@ -864,7 +864,7 @@ export default function BillingPage() {
 
 function Metric({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="rounded-2xl border border-slate-200 bg-white p-3">
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
           <Icon size={16} />

@@ -37,7 +37,7 @@ export default function StaffStats({ stats = {} }) {
         return (
           <div
             key={card.key}
-            className="border border-slate-200 bg-white px-4 py-4"
+            className="border border-slate-200 bg-white px-3 py-3"
           >
             <div className="flex items-start justify-between">
               <div>

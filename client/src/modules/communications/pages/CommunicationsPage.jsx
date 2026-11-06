@@ -147,7 +147,7 @@ export default function CommunicationsPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -155,14 +155,14 @@ export default function CommunicationsPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setTab("letters")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold ${tab === "letters" ? "bg-slate-900 text-white" : "border border-slate-200 text-slate-600"}`}
+            className={`inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold ${tab === "letters" ? "bg-slate-900 text-white" : "border border-slate-200 text-slate-600"}`}
           >
             <FileText size={14} />
             Patient letters
           </button>
           <button
             onClick={() => setTab("images")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold ${tab === "images" ? "bg-slate-900 text-white" : "border border-slate-200 text-slate-600"}`}
+            className={`inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold ${tab === "images" ? "bg-slate-900 text-white" : "border border-slate-200 text-slate-600"}`}
           >
             <ImageIcon size={14} />
             Clinical images & drawings
@@ -177,7 +177,7 @@ export default function CommunicationsPage() {
             : "Clinical image register"
         }
       >
-        <div className="relative mb-5 max-w-xl">
+        <div className="relative mb-4 max-w-xl">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -186,7 +186,7 @@ export default function CommunicationsPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search patient, number or document title..."
-            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
           />
         </div>
         {tab === "letters" ? (
@@ -299,7 +299,7 @@ export default function CommunicationsPage() {
                   <img
                     src={r.imageUrl}
                     alt={r.title}
-                    className="h-12 w-16 rounded-lg object-cover border"
+                    className="h-10 w-16 rounded-lg object-cover border"
                   />
                 ),
               },
@@ -344,7 +344,7 @@ export default function CommunicationsPage() {
           ].map(([t, d]) => (
             <div
               key={t}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
             >
               <div className="text-sm font-bold text-slate-800">{t}</div>
               <div className="mt-1 text-xs text-slate-500">{d}</div>
@@ -354,7 +354,7 @@ export default function CommunicationsPage() {
       </Section>
       {showLetter && (
         <Modal title="New patient letter" onClose={() => setShowLetter(false)}>
-          <form onSubmit={saveLetter} className="grid gap-4 md:grid-cols-2">
+          <form onSubmit={saveLetter} className="grid gap-3 md:grid-cols-2">
             <Field
               label="Patient"
               value={letter.patientId}
@@ -391,7 +391,7 @@ export default function CommunicationsPage() {
               placeholder="Write the patient letter..."
             />
             <div className="md:col-span-2">
-              <button className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 Save letter
               </button>
             </div>
@@ -403,7 +403,7 @@ export default function CommunicationsPage() {
           title="Add clinical image / drawing"
           onClose={() => setShowImage(false)}
         >
-          <form onSubmit={saveImage} className="grid gap-4 md:grid-cols-2">
+          <form onSubmit={saveImage} className="grid gap-3 md:grid-cols-2">
             <Field
               label="Patient"
               value={image.patientId}
@@ -461,7 +461,7 @@ export default function CommunicationsPage() {
               </div>
             )}
             <div className="md:col-span-2">
-              <button className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 Save image
               </button>
             </div>
@@ -473,9 +473,9 @@ export default function CommunicationsPage() {
 }
 function Modal({ title, onClose, children }) {
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/40 p-4">
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/40 p-3">
       <div className="max-h-[90vh] w-full max-w-3xl overflow-auto rounded-2xl bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b px-5 py-4">
+        <div className="flex items-center justify-between border-b px-3 py-3">
           <h3 className="text-sm font-bold text-slate-900">{title}</h3>
           <button
             onClick={onClose}
@@ -484,7 +484,7 @@ function Modal({ title, onClose, children }) {
             Close
           </button>
         </div>
-        <div className="p-5">{children}</div>
+        <div className="p-3">{children}</div>
       </div>
     </div>
   );

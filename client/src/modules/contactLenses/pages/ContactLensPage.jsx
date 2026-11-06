@@ -200,10 +200,10 @@
 //   }, [orders]);
 
 //   return (
-//     <div className="mx-auto w-full max-w-[1600px] space-y-6 py-5 sm:py-7">
+//     <div className="mx-auto w-full max-w-[1600px] space-y-3 py-3 sm:py-3">
 //       <header className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-//         <div className="bg-gradient-to-br from-violet-50 via-white to-blue-50 p-5 sm:p-7">
-//           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+//         <div className="bg-gradient-to-br from-violet-50 via-white to-blue-50 p-3 sm:p-3">
+//           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
 //             <div>
 //               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
 //                 <Eye size={13} />
@@ -222,7 +222,7 @@
 //                 type="button"
 //                 onClick={loadOrders}
 //                 disabled={loading}
-//                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+//                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
 //               >
 //                 <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
 //                 Refresh
@@ -231,7 +231,7 @@
 //               <button
 //                 type="button"
 //                 onClick={() => onNavigate("new")}
-//                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
+//                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
 //               >
 //                 <Plus size={15} />
 //                 New Contact Lens Fitting
@@ -250,7 +250,7 @@
 //       </header>
 
 //       {error && (
-//         <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+//         <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
 //           <div>{error}</div>
 //           <button type="button" onClick={() => setError("")} className="rounded-lg p-1 hover:bg-red-100">
 //             <X size={15} />
@@ -258,7 +258,7 @@
 //         </div>
 //       )}
 
-//       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+//       <section className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
 //         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
 //           <div className="relative flex-1">
 //             <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -266,7 +266,7 @@
 //               value={search}
 //               onChange={(e) => setSearch(e.target.value)}
 //               placeholder="Search order, patient, patient number, modality, brand or model..."
-//               className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+//               className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
 //             />
 //           </div>
 
@@ -278,7 +278,7 @@
 //                 setStatus(e.target.value);
 //                 setPage(1);
 //               }}
-//               className="h-11 min-w-[190px] appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-600 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
+//               className="h-10 min-w-[190px] appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-sm text-slate-600 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
 //             >
 //               <option value="">All statuses</option>
 //               {STATUSES.map((item) => (
@@ -292,7 +292,7 @@
 //       </section>
 
 //       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-//         <header className="flex flex-col gap-2 border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+//         <header className="flex flex-col gap-2 border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
 //           <div>
 //             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
 //               Dispensing Register
@@ -307,7 +307,7 @@
 //         </header>
 
 //         {loading ? (
-//           <div className="flex min-h-[380px] items-center justify-center">
+//           <div className="flex min-h-[240px] items-center justify-center">
 //             <div className="flex items-center gap-2 text-sm text-slate-400">
 //               <Loader2 size={17} className="animate-spin" />
 //               Loading contact lens orders...
@@ -320,14 +320,14 @@
 //             <table className="w-full min-w-[1100px] text-left">
 //               <thead>
 //                 <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
-//                   <th className="px-5 py-3">Order</th>
-//                   <th className="px-5 py-3">Patient</th>
-//                   <th className="px-5 py-3">Category</th>
-//                   <th className="px-5 py-3">Lens</th>
-//                   <th className="px-5 py-3">Qty</th>
-//                   <th className="px-5 py-3">Order Date</th>
-//                   <th className="px-5 py-3">Status</th>
-//                   <th className="px-5 py-3 text-right">Action</th>
+//                   <th className="px-3 py-3">Order</th>
+//                   <th className="px-3 py-3">Patient</th>
+//                   <th className="px-3 py-3">Category</th>
+//                   <th className="px-3 py-3">Lens</th>
+//                   <th className="px-3 py-3">Qty</th>
+//                   <th className="px-3 py-3">Order Date</th>
+//                   <th className="px-3 py-3">Status</th>
+//                   <th className="px-3 py-3 text-right">Action</th>
 //                 </tr>
 //               </thead>
 //               <tbody>
@@ -338,7 +338,7 @@
 //                       key={order._id}
 //                       className="border-b border-slate-100 last:border-0 transition hover:bg-slate-50/70"
 //                     >
-//                       <td className="px-5 py-4">
+//                       <td className="px-3 py-3">
 //                         <button
 //                           type="button"
 //                           onClick={() => onNavigate("details", order._id)}
@@ -353,7 +353,7 @@
 //                         </button>
 //                       </td>
 
-//                       <td className="px-5 py-4">
+//                       <td className="px-3 py-3">
 //                         <div className="group flex items-center gap-3 text-left">
 //                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-100 to-blue-100 text-xs font-bold text-violet-700">
 //                             {getPatientName(patient)
@@ -375,7 +375,7 @@
 //                         </div>
 //                       </td>
 
-//                       <td className="px-5 py-4">
+//                       <td className="px-3 py-3">
 //                         <span className={`rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
 //                           order.lensCategory === "scleral" 
 //                             ? "bg-purple-100 text-purple-700" 
@@ -387,7 +387,7 @@
 //                         </span>
 //                       </td>
 
-//                       <td className="px-5 py-4">
+//                       <td className="px-3 py-3">
 //                         <div className="text-sm font-semibold text-slate-800">
 //                           {order.brand || "—"}
 //                         </div>
@@ -396,21 +396,21 @@
 //                         </div>
 //                       </td>
 
-//                       <td className="px-5 py-4 text-sm font-semibold text-slate-700">
+//                       <td className="px-3 py-3 text-sm font-semibold text-slate-700">
 //                         {order.quantity ?? "—"}
 //                       </td>
 
-//                       <td className="px-5 py-4 text-xs font-medium text-slate-600">
+//                       <td className="px-3 py-3 text-xs font-medium text-slate-600">
 //                         {formatDate(order.createdAt || order.orderDate || order.date)}
 //                       </td>
 
-//                       <td className="px-5 py-4">
+//                       <td className="px-3 py-3">
 //                         <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${statusClass(order.status)}`}>
 //                           {formatStatus(order.status)}
 //                         </span>
 //                       </td>
 
-//                       <td className="px-5 py-4 text-right">
+//                       <td className="px-3 py-3 text-right">
 //                         <button
 //                           type="button"
 //                           onClick={() => onNavigate("details", order._id)}
@@ -428,7 +428,7 @@
 //         )}
 
 //         {!loading && (
-//           <footer className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+//           <footer className="flex flex-col gap-3 border-t border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
 //             <div className="text-xs text-slate-400">
 //               Showing {filteredOrders.length} contact lens order{filteredOrders.length === 1 ? "" : "s"}
 //             </div>
@@ -462,7 +462,7 @@
 
 // function SummaryItem({ label, value }) {
 //   return (
-//     <div className="border-r border-slate-200 px-5 py-4 last:border-r-0">
+//     <div className="border-r border-slate-200 px-3 py-3 last:border-r-0">
 //       <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
 //         {label}
 //       </div>
@@ -473,7 +473,7 @@
 
 // function EmptyState({ search, onCreate }) {
 //   return (
-//     <div className="flex min-h-[380px] flex-col items-center justify-center px-6 text-center">
+//     <div className="flex min-h-[240px] flex-col items-center justify-center px-3 text-center">
 //       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
 //         <Eye size={25} />
 //       </div>
@@ -489,7 +489,7 @@
 //         <button
 //           type="button"
 //           onClick={onCreate}
-//           className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+//           className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
 //         >
 //           <Plus size={14} />
 //           Create Contact Lens Order
@@ -578,9 +578,9 @@
 //   };
 
 //   return (
-//     <div className="mx-auto w-full max-w-[1400px] space-y-6 py-5">
+//     <div className="mx-auto w-full max-w-[1400px] space-y-3 py-3">
 //       {/* Header */}
-//       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+//       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
 //         <div>
 //           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
 //             Clinical Assessment & Fitting
@@ -590,14 +590,14 @@
 //         <div className="flex items-center gap-2">
 //           <button
 //             onClick={() => onNavigate("list")}
-//             className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+//             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
 //           >
 //             Cancel
 //           </button>
 //           <button
 //             onClick={handleSave}
 //             disabled={saving}
-//             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+//             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
 //           >
 //             <Save size={14} />
 //             {saving ? "Saving..." : "Save Order"}
@@ -629,7 +629,7 @@
 //       </div>
 
 //       {/* Patient Selection & General Details */}
-//       <div className="grid gap-6 md:grid-cols-3">
+//       <div className="grid gap-3 md:grid-cols-3">
 //         <Panel number="1" title="Patient & General Info">
 //           <div className="space-y-3">
 //             <label className="block">
@@ -665,7 +665,7 @@
 //       {/* Modality Specific Evaluation Panel */}
 //       <Panel number="3" title={`${lensCategory.toUpperCase()} Clinical Fitting Evaluation`}>
 //         {lensCategory === "soft" && (
-//           <div className="grid grid-cols-2 gap-4 text-xs">
+//           <div className="grid grid-cols-2 gap-3 text-xs">
 //             <div className="space-y-2 border-r border-slate-100 pr-4">
 //               <h4 className="font-bold text-slate-700">Right Eye (OD)</h4>
 //               <CompactField label="Base Curve (BC)" value={form.right.bc} onChange={(v) => handleEyeChange("right", "bc", v)} placeholder="e.g. 8.6" />
@@ -680,7 +680,7 @@
 //         )}
 
 //         {lensCategory === "rgp" && (
-//           <div className="grid grid-cols-2 gap-4 text-xs">
+//           <div className="grid grid-cols-2 gap-3 text-xs">
 //             <div className="space-y-2 border-r border-slate-100 pr-4">
 //               <h4 className="font-bold text-slate-700">Right Eye (OD Corneal)</h4>
 //               <div className="grid grid-cols-2 gap-2">
@@ -699,7 +699,7 @@
 //         )}
 
 //         {lensCategory === "scleral" && (
-//           <div className="grid grid-cols-2 gap-4 text-xs">
+//           <div className="grid grid-cols-2 gap-3 text-xs">
 //             <div className="space-y-2 border-r border-slate-100 pr-4">
 //               <h4 className="font-bold text-slate-700">Right Eye Scleral Profile</h4>
 //               <div className="grid grid-cols-2 gap-2">
@@ -831,14 +831,14 @@
 
 //   if (!item) {
 //     return (
-//       <div className="p-8 text-center text-sm text-slate-500">
+//       <div className="p-4 text-center text-sm text-slate-500">
 //         {error || "Loading order details..."}
 //       </div>
 //     );
 //   }
 
 //   return (
-//     <div className="mx-auto w-full max-w-[1200px] space-y-6 py-6">
+//     <div className="mx-auto w-full max-w-[1200px] space-y-3 py-3">
 //       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
 //         <div>
 //           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -851,14 +851,14 @@
 //         <div className="flex gap-2">
 //           <button
 //             onClick={() => window.print()}
-//             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold print:hidden"
+//             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold print:hidden"
 //           >
 //             <Printer size={14} />
 //             Print Sheet
 //           </button>
 //           <button
 //             onClick={() => onNavigate("list")}
-//             className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white print:hidden"
+//             className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white print:hidden"
 //           >
 //             Back to Register
 //           </button>
@@ -866,12 +866,12 @@
 //       </div>
 
 //       {/* Prescription Breakdown */}
-//       <div className="grid gap-4 md:grid-cols-2">
+//       <div className="grid gap-3 md:grid-cols-2">
 //         {[
 //           ["RIGHT EYE (OD)", item.right],
 //           ["LEFT EYE (OS)", item.left],
 //         ].map(([label, eyeObj]) => (
-//           <div key={label} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+//           <div key={label} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
 //             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</h3>
 //             <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
 //               <div><span className="text-slate-400">SPH:</span> <strong className="text-slate-800">{eyeObj?.sphere || "—"}</strong></div>
@@ -902,7 +902,7 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-slate-50 p-4 font-sans antialiased text-slate-900">
+//     <div className="min-h-screen bg-slate-50 p-3 font-sans antialiased text-slate-900">
 //       {route === "list" && <ContactLensPage onNavigate={handleNavigate} />}
 //       {route === "new" && <NewContactLensPage onNavigate={handleNavigate} />}
 //       {route === "details" && <ContactLensDetailsPage orderId={selectedId} onNavigate={handleNavigate} />}
@@ -1122,14 +1122,14 @@ export default function ContactLensPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] space-y-6 py-5 sm:py-7">
+    <div className="mx-auto w-full max-w-[1600px] space-y-3 py-3 sm:py-3">
       {/* =====================================================
           HEADER
       ===================================================== */}
 
       <header className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-gradient-to-br from-violet-50 via-white to-blue-50 p-5 sm:p-7">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="bg-gradient-to-br from-violet-50 via-white to-blue-50 p-3 sm:p-3">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
                 <Eye size={13} />
@@ -1151,7 +1151,7 @@ export default function ContactLensPage() {
                 type="button"
                 onClick={loadOrders}
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
               >
                 <RefreshCw
                   size={14}
@@ -1165,7 +1165,7 @@ export default function ContactLensPage() {
                 onClick={() =>
                   navigate("/dispensing/contact-lenses/new")
                 }
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-violet-700 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:from-slate-800 hover:to-violet-600"
               >
                 <Plus size={15} />
                 New contact lens
@@ -1211,7 +1211,7 @@ export default function ContactLensPage() {
       ===================================================== */}
 
       {error && (
-        <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-start justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-3 py-3 text-sm text-red-700">
           <div>{error}</div>
 
           <button
@@ -1228,7 +1228,7 @@ export default function ContactLensPage() {
           FILTERS
       ===================================================== */}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <section className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search
@@ -1240,7 +1240,7 @@ export default function ContactLensPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search order, patient, patient number, brand or model..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-violet-400 focus:bg-white focus:ring-4 focus:ring-violet-50"
             />
           </div>
 
@@ -1256,7 +1256,7 @@ export default function ContactLensPage() {
                 setStatus(event.target.value);
                 setPage(1);
               }}
-              className="h-11 min-w-[190px] appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-600 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
+              className="h-10 min-w-[190px] appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-sm text-slate-600 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-50"
             >
               <option value="">All statuses</option>
 
@@ -1275,7 +1275,7 @@ export default function ContactLensPage() {
       ===================================================== */}
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <header className="flex flex-col gap-2 border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <header className="flex flex-col gap-2 border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-violet-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
           <div>
             <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
               Dispensing register
@@ -1293,7 +1293,7 @@ export default function ContactLensPage() {
         </header>
 
         {loading ? (
-          <div className="flex min-h-[380px] items-center justify-center">
+          <div className="flex min-h-[240px] items-center justify-center">
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <Loader2 size={17} className="animate-spin" />
               Loading contact lens orders...
@@ -1311,35 +1311,35 @@ export default function ContactLensPage() {
             <table className="w-full min-w-[1100px] text-left">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Order
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Patient
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Lens
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Type
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Qty
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Order date
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Status
                   </th>
 
-                  <th className="px-5 py-3 text-right">
+                  <th className="px-3 py-3 text-right">
                     Action
                   </th>
                 </tr>
@@ -1356,7 +1356,7 @@ export default function ContactLensPage() {
                     >
                       {/* ORDER */}
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <button
                           type="button"
                           onClick={() => openOrder(order)}
@@ -1374,7 +1374,7 @@ export default function ContactLensPage() {
 
                       {/* PATIENT */}
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <button
                           type="button"
                           onClick={() => openPatient(patient)}
@@ -1405,7 +1405,7 @@ export default function ContactLensPage() {
 
                       {/* LENS */}
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <div className="text-sm font-semibold text-slate-800">
                           {order.brand || "—"}
                         </div>
@@ -1417,7 +1417,7 @@ export default function ContactLensPage() {
 
                       {/* TYPE */}
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-bold capitalize text-slate-600">
                           {order.orderType
                             ? order.orderType.replaceAll("_", " ")
@@ -1427,13 +1427,13 @@ export default function ContactLensPage() {
 
                       {/* QUANTITY */}
 
-                      <td className="px-5 py-4 text-sm font-semibold text-slate-700">
+                      <td className="px-3 py-3 text-sm font-semibold text-slate-700">
                         {order.quantity ?? "—"}
                       </td>
 
                       {/* DATE */}
 
-                      <td className="px-5 py-4 text-xs font-medium text-slate-600">
+                      <td className="px-3 py-3 text-xs font-medium text-slate-600">
                         {formatDate(
                           order.createdAt ||
                             order.orderDate ||
@@ -1443,7 +1443,7 @@ export default function ContactLensPage() {
 
                       {/* STATUS */}
 
-                      <td className="px-5 py-4">
+                      <td className="px-3 py-3">
                         <span
                           className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${statusClass(
                             order.status,
@@ -1455,7 +1455,7 @@ export default function ContactLensPage() {
 
                       {/* ACTION */}
 
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-3 py-3 text-right">
                         <button
                           type="button"
                           onClick={() => openOrder(order)}
@@ -1477,7 +1477,7 @@ export default function ContactLensPage() {
         =================================================== */}
 
         {!loading && (
-          <footer className="flex flex-col gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <footer className="flex flex-col gap-3 border-t border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-xs text-slate-400">
               Showing {filteredOrders.length} contact lens order
               {filteredOrders.length === 1 ? "" : "s"}
@@ -1521,7 +1521,7 @@ export default function ContactLensPage() {
 
 function SummaryItem({ label, value }) {
   return (
-    <div className="border-r border-slate-200 px-5 py-4 last:border-r-0">
+    <div className="border-r border-slate-200 px-3 py-3 last:border-r-0">
       <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
         {label}
       </div>
@@ -1539,7 +1539,7 @@ function SummaryItem({ label, value }) {
 
 function EmptyState({ search, onCreate }) {
   return (
-    <div className="flex min-h-[380px] flex-col items-center justify-center px-6 text-center">
+    <div className="flex min-h-[240px] flex-col items-center justify-center px-3 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
         <Eye size={25} />
       </div>
@@ -1560,7 +1560,7 @@ function EmptyState({ search, onCreate }) {
         <button
           type="button"
           onClick={onCreate}
-          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
         >
           <Plus size={14} />
           Create contact lens order

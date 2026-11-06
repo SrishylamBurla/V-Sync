@@ -46,7 +46,7 @@
 //         title="Contact Lens Order"
 //         code="CONTACT LENS"
 //       >
-//         <div className="p-8 text-sm text-slate-500">
+//         <div className="p-4 text-sm text-slate-500">
 //           {error || "Loading..."}
 //         </div>
 //       </DocumentShell>
@@ -62,14 +62,14 @@
 //         <>
 //           <button
 //             onClick={() => window.print()}
-//             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold print:hidden"
+//             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold print:hidden"
 //           >
 //             <Printer size={14} />
 //             Print
 //           </button>
 //           <button
 //             onClick={() => nav(`/patients/${item.patientId?._id}`)}
-//             className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white print:hidden"
+//             className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white print:hidden"
 //           >
 //             Patient record
 //           </button>
@@ -107,16 +107,16 @@
 //         />
 //       </Section>
 //       <Section number="02" title="Prescription">
-//         <div className="grid gap-5 lg:grid-cols-2">
+//         <div className="grid gap-3 lg:grid-cols-2">
 //           {[
 //             ["RIGHT EYE", item.right],
 //             ["LEFT EYE", item.left],
 //           ].map(([label, e]) => (
-//             <div key={label} className="rounded-xl border border-slate-200 p-5">
+//             <div key={label} className="rounded-xl border border-slate-200 p-3">
 //               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
 //                 {label}
 //               </h4>
-//               <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+//               <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
 //                 {Object.entries(e || {}).map(([k, v]) => (
 //                   <div key={k}>
 //                     <div className="text-[10px] uppercase text-slate-400">
@@ -153,7 +153,7 @@
 //               key={s}
 //               disabled={s === "cancelled" ? false : false}
 //               onClick={() => change(s)}
-//               className={`rounded-xl border px-4 py-2.5 text-xs font-semibold ${item.status === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600"}`}
+//               className={`rounded-xl border px-3 py-2.5 text-xs font-semibold ${item.status === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600"}`}
 //             >
 //               {s.replace("_", " ")}
 //             </button>
@@ -226,7 +226,7 @@ export default function ContactLensDetailsPage() {
         title="Contact Lens Order"
         code="CONTACT LENS"
       >
-        <div className="p-8 text-sm text-slate-500">
+        <div className="p-4 text-sm text-slate-500">
           {error || "Loading..."}
         </div>
       </DocumentShell>
@@ -245,14 +245,14 @@ export default function ContactLensDetailsPage() {
         <>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold print:hidden hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold print:hidden hover:bg-slate-50"
           >
             <Printer size={14} />
             Print
           </button>
           <button
             onClick={() => nav(`/patients/${item.patientId?._id || item.patientId}`)}
-            className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white print:hidden hover:bg-slate-800"
+            className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white print:hidden hover:bg-slate-800"
           >
             Patient record
           </button>
@@ -295,16 +295,16 @@ export default function ContactLensDetailsPage() {
 
       {/* SECTION 02: PRESCRIPTION SPECIFICATIONS */}
       <Section number="02" title="Prescription & Corneal Parameters">
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-3 lg:grid-cols-2">
           {[
             ["RIGHT EYE (OD)", item.right],
             ["LEFT EYE (OS)", item.left],
           ].map(([label, e]) => (
-            <div key={label} className="rounded-xl border border-slate-200 p-5 bg-white">
+            <div key={label} className="rounded-xl border border-slate-200 p-3 bg-white">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 {label}
               </h4>
-              <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div>
                   <div className="text-[10px] uppercase text-slate-400">SPH</div>
                   <div className="mt-1 text-sm font-semibold">{e?.sph || e?.sphere || "—"}</div>
@@ -350,13 +350,13 @@ export default function ContactLensDetailsPage() {
       {/* SECTION 03: CLINICAL FITTING EVALUATION (SOFT / RGP / SCLERAL) */}
       {(item.scleralFit || item.rgpFit || item.softFit || category !== "soft") && (
         <Section number="03" title={`${category.toUpperCase()} Fitting Evaluation`}>
-          <div className="grid gap-5 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             {/* RIGHT EYE FIT */}
-            <div className="rounded-xl border border-slate-200 p-5 bg-white">
+            <div className="rounded-xl border border-slate-200 p-3 bg-white">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Right Eye (OD) Fit Details
               </h4>
-              <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 {category === "scleral" && (
                   <>
                     <div>
@@ -415,11 +415,11 @@ export default function ContactLensDetailsPage() {
             </div>
 
             {/* LEFT EYE FIT */}
-            <div className="rounded-xl border border-slate-200 p-5 bg-white">
+            <div className="rounded-xl border border-slate-200 p-3 bg-white">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Left Eye (OS) Fit Details
               </h4>
-              <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 {category === "scleral" && (
                   <>
                     <div>
@@ -508,7 +508,7 @@ export default function ContactLensDetailsPage() {
             <button
               key={s}
               onClick={() => change(s)}
-              className={`rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${
+              className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition ${
                 item.status === s
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"

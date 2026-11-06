@@ -281,9 +281,9 @@
 //   };
 
 //   return (
-//     <div className="mx-auto w-full max-w-[1600px] space-y-5 py-5 sm:py-7">
-//       <header className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-//         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+//     <div className="mx-auto w-full max-w-[1600px] space-y-3 py-3 sm:py-3">
+//       <header className="rounded-3xl border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
+//         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
 //           <div>
 //             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
 //               <Boxes size={14} />
@@ -305,7 +305,7 @@
 //             <button
 //               type="button"
 //               onClick={openCreate}
-//               className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white"
+//               className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-bold text-white"
 //             >
 //               <Plus size={15} />
 //               New Sundry Job
@@ -323,11 +323,11 @@
 //       {showCreate && (
 //         <form
 //           onSubmit={save}
-//           className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+//           className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
 //         >
 //           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
 //             {isPatientSpecific ? (
-//               <div className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700">
+//               <div className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700">
 //                 <UserRound size={15} className="shrink-0 text-slate-400" />
 
 //                 <div className="min-w-0">
@@ -353,7 +353,7 @@
 //                     patientId: event.target.value,
 //                   }))
 //                 }
-//                 className="h-11 rounded-xl border border-slate-200 px-3 text-sm"
+//                 className="h-10 rounded-xl border border-slate-200 px-3 text-sm"
 //               >
 //                 <option value="">Select patient</option>
 
@@ -374,7 +374,7 @@
 //                   inventoryItemId: event.target.value,
 //                 }))
 //               }
-//               className="h-11 rounded-xl border border-slate-200 px-3 text-sm"
+//               className="h-10 rounded-xl border border-slate-200 px-3 text-sm"
 //             >
 //               <option value="">Select sundry</option>
 
@@ -397,7 +397,7 @@
 //                   quantity: event.target.value,
 //                 }))
 //               }
-//               className="h-11 rounded-xl border border-slate-200 px-3 text-sm"
+//               className="h-10 rounded-xl border border-slate-200 px-3 text-sm"
 //               placeholder="Quantity"
 //             />
 
@@ -410,7 +410,7 @@
 //                   dueDate: event.target.value,
 //                 }))
 //               }
-//               className="h-11 rounded-xl border border-slate-200 px-3 text-sm"
+//               className="h-10 rounded-xl border border-slate-200 px-3 text-sm"
 //             />
 //           </div>
 
@@ -418,7 +418,7 @@
 //             <input
 //               value={query}
 //               onChange={(event) => setQuery(event.target.value)}
-//               className="mt-3 h-11 w-full rounded-xl border border-slate-200 px-3 text-sm"
+//               className="mt-3 h-10 w-full rounded-xl border border-slate-200 px-3 text-sm"
 //               placeholder="Search patient, then select above"
 //             />
 //           )}
@@ -427,7 +427,7 @@
 //             <button
 //               type="submit"
 //               disabled={saving}
-//               className="rounded-xl bg-slate-950 px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+//               className="rounded-xl bg-slate-950 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
 //             >
 //               {saving ? "Saving..." : "Create Sundry Job"}
 //             </button>
@@ -436,7 +436,7 @@
 //               <button
 //                 type="button"
 //                 onClick={() => setShowCreate(false)}
-//                 className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600"
+//                 className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600"
 //               >
 //                 Cancel
 //               </button>
@@ -446,7 +446,7 @@
 //       )}
 
 //       <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-//         <div className="flex flex-col gap-3 border-b border-slate-100 p-4 lg:flex-row">
+//         <div className="flex flex-col gap-3 border-b border-slate-100 p-3 lg:flex-row">
 //           <div className="relative flex-1">
 //             <Search
 //               size={15}
@@ -486,11 +486,11 @@
 //         </div>
 
 //         {loading ? (
-//           <div className="p-10 text-center text-sm text-slate-400">
+//           <div className="p-5 text-center text-sm text-slate-400">
 //             Loading sundry jobs...
 //           </div>
 //         ) : filtered.length === 0 ? (
-//           <div className="p-10 text-center text-sm text-slate-400">
+//           <div className="p-5 text-center text-sm text-slate-400">
 //             {isPatientSpecific
 //               ? "No sundry dispensing records found for this patient."
 //               : "No sundry dispensing records found."}
@@ -500,13 +500,13 @@
 //             <table className="min-w-full text-left">
 //               <thead className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
 //                 <tr>
-//                   <th className="px-5 py-3">Job</th>
-//                   <th className="px-5 py-3">Patient</th>
-//                   <th className="px-5 py-3">Sundry</th>
-//                   <th className="px-5 py-3">Qty</th>
-//                   <th className="px-5 py-3">Total</th>
-//                   <th className="px-5 py-3">Status</th>
-//                   <th className="px-5 py-3">Next</th>
+//                   <th className="px-3 py-3">Job</th>
+//                   <th className="px-3 py-3">Patient</th>
+//                   <th className="px-3 py-3">Sundry</th>
+//                   <th className="px-3 py-3">Qty</th>
+//                   <th className="px-3 py-3">Total</th>
+//                   <th className="px-3 py-3">Status</th>
+//                   <th className="px-3 py-3">Next</th>
 //                 </tr>
 //               </thead>
 
@@ -516,7 +516,7 @@
 //                     key={job._id}
 //                     className="border-t border-slate-100"
 //                   >
-//                     <td className="px-5 py-4">
+//                     <td className="px-3 py-3">
 //                       <button
 //                         type="button"
 //                         onClick={() =>
@@ -528,7 +528,7 @@
 //                       </button>
 //                     </td>
 
-//                     <td className="px-5 py-4">
+//                     <td className="px-3 py-3">
 //                       <button
 //                         type="button"
 //                         onClick={() =>
@@ -546,7 +546,7 @@
 //                       </div>
 //                     </td>
 
-//                     <td className="px-5 py-4">
+//                     <td className="px-3 py-3">
 //                       <div className="font-semibold">
 //                         {job.item?.description ||
 //                           job.item?.code ||
@@ -558,19 +558,19 @@
 //                       </div>
 //                     </td>
 
-//                     <td className="px-5 py-4">{job.quantity}</td>
+//                     <td className="px-3 py-3">{job.quantity}</td>
 
-//                     <td className="px-5 py-4 font-semibold">
+//                     <td className="px-3 py-3 font-semibold">
 //                       ₹{Number(job.total || 0).toLocaleString("en-IN")}
 //                     </td>
 
-//                     <td className="px-5 py-4">
+//                     <td className="px-3 py-3">
 //                       <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase">
 //                         {label(job.status)}
 //                       </span>
 //                     </td>
 
-//                     <td className="px-5 py-4">
+//                     <td className="px-3 py-3">
 //                       {next[job.status] ? (
 //                         <button
 //                           type="button"
@@ -1049,10 +1049,10 @@ export default function SundryJobsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] space-y-5 py-5 sm:py-7">
+    <div className="mx-auto w-full max-w-[1600px] space-y-3 py-3 sm:py-3">
       {/* Header */}
-      <header className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <header className="rounded-3xl border border-slate-200 bg-white p-3 shadow-sm sm:p-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
 
             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600">
@@ -1075,7 +1075,7 @@ export default function SundryJobsPage() {
             <button
               type="button"
               onClick={openCreate}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
             >
               <Plus size={15} />
               New Sundry Job
@@ -1103,7 +1103,7 @@ export default function SundryJobsPage() {
       {showCreate && (
         <form
           onSubmit={save}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
         >
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -1131,7 +1131,7 @@ export default function SundryJobsPage() {
             {/* Patient */}
             <div className="relative">
               {isPatientSpecific ? (
-                <div className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3">
+                <div className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3">
                   <UserRound
                     size={15}
                     className="shrink-0 text-slate-400"
@@ -1154,7 +1154,7 @@ export default function SundryJobsPage() {
               ) : (
                 <>
                   {selectedPatient ? (
-                    <div className="flex h-11 items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3">
+                    <div className="flex h-10 items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3">
                       <UserRound
                         size={15}
                         className="shrink-0 text-violet-500"
@@ -1186,7 +1186,7 @@ export default function SundryJobsPage() {
                       onClick={() =>
                         setPatientSelectorOpen((current) => !current)
                       }
-                      className="flex h-11 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-300"
+                      className="flex h-10 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 text-left text-sm text-slate-500 transition hover:border-slate-300"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         <UserRound
@@ -1220,18 +1220,18 @@ export default function SundryJobsPage() {
                               setPatientQuery(event.target.value)
                             }
                             placeholder="Search patient..."
-                            className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-3 text-xs outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                            className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-4 pr-3 text-xs outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                           />
                         </div>
                       </div>
 
                       <div className="max-h-64 overflow-y-auto">
                         {patientsLoading ? (
-                          <div className="p-5 text-center text-xs text-slate-400">
+                          <div className="p-3 text-center text-xs text-slate-400">
                             Searching patients...
                           </div>
                         ) : patients.length === 0 ? (
-                          <div className="p-5 text-center">
+                          <div className="p-3 text-center">
                             <UserRound
                               size={20}
                               className="mx-auto text-slate-300"
@@ -1288,7 +1288,7 @@ export default function SundryJobsPage() {
                   inventoryItemId: event.target.value,
                 }))
               }
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+              className="h-10 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
             >
               <option value="">Select sundry</option>
 
@@ -1314,7 +1314,7 @@ export default function SundryJobsPage() {
                   quantity: event.target.value,
                 }))
               }
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+              className="h-10 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
               placeholder="Quantity"
             />
 
@@ -1328,7 +1328,7 @@ export default function SundryJobsPage() {
                   dueDate: event.target.value,
                 }))
               }
-              className="h-11 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+              className="h-10 rounded-xl border border-slate-200 px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
             />
           </div>
 
@@ -1351,7 +1351,7 @@ export default function SundryJobsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-slate-950 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving ? "Saving..." : "Create Sundry Job"}
             </button>
@@ -1360,7 +1360,7 @@ export default function SundryJobsPage() {
               <button
                 type="button"
                 onClick={closeCreate}
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+                className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
               >
                 Cancel
               </button>
@@ -1371,7 +1371,7 @@ export default function SundryJobsPage() {
 
       {/* Jobs */}
       <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex flex-col gap-3 border-b border-slate-100 p-4 lg:flex-row">
+        <div className="flex flex-col gap-3 border-b border-slate-100 p-3 lg:flex-row">
           {/* Job search */}
           <div className="relative flex-1">
             <Search
@@ -1422,11 +1422,11 @@ export default function SundryJobsPage() {
 
         {/* Loading */}
         {loading ? (
-          <div className="p-10 text-center text-sm text-slate-400">
+          <div className="p-5 text-center text-sm text-slate-400">
             Loading sundry jobs...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-10 text-center">
+          <div className="p-5 text-center">
             <Boxes
               size={30}
               className="mx-auto text-slate-300"
@@ -1445,31 +1445,31 @@ export default function SundryJobsPage() {
             <table className="min-w-full text-left">
               <thead className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
                 <tr>
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Job
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Patient
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Sundry
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Qty
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Total
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Status
                   </th>
 
-                  <th className="px-5 py-3">
+                  <th className="px-3 py-3">
                     Next
                   </th>
                 </tr>
@@ -1482,7 +1482,7 @@ export default function SundryJobsPage() {
                     className="border-t border-slate-100 transition hover:bg-slate-50/60"
                   >
                     {/* Job */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       <button
                         type="button"
                         onClick={() =>
@@ -1505,7 +1505,7 @@ export default function SundryJobsPage() {
                     </td>
 
                     {/* Patient */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       <button
                         type="button"
                         onClick={() =>
@@ -1526,7 +1526,7 @@ export default function SundryJobsPage() {
                     </td>
 
                     {/* Sundry */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       <div className="font-semibold">
                         {job.item?.description ||
                           job.item?.code ||
@@ -1541,12 +1541,12 @@ export default function SundryJobsPage() {
                     </td>
 
                     {/* Quantity */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       {job.quantity}
                     </td>
 
                     {/* Total */}
-                    <td className="px-5 py-4 font-semibold">
+                    <td className="px-3 py-3 font-semibold">
                       ₹
                       {Number(
                         job.total || 0
@@ -1554,7 +1554,7 @@ export default function SundryJobsPage() {
                     </td>
 
                     {/* Status */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       <span
                         className={[
                           "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase",
@@ -1572,7 +1572,7 @@ export default function SundryJobsPage() {
                     </td>
 
                     {/* Next */}
-                    <td className="px-5 py-4">
+                    <td className="px-3 py-3">
                       {next[job.status] ? (
                         <button
                           type="button"

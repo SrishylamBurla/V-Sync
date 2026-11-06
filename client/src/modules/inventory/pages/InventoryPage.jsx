@@ -116,7 +116,7 @@ function Field({
 
 function StatCard({ label, value, detail, icon: Icon, danger = false }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.025)]">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-[0_2px_10px_rgba(15,23,42,0.025)]">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400">
@@ -151,7 +151,7 @@ function StatCard({ label, value, detail, icon: Icon, danger = false }) {
 function Modal({ title, subtitle, children, onClose, wide = false }) {
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-3 backdrop-blur-[2px] sm:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-3 backdrop-blur-[2px] sm:p-3"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -161,7 +161,7 @@ function Modal({ title, subtitle, children, onClose, wide = false }) {
           wide ? "max-w-4xl" : "max-w-2xl"
         }`}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
+        <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-3 py-3 sm:px-3">
           <div>
             <h2 className="text-[15px] font-bold tracking-tight text-slate-900">
               {title}
@@ -181,7 +181,7 @@ function Modal({ title, subtitle, children, onClose, wide = false }) {
           </button>
         </div>
 
-        <div className="max-h-[calc(92vh-76px)] overflow-y-auto p-5 sm:p-6">
+        <div className="max-h-[calc(92vh-76px)] overflow-y-auto p-3 sm:p-3">
           {children}
         </div>
       </div>
@@ -444,8 +444,8 @@ export default function InventoryPage() {
     <div className="min-h-full bg-slate-50/60 text-slate-900">
       {/* Page header */}
       <div className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="mx-auto max-w-[1500px] px-3 py-3 sm:px-3 lg:px-4">
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div className="min-w-0">
               <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 <Boxes size={13} />
@@ -481,7 +481,7 @@ export default function InventoryPage() {
               <button
                 type="button"
                 onClick={openCreate}
-                className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-4 text-[11px] font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                className="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-950 px-3 text-[11px] font-semibold text-white shadow-sm transition hover:bg-slate-800"
               >
                 <Plus size={15} />
                 Add inventory
@@ -491,9 +491,9 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      <main className="mx-auto max-w-[1500px] space-y-5 px-4 py-5 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-[1500px] space-y-3 px-3 py-3 sm:px-3 lg:px-4">
         {error && (
-          <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[12px] text-red-700">
+          <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-[12px] text-red-700">
             <AlertTriangle size={16} className="mt-0.5 shrink-0" />
             <div className="min-w-0 flex-1">{error}</div>
             <button
@@ -543,7 +543,7 @@ export default function InventoryPage() {
 
         {/* Inventory values */}
         <section className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3.5">
+          <div className="rounded-xl border border-slate-200 bg-white px-3 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400">
@@ -557,7 +557,7 @@ export default function InventoryPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3.5">
+          <div className="rounded-xl border border-slate-200 bg-white px-3 py-3.5">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-400">
@@ -574,7 +574,7 @@ export default function InventoryPage() {
 
         {/* Register */}
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_12px_rgba(15,23,42,0.025)]">
-          <div className="border-b border-slate-100 px-4 py-4 sm:px-5">
+          <div className="border-b border-slate-100 px-3 py-3 sm:px-3">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div>
                 <div className="flex items-center gap-2">
@@ -638,7 +638,7 @@ export default function InventoryPage() {
           </div>
 
           {loading ? (
-            <div className="space-y-2 p-4">
+            <div className="space-y-2 p-3">
               {[1, 2, 3, 4, 5].map((row) => (
                 <div
                   key={row}
@@ -647,8 +647,8 @@ export default function InventoryPage() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="flex min-h-[300px] flex-col items-center justify-center px-5 text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+            <div className="flex min-h-[240px] flex-col items-center justify-center px-3 text-center">
+              <span className="flex h-10 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
                 <Boxes size={21} />
               </span>
               <h3 className="mt-4 text-[13px] font-bold text-slate-800">
@@ -683,7 +683,7 @@ export default function InventoryPage() {
                     ].map((heading) => (
                       <th
                         key={heading}
-                        className="px-4 py-3 text-left text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400"
+                        className="px-3 py-3 text-left text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400"
                       >
                         {heading}
                       </th>
@@ -700,7 +700,7 @@ export default function InventoryPage() {
                         key={item._id}
                         className="group border-b border-slate-100 last:border-b-0 hover:bg-slate-50/60"
                       >
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-3">
                           <button
                             type="button"
                             onClick={() => openDetails(item)}
@@ -721,29 +721,29 @@ export default function InventoryPage() {
                           </button>
                         </td>
 
-                        <td className="px-4 py-3 text-[11px] font-medium text-slate-600">
+                        <td className="px-3 py-3 text-[11px] font-medium text-slate-600">
                           {titleCase(item.category)}
                         </td>
 
-                        <td className="px-4 py-3 text-[11px] text-slate-500">
+                        <td className="px-3 py-3 text-[11px] text-slate-500">
                           {item.supplier || "—"}
                         </td>
 
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-3">
                           <Badge tone={tone}>
                             {Number(item.stock || 0)} in stock
                           </Badge>
                         </td>
 
-                        <td className="px-4 py-3 text-[11px] text-slate-500">
+                        <td className="px-3 py-3 text-[11px] text-slate-500">
                           {item.reorderLevel ?? 0}
                         </td>
 
-                        <td className="px-4 py-3 text-[11px] font-semibold text-slate-800">
+                        <td className="px-3 py-3 text-[11px] font-semibold text-slate-800">
                           {money(item.sellingPrice)}
                         </td>
 
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-3">
                           <Badge
                             tone={
                               item.status === "active" ? "success" : "neutral"
@@ -753,7 +753,7 @@ export default function InventoryPage() {
                           </Badge>
                         </td>
 
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-3 py-3 text-right">
                           <button
                             type="button"
                             onClick={() => openEdit(item)}
@@ -772,7 +772,7 @@ export default function InventoryPage() {
           )}
 
           {!loading && filtered.length > 0 && (
-            <div className="border-t border-slate-100 bg-slate-50/40 px-4 py-3 text-[10px] text-slate-400">
+            <div className="border-t border-slate-100 bg-slate-50/40 px-3 py-3 text-[10px] text-slate-400">
               Showing {filtered.length} inventory item
               {filtered.length === 1 ? "" : "s"}.
             </div>
@@ -789,7 +789,7 @@ export default function InventoryPage() {
           ].map(([Icon, title, description]) => (
             <div
               key={title}
-              className="rounded-xl border border-slate-200 bg-white p-4"
+              className="rounded-xl border border-slate-200 bg-white p-3"
             >
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 text-slate-500">
                 <Icon size={15} />
@@ -817,13 +817,13 @@ export default function InventoryPage() {
           onClose={closeForm}
           wide
         >
-          <form onSubmit={save} className="space-y-6">
+          <form onSubmit={save} className="space-y-3">
             <div>
               <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
                 Item identity
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <Field
                   label="Category"
                   value={form.category}
@@ -944,12 +944,12 @@ export default function InventoryPage() {
               </div>
             </div>
 
-            <div className="border-t border-slate-100 pt-5">
+            <div className="border-t border-slate-100 pt-4">
               <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-500">
                 Commercial & stock
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <Field
                   label="Cost price"
                   type="number"
@@ -1014,12 +1014,12 @@ export default function InventoryPage() {
               </div>
             </div>
 
-            <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+            <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={closeForm}
                 disabled={saving}
-                className="h-10 rounded-lg border border-slate-200 px-4 text-[11px] font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                className="h-10 rounded-lg border border-slate-200 px-3 text-[11px] font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -1027,7 +1027,7 @@ export default function InventoryPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 text-[11px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-[11px] font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving && (
                   <RefreshCw size={13} className="animate-spin" />
@@ -1049,7 +1049,7 @@ export default function InventoryPage() {
           onClose={() => setDetailsOpen(false)}
           wide
         >
-          <div className="space-y-6">
+          <div className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 ["Barcode", selected.barcode],
@@ -1076,7 +1076,7 @@ export default function InventoryPage() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-slate-200 p-4">
+              <div className="rounded-xl border border-slate-200 p-3">
                 <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                   Current stock
                 </div>
@@ -1088,7 +1088,7 @@ export default function InventoryPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-200 p-4">
+              <div className="rounded-xl border border-slate-200 p-3">
                 <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                   Stock status
                 </div>
@@ -1109,7 +1109,7 @@ export default function InventoryPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-200 p-4">
+              <div className="rounded-xl border border-slate-200 p-3">
                 <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                   Catalogue status
                 </div>
@@ -1125,11 +1125,11 @@ export default function InventoryPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+            <div className="flex flex-col gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => setAdjustOpen(true)}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 text-[11px] font-semibold text-slate-600 hover:bg-slate-50"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 text-[11px] font-semibold text-slate-600 hover:bg-slate-50"
               >
                 <SlidersHorizontal size={14} />
                 Adjust stock
@@ -1138,7 +1138,7 @@ export default function InventoryPage() {
               <button
                 type="button"
                 onClick={() => setStocktakeOpen(true)}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 text-[11px] font-semibold text-slate-600 hover:bg-slate-50"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 text-[11px] font-semibold text-slate-600 hover:bg-slate-50"
               >
                 <Check size={14} />
                 Stocktake
@@ -1150,7 +1150,7 @@ export default function InventoryPage() {
                   setDetailsOpen(false);
                   openEdit(selected);
                 }}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-[11px] font-semibold text-white hover:bg-slate-800"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-[11px] font-semibold text-white hover:bg-slate-800"
               >
                 <Edit3 size={14} />
                 Edit item
@@ -1167,8 +1167,8 @@ export default function InventoryPage() {
           subtitle={`Controlled inventory movement for ${selected.code}.`}
           onClose={() => !saving && setAdjustOpen(false)}
         >
-          <div className="space-y-4">
-            <div className="rounded-xl bg-slate-50 p-4">
+          <div className="space-y-3">
+            <div className="rounded-xl bg-slate-50 p-3">
               <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                 Current stock
               </div>
@@ -1223,7 +1223,7 @@ export default function InventoryPage() {
                 type="button"
                 onClick={() => setAdjustOpen(false)}
                 disabled={saving}
-                className="h-10 rounded-lg border border-slate-200 px-4 text-[11px] font-semibold text-slate-600"
+                className="h-10 rounded-lg border border-slate-200 px-3 text-[11px] font-semibold text-slate-600"
               >
                 Cancel
               </button>
@@ -1232,7 +1232,7 @@ export default function InventoryPage() {
                 type="button"
                 onClick={adjustStock}
                 disabled={saving}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-[11px] font-semibold text-white disabled:opacity-60"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-[11px] font-semibold text-white disabled:opacity-60"
               >
                 {saving && (
                   <RefreshCw size={13} className="animate-spin" />
@@ -1251,9 +1251,9 @@ export default function InventoryPage() {
           subtitle={`Reconcile physical quantity for ${selected.code}.`}
           onClose={() => !saving && setStocktakeOpen(false)}
         >
-          <div className="space-y-4">
-            <div className="rounded-xl bg-slate-50 p-4">
-              <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <div className="rounded-xl bg-slate-50 p-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
                     System stock
@@ -1287,7 +1287,7 @@ export default function InventoryPage() {
                 type="button"
                 onClick={() => setStocktakeOpen(false)}
                 disabled={saving}
-                className="h-10 rounded-lg border border-slate-200 px-4 text-[11px] font-semibold text-slate-600"
+                className="h-10 rounded-lg border border-slate-200 px-3 text-[11px] font-semibold text-slate-600"
               >
                 Cancel
               </button>
@@ -1296,7 +1296,7 @@ export default function InventoryPage() {
                 type="button"
                 onClick={doStocktake}
                 disabled={saving}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 text-[11px] font-semibold text-white disabled:opacity-60"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-[11px] font-semibold text-white disabled:opacity-60"
               >
                 {saving && (
                   <RefreshCw size={13} className="animate-spin" />

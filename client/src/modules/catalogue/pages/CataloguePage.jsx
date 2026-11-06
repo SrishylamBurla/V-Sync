@@ -169,7 +169,7 @@ export default function CataloguePage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -197,7 +197,7 @@ export default function CataloguePage() {
                 setShow(false);
                 setQuery("");
               }}
-              className={`rounded-2xl border p-5 text-left ${tab === k ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-slate-50 text-slate-800"}`}
+              className={`rounded-2xl border p-3 text-left ${tab === k ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-slate-50 text-slate-800"}`}
             >
               <I size={18} />
               <div className="mt-3 text-sm font-bold">{t}</div>
@@ -217,7 +217,7 @@ export default function CataloguePage() {
         >
           <form
             onSubmit={save}
-            className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+            className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
           >
             {tab === "suppliers" ? (
               <>
@@ -372,13 +372,13 @@ export default function CataloguePage() {
               onChange={(v) => setForm({ ...form, notes: v })}
             />
             <div className="flex gap-2">
-              <button className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white">
+              <button className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-semibold text-white">
                 {editing ? "Update" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={() => setShow(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600"
+                className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-semibold text-slate-600"
               >
                 Cancel
               </button>
@@ -387,7 +387,7 @@ export default function CataloguePage() {
         </Section>
       )}
       <Section number={show ? "03" : "02"} title={`${title} register`}>
-        <div className="relative mb-5 max-w-xl">
+        <div className="relative mb-4 max-w-xl">
           <Search
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -396,7 +396,7 @@ export default function CataloguePage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${title.toLowerCase()}...`}
-            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm outline-none focus:bg-white"
           />
         </div>
         <Table
@@ -526,7 +526,7 @@ export default function CataloguePage() {
           ].map(([t, d]) => (
             <div
               key={t}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
             >
               <div className="text-sm font-semibold text-slate-800">{t}</div>
               <div className="mt-1 text-xs text-slate-400">{d}</div>

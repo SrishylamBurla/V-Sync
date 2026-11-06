@@ -8,7 +8,7 @@ import {
 import { getPracticeSettings, updatePracticeSettings } from "../settings.api";
 
 const FieldRow = ({ children }) => (
-  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{children}</div>
+  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">{children}</div>
 );
 export default function SettingsPage() {
   const [data, setData] = useState(null);
@@ -54,7 +54,7 @@ export default function SettingsPage() {
         subtitle="Configure V-Sync defaults and operational parameters."
         code="SETTINGS"
       >
-        <div className="p-10 text-center text-sm text-slate-400">
+        <div className="p-5 text-center text-sm text-slate-400">
           Loading settings...
         </div>
       </DocumentShell>
@@ -66,7 +66,7 @@ export default function SettingsPage() {
         title="Practice Configuration"
         code="SETTINGS"
       >
-        <div className="p-10 text-sm text-red-600">{error}</div>
+        <div className="p-5 text-sm text-red-600">{error}</div>
       </DocumentShell>
     );
   return (
@@ -96,12 +96,12 @@ export default function SettingsPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
       {message && (
-        <div className="m-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+        <div className="m-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
           {message}
         </div>
       )}

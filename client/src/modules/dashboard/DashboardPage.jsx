@@ -1,4 +1,5 @@
-// import { useCallback, useEffect, useMemo, useState } from "react";
+
+//  import { useCallback, useEffect, useMemo, useState } from "react";
 // import {
 //   Activity,
 //   ArrowRight,
@@ -16,6 +17,8 @@
 //   ShoppingBag,
 //   Users,
 //   ClipboardList,
+//   ListTodo,
+//   Trash2,
 //   X,
 // } from "lucide-react";
 // import { useNavigate } from "react-router-dom";
@@ -1165,11 +1168,22 @@
 //       setDispensingSearch("");
 //     };
 
+//   const todoUserKey = user?._id || user?.id || user?.email || role || "workspace";
+//   const todoOrganizationKey =
+//     user?.organizationId?._id || user?.organizationId || "organization";
+//   const todoBranchKey =
+//     user?.branchId?._id ||
+//     user?.branchId ||
+//     user?.defaultBranchId?._id ||
+//     user?.defaultBranchId ||
+//     "branch";
+//   const todoStorageKey = `vsync-dashboard-todos:${todoOrganizationKey}:${todoBranchKey}:${todoUserKey}`;
+
 //   return (
-//     <div className="py-5 sm:py-6">
-//       <div className="space-y-5 sm:space-y-6">
+//     <div className="py-3 sm:py-3">
+//       <div className="space-y-3 sm:space-y-3">
 //         {/* SINGLE PAGE HEADING */}
-//         <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/90 bg-white px-4 py-5 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
+//         <header className="flex flex-col gap-3 rounded-2xl border border-slate-200/90 bg-white px-3 py-3 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-3">
 //           <div>
 //             <div className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
 //               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -1216,7 +1230,7 @@
 //                 onClick={() =>
 //                   navigate("/appointments?book=1")
 //                 }
-//                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-4 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
+//                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-3 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
 //               >
 //                 <Plus size={14} />
 //                 Book Appointment
@@ -1242,95 +1256,12 @@
 //           </div>
 //         )}
 
-//         {/* KPI STRIP */}
-//         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-//           <Metric
-//             icon={CalendarClock}
-//             label="Appointments"
-//             value={
-//               appointmentsLoading
-//                 ? "—"
-//                 : appointmentCounts.total
-//             }
-//             note={`${appointmentCounts.completed} completed today`}
-//             onClick={() =>
-//               navigate(
-//                 "/appointments",
-//               )
-//             }
-//           />
-
-//           <Metric
-//             icon={Clock3}
-//             label="Waiting / upcoming"
-//             value={
-//               appointmentsLoading
-//                 ? "—"
-//                 : appointmentCounts.waiting
-//             }
-//             note={`${appointmentCounts.examining} currently examining`}
-//             onClick={() =>
-//               navigate(
-//                 "/appointments",
-//               )
-//             }
-//           />
-
-//           <Metric
-//             icon={Glasses}
-//             label="Spectacle jobs"
-//             value={
-//               dispensingLoading
-//                 ? "—"
-//                 : spectacleCounts.open
-//             }
-//             note={`${spectacleCounts.ready} ready · ${spectacleCounts.notified} notified`}
-//             onClick={() =>
-//               navigate(
-//                 "/dispensing/spectacle-jobs",
-//               )
-//             }
-//           />
-
-//           <Metric
-//             icon={ContactRound}
-//             label="Contact lens jobs"
-//             value={
-//               dispensingLoading
-//                 ? "—"
-//                 : contactCounts.open
-//             }
-//             note={`${contactCounts.ready} ready / completed`}
-//             onClick={() =>
-//               navigate(
-//                 "/dispensing/contact-lenses",
-//               )
-//             }
-//           />
-
-//           <Metric
-//             icon={ShoppingBag}
-//             label="Sundry jobs"
-//             value={
-//               dispensingLoading
-//                 ? "—"
-//                 : sundryCounts.open
-//             }
-//             note={`${sundryCounts.ready} ready · ${sundryCounts.notified} notified`}
-//             onClick={() =>
-//               navigate(
-//                 "/dispensing/sundries",
-//               )
-//             }
-//           />
-//         </section>
-
-//         <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+//         <section className="grid items-start gap-3 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
 //           {/* PREMIUM APPOINTMENT SCHEDULE */}
 //           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
-//             <header className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+//             <header className="flex flex-col gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
 //               <div className="flex min-w-0 items-center gap-3">
-//                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
+//                 <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
 //                   <CalendarClock size={19} />
 //                 </div>
 //                 <div className="min-w-0">
@@ -1364,7 +1295,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={() => navigate("/appointments?book=1")}
-//                     className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
+//                     className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
 //                   >
 //                     <Plus size={14} />
 //                     Book appointment
@@ -1374,15 +1305,15 @@
 //             </header>
 
 //             {appointmentsLoading ? (
-//               <div className="p-4 sm:p-5">
+//               <div className="p-3 sm:p-3">
 //                 <LoadingRow text="Loading today’s schedule..." />
 //               </div>
 //             ) : upcomingAppointments.length ? (
 //               <>
-//                 <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
+//                 <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3 border-b border-slate-100 bg-slate-50/80 px-3 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
 //                   <span>Time</span>
 //                   <span>Patient & visit</span>
-//                   <span className="pr-8">Status</span>
+//                   <span className="pr-4">Status</span>
 //                 </div>
 //                 <div className="divide-y divide-slate-100">
 //                   {upcomingAppointments.map((appointment) => {
@@ -1398,7 +1329,7 @@
 //                     return (
 //                       <div
 //                         key={appointment._id}
-//                         className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
+//                         className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-3 sm:px-3"
 //                       >
 //                         <div className="flex min-h-[58px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/90 px-2 py-2 transition group-hover:border-violet-100 group-hover:bg-white">
 //                           <span className="text-sm font-bold tracking-tight text-slate-900">
@@ -1487,7 +1418,7 @@
 //                     );
 //                   })}
 //                 </div>
-//                 <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+//                 <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
 //                   <span className="text-[12px] text-slate-500">
 //                     {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
 //                   </span>
@@ -1501,7 +1432,7 @@
 //                 </footer>
 //               </>
 //             ) : (
-//               <div className="flex flex-col items-center px-5 py-12 text-center sm:py-14">
+//               <div className="flex flex-col items-center px-3 py-5 text-center sm:py-6">
 //                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 ring-1 ring-violet-100">
 //                   <CalendarClock size={24} />
 //                 </div>
@@ -1513,7 +1444,7 @@
 //                   <button
 //                     type="button"
 //                     onClick={() => navigate("/appointments?book=1")}
-//                     className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-violet-700"
+//                     className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white transition hover:bg-violet-700"
 //                   >
 //                     <Plus size={14} /> Book appointment
 //                   </button>
@@ -1522,54 +1453,7 @@
 //             )}
 //           </section>
 
-//           {/* APPOINTMENT STATUS */}
-//           <SectionCard
-//             eyebrow="Appointment flow"
-//             title="Today's status"
-//             meta="Patient movement"
-//           >
-//             <div className="space-y-3 p-3 sm:p-3.5">
-//               <ProgressRow
-//                 label="Waiting / upcoming"
-//                 value={
-//                   appointmentCounts.waiting
-//                 }
-//                 total={
-//                   appointmentCounts.total
-//                 }
-//               />
-
-//               <ProgressRow
-//                 label="Examining"
-//                 value={
-//                   appointmentCounts.examining
-//                 }
-//                 total={
-//                   appointmentCounts.total
-//                 }
-//               />
-
-//               <ProgressRow
-//                 label="Completed"
-//                 value={
-//                   appointmentCounts.completed
-//                 }
-//                 total={
-//                   appointmentCounts.total
-//                 }
-//               />
-
-//               <ProgressRow
-//                 label="Cancelled / no show"
-//                 value={
-//                   appointmentCounts.cancelled
-//                 }
-//                 total={
-//                   appointmentCounts.total
-//                 }
-//               />
-//             </div>
-//           </SectionCard>
+//           <DashboardTodoList storageKey={todoStorageKey} />
 //         </section>
 
 //         {/* DISPENSING */}
@@ -2157,7 +2041,7 @@
 // }) {
 //   return (
 //     <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
-//       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-4 py-4 sm:px-5">
+//       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-3 py-3 sm:px-3">
 //         <div className="min-w-0">
 //           <div className="text-[11px] font-bold uppercase tracking-[0.17em] text-violet-600">
 //             {eyebrow}
@@ -2190,42 +2074,6 @@
 
 //       {children}
 //     </section>
-//   );
-// }
-
-// function Metric({
-//   icon: Icon,
-//   label,
-//   value,
-//   note,
-//   onClick,
-// }) {
-//   return (
-//     <button
-//       type="button"
-//       onClick={onClick}
-//       className="group rounded-2xl border border-slate-200/90 bg-white p-4 text-left shadow-[0_4px_18px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_10px_28px_rgba(109,40,217,0.08)] focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
-//     >
-//       <div className="flex items-center gap-2.5">
-//         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-700 ring-1 ring-violet-100/80 transition group-hover:from-violet-100 group-hover:to-blue-100">
-//           <Icon size={17} />
-//         </span>
-
-//         <span className="min-w-0">
-//           <span className="block truncate text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-//             {label}
-//           </span>
-
-//           <span className="mt-0.5 block text-2xl font-bold tracking-tight text-slate-950">
-//             {value}
-//           </span>
-//         </span>
-//       </div>
-
-//       <div className="mt-3 truncate text-[12px] text-slate-500">
-//         {note}
-//       </div>
-//     </button>
 //   );
 // }
 
@@ -2354,40 +2202,192 @@
 //   );
 // }
 
-// function ProgressRow({
-//   label,
-//   value,
-//   total,
-// }) {
-//   const percent =
-//     total > 0
-//       ? Math.round(
-//           (value / total) *
-//             100,
-//         )
-//       : 0;
+// function DashboardTodoList({ storageKey }) {
+//   const [items, setItems] = useState([]);
+//   const [draft, setDraft] = useState("");
+//   const [loadedKey, setLoadedKey] = useState("");
+
+//   // Load a separate checklist for each signed-in user and workspace.
+//   useEffect(() => {
+//     let storedItems = [];
+
+//     try {
+//       const saved = window.localStorage.getItem(storageKey);
+//       const parsed = saved ? JSON.parse(saved) : [];
+//       storedItems = Array.isArray(parsed)
+//         ? parsed.filter(
+//             (item) =>
+//               item &&
+//               typeof item.id === "string" &&
+//               typeof item.text === "string",
+//           )
+//         : [];
+//     } catch (error) {
+//       console.warn("Unable to load dashboard checklist:", error);
+//     }
+
+//     setItems(storedItems);
+//     setLoadedKey(storageKey);
+//   }, [storageKey]);
+
+//   // Save only after the checklist for the active key has been loaded.
+//   useEffect(() => {
+//     if (!storageKey || loadedKey !== storageKey) return;
+
+//     try {
+//       window.localStorage.setItem(storageKey, JSON.stringify(items));
+//     } catch (error) {
+//       console.warn("Unable to save dashboard checklist:", error);
+//     }
+//   }, [items, loadedKey, storageKey]);
+
+//   const addTask = (event) => {
+//     event.preventDefault();
+//     const text = draft.trim();
+
+//     if (!text) return;
+
+//     const task = {
+//       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+//       text,
+//       completed: false,
+//       createdAt: new Date().toISOString(),
+//     };
+
+//     setItems((current) => [task, ...current]);
+//     setDraft("");
+//   };
+
+//   const toggleTask = (taskId) => {
+//     setItems((current) =>
+//       current.map((item) =>
+//         item.id === taskId
+//           ? { ...item, completed: !item.completed }
+//           : item,
+//       ),
+//     );
+//   };
+
+//   const deleteTask = (taskId) => {
+//     setItems((current) => current.filter((item) => item.id !== taskId));
+//   };
+
+//   const clearCompleted = () => {
+//     setItems((current) => current.filter((item) => !item.completed));
+//   };
+
+//   const completedCount = items.filter((item) => item.completed).length;
+//   const pendingCount = items.length - completedCount;
 
 //   return (
-//     <div>
-//       <div className="flex items-center justify-between gap-3">
-//         <span className="text-[12px] font-medium text-slate-600">
-//           {label}
+//     <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
+//       <header className="flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-blue-50/70 px-3.5 py-3.5 sm:px-3">
+//         <div className="flex min-w-0 items-center gap-2.5">
+//           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-violet-50 text-blue-700 ring-1 ring-blue-100">
+//             <ListTodo size={17} />
+//           </span>
+//           <div className="min-w-0">
+//             <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-600">
+//               Daily workflow
+//             </div>
+//             <h2 className="truncate text-sm font-bold tracking-tight text-slate-900">
+//               To-do list
+//             </h2>
+//           </div>
+//         </div>
+//         <span className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-500">
+//           {pendingCount} pending
 //         </span>
+//       </header>
 
-//         <span className="text-[12px] font-bold text-slate-700">
-//           {value}/{total}
-//         </span>
-//       </div>
-
-//       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-//         <div
-//           className="h-full rounded-full bg-slate-900 transition-all"
-//           style={{
-//             width: `${percent}%`,
-//           }}
+//       <form onSubmit={addTask} className="flex gap-2 border-b border-slate-100 p-3">
+//         <label className="sr-only" htmlFor="dashboard-todo-input">
+//           Add a task
+//         </label>
+//         <input
+//           id="dashboard-todo-input"
+//           value={draft}
+//           onChange={(event) => setDraft(event.target.value)}
+//           maxLength={120}
+//           placeholder="Add a task for today..."
+//           className="h-9 min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100"
 //         />
+//         <button
+//           type="submit"
+//           disabled={!draft.trim()}
+//           className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-slate-900 px-3 text-[11px] font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+//         >
+//           <Plus size={13} />
+//           Add
+//         </button>
+//       </form>
+
+//       <div className="max-h-[390px] min-h-[210px] overflow-y-auto">
+//         {items.length ? (
+//           <ul className="divide-y divide-slate-100">
+//             {items.map((item) => (
+//               <li key={item.id} className="group flex items-start gap-2.5 px-3.5 py-3 transition hover:bg-slate-50/80">
+//                 <button
+//                   type="button"
+//                   onClick={() => toggleTask(item.id)}
+//                   aria-label={item.completed ? `Mark ${item.text} as pending` : `Complete ${item.text}`}
+//                   aria-pressed={item.completed}
+//                   className={`mt-0.5 inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 ${
+//                     item.completed
+//                       ? "border-emerald-500 bg-emerald-500 text-white"
+//                       : "border-slate-300 bg-white text-transparent hover:border-blue-400"
+//                   }`}
+//                 >
+//                   {item.completed ? <CheckCircle2 size={14} /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
+//                 </button>
+//                 <span className={`min-w-0 flex-1 break-words text-xs leading-5 ${item.completed ? "text-slate-400 line-through" : "font-medium text-slate-700"}`}>
+//                   {item.text}
+//                 </span>
+//                 <button
+//                   type="button"
+//                   onClick={() => deleteTask(item.id)}
+//                   aria-label={`Delete ${item.text}`}
+//                   title="Delete task"
+//                   className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-300 opacity-100 transition hover:bg-rose-50 hover:text-rose-600 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+//                 >
+//                   <Trash2 size={13} />
+//                 </button>
+//               </li>
+//             ))}
+//           </ul>
+//         ) : (
+//           <div className="flex min-h-[210px] flex-col items-center justify-center px-3 py-3 text-center">
+//             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+//               <ListTodo size={18} />
+//             </span>
+//             <p className="mt-3 text-xs font-semibold text-slate-700">
+//               Your checklist is clear
+//             </p>
+//             <p className="mt-1 max-w-[230px] text-[11px] leading-5 text-slate-400">
+//               Add tasks you need to complete today. Tick each item when it is done.
+//             </p>
+//           </div>
+//         )}
 //       </div>
-//     </div>
+
+//       <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+//         <span className="text-[10px] font-medium text-slate-500">
+//           {completedCount} of {items.length} completed
+//         </span>
+//         <div className="flex items-center gap-3">
+//           <span className="text-[9px] text-slate-400">Saved on this device</span>
+//           {completedCount > 0 && (
+//             <button
+//               type="button"
+//               onClick={clearCompleted}
+//               className="text-[10px] font-bold text-blue-700 transition hover:text-blue-900"
+//             >
+//               Clear completed
+//             </button>
+//           )}
+//         </div>
+//       </footer>
+//     </section>
 //   );
 // }
 
@@ -2401,7 +2401,7 @@
 //     <button
 //       type="button"
 //       onClick={onClick}
-//       className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
+//       className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
 //     >
 //       <span className="flex h-9 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-100">
 //         <Icon size={13} />
@@ -2433,7 +2433,7 @@
 //   showAction = true,
 // }) {
 //   return (
-//     <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+//     <div className="flex flex-col items-center justify-center px-3 py-5 text-center">
 //       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300">
 //         <Icon size={17} />
 //       </span>
@@ -2529,7 +2529,7 @@
 //   text,
 // }) {
 //   return (
-//     <div className="flex items-center justify-center gap-2 px-4 py-10 text-[12px] text-slate-400">
+//     <div className="flex items-center justify-center gap-2 px-3 py-5 text-[12px] text-slate-400">
 //       <RefreshCw
 //         size={12}
 //         className="animate-spin"
@@ -2538,6 +2538,7 @@
 //     </div>
 //   );
 // }
+ 
  import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -2909,7 +2910,20 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   const today = dateKey(new Date());
+  const [scheduleDate, setScheduleDate] = useState(today);
   const role = user?.role;
+
+  const scheduleDateLabel = useMemo(
+    () => formatDate(`${scheduleDate}T12:00:00`),
+    [scheduleDate],
+  );
+
+  const shiftScheduleDate = (amount) => {
+    const [year, month, day] = scheduleDate.split("-").map(Number);
+    const nextDate = new Date(year, month - 1, day + amount);
+    setScheduleDate(dateKey(nextDate));
+    setError("");
+  };
 
   const canAppointments = canAccessModule(
     "appointments",
@@ -3008,7 +3022,8 @@ export default function DashboardPage() {
       try {
         const response =
           await getAppointments({
-            date: today,
+            date: scheduleDate,
+            limit: 250,
           });
 
         setAppointments(
@@ -3023,12 +3038,12 @@ export default function DashboardPage() {
         setError(
           err?.response?.data?.message ||
             err?.message ||
-            "Unable to load today's appointments.",
+            "Unable to load appointments for the selected date.",
         );
       } finally {
         setAppointmentsLoading(false);
       }
-    }, [canAppointments, today]);
+    }, [canAppointments, scheduleDate]);
 
   // Appointment status is intentionally editable from the dashboard only.
   const updateDashboardAppointmentStatus = useCallback(
@@ -3280,14 +3295,20 @@ export default function DashboardPage() {
     ]);
 
   useEffect(() => {
-    const timer =
-      window.setTimeout(() => {
-        void refresh();
-      }, 0);
+    const timer = window.setTimeout(() => {
+      void loadAppointments();
+    }, 0);
 
-    return () =>
-      window.clearTimeout(timer);
-  }, [refresh]);
+    return () => window.clearTimeout(timer);
+  }, [loadAppointments]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void Promise.all([loadDispensing(), loadConsultations()]);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [loadDispensing, loadConsultations]);
 
   const appointmentCounts =
     useMemo(() => {
@@ -3480,8 +3501,7 @@ export default function DashboardPage() {
               new Date(
                 b.appointmentDate,
               ).getTime(),
-          )
-          .slice(0, 8),
+          ),
       [appointments],
     );
 
@@ -3719,10 +3739,10 @@ export default function DashboardPage() {
   const todoStorageKey = `vsync-dashboard-todos:${todoOrganizationKey}:${todoBranchKey}:${todoUserKey}`;
 
   return (
-    <div className="py-5 sm:py-6">
-      <div className="space-y-5 sm:space-y-6">
+    <div className="py-3 sm:py-3">
+      <div className="space-y-3 sm:space-y-3">
         {/* SINGLE PAGE HEADING */}
-        <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/90 bg-white px-4 py-5 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <header className="flex flex-col gap-3 rounded-2xl border border-slate-200/90 bg-white px-3 py-3 shadow-[0_6px_24px_rgba(15,23,42,0.035)] sm:flex-row sm:items-center sm:justify-between sm:px-3">
           <div>
             <div className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -3769,7 +3789,7 @@ export default function DashboardPage() {
                 onClick={() =>
                   navigate("/appointments?book=1")
                 }
-                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-4 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-700 to-blue-700 px-3 text-xs font-bold text-white shadow-sm shadow-violet-100 transition hover:from-violet-800 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-violet-100"
               >
                 <Plus size={14} />
                 Book Appointment
@@ -3795,12 +3815,12 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <section className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
+        <section className="grid items-stretch gap-3 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.9fr)]">
           {/* PREMIUM APPOINTMENT SCHEDULE */}
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
-            <header className="flex flex-col gap-4 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <section className="flex h-[520px] min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
+            <header className="shrink-0 flex flex-col gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-violet-50/70 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
+                <div className="flex h-10 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-100">
                   <CalendarClock size={19} />
                 </div>
                 <div className="min-w-0">
@@ -3809,23 +3829,70 @@ export default function DashboardPage() {
                   </div>
                   <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h2 className="text-lg font-bold tracking-tight text-slate-950">
-                      Today’s appointments
+                      {scheduleDate === today ? "Today’s appointments" : "Appointments"}
                     </h2>
                     <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[12px] font-semibold text-slate-500">
                       {appointmentsLoading ? "Loading" : `${appointmentCounts.total} scheduled`}
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-slate-500">
-                    Review patient visits, assigned clinicians, and appointment status.
+                    {scheduleDateLabel} · Review patient visits, clinicians, and appointment status.
                   </p>
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+                <div className="inline-flex h-9 items-center rounded-xl border border-slate-200 bg-white p-0.5 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => shiftScheduleDate(-1)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                    aria-label="Previous day"
+                    title="Previous day"
+                  >
+                    <ChevronLeft size={15} />
+                  </button>
+                  <label className="flex h-8 min-w-0 items-center gap-1.5 px-1.5">
+                    <span className="sr-only">Select schedule date</span>
+                    <CalendarClock size={13} className="shrink-0 text-violet-600" />
+                    <input
+                      type="date"
+                      value={scheduleDate}
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          setScheduleDate(event.target.value);
+                          setError("");
+                        }
+                      }}
+                      className="w-[132px] min-w-0 bg-transparent text-[11px] font-semibold text-slate-700 outline-none"
+                      aria-label="Select schedule date"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => shiftScheduleDate(1)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                    aria-label="Next day"
+                    title="Next day"
+                  >
+                    <ChevronRight size={15} />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setScheduleDate(today);
+                    setError("");
+                  }}
+                  disabled={scheduleDate === today}
+                  className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-2.5 text-[11px] font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-400"
+                >
+                  Today
+                </button>
                 <button
                   type="button"
                   onClick={() => navigate("/appointments")}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+                  className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 text-[11px] font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
                 >
                   View schedule
                   <ArrowRight size={14} />
@@ -3834,7 +3901,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => navigate("/appointments?book=1")}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
+                    className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl bg-slate-950 px-2.5 text-[11px] font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-100"
                   >
                     <Plus size={14} />
                     Book appointment
@@ -3844,17 +3911,20 @@ export default function DashboardPage() {
             </header>
 
             {appointmentsLoading ? (
-              <div className="p-4 sm:p-5">
-                <LoadingRow text="Loading today’s schedule..." />
+              <div className="flex min-h-0 flex-1 items-center justify-center p-3">
+                <LoadingRow text={`Loading appointments for ${scheduleDateLabel}...`} />
               </div>
             ) : upcomingAppointments.length ? (
               <>
-                <div className="hidden grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
+                <div className="hidden shrink-0 grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3 border-b border-slate-100 bg-slate-50/80 px-3 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:grid">
                   <span>Time</span>
                   <span>Patient & visit</span>
-                  <span className="pr-8">Status</span>
+                  <span className="pr-4">Status</span>
                 </div>
-                <div className="divide-y divide-slate-100">
+                <div
+                  className="min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent]"
+                  aria-label="Appointment list"
+                >
                   {upcomingAppointments.map((appointment) => {
                     const patient = appointment.patientId || appointment.patient || {};
                     const clinician = appointment.clinicianId || appointment.optometristId || {};
@@ -3868,7 +3938,7 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={appointment._id}
-                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-4 sm:px-5"
+                        className="group grid w-full grid-cols-[64px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3.5 text-left transition hover:bg-violet-50/40 sm:grid-cols-[76px_minmax(0,1fr)_auto] sm:gap-3 sm:px-3"
                       >
                         <div className="flex min-h-[58px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50/90 px-2 py-2 transition group-hover:border-violet-100 group-hover:bg-white">
                           <span className="text-sm font-bold tracking-tight text-slate-900">
@@ -3957,7 +4027,7 @@ export default function DashboardPage() {
                     );
                   })}
                 </div>
-                <footer className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <footer className="shrink-0 flex flex-col gap-2 border-t border-slate-100 bg-slate-50/50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3">
                   <span className="text-[12px] text-slate-500">
                     {appointmentCounts.waiting} waiting / upcoming · {appointmentCounts.examining} examining · {appointmentCounts.completed} completed
                   </span>
@@ -3971,19 +4041,21 @@ export default function DashboardPage() {
                 </footer>
               </>
             ) : (
-              <div className="flex flex-col items-center px-5 py-12 text-center sm:py-14">
+              <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-3 py-5 text-center sm:py-6">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 ring-1 ring-violet-100">
                   <CalendarClock size={24} />
                 </div>
-                <h3 className="mt-4 text-sm font-bold text-slate-900">No appointments scheduled today</h3>
+                <h3 className="mt-4 text-sm font-bold text-slate-900">
+                  No appointments scheduled {scheduleDate === today ? "today" : "for this date"}
+                </h3>
                 <p className="mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                  New bookings will appear here with their visit type, scheduled time, and assigned clinician.
+                  No patient visits are currently booked for {scheduleDateLabel}. Choose another date or create a new booking.
                 </p>
                 {canAppointments && (
                   <button
                     type="button"
                     onClick={() => navigate("/appointments?book=1")}
-                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-violet-700"
+                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white transition hover:bg-violet-700"
                   >
                     <Plus size={14} /> Book appointment
                   </button>
@@ -4579,8 +4651,8 @@ function SectionCard({
   children,
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-4 py-4 sm:px-5">
+    <section className="flex h-[520px] min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/60 px-3 py-3 sm:px-3">
         <div className="min-w-0">
           <div className="text-[11px] font-bold uppercase tracking-[0.17em] text-violet-600">
             {eyebrow}
@@ -4820,7 +4892,7 @@ function DashboardTodoList({ storageKey }) {
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.035)]">
-      <header className="flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-blue-50/70 px-3.5 py-3.5 sm:px-4">
+      <header className="shrink-0 flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-white via-white to-blue-50/70 px-3.5 py-3.5 sm:px-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-violet-50 text-blue-700 ring-1 ring-blue-100">
             <ListTodo size={17} />
@@ -4839,7 +4911,7 @@ function DashboardTodoList({ storageKey }) {
         </span>
       </header>
 
-      <form onSubmit={addTask} className="flex gap-2 border-b border-slate-100 p-3">
+      <form onSubmit={addTask} className="shrink-0 flex gap-2 border-b border-slate-100 p-3">
         <label className="sr-only" htmlFor="dashboard-todo-input">
           Add a task
         </label>
@@ -4861,7 +4933,7 @@ function DashboardTodoList({ storageKey }) {
         </button>
       </form>
 
-      <div className="max-h-[390px] min-h-[210px] overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent]">
         {items.length ? (
           <ul className="divide-y divide-slate-100">
             {items.map((item) => (
@@ -4895,7 +4967,7 @@ function DashboardTodoList({ storageKey }) {
             ))}
           </ul>
         ) : (
-          <div className="flex min-h-[210px] flex-col items-center justify-center px-4 py-7 text-center">
+          <div className="flex min-h-full flex-col items-center justify-center px-3 py-3 text-center">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
               <ListTodo size={18} />
             </span>
@@ -4909,7 +4981,7 @@ function DashboardTodoList({ storageKey }) {
         )}
       </div>
 
-      <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
+      <footer className="shrink-0 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 bg-slate-50/70 px-3.5 py-2.5">
         <span className="text-[10px] font-medium text-slate-500">
           {completedCount} of {items.length} completed
         </span>
@@ -4940,7 +5012,7 @@ function QuickAction({
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
+      className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3.5 text-left shadow-sm shadow-slate-100/70 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/30 hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-100"
     >
       <span className="flex h-9 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 ring-1 ring-slate-100">
         <Icon size={13} />
@@ -4972,7 +5044,7 @@ function EmptyState({
   showAction = true,
 }) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+    <div className="flex flex-col items-center justify-center px-3 py-5 text-center">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300">
         <Icon size={17} />
       </span>
@@ -5068,7 +5140,7 @@ function LoadingRow({
   text,
 }) {
   return (
-    <div className="flex items-center justify-center gap-2 px-4 py-10 text-[12px] text-slate-400">
+    <div className="flex items-center justify-center gap-2 px-3 py-5 text-[12px] text-slate-400">
       <RefreshCw
         size={12}
         className="animate-spin"

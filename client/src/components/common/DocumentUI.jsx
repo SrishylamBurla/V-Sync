@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Save, Plus, Trash2, Printer, ChevronDown } from "lucide-react";
+import { Save, Plus, Trash2, Printer } from "lucide-react";
 
 export function DocumentShell({
   eyebrow,
@@ -12,47 +11,61 @@ export function DocumentShell({
   aside,
 }) {
   return (
-    <div className="py-5 sm:py-7">
-      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-[.2em] text-slate-400">
-            {eyebrow}
-          </div>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+    <div className="vsync-document-shell space-y-3 py-3 sm:py-4">
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          {eyebrow && (
+            <div className="mb-1 inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+              {eyebrow}
+            </div>
+          )}
+          <h1 className="text-[22px] font-bold tracking-tight text-slate-900 sm:text-2xl">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+            <p className="mt-1 max-w-3xl text-xs leading-5 text-slate-500">
+              {subtitle}
+            </p>
           )}
         </div>
-        <div className="flex flex-wrap gap-2 print:hidden">{actions}</div>
+        {actions && (
+          <div className="flex shrink-0 flex-wrap items-center gap-2 print:hidden">
+            {actions}
+          </div>
+        )}
       </div>
-      <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm print:rounded-none print:border-0 print:shadow-none">
-        <header className="border-b-2 border-slate-900 px-5 py-5 sm:px-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">
+
+      <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_2px_12px_rgba(20,35,65,0.045)] print:rounded-none print:border-0 print:shadow-none">
+        <header className="border-b border-slate-200 bg-gradient-to-r from-slate-50 via-white to-indigo-50/50 px-4 py-3 sm:px-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
                 {code || "V-Sync record"}
               </div>
-              <h2 className="mt-1 text-lg font-bold text-slate-900">{title}</h2>
+              <h2 className="mt-0.5 text-sm font-bold text-slate-900">
+                {title}
+              </h2>
             </div>
             {status && (
-              <span className="inline-flex w-fit rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600">
+              <span className="inline-flex w-fit items-center rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-700">
                 {status}
               </span>
             )}
           </div>
         </header>
-        <div className={aside ? "grid lg:grid-cols-[minmax(0,1fr)_280px]" : ""}>
-          <div>{children}</div>
+
+        <div className={aside ? "grid lg:grid-cols-[minmax(0,1fr)_250px]" : ""}>
+          <div className="min-w-0">{children}</div>
           {aside && (
-            <aside className="border-l border-slate-200 bg-slate-50/70 p-5 sm:p-7">
+            <aside className="border-t border-slate-200 bg-slate-50/70 p-4 lg:border-l lg:border-t-0">
               {aside}
             </aside>
           )}
         </div>
-        <footer className="border-t-2 border-slate-900 bg-slate-50 px-5 py-4 text-xs text-slate-400 sm:px-8">
-          V-Sync · Practice Management
+
+        <footer className="border-t border-slate-100 bg-slate-50/80 px-4 py-2.5 text-[10px] font-medium text-slate-400 sm:px-5">
+          V-Sync <span className="mx-1.5 text-slate-300">/</span> Practice Management
         </footer>
       </article>
     </div>
@@ -61,17 +74,21 @@ export function DocumentShell({
 
 export function Section({ number, title, description, children }) {
   return (
-    <section className="border-b border-slate-200 p-5 sm:p-7 last:border-b-0">
-      <div className="mb-5 flex items-start gap-3">
-        <span className="pt-0.5 text-[10px] font-bold tracking-widest text-slate-400">
-          {number}
-        </span>
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-[.16em] text-slate-800">
+    <section className="border-b border-slate-200 p-4 last:border-b-0 sm:p-5">
+      <div className="mb-4 flex items-start gap-2.5">
+        {number && (
+          <span className="mt-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-md bg-indigo-50 px-1 text-[9px] font-bold text-indigo-600">
+            {number}
+          </span>
+        )}
+        <div className="min-w-0">
+          <h3 className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-800">
             {title}
           </h3>
           {description && (
-            <p className="mt-1 text-xs text-slate-400">{description}</p>
+            <p className="mt-1 text-[11px] leading-4 text-slate-500">
+              {description}
+            </p>
           )}
         </div>
       </div>
@@ -91,40 +108,40 @@ export function Field({
   disabled = false,
 }) {
   return (
-    <label className={`block ${className}`}>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+    <label className={`block min-w-0 ${className}`}>
+      <span className="mb-1 block text-[9px] font-bold uppercase tracking-[0.1em] text-slate-500">
         {label}
       </span>
       {options ? (
         <select
           value={value ?? ""}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(event) => onChange?.(event.target.value)}
           disabled={disabled}
-          className="mt-1.5 h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-500 disabled:bg-slate-50"
+          className="h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 disabled:cursor-not-allowed disabled:bg-slate-50"
         >
-          {options.map((o) => (
-            <option key={o.value ?? o} value={o.value ?? o}>
-              {o.label ?? o}
+          {options.map((option) => (
+            <option key={option.value ?? option} value={option.value ?? option}>
+              {option.label ?? option}
             </option>
           ))}
         </select>
       ) : type === "textarea" ? (
         <textarea
           value={value ?? ""}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(event) => onChange?.(event.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          rows={4}
-          className="mt-1.5 w-full resize-y rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-slate-500 disabled:bg-slate-50"
+          rows={3}
+          className="w-full resize-y rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs leading-5 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 disabled:bg-slate-50"
         />
       ) : (
         <input
           type={type}
           value={value ?? ""}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(event) => onChange?.(event.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          className="mt-1.5 h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-500 disabled:bg-slate-50"
+          className="h-9 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 disabled:bg-slate-50"
         />
       )}
     </label>
@@ -133,14 +150,14 @@ export function Field({
 
 export function InfoGrid({ items }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      {items.map((x, i) => (
-        <div key={i}>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            {x.label}
+    <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-4">
+      {items.map((item, index) => (
+        <div key={item.key || item.label || index} className="min-w-0">
+          <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            {item.label}
           </div>
-          <div className="mt-1 text-sm font-semibold text-slate-700">
-            {x.value || "—"}
+          <div className="mt-1 break-words text-xs font-semibold text-slate-700">
+            {item.value || "—"}
           </div>
         </div>
       ))}
@@ -150,43 +167,40 @@ export function InfoGrid({ items }) {
 
 export function Table({ columns, rows, empty = "No records found." }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[760px] text-left text-sm">
+    <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <table className="w-full min-w-[720px] border-collapse text-left text-xs">
         <thead>
-          <tr className="border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-400">
-            {columns.map((c) => (
+          <tr className="border-b border-slate-200 bg-slate-50">
+            {columns.map((column) => (
               <th
-                key={c.key}
-                className={`pb-3 pr-4 ${c.align === "right" ? "text-right" : ""}`}
+                key={column.key}
+                className={`px-3 py-2 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-500 ${column.align === "right" ? "text-right" : "text-left"}`}
               >
-                {c.label}
+                {column.label}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.length ? (
-            rows.map((r, i) => (
+            rows.map((row, index) => (
               <tr
-                key={r.id || i}
-                className="border-b border-slate-100 last:border-0"
+                key={row.id || row._id || index}
+                className="border-b border-slate-100 transition-colors last:border-0 hover:bg-slate-50/70"
               >
-                {columns.map((c) => (
+                {columns.map((column) => (
                   <td
-                    key={c.key}
-                    className={`py-3 pr-4 ${c.align === "right" ? "text-right" : ""}`}
+                    key={column.key}
+                    className={`px-3 py-2.5 text-[11px] text-slate-600 ${column.align === "right" ? "text-right" : "text-left"}`}
                   >
-                    {c.render ? c.render(r) : r[c.key]}
+                    {column.render ? column.render(row) : row[column.key]}
                   </td>
                 ))}
               </tr>
             ))
           ) : (
             <tr>
-              <td
-                colSpan={columns.length}
-                className="py-10 text-center text-xs text-slate-400"
-              >
+              <td colSpan={columns.length} className="px-3 py-8 text-center text-xs text-slate-400">
                 {empty}
               </td>
             </tr>
@@ -199,18 +213,20 @@ export function Table({ columns, rows, empty = "No records found." }) {
 
 export function ActionBar({ onSave, onPrint, saveLabel = "Save" }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <button
+        type="button"
         onClick={onSave}
-        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
+        className="inline-flex h-9 items-center gap-2 rounded-lg bg-slate-900 px-3.5 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700"
       >
         <Save size={14} />
         {saveLabel}
       </button>
       {onPrint && (
         <button
+          type="button"
           onClick={onPrint}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
         >
           <Printer size={14} />
           Print
@@ -222,43 +238,42 @@ export function ActionBar({ onSave, onPrint, saveLabel = "Save" }) {
 
 export function RepeatableRows({ rows, setRows, fields }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       {rows.map((row, index) => (
-        <div key={index} className="rounded-xl border border-slate-200 p-3">
-          <div className="grid gap-3 md:grid-cols-4">
-            {fields.map((f) => (
+        <div key={index} className="rounded-lg border border-slate-200 bg-white p-3">
+          <div className="grid gap-2.5 md:grid-cols-4">
+            {fields.map((field) => (
               <Field
-                key={f.key}
-                label={f.label}
-                value={row[f.key]}
-                onChange={(v) =>
+                key={field.key}
+                label={field.label}
+                value={row[field.key]}
+                onChange={(value) =>
                   setRows(
-                    rows.map((r, i) =>
-                      i === index ? { ...r, [f.key]: v } : r,
+                    rows.map((current, rowIndex) =>
+                      rowIndex === index ? { ...current, [field.key]: value } : current,
                     ),
                   )
                 }
-                options={f.options}
+                options={field.options}
               />
             ))}
             <button
               type="button"
-              onClick={() => setRows(rows.filter((_, i) => i !== index))}
-              className="mt-5 inline-flex h-10 items-center justify-center rounded-xl border border-red-100 text-red-500 hover:bg-red-50"
+              onClick={() => setRows(rows.filter((_, rowIndex) => rowIndex !== index))}
+              className="mt-4 inline-flex h-9 items-center justify-center rounded-lg border border-rose-100 text-rose-500 transition hover:bg-rose-50"
+              aria-label="Remove row"
             >
-              <Trash2 size={15} />
+              <Trash2 size={14} />
             </button>
           </div>
         </div>
       ))}
       <button
         type="button"
-        onClick={() =>
-          setRows([...rows, Object.fromEntries(fields.map((f) => [f.key, ""]))])
-        }
-        className="inline-flex items-center gap-2 rounded-xl border border-dashed border-slate-300 px-3 py-2 text-xs font-semibold text-slate-600"
+        onClick={() => setRows([...rows, Object.fromEntries(fields.map((field) => [field.key, ""]))])}
+        className="inline-flex h-8 items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 text-[11px] font-semibold text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-700"
       >
-        <Plus size={14} /> Add row
+        <Plus size={13} /> Add row
       </button>
     </div>
   );
@@ -267,13 +282,14 @@ export function RepeatableRows({ rows, setRows, fields }) {
 export function Tabs({ items, active, setActive }) {
   return (
     <div className="flex gap-1 overflow-x-auto border-b border-slate-200">
-      {items.map((x) => (
+      {items.map((item) => (
         <button
-          key={x}
-          onClick={() => setActive(x)}
-          className={`whitespace-nowrap border-b-2 px-3 py-3 text-xs font-semibold ${active === x ? "border-slate-900 text-slate-900" : "border-transparent text-slate-400 hover:text-slate-700"}`}
+          key={item}
+          type="button"
+          onClick={() => setActive(item)}
+          className={`whitespace-nowrap border-b-2 px-3 py-2.5 text-[11px] font-semibold transition ${active === item ? "border-indigo-600 text-indigo-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
         >
-          {x}
+          {item}
         </button>
       ))}
     </div>

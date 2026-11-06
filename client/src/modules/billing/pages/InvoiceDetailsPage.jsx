@@ -318,7 +318,7 @@ export default function InvoiceDetailsPage() {
 
   if (!data || !invoice) {
     return (
-      <div className="py-10 text-sm text-slate-500">
+      <div className="py-5 text-sm text-slate-500">
         {error || "Loading invoice..."}
       </div>
     );
@@ -377,7 +377,7 @@ export default function InvoiceDetailsPage() {
       }
     >
       {error && (
-        <div className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -421,8 +421,8 @@ export default function InvoiceDetailsPage() {
             ]}
           />
         ) : (
-          <div className="space-y-5">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="space-y-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <Field
                 label="Invoice date"
                 type="date"
@@ -638,7 +638,7 @@ export default function InvoiceDetailsPage() {
               </button>
             )}
 
-            <div className="ml-auto max-w-sm rounded-xl bg-slate-50 p-4 text-sm">
+            <div className="ml-auto max-w-sm rounded-xl bg-slate-50 p-3 text-sm">
               <div className="flex justify-between font-bold text-slate-900">
                 <span>Preview total</span>
                 <span>{money(editTotal)}</span>
@@ -698,7 +698,7 @@ export default function InvoiceDetailsPage() {
       </Section>
 
       <Section number="03" title="Financial summary">
-        <div className="ml-auto max-w-sm space-y-2 rounded-xl bg-slate-50 p-5 text-sm">
+        <div className="ml-auto max-w-sm space-y-2 rounded-xl bg-slate-50 p-3 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>
             <b>{money(invoice.subtotal)}</b>
@@ -729,19 +729,19 @@ export default function InvoiceDetailsPage() {
           </div>
 
           <div className="mt-3 border-t border-slate-200 pt-3 text-[11px] text-slate-500">
-            <div className="flex justify-between gap-4">
+            <div className="flex justify-between gap-3">
               <span>Last updated by</span>
               <b className="text-right text-slate-700">
                 {invoice.updatedBy ? name(invoice.updatedBy) : "Not updated yet"}
               </b>
             </div>
-            <div className="mt-1 flex justify-between gap-4">
+            <div className="mt-1 flex justify-between gap-3">
               <span>Last updated at</span>
               <b className="text-right text-slate-700">
                 {formatDateTime(invoice.updatedAt)}
               </b>
             </div>
-            <div className="mt-1 flex justify-between gap-4">
+            <div className="mt-1 flex justify-between gap-3">
               <span>Discount updated by</span>
               <b className="text-right text-slate-700">
                 {invoice.discountUpdatedBy
@@ -749,7 +749,7 @@ export default function InvoiceDetailsPage() {
                   : "Not changed yet"}
               </b>
             </div>
-            <div className="mt-1 flex justify-between gap-4">
+            <div className="mt-1 flex justify-between gap-3">
               <span>Discount updated at</span>
               <b className="text-right text-slate-700">
                 {formatDateTime(invoice.discountUpdatedAt)}
@@ -766,7 +766,7 @@ export default function InvoiceDetailsPage() {
       >
         <form
           onSubmit={payment}
-          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+          className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
         >
           <Field
             label="Amount"
@@ -801,7 +801,7 @@ export default function InvoiceDetailsPage() {
           <div className="flex items-end">
             <button
               disabled={!Number(invoice.balance)}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-4 text-xs font-semibold text-white disabled:opacity-40"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-3 text-xs font-semibold text-white disabled:opacity-40"
             >
               <Wallet size={14} />
               Record payment
@@ -809,7 +809,7 @@ export default function InvoiceDetailsPage() {
           </div>
         </form>
 
-        <div className="mt-6 space-y-2">
+        <div className="mt-4 space-y-2">
           {(data.payments || []).map((item) => (
             <div
               key={item._id}
@@ -827,7 +827,7 @@ export default function InvoiceDetailsPage() {
       <Section number="05" title="Refunds">
         <form
           onSubmit={doRefund}
-          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+          className="grid gap-3 md:grid-cols-2 xl:grid-cols-4"
         >
           <Field
             label="Refund amount"
@@ -860,14 +860,14 @@ export default function InvoiceDetailsPage() {
             }
           />
           <div className="flex items-end">
-            <button className="inline-flex h-10 items-center gap-2 rounded-xl border border-red-200 px-4 text-xs font-semibold text-red-600">
+            <button className="inline-flex h-10 items-center gap-2 rounded-xl border border-red-200 px-3 text-xs font-semibold text-red-600">
               <RotateCcw size={14} />
               Record refund
             </button>
           </div>
         </form>
 
-        <div className="mt-6 space-y-2">
+        <div className="mt-4 space-y-2">
           {(data.refunds || []).length ? (
             data.refunds.map((item) => (
               <div
