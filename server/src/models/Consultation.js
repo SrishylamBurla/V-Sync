@@ -23,6 +23,8 @@ const eyePrescriptionSchema = new mongoose.Schema(
     // Prism
     prism: { type: String, trim: true, default: "" },
     base: { type: String, trim: true, default: "" },
+    hPrism: { type: String, trim: true, default: "" },
+    vPrism: { type: String, trim: true, default: "" },
   },
   { _id: false },
 );
@@ -1504,6 +1506,14 @@ const testSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 4000,
+      default: "",
+    },
+
+    remarks: {
+      type: String,
+      trim: true,
+      maxlength: 4000,
+      default: "",
     },
   },
   { _id: false },
@@ -1518,6 +1528,22 @@ const diagnosisSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 300,
+      default: "",
+    },
+
+    // Current consultation UI compatibility.
+    condition: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+      default: "",
+    },
+
+    eye: {
+      type: String,
+      trim: true,
+      maxlength: 10,
+      default: "OU",
     },
 
     code: {
@@ -2093,13 +2119,25 @@ const consultationSchema = new mongoose.Schema(
       default: () => ({}),
     },
 
+    // Full current UI refraction state (previous/objective/subjective/final,
+    // subjective comparison slots and PD) is retained for lossless round-trips.
+    refraction: {
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({}),
+    },
+
+    subjectiveRxSlots: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: [],
+    },
+
     // --------------------------------------------------
     // BINOCULAR VISION
     // --------------------------------------------------
     binocularVision: {
-  type: mongoose.Schema.Types.Mixed,
-  default: () => ({}),
-},
+      type: binocularVisionSchema,
+      default: () => ({}),
+    },
 
     // --------------------------------------------------
     // SLIT LAMP

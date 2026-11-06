@@ -115,6 +115,8 @@ const sanitizePrescription = (rx, type) => {
       inter: rx.right?.inter || "",
       prism: rx.right?.prism || "",
       base: rx.right?.base || "",
+      hPrism: rx.right?.hPrism || "",
+      vPrism: rx.right?.vPrism || "",
     },
 
     left: {
@@ -127,6 +129,8 @@ const sanitizePrescription = (rx, type) => {
       inter: rx.left?.inter || "",
       prism: rx.left?.prism || "",
       base: rx.left?.base || "",
+      hPrism: rx.left?.hPrism || "",
+      vPrism: rx.left?.vPrism || "",
     },
 
     note: rx.note || "",
@@ -215,6 +219,26 @@ export const getConsultations = asyncHandler(
     const filter = {
       organizationId,
     };
+
+    // Restrict practice users to their assigned branches. Organization
+    // administrators and super admins can view all branches in the org.
+    if (!["super_admin", "organization_admin"].includes(req.user.role)) {
+      const branchIds = Array.isArray(req.user.branchIds)
+        ? req.user.branchIds.filter((id) => mongoose.Types.ObjectId.isValid(id))
+        : [];
+
+      filter.branchId = { $in: branchIds };
+
+      if (!branchIds.length) {
+        return res.json({
+          success: true,
+          data: {
+            consultations: [],
+            pagination: { page, limit, total: 0, totalPages: 1 },
+          },
+        });
+      }
+    }
 
     if (req.query.patientId) {
       if (
@@ -527,12 +551,14 @@ const normalizeBinocularVision = (value) => {
   return {
     ...value,
 
-    // CRITICAL:
-    // Keep accommodation as an object.
-    accommodation:
-      normalizeAccommodation(
-        value.accommodation
-      ),
+    // Current form uses `fusional`; the database schema stores
+    // `fusionalVergence`. Normalize both names to the canonical field.
+    fusionalVergence: normalizeObject(
+      value.fusionalVergence || value.fusional
+    ),
+
+    // CRITICAL: keep accommodation as an object, never a string.
+    accommodation: normalizeAccommodation(value.accommodation),
   };
 };
 
@@ -549,6 +575,49 @@ const normalizeObject = (value) => {
   }
 
   return value;
+};
+
+// Convert the current form's key/value advice object into the persisted
+// advice array while remaining compatible with older clients that send arrays.
+const normalizeAdvice = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({
+        text: String(item.text ?? "").trim(),
+        category: String(item.category ?? "").trim(),
+      }))
+      .filter((item) => item.text);
+  }
+
+  if (!value || typeof value !== "object") return [];
+
+  const rows = Object.entries(value)
+    .filter(([key, enabled]) => key !== "custom" && enabled === true)
+    .map(([key]) => ({
+      category: key,
+      text: key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase()),
+    }));
+
+  const custom = String(value.custom ?? "").trim();
+  if (custom) rows.push({ category: "custom", text: custom });
+  return rows;
+};
+
+// Accept both current UI diagnosis objects ({ condition, eye, notes }) and
+// the older API representation ({ name, code, notes }).
+const normalizeDiagnosis = (value) => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      name: String(item.name ?? item.condition ?? "").trim(),
+      condition: String(item.condition ?? item.name ?? "").trim(),
+      code: String(item.code ?? "").trim(),
+      eye: String(item.eye ?? "OU").trim(),
+      notes: String(item.notes ?? "").trim(),
+    }))
+    .filter((item) => item.name || item.condition || item.code || item.notes);
 };
 
 // --------------------------------------------------
@@ -727,31 +796,31 @@ const buildConsultationData = (
     // ----------------------------------------------
     previousRx:
       sanitizePrescription(
-        body.previousRx,
+        body.previousRx || body.refraction?.previous,
         "previous"
       ),
 
     objectiveRx:
       sanitizePrescription(
-        body.objectiveRx,
+        body.objectiveRx || body.refraction?.objective,
         "objective"
       ),
 
     subjectiveRx:
       sanitizePrescription(
-        body.subjectiveRx,
+        body.subjectiveRx || body.refraction?.subjective,
         "subjective"
       ),
 
     finalRx:
       sanitizePrescription(
-        body.finalRx,
+        body.finalRx || body.refraction?.final,
         "final"
       ),
 
     givenRx:
       sanitizePrescription(
-        body.givenRx,
+        body.givenRx || body.refraction?.final,
         "given"
       ),
 
@@ -759,7 +828,17 @@ const buildConsultationData = (
       body.refractionNotes || "",
 
     pd:
-      normalizeObject(body.pd),
+      normalizeObject(body.pd || body.refraction?.pd),
+
+    refraction:
+      normalizeObject(body.refraction),
+
+    subjectiveRxSlots:
+      Array.isArray(body.subjectiveRxSlots)
+        ? body.subjectiveRxSlots
+        : Array.isArray(body.refraction?.subjectiveSlots)
+          ? body.refraction.subjectiveSlots
+          : [],
 
     // ----------------------------------------------
     // BINOCULAR VISION
@@ -791,17 +870,13 @@ const buildConsultationData = (
     // DIAGNOSIS
     // ----------------------------------------------
     diagnosis:
-      Array.isArray(body.diagnosis)
-        ? body.diagnosis
-        : [],
+      normalizeDiagnosis(body.diagnosis),
 
     // ----------------------------------------------
     // ADVICE
     // ----------------------------------------------
     advice:
-      Array.isArray(body.advice)
-        ? body.advice
-        : [],
+      normalizeAdvice(body.advice),
 
     // ----------------------------------------------
     // LOW VISION
@@ -860,18 +935,22 @@ const buildConsultationData = (
     // ----------------------------------------------
     // RECALL
     // ----------------------------------------------
-    recall:
-      normalizeObject(
-        body.recall
-      ),
+    recall: {
+      due: body.recall?.due || body.recall?.date || body.recallDue || null,
+      type: body.recall?.type || "",
+      message: body.recall?.message || body.recall?.type || body.recallLetter || "",
+      sendReminder: Boolean(body.recall?.sendReminder),
+    },
 
     recallDue:
       body.recall?.due ||
+      body.recall?.date ||
       body.recallDue ||
       null,
 
     recallLetter:
       body.recall?.message ||
+      body.recall?.type ||
       body.recallLetter ||
       "",
 
@@ -1292,6 +1371,8 @@ export const updateConsultation =
 
       "visualAcuity",
 
+      "refraction",
+      "subjectiveRxSlots",
       "refractionNotes",
 
       "pd",
@@ -1325,12 +1406,14 @@ export const updateConsultation =
     ];
 
     fields.forEach((field) => {
-      if (
-        req.body[field] !==
-        undefined
-      ) {
-        consultation[field] =
-          req.body[field];
+      if (req.body[field] !== undefined) {
+        if (field === "advice") {
+          consultation.advice = normalizeAdvice(req.body.advice);
+        } else if (field === "diagnosis") {
+          consultation.diagnosis = normalizeDiagnosis(req.body.diagnosis);
+        } else {
+          consultation[field] = req.body[field];
+        }
       }
     });
 
@@ -1380,6 +1463,34 @@ export const updateConsultation =
     }
 
     // ----------------------------------------------
+    // REFRACTION COMPATIBILITY
+    // ----------------------------------------------
+    if (req.body.refraction !== undefined) {
+      const rx = req.body.refraction || {};
+      consultation.refraction = normalizeObject(rx);
+      consultation.pd = normalizeObject(req.body.pd || rx.pd);
+      consultation.subjectiveRxSlots =
+        Array.isArray(req.body.subjectiveRxSlots)
+          ? req.body.subjectiveRxSlots
+          : Array.isArray(rx.subjectiveSlots)
+            ? rx.subjectiveSlots
+            : consultation.subjectiveRxSlots;
+
+      const rxMappings = [
+        ["previousRx", rx.previous, "previous"],
+        ["objectiveRx", rx.objective, "objective"],
+        ["subjectiveRx", rx.subjective, "subjective"],
+        ["finalRx", rx.final, "final"],
+        ["givenRx", rx.final, "given"],
+      ];
+      for (const [field, value, type] of rxMappings) {
+        if (value !== undefined) {
+          consultation[field] = sanitizePrescription(value, type);
+        }
+      }
+    }
+
+    // ----------------------------------------------
     // BINOCULAR VISION
     // ----------------------------------------------
     if (
@@ -1415,6 +1526,11 @@ export const updateConsultation =
           req.body.objectiveRx,
           "objective"
         );
+    }
+
+    if (req.body.objectiveRx !== undefined) {
+      consultation.objectiveRx =
+        sanitizePrescription(req.body.objectiveRx, "objective");
     }
 
     if (
@@ -1470,18 +1586,20 @@ export const updateConsultation =
       req.body.recall !==
       undefined
     ) {
-      consultation.recall =
-        normalizeObject(
-          req.body.recall
-        );
+      const recallInput = normalizeObject(req.body.recall);
+      const recallDue = recallInput.due || recallInput.date || null;
+      const recallType = recallInput.type || "";
+      const recallMessage = recallInput.message || recallType;
 
-      consultation.recallDue =
-        req.body.recall?.due ||
-        null;
+      consultation.recall = {
+        due: recallDue,
+        type: recallType,
+        message: recallMessage,
+        sendReminder: Boolean(recallInput.sendReminder),
+      };
 
-      consultation.recallLetter =
-        req.body.recall?.message ||
-        "";
+      consultation.recallDue = recallDue;
+      consultation.recallLetter = recallMessage;
     }
 
     if (
